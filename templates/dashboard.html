@@ -1,0 +1,17 @@
+{{ define "content" }}
+
+<h1>Your planet</h1>
+
+<p class="lead">
+Metal: {{ .MetalStock }} 
+</p>
+
+<img src="/static/images/planet.jpg" class="img-fluid pt-5" alt="planet image">
+
+<div class="container mt-5">
+<p>
+Metal mine: level {{ .MetalMine }} (<a href="/planet/up_metal_mine">upgrade</a>)
+</p>
+</div>
+
+{{ end }}

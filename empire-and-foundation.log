@@ -1,0 +1,243 @@
+INFO 2019/11/24 11:51:40 utils.go:62: Server started
+INFO 2019/11/24 11:51:47 utils.go:62: generateHTML with public navbar
+INFO 2019/11/24 12:05:07 utils.go:64: Server started
+INFO 2019/11/24 12:05:17 utils.go:64: generateHTML with public navbar
+INFO 2019/11/24 12:06:08 utils.go:64: Starting server...
+INFO 2019/11/24 12:06:08 utils.go:64: Server started
+INFO 2019/11/24 12:06:13 utils.go:64: generateHTML with public navbar
+INFO 2019/11/24 12:06:19 utils.go:64: generateHTML with public navbar
+INFO 2019/11/24 12:09:10 utils.go:64: generateHTML with public navbar
+INFO 2019/11/24 12:09:20 utils.go:64: generateHTML with public navbar
+INFO 2019/11/24 12:11:03 utils.go:64: Starting server...
+INFO 2019/11/24 12:11:03 utils.go:64: Server started
+INFO 2019/11/24 12:11:05 utils.go:64: generateHTML with public navbar
+INFO 2019/11/24 12:11:08 utils.go:64: Successfully logged in, redirecting to root path...
+INFO 2019/11/24 12:11:08 utils.go:64: generateHTML with public navbar
+INFO 2019/11/24 12:12:20 utils.go:64: Starting server...
+INFO 2019/11/24 12:12:20 utils.go:64: Server started
+INFO 2019/11/24 12:12:22 utils.go:64: error when getting session Invalid session
+INFO 2019/11/24 12:12:27 utils.go:64: error when getting session Invalid session
+INFO 2019/11/24 12:19:05 utils.go:65: Starting server...
+INFO 2019/11/24 12:19:05 utils.go:65: Server started
+WARNING 2019/11/24 12:19:07 utils.go:75: error when checking session:  <nil>
+INFO 2019/11/24 12:19:07 utils.go:65: error when getting session Invalid session
+INFO 2019/11/24 12:20:53 utils.go:65: Starting server...
+INFO 2019/11/24 12:20:53 utils.go:65: Server started
+WARNING 2019/11/24 12:20:55 utils.go:75: error when checking session:  <nil>
+INFO 2019/11/24 12:20:55 utils.go:65: error when getting session Invalid session
+INFO 2019/11/24 12:22:37 utils.go:65: Starting server...
+INFO 2019/11/24 12:22:37 utils.go:65: Server started
+WARNING 2019/11/24 12:22:40 utils.go:75: error when checking session:  <nil>
+INFO 2019/11/24 12:22:40 utils.go:65: error when getting session Invalid session
+INFO 2019/11/24 12:29:39 utils.go:64: Starting server...
+INFO 2019/11/24 12:29:39 utils.go:64: Server started
+INFO 2019/11/24 12:29:42 utils.go:64: generateHTML with private navbar
+WARNING 2019/11/24 12:30:15 utils.go:74: <nil> Failed to get cookie
+INFO 2019/11/24 12:30:15 utils.go:64: error when getting session Invalid session
+INFO 2019/11/24 12:30:23 utils.go:64: error when getting session Invalid session
+INFO 2019/11/24 12:30:25 utils.go:64: error when getting session Invalid session
+INFO 2019/11/24 12:30:32 utils.go:64: Successfully logged in, redirecting to root path...
+INFO 2019/11/24 12:30:32 utils.go:64: generateHTML with private navbar
+WARNING 2019/11/24 12:30:42 utils.go:74: <nil> Failed to get cookie
+INFO 2019/11/24 12:30:42 utils.go:64: error when getting session Invalid session
+INFO 2019/11/24 12:31:02 utils.go:64: error when getting session Invalid session
+INFO 2019/11/24 12:31:09 utils.go:64: Successfully logged in, redirecting to root path...
+INFO 2019/11/24 12:31:09 utils.go:64: generateHTML with private navbar
+WARNING 2019/11/24 12:39:01 utils.go:74: <nil> Failed to get cookie
+INFO 2019/11/24 12:39:01 utils.go:64: error when getting session Invalid session
+INFO 2019/11/24 12:39:07 utils.go:64: Successfully logged in, redirecting to root path...
+INFO 2019/11/24 12:39:07 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:41:42 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:41:48 utils.go:64: Starting server...
+INFO 2019/11/24 12:41:48 utils.go:64: Server started
+INFO 2019/11/24 12:41:50 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:42:14 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:46:20 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:46:27 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:46:41 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:46:42 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:47:19 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:47:21 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:47:35 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:47:36 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:47:52 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:47:53 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:48:10 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:48:54 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:49:04 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:49:26 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:51:38 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:51:40 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:51:43 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:51:49 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:53:01 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:53:01 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:53:01 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:53:01 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:53:01 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:53:01 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:53:03 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:53:03 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:53:03 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:53:08 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:53:08 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:53:08 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:53:16 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:53:35 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:53:36 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:53:46 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:54:22 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:54:22 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:56:34 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:57:52 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:58:21 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:58:35 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:59:35 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:59:36 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 12:59:54 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 13:00:16 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 13:01:20 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 13:01:53 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 13:02:10 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 13:02:22 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 13:03:10 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 13:03:36 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 13:04:10 utils.go:64: generateHTML with private navbar
+INFO 2019/11/24 13:05:12 utils.go:64: generateHTML with private navbar
+WARNING 2019/11/24 13:05:39 utils.go:74: <nil> Failed to get cookie
+INFO 2019/11/24 13:05:39 utils.go:64: error when getting session Invalid session
+INFO 2019/11/24 13:05:43 utils.go:64: Successfully logged in, redirecting to root path...
+INFO 2019/11/24 13:05:43 utils.go:64: generateHTML with private navbar
+INFO 2019/11/25 11:44:49 utils.go:64: Starting server...
+INFO 2019/11/25 11:44:49 utils.go:64: Server started
+INFO 2019/11/25 11:44:55 utils.go:64: generateHTML with private navbar
+INFO 2019/11/25 19:30:03 utils.go:64: Starting server...
+INFO 2019/11/25 19:30:03 utils.go:64: Server started
+INFO 2019/11/25 19:30:05 utils.go:64: session is valid
+ERROR 2019/11/25 19:30:05 utils.go:69: cannot create user planet
+ERROR 2019/11/25 19:30:05 utils.go:69: cannot create user planet
+ERROR 2019/11/25 19:30:05 utils.go:69: cannot create user planet
+INFO 2019/11/25 19:31:06 utils.go:64: Starting server...
+INFO 2019/11/25 19:31:06 utils.go:64: Server started
+ERROR 2019/11/25 19:31:08 utils.go:69: cannot create user planet
+WARNING 2019/11/25 19:31:11 utils.go:74: <nil> Failed to get cookie
+INFO 2019/11/25 19:31:11 utils.go:64: error when getting session Invalid session
+INFO 2019/11/25 19:31:14 utils.go:64: Successfully logged in, redirecting to root path...
+INFO 2019/11/25 19:31:14 utils.go:64: session is valid
+ERROR 2019/11/25 19:31:14 utils.go:69: cannot create user planet
+INFO 2019/11/25 19:31:20 utils.go:64: session is valid
+ERROR 2019/11/25 19:31:20 utils.go:69: cannot create user planet
+INFO 2019/11/25 19:33:14 utils.go:64: Starting server...
+INFO 2019/11/25 19:33:14 utils.go:64: Server started
+INFO 2019/11/25 19:33:16 utils.go:64: could not get user planet sql: no rows in result set
+ERROR 2019/11/25 19:33:16 utils.go:69: cannot create user planet: pq: INSERT has more target columns than expressions
+INFO 2019/11/25 19:36:12 utils.go:64: Starting server...
+INFO 2019/11/25 19:36:12 utils.go:64: Server started
+INFO 2019/11/25 19:36:14 utils.go:64: could not get user planet sql: no rows in result set
+INFO 2019/11/26 12:04:02 utils.go:64: Starting server...
+INFO 2019/11/26 12:04:02 utils.go:64: Server started
+INFO 2019/11/26 12:04:09 utils.go:64: session is valid
+INFO 2019/11/26 12:05:36 utils.go:64: Starting server...
+INFO 2019/11/26 12:05:36 utils.go:64: Server started
+INFO 2019/11/26 12:05:42 utils.go:64: session is valid
+INFO 2019/11/26 12:05:44 utils.go:64: session is valid
+INFO 2019/11/26 12:05:45 utils.go:64: session is valid
+INFO 2019/11/26 12:05:46 utils.go:64: session is valid
+INFO 2019/11/26 12:08:32 utils.go:64: Starting server...
+INFO 2019/11/26 12:08:32 utils.go:64: Server started
+INFO 2019/11/26 12:08:37 utils.go:64: session is valid
+INFO 2019/11/26 12:09:21 utils.go:64: Starting server...
+INFO 2019/11/26 12:09:21 utils.go:64: Server started
+INFO 2019/11/26 12:09:25 utils.go:64: up metal mine
+INFO 2019/11/26 12:09:28 utils.go:64: up metal mine
+INFO 2019/11/26 12:09:29 utils.go:64: up metal mine
+INFO 2019/11/26 12:09:31 utils.go:64: up metal mine
+INFO 2019/11/26 12:09:32 utils.go:64: up metal mine
+INFO 2019/11/26 12:09:32 utils.go:64: up metal mine
+INFO 2019/11/26 12:09:33 utils.go:64: up metal mine
+INFO 2019/11/26 12:09:34 utils.go:64: up metal mine
+INFO 2019/11/26 12:09:34 utils.go:64: up metal mine
+INFO 2019/11/26 12:09:35 utils.go:64: up metal mine
+INFO 2019/11/26 12:09:36 utils.go:64: up metal mine
+INFO 2019/11/27 11:28:25 utils.go:64: Starting server...
+INFO 2019/11/27 11:28:25 utils.go:64: Server started
+INFO 2019/11/27 11:28:38 utils.go:64: Successfully logged in, redirecting to root path...
+INFO 2019/11/27 11:28:38 utils.go:64: session is valid
+INFO 2019/11/27 11:28:39 utils.go:64: could not get user planet sql: no rows in result set
+INFO 2019/11/27 11:29:57 utils.go:64: Starting server...
+INFO 2019/11/27 11:29:57 utils.go:64: Server started
+INFO 2019/11/27 11:33:14 utils.go:64: Starting server...
+INFO 2019/11/27 11:33:14 utils.go:64: Server started
+INFO 2019/11/27 11:33:17 utils.go:64: updated metal stock to : 0
+INFO 2019/11/27 11:33:26 utils.go:64: up metal mine
+INFO 2019/11/27 11:33:26 utils.go:64: updated metal stock to : -33120
+INFO 2019/11/27 11:33:29 utils.go:64: up metal mine
+INFO 2019/11/27 11:33:29 utils.go:64: updated metal stock to : -99300
+INFO 2019/11/27 11:33:30 utils.go:64: up metal mine
+INFO 2019/11/27 11:33:30 utils.go:64: updated metal stock to : -198540
+INFO 2019/11/27 11:33:31 utils.go:64: up metal mine
+INFO 2019/11/27 11:33:31 utils.go:64: updated metal stock to : -330820
+INFO 2019/11/27 11:33:31 utils.go:64: up metal mine
+INFO 2019/11/27 11:33:31 utils.go:64: updated metal stock to : -496170
+INFO 2019/11/27 11:33:48 utils.go:64: updated metal stock to : -660670
+INFO 2019/11/27 11:33:49 utils.go:64: updated metal stock to : -825120
+INFO 2019/11/27 11:33:50 utils.go:64: updated metal stock to : -989520
+INFO 2019/11/27 11:33:51 utils.go:64: updated metal stock to : -1153870
+INFO 2019/11/27 11:33:51 utils.go:64: updated metal stock to : -1318220
+INFO 2019/11/27 11:33:52 utils.go:64: updated metal stock to : -1482520
+INFO 2019/11/27 11:33:53 utils.go:64: updated metal stock to : -1646770
+INFO 2019/11/27 11:36:02 utils.go:64: Starting server...
+INFO 2019/11/27 11:36:02 utils.go:64: Server started
+INFO 2019/11/27 11:36:07 utils.go:64: updated metal stock to : -1662525
+INFO 2019/11/27 11:36:08 utils.go:64: updated metal stock to : -1680515
+INFO 2019/11/27 11:36:09 utils.go:64: updated metal stock to : -1698510
+INFO 2019/11/27 11:36:10 utils.go:64: updated metal stock to : -1716505
+INFO 2019/11/27 11:36:10 utils.go:64: updated metal stock to : -1734500
+INFO 2019/11/27 11:36:11 utils.go:64: updated metal stock to : -1752495
+INFO 2019/11/27 11:36:11 utils.go:64: updated metal stock to : -1770490
+INFO 2019/11/27 11:36:11 utils.go:64: updated metal stock to : -1788485
+INFO 2019/11/27 11:36:11 utils.go:64: updated metal stock to : -1806480
+INFO 2019/11/27 11:36:11 utils.go:64: updated metal stock to : -1824475
+INFO 2019/11/27 11:36:12 utils.go:64: updated metal stock to : -1842470
+INFO 2019/11/27 11:36:12 utils.go:64: updated metal stock to : -1860465
+INFO 2019/11/27 11:36:12 utils.go:64: updated metal stock to : -1878460
+INFO 2019/11/27 11:36:12 utils.go:64: updated metal stock to : -1896455
+INFO 2019/11/27 11:36:12 utils.go:64: updated metal stock to : -1914450
+INFO 2019/11/27 11:36:12 utils.go:64: updated metal stock to : -1932445
+INFO 2019/11/27 11:36:13 utils.go:64: updated metal stock to : -1950440
+INFO 2019/11/27 11:36:13 utils.go:64: updated metal stock to : -1968435
+INFO 2019/11/27 11:36:13 utils.go:64: updated metal stock to : -1986430
+INFO 2019/11/27 11:36:13 utils.go:64: updated metal stock to : -2004425
+INFO 2019/11/27 11:36:13 utils.go:64: updated metal stock to : -2022420
+INFO 2019/11/27 11:36:14 utils.go:64: updated metal stock to : -2040415
+WARNING 2019/11/27 11:36:21 utils.go:74: <nil> Failed to get cookie
+INFO 2019/11/27 11:36:21 utils.go:64: error when getting session Invalid session
+INFO 2019/11/27 11:36:34 utils.go:64: Successfully logged in, redirecting to root path...
+INFO 2019/11/27 11:36:34 utils.go:64: session is valid
+INFO 2019/11/27 11:36:34 utils.go:64: could not get user planet sql: no rows in result set
+INFO 2019/11/27 11:36:34 utils.go:64: updated metal stock to : 0
+INFO 2019/11/27 11:36:35 utils.go:64: up metal mine
+INFO 2019/11/27 11:36:35 utils.go:64: updated metal stock to : -3598
+INFO 2019/11/27 11:40:59 utils.go:64: updated metal stock to : -6934
+INFO 2019/11/27 11:41:01 utils.go:64: updated metal stock to : -10532
+INFO 2019/11/27 11:41:02 utils.go:64: updated metal stock to : -14131
+INFO 2019/11/27 11:41:02 utils.go:64: updated metal stock to : -17730
+INFO 2019/11/27 11:41:03 utils.go:64: updated metal stock to : -21329
+INFO 2019/11/27 11:41:04 utils.go:64: updated metal stock to : -24928
+INFO 2019/11/27 11:41:05 utils.go:64: updated metal stock to : -28527
+INFO 2019/11/27 11:41:06 utils.go:64: updated metal stock to : -32126
+INFO 2019/11/27 11:41:06 utils.go:64: updated metal stock to : -35725
+INFO 2019/11/27 11:41:07 utils.go:64: updated metal stock to : -39324
+INFO 2019/11/27 11:41:07 utils.go:64: updated metal stock to : -42923
+INFO 2019/11/27 11:41:08 utils.go:64: updated metal stock to : -46522
+INFO 2019/11/27 11:41:08 utils.go:64: updated metal stock to : -50121
+INFO 2019/11/27 11:41:09 utils.go:64: updated metal stock to : -53720
+INFO 2019/11/27 11:41:09 utils.go:64: updated metal stock to : -57319
+INFO 2019/11/27 11:41:10 utils.go:64: updated metal stock to : -60918
+INFO 2019/11/27 11:41:10 utils.go:64: updated metal stock to : -64517
+INFO 2019/11/27 11:46:21 utils.go:64: Starting server...
+INFO 2019/11/27 11:46:21 utils.go:64: Server started
+INFO 2019/11/27 11:46:23 utils.go:64: updated metal stock to : -67803
+INFO 2019/11/27 11:47:33 utils.go:64: Starting server...
+INFO 2019/11/27 11:47:33 utils.go:64: Server started
+INFO 2019/11/27 11:47:35 utils.go:64: updated metal stock to : -71331
