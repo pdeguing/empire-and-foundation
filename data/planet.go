@@ -25,12 +25,14 @@ func (planet *Planet) GetMetalStock() string {
 
 func (planet *Planet) ProduceMetal() {
 	lastAmount, _ := strconv.Atoi(planet.MetalStock)
+	if lastAmount < 0 {
+		lastAmount = 0
+	}
 	lastTime := planet.LastMetalUpdate
 	duration := int(time.Since(lastTime) / time.Second)
 	newAmount := lastAmount + duration * planet.GetMetalRate()
-	fmt.Printf("ProduceMetal(): %d + %d * %d\n", lastAmount, duration, planet.GetMetalRate())
 	planet.MetalStock = strconv.Itoa(newAmount)
-	planet.LastMetalUpdate = time.Now()
+	planet.LastMetalUpdate = time.Now().UTC()
 }
 
 func (planet *Planet) UpdateMetalStock() {
@@ -50,6 +52,24 @@ func (planet *Planet) GetMetalRate() int {
 	metalMine, _ := strconv.Atoi(planet.MetalMine)
 	rate := metalMine * 1
 	return rate
+}
+
+func (planet *Planet) GetUpgradeTime() time.Duration {
+	upgradeTime, _ := time.ParseDuration(planet.MetalMine + "s")
+	return upgradeTime
+}
+
+func (planet *Planet) UpgradeMine() {
+	time.AfterFunc(planet.GetUpgradeTime(), planet.ApplyUpgrade)
+	fmt.Println("timer started")
+}
+
+func (planet *Planet) ApplyUpgrade() {
+	fmt.Println("timer done")
+	// update metal stock
+	planet.GetMetalStock()
+	// change metal level
+	planet.UpMetalMine()
 }
 
 // format the CreatedAt date to display nicely on the screen

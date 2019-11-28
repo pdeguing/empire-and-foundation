@@ -19,9 +19,7 @@ func upMetalMine(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		info("could not get user planet: ", err)
 	}
-	if err = planet.UpMetalMine(); err != nil {
-		info("could not up metal mine: ", err)
-	}
+	planet.UpgradeMine()
 	http.Redirect(w, r, "/dashboard", 302)
 	info("up metal mine")
 }
