@@ -1,19 +1,20 @@
 package data
 
 import (
-	"time"
-	"strconv"
 	"fmt"
+	"strconv"
+	"time"
 )
 
 type Planet struct {
-	Id		int
-	Uuid		string
-	MetalStock	string
-	MetalMine	string
-	UserId		int
-	CreatedAt	time.Time
-	LastMetalUpdate	time.Time
+	Id              int
+	Uuid            string
+	MetalStock      string
+	MetalMine       string
+	UserId          int
+	CreatedAt       time.Time
+	LastMetalUpdate time.Time
+	EndUpgradeTime  string
 }
 
 // Updates the stock and returns the current stock
@@ -30,7 +31,7 @@ func (planet *Planet) ProduceMetal() {
 	}
 	lastTime := planet.LastMetalUpdate
 	duration := int(time.Since(lastTime) / time.Second)
-	newAmount := lastAmount + duration * planet.GetMetalRate()
+	newAmount := lastAmount + duration*planet.GetMetalRate()
 	planet.MetalStock = strconv.Itoa(newAmount)
 	planet.LastMetalUpdate = time.Now().UTC()
 }
@@ -60,12 +61,17 @@ func (planet *Planet) GetUpgradeTime() time.Duration {
 }
 
 func (planet *Planet) UpgradeMine() {
+	planet.EndUpgradeTime = "hello!"
 	time.AfterFunc(planet.GetUpgradeTime(), planet.ApplyUpgrade)
+	planet.EndUpgradeTime = time.Now().Add(planet.GetUpgradeTime()).Format("Mon Jan 02 2006 15:04:05 GMT-0700")
 	fmt.Println("timer started")
+	fmt.Println(planet.EndUpgradeTime)
 }
 
 func (planet *Planet) ApplyUpgrade() {
+	planet.EndUpgradeTime = time.Time{}.Format("Mon Jan 02 2006 15:04:05 GMT-0700")
 	fmt.Println("timer done")
+	fmt.Println(planet.EndUpgradeTime)
 	// update metal stock
 	planet.GetMetalStock()
 	// change metal level

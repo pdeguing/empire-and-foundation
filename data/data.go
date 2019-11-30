@@ -1,12 +1,12 @@
 package data
 
 import (
-	"database/sql"
-	"log"
-	_ "github.com/lib/pq"
-	"fmt"
 	"crypto/rand"
 	"crypto/sha1"
+	"database/sql"
+	"fmt"
+	_ "github.com/lib/pq"
+	"log"
 )
 
 var Db *sql.DB

@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"github.com/pdeguing/empire-and-foundation/data"
 	"html/template"
-	"net/http"
-	"strings"
-	"log"
-	"os"
 	"io"
+	"log"
+	"net/http"
+	"os"
+	"strings"
 )
 
 var logger *log.Logger

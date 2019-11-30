@@ -1,8 +1,8 @@
 package main
 
 import (
-	"net/http"
 	"github.com/pdeguing/empire-and-foundation/data"
+	"net/http"
 )
 
 // GET /login
@@ -26,9 +26,9 @@ func signupAccount(w http.ResponseWriter, r *http.Request) {
 		danger(err, "Cannot parse form")
 	}
 	user := data.User{
-		Name:		r.PostFormValue("name"),
-		Email:		r.PostFormValue("email"),
-		Password:	r.PostFormValue("password"),
+		Name:     r.PostFormValue("name"),
+		Email:    r.PostFormValue("email"),
+		Password: r.PostFormValue("password"),
 	}
 	if err := user.Create(); err != nil {
 		danger(err, "Cannot create user")
@@ -47,9 +47,9 @@ func authenticate(w http.ResponseWriter, r *http.Request) {
 			danger(err, "Cannot create session")
 		}
 		cookie := http.Cookie{
-			Name:		"_cookie",
-			Value:		session.Uuid,
-			HttpOnly:	true,
+			Name:     "_cookie",
+			Value:    session.Uuid,
+			HttpOnly: true,
 		}
 		http.SetCookie(w, &cookie)
 		info("Successfully logged in, redirecting to root path...")

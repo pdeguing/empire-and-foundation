@@ -5,20 +5,20 @@ import (
 )
 
 type User struct {
-	Id		int
-	Uuid		string
-	Name		string
-	Email		string
-	Password	string
-	CreatedAt	time.Time
+	Id        int
+	Uuid      string
+	Name      string
+	Email     string
+	Password  string
+	CreatedAt time.Time
 }
 
 type Session struct {
-	Id		int
-	Uuid		string
-	Email		string
-	UserId		int
-	CreatedAt	time.Time
+	Id        int
+	Uuid      string
+	Email     string
+	UserId    int
+	CreatedAt time.Time
 }
 
 // Create a new session for an existing user
@@ -110,7 +110,7 @@ func (user *User) Delete() (err error) {
 }
 
 // Update user information in the database
-func  (user *User) Update() (err error) {
+func (user *User) Update() (err error) {
 	statement := "update users set name = $2, email = $3 where id = $1"
 	stmt, err := Db.Prepare(statement)
 	if err != nil {

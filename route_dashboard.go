@@ -1,8 +1,8 @@
 package main
 
 import (
-	"net/http"
 	"github.com/pdeguing/empire-and-foundation/data"
+	"net/http"
 )
 
 // GET /dashboard
@@ -26,5 +26,5 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 	}
 	newStock := planet.GetMetalStock()
 	info("updated metal stock to :", newStock)
-	generateHTML(w, planet, "layout", "private.navbar", "dashboard")
+	generateHTML(w, planet, "layout", "private.navbar", "dashboard", "rightbar")
 }

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"net/http"
 	"github.com/pdeguing/empire-and-foundation/data"
+	"net/http"
 )
 
 func upMetalMine(w http.ResponseWriter, r *http.Request) {

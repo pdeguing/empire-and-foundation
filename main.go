@@ -24,7 +24,7 @@ func main() {
 	mux.HandleFunc("/planet/up_metal_mine", upMetalMine)
 
 	server := &http.Server{
-		Addr: "0.0.0.0:8080",
+		Addr:    "0.0.0.0:8080",
 		Handler: mux,
 	}
 	info("Server started")
