@@ -680,3 +680,132 @@ INFO 2019/11/30 12:03:41 utils.go:64: updated metal stock to : 1285970
 INFO 2019/11/30 12:03:59 utils.go:64: updated metal stock to : 1286060
 INFO 2019/11/30 12:04:05 utils.go:64: updated metal stock to : 1286085
 INFO 2019/11/30 12:05:29 utils.go:64: updated metal stock to : 1286505
+INFO 2019/11/30 16:19:51 utils.go:64: Starting server...
+INFO 2019/11/30 16:19:51 utils.go:64: Server started
+INFO 2019/11/30 16:19:53 utils.go:64: updated metal stock to : 1362820
+INFO 2019/11/30 16:20:51 utils.go:64: updated metal stock to : 1363105
+INFO 2019/11/30 16:20:51 utils.go:64: session is valid
+INFO 2019/11/30 16:21:07 utils.go:64: updated metal stock to : 1363180
+INFO 2019/11/30 16:21:42 utils.go:64: updated metal stock to : 1363355
+INFO 2019/11/30 16:21:42 utils.go:64: session is valid
+INFO 2019/11/30 16:22:40 utils.go:64: updated metal stock to : 1363645
+INFO 2019/11/30 16:22:57 utils.go:64: updated metal stock to : 1363725
+INFO 2019/11/30 16:23:23 utils.go:64: updated metal stock to : 1363855
+INFO 2019/11/30 16:24:14 utils.go:64: updated metal stock to : 1364110
+INFO 2019/11/30 16:24:20 utils.go:64: updated metal stock to : 1364140
+INFO 2019/11/30 16:24:21 utils.go:64: updated metal stock to : 1364145
+INFO 2019/11/30 16:24:56 utils.go:64: updated metal stock to : 1364320
+INFO 2019/11/30 16:25:22 utils.go:64: updated metal stock to : 1364445
+INFO 2019/11/30 16:25:57 utils.go:64: updated metal stock to : 1364615
+INFO 2019/11/30 16:25:58 utils.go:64: updated metal stock to : 1364615
+INFO 2019/11/30 16:28:20 utils.go:64: updated metal stock to : 1365325
+INFO 2019/11/30 16:28:29 utils.go:64: updated metal stock to : 1365370
+INFO 2019/11/30 16:28:33 utils.go:64: updated metal stock to : 1365385
+INFO 2019/11/30 16:28:56 utils.go:64: updated metal stock to : 1365500
+INFO 2019/11/30 16:29:43 utils.go:64: updated metal stock to : 1365730
+INFO 2019/11/30 16:30:04 utils.go:64: updated metal stock to : 1365835
+INFO 2019/11/30 16:30:05 utils.go:64: session is valid
+INFO 2019/11/30 16:30:10 utils.go:64: updated metal stock to : 1365860
+INFO 2019/11/30 16:30:15 utils.go:64: updated metal stock to : 1365885
+INFO 2019/11/30 16:30:21 utils.go:64: updated metal stock to : 1365910
+INFO 2019/11/30 16:30:29 utils.go:64: updated metal stock to : 1365945
+INFO 2019/11/30 16:38:31 utils.go:64: updated metal stock to : 1368355
+INFO 2019/11/30 16:38:44 utils.go:64: updated metal stock to : 1368415
+INFO 2019/11/30 16:40:05 utils.go:64: updated metal stock to : 1368820
+INFO 2019/11/30 16:40:27 utils.go:64: updated metal stock to : 1368925
+INFO 2019/11/30 16:40:45 utils.go:64: updated metal stock to : 1369010
+INFO 2019/11/30 16:41:01 utils.go:64: updated metal stock to : 1369090
+INFO 2019/11/30 16:41:02 utils.go:64: session is valid
+INFO 2019/11/30 16:41:41 utils.go:64: updated metal stock to : 1369285
+INFO 2019/11/30 16:41:41 utils.go:64: session is valid
+INFO 2019/11/30 16:42:24 utils.go:64: updated metal stock to : 1369495
+INFO 2019/11/30 16:42:35 utils.go:64: updated metal stock to : 1369550
+INFO 2019/11/30 16:42:54 utils.go:64: updated metal stock to : 1369645
+INFO 2019/11/30 16:43:26 utils.go:64: updated metal stock to : 1369800
+INFO 2019/11/30 16:44:02 utils.go:64: updated metal stock to : 1369980
+INFO 2019/11/30 16:44:11 utils.go:64: updated metal stock to : 1370020
+INFO 2019/11/30 16:45:15 utils.go:64: updated metal stock to : 1370335
+INFO 2019/11/30 16:45:17 utils.go:64: updated metal stock to : 1370345
+INFO 2019/11/30 16:45:17 utils.go:64: session is valid
+INFO 2019/11/30 16:45:22 utils.go:64: updated metal stock to : 1370370
+INFO 2019/11/30 16:57:40 utils.go:64: updated metal stock to : 1374055
+INFO 2019/11/30 17:01:07 utils.go:64: updated metal stock to : 1375090
+INFO 2019/11/30 17:01:07 utils.go:64: session is valid
+INFO 2019/11/30 17:04:05 utils.go:64: updated metal stock to : 1375975
+INFO 2019/11/30 17:04:06 utils.go:64: session is valid
+INFO 2019/11/30 17:04:06 utils.go:64: updated metal stock to : 1375980
+INFO 2019/11/30 17:05:16 utils.go:64: updated metal stock to : 1376330
+INFO 2019/11/30 17:05:16 utils.go:64: session is valid
+INFO 2019/11/30 17:05:16 utils.go:64: updated metal stock to : 1376330
+INFO 2019/11/30 17:05:18 utils.go:64: session is valid
+INFO 2019/11/30 17:05:18 utils.go:64: updated metal stock to : 1376335
+INFO 2019/11/30 17:08:08 utils.go:64: updated metal stock to : 1377180
+INFO 2019/11/30 17:08:08 utils.go:64: session is valid
+INFO 2019/11/30 17:08:08 utils.go:64: session is valid
+INFO 2019/11/30 17:08:08 utils.go:64: updated metal stock to : 1377180
+INFO 2019/11/30 17:08:08 utils.go:64: updated metal stock to : 1377180
+INFO 2019/11/30 17:08:09 utils.go:64: session is valid
+INFO 2019/11/30 17:08:09 utils.go:64: session is valid
+INFO 2019/11/30 17:08:09 utils.go:64: updated metal stock to : 1377180
+INFO 2019/11/30 17:08:09 utils.go:64: updated metal stock to : 1377180
+INFO 2019/11/30 17:08:40 utils.go:64: updated metal stock to : 1377330
+INFO 2019/11/30 17:08:40 utils.go:64: session is valid
+INFO 2019/11/30 17:08:40 utils.go:64: session is valid
+INFO 2019/11/30 17:08:40 utils.go:64: updated metal stock to : 1377330
+INFO 2019/11/30 17:08:40 utils.go:64: updated metal stock to : 1377330
+INFO 2019/11/30 17:08:40 utils.go:64: session is valid
+INFO 2019/11/30 17:08:40 utils.go:64: session is valid
+INFO 2019/11/30 17:08:40 utils.go:64: updated metal stock to : 1377330
+INFO 2019/11/30 17:08:40 utils.go:64: updated metal stock to : 1377330
+INFO 2019/11/30 17:09:12 utils.go:64: updated metal stock to : 1377485
+INFO 2019/11/30 17:09:12 utils.go:64: session is valid
+INFO 2019/11/30 17:09:12 utils.go:64: updated metal stock to : 1377485
+INFO 2019/11/30 17:09:14 utils.go:64: session is valid
+INFO 2019/11/30 17:09:14 utils.go:64: updated metal stock to : 1377490
+INFO 2019/11/30 17:10:13 utils.go:64: updated metal stock to : 1377780
+INFO 2019/11/30 17:10:13 utils.go:64: session is valid
+INFO 2019/11/30 17:10:13 utils.go:64: updated metal stock to : 1377780
+INFO 2019/11/30 17:10:14 utils.go:64: session is valid
+INFO 2019/11/30 17:10:14 utils.go:64: updated metal stock to : 1377780
+INFO 2019/11/30 17:10:31 utils.go:64: updated metal stock to : 1377860
+INFO 2019/11/30 17:10:31 utils.go:64: session is valid
+INFO 2019/11/30 17:10:31 utils.go:64: updated metal stock to : 1377860
+INFO 2019/11/30 17:10:35 utils.go:64: session is valid
+INFO 2019/11/30 17:10:35 utils.go:64: updated metal stock to : 1377880
+INFO 2019/11/30 17:10:35 utils.go:64: session is valid
+INFO 2019/11/30 17:10:42 utils.go:64: updated metal stock to : 1377915
+INFO 2019/11/30 17:10:42 utils.go:64: session is valid
+INFO 2019/11/30 17:10:43 utils.go:64: updated metal stock to : 1377915
+INFO 2019/11/30 17:10:43 utils.go:64: session is valid
+INFO 2019/11/30 17:10:43 utils.go:64: updated metal stock to : 1377915
+INFO 2019/11/30 17:11:01 utils.go:64: updated metal stock to : 1378000
+INFO 2019/11/30 17:11:01 utils.go:64: session is valid
+INFO 2019/11/30 17:11:01 utils.go:64: updated metal stock to : 1378000
+INFO 2019/11/30 17:11:02 utils.go:64: session is valid
+INFO 2019/11/30 17:11:02 utils.go:64: updated metal stock to : 1378005
+INFO 2019/11/30 17:11:02 utils.go:64: session is valid
+INFO 2019/11/30 17:12:33 utils.go:64: updated metal stock to : 1378460
+INFO 2019/11/30 17:12:35 utils.go:64: session is valid
+INFO 2019/11/30 17:13:03 utils.go:64: updated metal stock to : 1378610
+INFO 2019/11/30 17:13:44 utils.go:64: updated metal stock to : 1378810
+INFO 2019/11/30 17:14:20 utils.go:64: updated metal stock to : 1378985
+INFO 2019/11/30 17:14:49 utils.go:64: updated metal stock to : 1379125
+INFO 2019/11/30 17:15:01 utils.go:64: updated metal stock to : 1379185
+INFO 2019/11/30 17:15:10 utils.go:64: updated metal stock to : 1379225
+INFO 2019/11/30 17:15:33 utils.go:64: updated metal stock to : 1379340
+INFO 2019/11/30 17:15:52 utils.go:64: updated metal stock to : 1379435
+INFO 2019/11/30 17:16:14 utils.go:64: updated metal stock to : 1379540
+INFO 2019/11/30 17:16:37 utils.go:64: updated metal stock to : 1379655
+INFO 2019/11/30 17:17:03 utils.go:64: updated metal stock to : 1379780
+INFO 2019/11/30 17:17:19 utils.go:64: updated metal stock to : 1379860
+INFO 2019/11/30 17:17:30 utils.go:64: updated metal stock to : 1379915
+INFO 2019/11/30 17:18:45 utils.go:64: updated metal stock to : 1380285
+INFO 2019/11/30 17:19:12 utils.go:64: updated metal stock to : 1380415
+INFO 2019/11/30 17:19:55 utils.go:64: updated metal stock to : 1380625
+INFO 2019/11/30 17:20:06 utils.go:64: updated metal stock to : 1380680
+INFO 2019/11/30 17:21:19 utils.go:64: updated metal stock to : 1381045
+INFO 2019/11/30 17:21:47 utils.go:64: updated metal stock to : 1381180
+INFO 2019/11/30 17:22:55 utils.go:64: updated metal stock to : 1381520
+INFO 2019/11/30 17:23:11 utils.go:64: updated metal stock to : 1381600
+INFO 2019/11/30 17:24:06 utils.go:64: updated metal stock to : 1381870
+INFO 2019/11/30 17:24:13 utils.go:64: updated metal stock to : 1381900
