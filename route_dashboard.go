@@ -24,7 +24,118 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 			danger("could not create user planet:", err)
 		}
 	}
-	newStock := planet.GetMetalStock()
-	info("updated metal stock to :", newStock)
-	generateHTML(w, planet, "layout", "private.navbar", "dashboard", "rightbar")
+	generateHTML(w, planet, "layout", "private.navbar", "dashboard", "rightbar", "empire")
+}
+
+// GET /dashboard/planet
+// Show the constructions page for a planet
+func planet(w http.ResponseWriter, r *http.Request) {
+	sess, err := session(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/login", 302)
+		return
+	}
+	user, err := sess.User()
+	if err != nil {
+		danger("cannot get user from session")
+	}
+	planet, err := data.PlanetByUserId(user.Id)
+	if err != nil {
+		info("could not get user planet", err)
+	}
+	generateHTML(w, planet, "layout", "private.navbar", "dashboard", "rightbar", "planet.layout", "planet.header", "planet.overview")
+}
+
+// GET /dashboard/planet/constructions
+// Show the constructions page for a planet
+func constructions(w http.ResponseWriter, r *http.Request) {
+	sess, err := session(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/login", 302)
+		return
+	}
+	user, err := sess.User()
+	if err != nil {
+		danger("cannot get user from session")
+	}
+	planet, err := data.PlanetByUserId(user.Id)
+	if err != nil {
+		info("could not get user planet", err)
+	}
+	generateHTML(w, planet, "layout", "private.navbar", "dashboard", "rightbar", "planet.layout", "planet.header", "planet.constructions")
+}
+
+// GET /dashboard/planet/factories
+// Show the factories page for a planet
+func factories(w http.ResponseWriter, r *http.Request) {
+	sess, err := session(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/login", 302)
+		return
+	}
+	user, err := sess.User()
+	if err != nil {
+		danger("cannot get user from session")
+	}
+	planet, err := data.PlanetByUserId(user.Id)
+	if err != nil {
+		info("could not get user planet", err)
+	}
+	generateHTML(w, planet, "layout", "private.navbar", "dashboard", "rightbar", "planet.layout", "planet.header", "planet.factories")
+}
+
+// GET /dashboard/planet/research
+// Show the research page for a planet
+func research(w http.ResponseWriter, r *http.Request) {
+	sess, err := session(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/login", 302)
+		return
+	}
+	user, err := sess.User()
+	if err != nil {
+		danger("cannot get user from session")
+	}
+	planet, err := data.PlanetByUserId(user.Id)
+	if err != nil {
+		info("could not get user planet", err)
+	}
+	generateHTML(w, planet, "layout", "private.navbar", "dashboard", "rightbar", "planet.layout", "planet.header", "planet.research")
+}
+// GET /dashboard/planet/fleets
+// Show the fleets page for a planet
+func fleets(w http.ResponseWriter, r *http.Request) {
+	sess, err := session(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/login", 302)
+		return
+	}
+	user, err := sess.User()
+	if err != nil {
+		danger("cannot get user from session")
+	}
+	planet, err := data.PlanetByUserId(user.Id)
+	if err != nil {
+		info("could not get user planet", err)
+	}
+	generateHTML(w, planet, "layout", "private.navbar", "dashboard", "rightbar", "planet.layout", "planet.header", "planet.fleets")
+}
+
+// GET /dashboard/planet/defenses
+// Show the defenses page for a planet
+func defenses(w http.ResponseWriter, r *http.Request) {
+	sess, err := session(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/login", 302)
+		return
+	}
+	user, err := sess.User()
+	if err != nil {
+		danger("cannot get user from session")
+	}
+	planet, err := data.PlanetByUserId(user.Id)
+	if err != nil {
+		info("could not get user planet", err)
+	}
+	generateHTML(w, planet, "layout", "private.navbar", "dashboard", "rightbar", "planet.layout", "planet.header", "planet.defenses")
 }

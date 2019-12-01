@@ -815,3 +815,16 @@ INFO 2019/12/01 13:10:12 utils.go:64: updated metal stock to : 1737695
 INFO 2019/12/01 13:10:36 utils.go:64: updated metal stock to : 1737810
 INFO 2019/12/01 13:11:57 utils.go:64: updated metal stock to : 1738215
 INFO 2019/12/01 13:12:19 utils.go:64: updated metal stock to : 1738325
+INFO 2019/12/01 18:02:56 utils.go:64: Starting server...
+INFO 2019/12/01 18:02:56 utils.go:64: Server started
+INFO 2019/12/01 18:03:50 utils.go:64: Starting server...
+INFO 2019/12/01 18:03:50 utils.go:64: Server started
+INFO 2019/12/01 18:03:53 utils.go:64: session is valid
+INFO 2019/12/01 18:07:51 utils.go:64: Starting server...
+INFO 2019/12/01 18:07:51 utils.go:64: Server started
+INFO 2019/12/01 18:07:57 utils.go:64: session is valid
+INFO 2019/12/01 18:08:02 utils.go:64: session is valid
+INFO 2019/12/01 18:21:02 utils.go:64: session is valid
+INFO 2019/12/01 18:47:44 utils.go:64: Starting server...
+INFO 2019/12/01 18:47:44 utils.go:64: Server started
+INFO 2019/12/01 18:47:47 utils.go:64: session is valid

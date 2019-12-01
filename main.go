@@ -19,7 +19,14 @@ func main() {
 	mux.HandleFunc("/signup_account", signupAccount)
 	mux.HandleFunc("/authenticate", authenticate)
 
+	// Those routes are temporary and should be adapted to handle multiple planets per user.
 	mux.HandleFunc("/dashboard", dashboard)
+	mux.HandleFunc("/dashboard/planet", planet)
+	mux.HandleFunc("/dashboard/planet/constructions", constructions)
+	mux.HandleFunc("/dashboard/planet/factories", factories)
+	mux.HandleFunc("/dashboard/planet/research", research)
+	mux.HandleFunc("/dashboard/planet/fleets", fleets)
+	mux.HandleFunc("/dashboard/planet/defenses", defenses)
 
 	mux.HandleFunc("/planet/up_metal_mine", upMetalMine)
 
