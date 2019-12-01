@@ -11,7 +11,6 @@ func main() {
 	mux.Handle("/static/", http.StripPrefix("/static/", files))
 
 	mux.HandleFunc("/", index)
-	mux.HandleFunc("/err", err)
 
 	mux.HandleFunc("/login", login)
 	mux.HandleFunc("/logout", logout)

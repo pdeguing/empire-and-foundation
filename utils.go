@@ -3,13 +3,13 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/pdeguing/empire-and-foundation/data"
 	"html/template"
 	"io"
 	"log"
 	"net/http"
 	"os"
-	"strings"
+
+	"github.com/pdeguing/empire-and-foundation/data"
 )
 
 var logger *log.Logger
@@ -23,9 +23,19 @@ func init() {
 	logger = log.New(mw, "INFO ", log.Ldate|log.Ltime|log.Lshortfile)
 }
 
-func error_message(w http.ResponseWriter, r *http.Request, msg string) {
-	url := []string{"/err?msg=", msg}
-	http.Redirect(w, r, strings.Join(url, ""), 302)
+func internalServerError(w http.ResponseWriter, r *http.Request, err error, internalError string) {
+	danger(err, internalError)
+	respondWithError(w, r, "Something went wrong on our end.", http.StatusInternalServerError)
+}
+
+func respondWithError(w http.ResponseWriter, r *http.Request, userMsg string, code int) {
+	w.WriteHeader(code)
+	_, err := session(w, r)
+	if err != nil {
+		generateHTML(w, userMsg, "layout", "public.navbar", "error")
+	} else {
+		generateHTML(w, userMsg, "layout", "private.navbar", "error")
+	}
 }
 
 func session(w http.ResponseWriter, r *http.Request) (sess data.Session, err error) {

@@ -1,8 +1,10 @@
 package main
 
 import (
-	"github.com/pdeguing/empire-and-foundation/data"
+	"database/sql"
 	"net/http"
+
+	"github.com/pdeguing/empire-and-foundation/data"
 )
 
 // GET /login
@@ -23,7 +25,8 @@ func signup(w http.ResponseWriter, r *http.Request) {
 func signupAccount(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
-		danger(err, "Cannot parse form")
+		internalServerError(w, r, err, "Cannot parse form")
+		return
 	}
 	user := data.User{
 		Name:     r.PostFormValue("name"),
@@ -31,7 +34,8 @@ func signupAccount(w http.ResponseWriter, r *http.Request) {
 		Password: r.PostFormValue("password"),
 	}
 	if err := user.Create(); err != nil {
-		danger(err, "Cannot create user")
+		internalServerError(w, r, err, "Cannot create user")
+		return
 	}
 	http.Redirect(w, r, "/login", 302)
 }
@@ -40,23 +44,38 @@ func signupAccount(w http.ResponseWriter, r *http.Request) {
 // Authenticate the user given the email and password
 func authenticate(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
-	user, _ := data.UserByEmail(r.PostFormValue("email"))
-	if user.Password == data.Encrypt(r.PostFormValue("password")) {
-		session, err := user.CreateSession()
-		if err != nil {
-			danger(err, "Cannot create session")
-		}
-		cookie := http.Cookie{
-			Name:     "_cookie",
-			Value:    session.Uuid,
-			HttpOnly: true,
-		}
-		http.SetCookie(w, &cookie)
-		info("Successfully logged in, redirecting to root path...")
-		http.Redirect(w, r, "/", 302)
-	} else {
+	user, err := data.UserByEmail(r.PostFormValue("email"))
+	if err == sql.ErrNoRows {
 		http.Redirect(w, r, "/login", 302)
+		return
 	}
+	if err != nil {
+		internalServerError(w, r, err, "Cannot retrieve user by email")
+		return
+	}
+	ok, err := user.CheckPassword(r.PostFormValue("password"))
+	if err != nil {
+		internalServerError(w, r, err, "Cannot check user's password")
+		return
+	}
+	if !ok {
+		http.Redirect(w, r, "/login", 302)
+		return
+	}
+
+	session, err := user.CreateSession()
+	if err != nil {
+		internalServerError(w, r, err, "Cannot create session")
+		return
+	}
+	cookie := http.Cookie{
+		Name:     "_cookie",
+		Value:    session.Uuid,
+		HttpOnly: true,
+	}
+	http.SetCookie(w, &cookie)
+	info("Successfully logged in, redirecting to root path...")
+	http.Redirect(w, r, "/", 302)
 }
 
 // GET /logout

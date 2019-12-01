@@ -2,6 +2,8 @@ package data
 
 import (
 	"time"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
@@ -92,7 +94,12 @@ func (user *User) Create() (err error) {
 	}
 	defer stmt.Close()
 
-	err = stmt.QueryRow(createUUID(), user.Name, user.Email, Encrypt(user.Password), time.Now()).Scan(&user.Id, &user.Uuid, &user.CreatedAt)
+	password, err := bcrypt.GenerateFromPassword([]byte(user.Password), 14)
+	if err != nil {
+		return
+	}
+	user.Password = string(password)
+	err = stmt.QueryRow(createUUID(), user.Name, user.Email, user.Password, time.Now()).Scan(&user.Id, &user.Uuid, &user.CreatedAt)
 	return
 }
 
@@ -120,6 +127,18 @@ func (user *User) Update() (err error) {
 
 	_, err = stmt.Exec(user.Id, user.Name, user.Email)
 	return
+}
+
+// CheckPassword checks if the given password matches the user's current password.
+func (user *User) CheckPassword(password string) (ok bool, err error) {
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	if err == bcrypt.ErrMismatchedHashAndPassword {
+		return false, nil
+	}
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 // Delete all users from database
