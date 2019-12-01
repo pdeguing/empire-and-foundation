@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gorilla/csrf"
 	"github.com/pdeguing/empire-and-foundation/data"
 )
 
@@ -28,13 +29,15 @@ func internalServerError(w http.ResponseWriter, r *http.Request, err error, inte
 	respondWithError(w, r, "Something went wrong on our end.", http.StatusInternalServerError)
 }
 
+// respondWithError will render a templated error page. userMsg will
+// be shown as a message to the user.
 func respondWithError(w http.ResponseWriter, r *http.Request, userMsg string, code int) {
 	w.WriteHeader(code)
 	_, err := session(w, r)
 	if err != nil {
-		generateHTML(w, userMsg, "layout", "public.navbar", "error")
+		generateHTML(w, r, userMsg, "layout", "public.navbar", "error")
 	} else {
-		generateHTML(w, userMsg, "layout", "private.navbar", "error")
+		generateHTML(w, r, userMsg, "layout", "private.navbar", "error")
 	}
 }
 
@@ -49,23 +52,28 @@ func session(w http.ResponseWriter, r *http.Request) (sess data.Session, err err
 	return
 }
 
-func parseTemplatesFiles(filenames ...string) (t *template.Template) {
-	var files []string
-	t = template.New("layout")
-	for _, file := range filenames {
-		files = append(files, fmt.Sprintf("templates/%s.html", file))
-	}
-	t = template.Must(t.ParseFiles(files...))
-	return
-}
-
-func generateHTML(w http.ResponseWriter, data interface{}, fn ...string) {
+func generateHTML(w http.ResponseWriter, r *http.Request, data interface{}, fn ...string) {
 	var files []string
 	for _, file := range fn {
 		files = append(files, fmt.Sprintf("templates/%s.html", file))
 	}
-	templates := template.Must(template.ParseFiles(files...))
-	templates.ExecuteTemplate(w, "layout", data)
+	funcs := template.FuncMap{
+		"csrf": templateCsrfTag(r),
+	}
+	templates := template.Must(template.New("layout").Funcs(funcs).ParseFiles(files...))
+	err := templates.Execute(w, data)
+	if err != nil {
+		danger(err, "unable to render template")
+		// Executing the template doesn't even work so respond
+		// with the most basic error message as a fallback.
+		http.Error(w, "Something went wrong on our end.", 500)
+	}
+}
+
+func templateCsrfTag(r *http.Request) func() template.HTML {
+	return func() template.HTML {
+		return csrf.TemplateField(r)
+	}
 }
 
 // for logging

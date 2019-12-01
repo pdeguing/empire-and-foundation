@@ -1,11 +1,9 @@
 {{ define "content" }}
 
 <form class="form-signin" role="form" action="/signup_account" method="post">
-  <h2 class="form-signin-heading">
-    <i class="fa fa-comments-o">
-      ChitChat
-    </i>
-  </h2>
+  {{ csrf }}
+
+  <h2 class="form-signin-heading">Empire and Foundation</h2>
   <div class="lead">Sign up for an account below</div>
   <input id="name" type="text" name="name" class="form-control" placeholder="Name" required autofocus>
   <input type="email" name="email" class="form-control" placeholder="Email address" required>

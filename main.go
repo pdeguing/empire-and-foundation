@@ -2,29 +2,40 @@ package main
 
 import (
 	"net/http"
+
+	"github.com/gorilla/securecookie"
+	"github.com/gorilla/csrf"
+	"github.com/gorilla/mux"
 )
 
 func main() {
 	info("Starting server...")
-	mux := http.NewServeMux()
+	r := mux.NewRouter()
 	files := http.FileServer(http.Dir("public"))
-	mux.Handle("/static/", http.StripPrefix("/static/", files))
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", files))
 
-	mux.HandleFunc("/", index)
+	r.HandleFunc("/", index)
 
-	mux.HandleFunc("/login", login)
-	mux.HandleFunc("/logout", logout)
-	mux.HandleFunc("/signup", signup)
-	mux.HandleFunc("/signup_account", signupAccount)
-	mux.HandleFunc("/authenticate", authenticate)
+	r.HandleFunc("/login", login)
+	r.HandleFunc("/logout", logout)
+	r.HandleFunc("/signup", signup)
+	r.HandleFunc("/signup_account", signupAccount).Methods("POST")
+	r.HandleFunc("/authenticate", authenticate).Methods("POST")
 
-	mux.HandleFunc("/dashboard", dashboard)
+	r.HandleFunc("/dashboard", dashboard)
 
-	mux.HandleFunc("/planet/up_metal_mine", upMetalMine)
+	r.HandleFunc("/planet/up_metal_mine", upMetalMine)
 
+	csrfWrapper := csrf.Protect(
+		securecookie.GenerateRandomKey(32),
+		csrf.FieldName("csrf_token"),
+		csrf.CookieName("csrf_cookie"),
+		csrf.Secure(false), // TODO: Remove this part once we support HTTPS.
+		csrf.ErrorHandler(http.HandlerFunc(invalidCsrfToken)),
+	)
 	server := &http.Server{
 		Addr:    "0.0.0.0:8080",
-		Handler: mux,
+		Handler: csrfWrapper(r),
 	}
 	info("Server started")
 	server.ListenAndServe()

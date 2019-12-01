@@ -10,14 +10,13 @@ import (
 // GET /login
 // Show the login page
 func login(w http.ResponseWriter, r *http.Request) {
-	t := parseTemplatesFiles("login.layout", "public.navbar", "login")
-	t.Execute(w, nil)
+	generateHTML(w, r, nil, "login.layout", "public.navbar", "login")
 }
 
 // GET /signup
 // Show the signup page
 func signup(w http.ResponseWriter, r *http.Request) {
-	generateHTML(w, nil, "login.layout", "public.navbar", "signup")
+	generateHTML(w, r, nil, "login.layout", "public.navbar", "signup")
 }
 
 // POST /signup
