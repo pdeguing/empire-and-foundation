@@ -21,6 +21,14 @@ func main() {
 
 	// Those routes are temporary and should be adapted to handle multiple planets per user.
 	mux.HandleFunc("/dashboard", dashboard)
+	mux.HandleFunc("/dashboard/cartography", cartography)
+	mux.HandleFunc("/dashboard/fleetcontrol", fleetcontrol)
+	mux.HandleFunc("/dashboard/technology", technology)
+	mux.HandleFunc("/dashboard/diplomacy", diplomacy)
+	mux.HandleFunc("/dashboard/story", story)
+	mux.HandleFunc("/dashboard/wiki", wiki)
+	mux.HandleFunc("/dashboard/news", news)
+
 	mux.HandleFunc("/dashboard/planet", planet)
 	mux.HandleFunc("/dashboard/planet/constructions", constructions)
 	mux.HandleFunc("/dashboard/planet/factories", factories)
