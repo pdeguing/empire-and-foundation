@@ -4,6 +4,8 @@ import (
 	"net/http"
 )
 
+// GET /
+// Show the frontpage or redirect the user to their dashboard
 func index(w http.ResponseWriter, r *http.Request) {
 	_, err := session(w, r)
 	if err != nil {
@@ -13,8 +15,4 @@ func index(w http.ResponseWriter, r *http.Request) {
 		info("session is valid")
 		http.Redirect(w, r, "/dashboard", 302)
 	}
-}
-
-func invalidCsrfToken(w http.ResponseWriter, r *http.Request) {
-	respondWithError(w, r, "It's not possible to do this right now. Please go back, reload, and try again.", 403)
 }

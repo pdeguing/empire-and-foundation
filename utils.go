@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/gorilla/csrf"
 	"github.com/pdeguing/empire-and-foundation/data"
 )
 
@@ -24,9 +23,36 @@ func init() {
 	logger = log.New(mw, "INFO ", log.Ldate|log.Ltime|log.Lshortfile)
 }
 
+//
+// For logging
+//
+
+func info(args ...interface{}) {
+	logger.SetPrefix("INFO ")
+	logger.Println(args...)
+}
+
+func danger(args ...interface{}) {
+	logger.SetPrefix("ERROR ")
+	logger.Println(args...)
+}
+
+func warning(args ...interface{}) {
+	logger.SetPrefix("WARNING ")
+	logger.Println(args...)
+}
+
+//
+// For HTTP error responses
+//
+
 func internalServerError(w http.ResponseWriter, r *http.Request, err error, internalError string) {
 	danger(err, internalError)
 	respondWithError(w, r, "Something went wrong on our end.", http.StatusInternalServerError)
+}
+
+func invalidCsrfToken(w http.ResponseWriter, r *http.Request) {
+	respondWithError(w, r, "It's not possible to do this right now. Please go back, reload, and try again.", 403)
 }
 
 // respondWithError will render a templated error page. userMsg will
@@ -40,6 +66,10 @@ func respondWithError(w http.ResponseWriter, r *http.Request, userMsg string, co
 		generateHTML(w, r, userMsg, "layout", "private.navbar", "error")
 	}
 }
+
+//
+// Other
+//
 
 func session(w http.ResponseWriter, r *http.Request) (sess data.Session, err error) {
 	cookie, err := r.Cookie("_cookie")
@@ -57,10 +87,7 @@ func generateHTML(w http.ResponseWriter, r *http.Request, data interface{}, fn .
 	for _, file := range fn {
 		files = append(files, fmt.Sprintf("templates/%s.html", file))
 	}
-	funcs := template.FuncMap{
-		"csrf": templateCsrfTag(r),
-	}
-	templates := template.Must(template.New("layout").Funcs(funcs).ParseFiles(files...))
+	templates := template.Must(template.New("layout").Funcs(templateFuncs(r)).ParseFiles(files...))
 	err := templates.Execute(w, data)
 	if err != nil {
 		danger(err, "unable to render template")
@@ -68,26 +95,4 @@ func generateHTML(w http.ResponseWriter, r *http.Request, data interface{}, fn .
 		// with the most basic error message as a fallback.
 		http.Error(w, "Something went wrong on our end.", 500)
 	}
-}
-
-func templateCsrfTag(r *http.Request) func() template.HTML {
-	return func() template.HTML {
-		return csrf.TemplateField(r)
-	}
-}
-
-// for logging
-func info(args ...interface{}) {
-	logger.SetPrefix("INFO ")
-	logger.Println(args...)
-}
-
-func danger(args ...interface{}) {
-	logger.SetPrefix("ERROR ")
-	logger.Println(args...)
-}
-
-func warning(args ...interface{}) {
-	logger.SetPrefix("WARNING ")
-	logger.Println(args...)
 }
