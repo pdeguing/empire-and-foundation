@@ -1,15 +1,12 @@
 package main
 
 import (
-	"errors"
 	"fmt"
-	"github.com/pdeguing/empire-and-foundation/data"
 	"html/template"
 	"io"
 	"log"
 	"net/http"
 	"os"
-	"strings"
 )
 
 var logger *log.Logger
@@ -23,42 +20,10 @@ func init() {
 	logger = log.New(mw, "INFO ", log.Ldate|log.Ltime|log.Lshortfile)
 }
 
-func error_message(w http.ResponseWriter, r *http.Request, msg string) {
-	url := []string{"/err?msg=", msg}
-	http.Redirect(w, r, strings.Join(url, ""), 302)
-}
+//
+// For logging
+//
 
-func session(w http.ResponseWriter, r *http.Request) (sess data.Session, err error) {
-	cookie, err := r.Cookie("_cookie")
-	if err == nil {
-		sess = data.Session{Uuid: cookie.Value}
-		if ok, _ := sess.Check(); !ok {
-			err = errors.New("Invalid session")
-		}
-	}
-	return
-}
-
-func parseTemplatesFiles(filenames ...string) (t *template.Template) {
-	var files []string
-	t = template.New("layout")
-	for _, file := range filenames {
-		files = append(files, fmt.Sprintf("templates/%s.html", file))
-	}
-	t = template.Must(t.ParseFiles(files...))
-	return
-}
-
-func generateHTML(w http.ResponseWriter, data interface{}, fn ...string) {
-	var files []string
-	for _, file := range fn {
-		files = append(files, fmt.Sprintf("templates/%s.html", file))
-	}
-	templates := template.Must(template.ParseFiles(files...))
-	templates.ExecuteTemplate(w, "layout", data)
-}
-
-// for logging
 func info(args ...interface{}) {
 	logger.SetPrefix("INFO ")
 	logger.Println(args...)
@@ -72,4 +37,47 @@ func danger(args ...interface{}) {
 func warning(args ...interface{}) {
 	logger.SetPrefix("WARNING ")
 	logger.Println(args...)
+}
+
+//
+// For HTTP error responses
+//
+
+func internalServerError(w http.ResponseWriter, r *http.Request, err error, internalError string) {
+	danger(err, internalError)
+	respondWithError(w, r, "Something went wrong on our end.", http.StatusInternalServerError)
+}
+
+func invalidCsrfToken(w http.ResponseWriter, r *http.Request) {
+	respondWithError(w, r, "It's not possible to do this right now. Please go back, reload, and try again.", 403)
+}
+
+// respondWithError will render a templated error page. userMsg will
+// be shown as a message to the user.
+func respondWithError(w http.ResponseWriter, r *http.Request, userMsg string, code int) {
+	w.WriteHeader(code)
+	if isAuthenticated(r) {
+		generateHTML(w, r, userMsg, "layout", "public.navbar", "error")
+	} else {
+		generateHTML(w, r, userMsg, "layout", "private.navbar", "error")
+	}
+}
+
+//
+// Other
+//
+
+func generateHTML(w http.ResponseWriter, r *http.Request, data interface{}, fn ...string) {
+	var files []string
+	for _, file := range fn {
+		files = append(files, fmt.Sprintf("templates/%s.html", file))
+	}
+	templates := template.Must(template.New("layout").Funcs(templateFuncs(r)).ParseFiles(files...))
+	err := templates.Execute(w, data)
+	if err != nil {
+		danger(err, "unable to render template")
+		// Executing the template doesn't even work so respond
+		// with the most basic error message as a fallback.
+		http.Error(w, "Something went wrong on our end.", 500)
+	}
 }

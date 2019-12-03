@@ -1,21 +1,24 @@
 package main
 
 import (
-	"github.com/pdeguing/empire-and-foundation/data"
+	"database/sql"
 	"net/http"
+
+	"github.com/pdeguing/empire-and-foundation/data"
 )
 
 // GET /login
 // Show the login page
 func login(w http.ResponseWriter, r *http.Request) {
-	t := parseTemplatesFiles("login.layout", "public.navbar", "login")
-	t.Execute(w, nil)
+	generateHTML(w, r, nil, "login.layout", "public.navbar", "flash", "login")
+	forgetForm(r)
 }
 
 // GET /signup
 // Show the signup page
 func signup(w http.ResponseWriter, r *http.Request) {
-	generateHTML(w, nil, "login.layout", "public.navbar", "signup")
+	generateHTML(w, r, nil, "login.layout", "public.navbar", "flash", "signup")
+	forgetForm(r)
 }
 
 // POST /signup
@@ -23,50 +26,58 @@ func signup(w http.ResponseWriter, r *http.Request) {
 func signupAccount(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
-		danger(err, "Cannot parse form")
+		internalServerError(w, r, err, "Cannot parse form")
+		return
 	}
 	user := data.User{
 		Name:     r.PostFormValue("name"),
 		Email:    r.PostFormValue("email"),
 		Password: r.PostFormValue("password"),
 	}
+	// TODO: Check availability of email address.
+	// TODO: Validate inputs.
 	if err := user.Create(); err != nil {
-		danger(err, "Cannot create user")
+		internalServerError(w, r, err, "Cannot create user")
+		return
 	}
+	flash(r, flashSuccess, "Your account has been created. You can log in now.")
 	http.Redirect(w, r, "/login", 302)
 }
 
 // POST /authenticate
 // Authenticate the user given the email and password
-func authenticate(w http.ResponseWriter, r *http.Request) {
+func serveAuthenticate(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
-	user, _ := data.UserByEmail(r.PostFormValue("email"))
-	if user.Password == data.Encrypt(r.PostFormValue("password")) {
-		session, err := user.CreateSession()
-		if err != nil {
-			danger(err, "Cannot create session")
-		}
-		cookie := http.Cookie{
-			Name:     "_cookie",
-			Value:    session.Uuid,
-			HttpOnly: true,
-		}
-		http.SetCookie(w, &cookie)
-		info("Successfully logged in, redirecting to root path...")
-		http.Redirect(w, r, "/", 302)
-	} else {
+	user, err := data.UserByEmail(r.PostFormValue("email"))
+	if err == sql.ErrNoRows {
+		flash(r, flashDanger, "The username or password you have entered is invalid.")
+		rememberForm(r)
 		http.Redirect(w, r, "/login", 302)
+		return
 	}
+	if err != nil {
+		internalServerError(w, r, err, "Cannot retrieve user by email")
+		return
+	}
+	ok, err := user.CheckPassword(r.PostFormValue("password"))
+	if err != nil {
+		internalServerError(w, r, err, "Cannot check user's password")
+		return
+	}
+	if !ok {
+		flash(r, flashDanger, "The username or password you have entered is invalid.")
+		rememberForm(r)
+		http.Redirect(w, r, "/login", 302)
+		return
+	}
+
+	authenticate(r, &user)
+	http.Redirect(w, r, "/dashboard", 302)
 }
 
 // GET /logout
 // Logs the user out
-func logout(w http.ResponseWriter, r *http.Request) {
-	cookie, err := r.Cookie("_cookie")
-	if err != http.ErrNoCookie {
-		warning(err, "Failed to get cookie")
-		session := data.Session{Uuid: cookie.Value}
-		session.DeleteByUUID()
-	}
+func serveLogout(w http.ResponseWriter, r *http.Request) {
+	logout(r)
 	http.Redirect(w, r, "/", 302)
 }

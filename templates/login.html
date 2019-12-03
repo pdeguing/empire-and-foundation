@@ -1,12 +1,18 @@
 {{ define "content" }}
 
 <form class="form-signin center" role="form" action="/authenticate" method="post">
+	{{ csrf }}
+
 	<h2 class="form-signin-heading">Empire and Foundation</h2>
-	<input type="email" name="email" class="form-control" placeholder="Email address" required autofocus>
+
+	{{ template "flash" }}
+
+	<input type="email" name="email" class="form-control" placeholder="Email address" value='{{ old "email" }}' required
+		autofocus>
 	<input type="password" name="password" class="form-control" placeholder="Password" required>
-	<br/>
+	<br />
 	<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-	<br/>
+	<br />
 	<a class="lead pull-right" href="/signup">Sign up</a>
 </form>
 

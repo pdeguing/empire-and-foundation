@@ -116,6 +116,10 @@ func Planets() (planets []Planet, err error) {
 func PlanetByUserId(userId int) (planet Planet, err error) {
 	planet = Planet{}
 	err = Db.QueryRow("SELECT id, uuid, metal_stock, metal_mine, user_id, created_at, last_metal_update FROM planets WHERE user_id = $1", userId).Scan(&planet.Id, &planet.Uuid, &planet.MetalStock, &planet.MetalMine, &planet.UserId, &planet.CreatedAt, &planet.LastMetalUpdate)
+	if err != nil {
+		return
+	}
+	planet.GetMetalStock()
 	return
 }
 

@@ -2,46 +2,76 @@ package main
 
 import (
 	"net/http"
+
+	"github.com/gorilla/csrf"
+	"github.com/gorilla/mux"
+	"github.com/gorilla/securecookie"
 )
 
 func main() {
 	info("Starting server...")
-	mux := http.NewServeMux()
+
+	// Public routes
+	r := mux.NewRouter()
 	files := http.FileServer(http.Dir("public"))
-	mux.Handle("/static/", http.StripPrefix("/static/", files))
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", files))
 
-	mux.HandleFunc("/", index)
-	mux.HandleFunc("/err", err)
+	r.HandleFunc("/", index)
 
-	mux.HandleFunc("/login", login)
-	mux.HandleFunc("/logout", logout)
-	mux.HandleFunc("/signup", signup)
-	mux.HandleFunc("/signup_account", signupAccount)
-	mux.HandleFunc("/authenticate", authenticate)
+	r.HandleFunc("/login", login)
+	r.HandleFunc("/logout", serveLogout)
+	r.HandleFunc("/signup", signup)
+	r.HandleFunc("/signup_account", signupAccount).Methods("POST")
+	r.HandleFunc("/authenticate", serveAuthenticate).Methods("POST")
+
+	// Routes that require authentication
+	rAuth := r.NewRoute().Subrouter()
+	rAuth.HandleFunc("/dashboard", dashboard)
 
 	// Those routes are temporary and should be adapted to handle multiple planets per user.
-	mux.HandleFunc("/dashboard", dashboard)
-	mux.HandleFunc("/dashboard/cartography", cartography)
-	mux.HandleFunc("/dashboard/fleetcontrol", fleetcontrol)
-	mux.HandleFunc("/dashboard/technology", technology)
-	mux.HandleFunc("/dashboard/diplomacy", diplomacy)
-	mux.HandleFunc("/dashboard/story", story)
-	mux.HandleFunc("/dashboard/wiki", wiki)
-	mux.HandleFunc("/dashboard/news", news)
+	rAuth.HandleFunc("/dashboard", dashboard)
+	rAuth.HandleFunc("/dashboard/cartography", cartography)
+	rAuth.HandleFunc("/dashboard/fleetcontrol", fleetcontrol)
+	rAuth.HandleFunc("/dashboard/technology", technology)
+	rAuth.HandleFunc("/dashboard/diplomacy", diplomacy)
+	rAuth.HandleFunc("/dashboard/story", story)
+	rAuth.HandleFunc("/dashboard/wiki", wiki)
+	rAuth.HandleFunc("/dashboard/news", news)
 
-	mux.HandleFunc("/dashboard/planet", planet)
-	mux.HandleFunc("/dashboard/planet/constructions", constructions)
-	mux.HandleFunc("/dashboard/planet/factories", factories)
-	mux.HandleFunc("/dashboard/planet/research", research)
-	mux.HandleFunc("/dashboard/planet/fleets", fleets)
-	mux.HandleFunc("/dashboard/planet/defenses", defenses)
+	rAuth.HandleFunc("/dashboard/planet", planet)
+	rAuth.HandleFunc("/dashboard/planet/constructions", constructions)
+	rAuth.HandleFunc("/dashboard/planet/factories", factories)
+	rAuth.HandleFunc("/dashboard/planet/research", research)
+	rAuth.HandleFunc("/dashboard/planet/fleets", fleets)
+	rAuth.HandleFunc("/dashboard/planet/defenses", defenses)
 
-	mux.HandleFunc("/planet/up_metal_mine", upMetalMine)
+	rAuth.HandleFunc("/planet/up_metal_mine", upMetalMine)
+
+	// Middleware
+	csrfMiddleware := csrf.Protect(
+		securecookie.GenerateRandomKey(32),
+		csrf.FieldName("csrf_token"),
+		csrf.CookieName("csrf_cookie"),
+		csrf.Secure(false), // TODO: Remove this part once we support HTTPS.
+		csrf.ErrorHandler(http.HandlerFunc(invalidCsrfToken)),
+	)
+	sessionMiddleware := sessionManager.LoadAndSave
+	r.Use(
+		csrfMiddleware,
+		sessionMiddleware,
+	)
+	// Only apply the authentication middleware to the auth subrouter.
+	rAuth.Use(
+		authMiddleware,
+	)
 
 	server := &http.Server{
 		Addr:    "0.0.0.0:8080",
-		Handler: mux,
+		Handler: r,
 	}
 	info("Server started")
-	server.ListenAndServe()
+	err := server.ListenAndServe()
+	if err != nil {
+		danger(err, "An error occurred while running the server")
+	}
 }
