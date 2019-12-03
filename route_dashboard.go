@@ -9,15 +9,7 @@ import (
 // GET /dashboard
 // Show player main dashboard page
 func dashboard(w http.ResponseWriter, r *http.Request) {
-	sess, err := session(w, r)
-	if err != nil {
-		http.Redirect(w, r, "/login", 302)
-		return
-	}
-	user, err := sess.User()
-	if err != nil {
-		info("cannot get user from session")
-	}
+	user := user(r)
 	planet, err := data.PlanetByUserId(user.Id)
 	if err != nil {
 		info("could not get user planet", err)

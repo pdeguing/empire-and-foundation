@@ -1,0 +1,10 @@
+{{ define "flash" }}
+
+{{ if hasFlash }}
+{{ $flash := flash }}
+<div class="alert alert-{{ bootrapAlertType $flash.Type }}" role="alert">
+    {{ $flash.Message }}
+</div>
+{{ end }}
+
+{{end}}

@@ -10,13 +10,15 @@ import (
 // GET /login
 // Show the login page
 func login(w http.ResponseWriter, r *http.Request) {
-	generateHTML(w, r, nil, "login.layout", "public.navbar", "login")
+	generateHTML(w, r, nil, "login.layout", "public.navbar", "flash", "login")
+	forgetForm(r)
 }
 
 // GET /signup
 // Show the signup page
 func signup(w http.ResponseWriter, r *http.Request) {
-	generateHTML(w, r, nil, "login.layout", "public.navbar", "signup")
+	generateHTML(w, r, nil, "login.layout", "public.navbar", "flash", "signup")
+	forgetForm(r)
 }
 
 // POST /signup
@@ -32,19 +34,24 @@ func signupAccount(w http.ResponseWriter, r *http.Request) {
 		Email:    r.PostFormValue("email"),
 		Password: r.PostFormValue("password"),
 	}
+	// TODO: Check availability of email address.
+	// TODO: Validate inputs.
 	if err := user.Create(); err != nil {
 		internalServerError(w, r, err, "Cannot create user")
 		return
 	}
+	flash(r, flashSuccess, "Your account has been created. You can log in now.")
 	http.Redirect(w, r, "/login", 302)
 }
 
 // POST /authenticate
 // Authenticate the user given the email and password
-func authenticate(w http.ResponseWriter, r *http.Request) {
+func serveAuthenticate(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	user, err := data.UserByEmail(r.PostFormValue("email"))
 	if err == sql.ErrNoRows {
+		flash(r, flashDanger, "The username or password you have entered is invalid.")
+		rememberForm(r)
 		http.Redirect(w, r, "/login", 302)
 		return
 	}
@@ -58,33 +65,19 @@ func authenticate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if !ok {
+		flash(r, flashDanger, "The username or password you have entered is invalid.")
+		rememberForm(r)
 		http.Redirect(w, r, "/login", 302)
 		return
 	}
 
-	session, err := user.CreateSession()
-	if err != nil {
-		internalServerError(w, r, err, "Cannot create session")
-		return
-	}
-	cookie := http.Cookie{
-		Name:     "_cookie",
-		Value:    session.Uuid,
-		HttpOnly: true,
-	}
-	http.SetCookie(w, &cookie)
-	info("Successfully logged in, redirecting to root path...")
-	http.Redirect(w, r, "/", 302)
+	authenticate(r, &user)
+	http.Redirect(w, r, "/dashboard", 302)
 }
 
 // GET /logout
 // Logs the user out
-func logout(w http.ResponseWriter, r *http.Request) {
-	cookie, err := r.Cookie("_cookie")
-	if err != http.ErrNoCookie {
-		warning(err, "Failed to get cookie")
-		session := data.Session{Uuid: cookie.Value}
-		session.DeleteByUUID()
-	}
+func serveLogout(w http.ResponseWriter, r *http.Request) {
+	logout(r)
 	http.Redirect(w, r, "/", 302)
 }

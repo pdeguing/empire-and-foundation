@@ -1,15 +1,12 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"html/template"
 	"io"
 	"log"
 	"net/http"
 	"os"
-
-	"github.com/pdeguing/empire-and-foundation/data"
 )
 
 var logger *log.Logger
@@ -59,8 +56,7 @@ func invalidCsrfToken(w http.ResponseWriter, r *http.Request) {
 // be shown as a message to the user.
 func respondWithError(w http.ResponseWriter, r *http.Request, userMsg string, code int) {
 	w.WriteHeader(code)
-	_, err := session(w, r)
-	if err != nil {
+	if isAuthenticated(r) {
 		generateHTML(w, r, userMsg, "layout", "public.navbar", "error")
 	} else {
 		generateHTML(w, r, userMsg, "layout", "private.navbar", "error")
@@ -70,17 +66,6 @@ func respondWithError(w http.ResponseWriter, r *http.Request, userMsg string, co
 //
 // Other
 //
-
-func session(w http.ResponseWriter, r *http.Request) (sess data.Session, err error) {
-	cookie, err := r.Cookie("_cookie")
-	if err == nil {
-		sess = data.Session{Uuid: cookie.Value}
-		if ok, _ := sess.Check(); !ok {
-			err = errors.New("Invalid session")
-		}
-	}
-	return
-}
 
 func generateHTML(w http.ResponseWriter, r *http.Request, data interface{}, fn ...string) {
 	var files []string
