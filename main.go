@@ -27,6 +27,24 @@ func main() {
 	// Routes that require authentication
 	rAuth := r.NewRoute().Subrouter()
 	rAuth.HandleFunc("/dashboard", dashboard)
+
+	// Those routes are temporary and should be adapted to handle multiple planets per user.
+	rAuth.HandleFunc("/dashboard", dashboard)
+	rAuth.HandleFunc("/dashboard/cartography", cartography)
+	rAuth.HandleFunc("/dashboard/fleetcontrol", fleetcontrol)
+	rAuth.HandleFunc("/dashboard/technology", technology)
+	rAuth.HandleFunc("/dashboard/diplomacy", diplomacy)
+	rAuth.HandleFunc("/dashboard/story", story)
+	rAuth.HandleFunc("/dashboard/wiki", wiki)
+	rAuth.HandleFunc("/dashboard/news", news)
+
+	rAuth.HandleFunc("/dashboard/planet", planet)
+	rAuth.HandleFunc("/dashboard/planet/constructions", constructions)
+	rAuth.HandleFunc("/dashboard/planet/factories", factories)
+	rAuth.HandleFunc("/dashboard/planet/research", research)
+	rAuth.HandleFunc("/dashboard/planet/fleets", fleets)
+	rAuth.HandleFunc("/dashboard/planet/defenses", defenses)
+
 	rAuth.HandleFunc("/planet/up_metal_mine", upMetalMine)
 
 	// Middleware

@@ -1,0 +1,54 @@
+{{ define "planetHeader" }}
+
+<nav class="navbar navbar-expand-lg">
+  <a class="navbar-brand" href="#">Earth</a>
+  <span class="navbar-text">
+	  [0, 30, 2, 0]
+  </span>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+	<span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+	<ul class="navbar-nav ml-auto">
+	  <li class="nav-item">
+		<a class="nav-link" href="/dashboard/planet">Overview</a>
+	  </li>
+	  <li class="nav-item">
+		<a class="nav-link" href="/dashboard/planet/constructions">Constructions</a>
+	  </li>
+	  <li class="nav-item">
+		<a class="nav-link" href="/dashboard/planet/factories">Factories</a>
+	  </li>
+	  <li class="nav-item">
+		<a class="nav-link" href="/dashboard/planet/research">Research</a>
+	  </li>
+	  <li class="nav-item">
+		<a class="nav-link" href="/dashboard/planet/fleets">Fleets</a>
+	  </li>
+	  <li class="nav-item">
+		<a class="nav-link" href="/dashboard/planet/defenses">Defenses</a>
+	  </li>
+	</ul>
+  </div>
+</nav>
+
+<div class="row text-center">
+	<div class="col">
+		Metal: {{ .MetalStock }} 
+	</div>
+	<div class="col">
+		Lithium: {{ .MetalStock }} 
+	</div>
+	<div class="col">
+		Water: 306/420 
+	</div>
+	<div class="col">
+		Population: 300k 
+	</div>
+	<div class="col">
+		Energy: 1276/1700 
+	</div>
+</div>
+
+{{ end }}
