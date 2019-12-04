@@ -1,3 +1,11 @@
 body {
-	//background-color: #070710;
+	background-color: #0b0d0e;
+}
+
+#fixed-height tr {
+	height: 60px;
+}
+
+#fixed-height td {
+	vertical-align: middle;
 }
