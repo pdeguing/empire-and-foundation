@@ -2,41 +2,31 @@ package data
 
 import (
 	"fmt"
-	"strconv"
 	"time"
 )
 
 type Planet struct {
 	Id              int
 	Uuid            string
-	MetalStock      string
-	MetalMine       string
+	MetalStock      int64
+	MetalMine       int
 	UserId          int
 	CreatedAt       time.Time
 	LastMetalUpdate time.Time
 	EndUpgradeTime  string
 }
 
-// Updates the stock and returns the current stock
-func (planet *Planet) GetMetalStock() string {
-	planet.ProduceMetal()
-	planet.UpdateMetalStock()
+// GetMetalStock returns the current stock
+func (planet *Planet) GetMetalStock() int64 {
+	duration := int64(time.Since(planet.LastMetalUpdate) / time.Second)
+	planet.MetalStock = planet.MetalStock + duration*planet.GetMetalRate()
+	planet.LastMetalUpdate = time.Now().UTC()
 	return planet.MetalStock
 }
 
-func (planet *Planet) ProduceMetal() {
-	lastAmount, _ := strconv.Atoi(planet.MetalStock)
-	if lastAmount < 0 {
-		lastAmount = 0
-	}
-	lastTime := planet.LastMetalUpdate
-	duration := int(time.Since(lastTime) / time.Second)
-	newAmount := lastAmount + duration*planet.GetMetalRate()
-	planet.MetalStock = strconv.Itoa(newAmount)
-	planet.LastMetalUpdate = time.Now().UTC()
-}
-
 func (planet *Planet) UpdateMetalStock() {
+	planet.GetMetalStock()
+
 	statement := "update planets set metal_stock = $2, last_metal_update = $3 where id = $1"
 	stmt, err := Db.Prepare(statement)
 	if err != nil {
@@ -49,19 +39,18 @@ func (planet *Planet) UpdateMetalStock() {
 }
 
 // Computes the metal production rate, could potentially depend on multiple factors
-func (planet *Planet) GetMetalRate() int {
-	metalMine, _ := strconv.Atoi(planet.MetalMine)
+func (planet *Planet) GetMetalRate() int64 {
+	metalMine := int64(planet.MetalMine)
 	rate := metalMine * 1
 	return rate
 }
 
 func (planet *Planet) GetUpgradeTime() time.Duration {
-	upgradeTime, _ := time.ParseDuration(planet.MetalMine + "s")
+	upgradeTime := time.Duration(planet.MetalMine) * time.Second
 	return upgradeTime
 }
 
 func (planet *Planet) UpgradeMine() {
-	planet.EndUpgradeTime = "hello!"
 	time.AfterFunc(planet.GetUpgradeTime(), planet.ApplyUpgrade)
 	planet.EndUpgradeTime = time.Now().Add(planet.GetUpgradeTime()).Format("Mon Jan 02 2006 15:04:05 GMT-0700")
 	fmt.Println("timer started")
@@ -73,7 +62,7 @@ func (planet *Planet) ApplyUpgrade() {
 	fmt.Println("timer done")
 	fmt.Println(planet.EndUpgradeTime)
 	// update metal stock
-	planet.GetMetalStock()
+	planet.UpdateMetalStock()
 	// change metal level
 	planet.UpMetalMine()
 }
@@ -127,6 +116,7 @@ func PlanetByUserId(userId int) (planet Planet, err error) {
 func PlanetByUUID(uuid string) (planet Planet, err error) {
 	planet = Planet{}
 	err = Db.QueryRow("SELECT id, uuid, metal_stock, metal_mine, user_id, created_at, last_metal_update FROM planets WHERE uuid = $1", uuid).Scan(&planet.Id, &planet.Uuid, &planet.MetalStock, &planet.MetalMine, &planet.UserId, &planet.CreatedAt, &planet.LastMetalUpdate)
+	planet.GetMetalStock()
 	return
 }
 
@@ -145,11 +135,7 @@ func (planet *Planet) UpMetalMine() (err error) {
 	}
 	defer stmt.Close()
 
-	currLevel, err := strconv.Atoi(planet.MetalMine)
-	if err != nil {
-		return
-	}
-	newLevel := strconv.Itoa(currLevel + 1)
+	newLevel := planet.MetalMine + 1
 
 	_, err = stmt.Exec(planet.Id, newLevel)
 	return

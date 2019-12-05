@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 
@@ -15,6 +16,7 @@ func templateFuncs(r *http.Request) template.FuncMap {
 		"flash":            tmplFlash(r),
 		"bootrapAlertType": tmplBootstrapAlertType,
 		"old":              tmplOld(r),
+		"quantity":         tmplQuantity,
 	}
 }
 
@@ -60,4 +62,12 @@ func tmplOld(r *http.Request) func(field string) string {
 	return func(field string) string {
 		return oldFormValue(r, field)
 	}
+}
+
+// tmplQuantity displays the value shortened with metric suffix.
+// The quantity can be hovered to see the complete value.
+func tmplQuantity(value int64) template.HTML {
+	full := fmtQuantityFull(value)
+	short := fmtQuantityShort(value)
+	return template.HTML(fmt.Sprintf("<span title=\"%s\">%s</span>", full, short))
 }
