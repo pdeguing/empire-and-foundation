@@ -1,56 +1,39 @@
 {{ define "rightbar" }}
-
-<table class="table table-hover table-borderless table-dark table-sm rounded">
-	<tbody>
-		<tr>
-			<td>
-				<img src="/static/images/planet.jpg" class="rounded" alt="planet image" width="25px" height="25px">
-			</td>
-			<td>Earth</td>
-			<td>[0, 30, 2, 0]</td>
-			<td><a href="/dashboard/planet">visit</a></td>
-		</tr>
-		<tr>
-			<td>
-				<img src="/static/images/planet.jpg" class="rounded" alt="planet image" width="25px" height="25px">
-			</td>
-			<td>Earth</td>
-			<td>[0, 30, 2, 0]</td>
-			<td><a href="#">visit</a></td>
-		</tr>
-		<tr>
-			<td>
-				<img src="/static/images/planet.jpg" class="rounded" alt="planet image" width="25px" height="25px">
-			</td>
-			<td>Earth</td>
-			<td>[0, 30, 2, 0]</td>
-			<td><a href="#">visit</a></td>
-		</tr>
-		<tr>
-			<td>
-				<img src="/static/images/planet.jpg" class="rounded" alt="planet image" width="25px" height="25px">
-			</td>
-			<td>Earth</td>
-			<td>[0, 30, 2, 0]</td>
-			<td><a href="#">visit</a></td>
-		</tr>
-		<tr>
-			<td>
-				<img src="/static/images/planet.jpg" class="rounded" alt="planet image" width="25px" height="25px">
-			</td>
-			<td>Earth</td>
-			<td>[0, 30, 2, 0]</td>
-			<td><a href="#">visit</a></td>
-		</tr>
-		<tr>
-			<td>
-				<img src="/static/images/planet.jpg" class="rounded" alt="planet image" width="25px" height="25px">
-			</td>
-			<td>Earth</td>
-			<td>[0, 30, 2, 0]</td>
-			<td><a href="#">visit</a></td>
-		</tr>
-	</tbody>
-</table>
+<nav class="panel">
+  <a class="panel-block is-active" href="/dashboard/planet">
+    <span class="panel-icon">
+      <i class="fas fa-globe" aria-hidden="true"></i>
+    </span>
+	[0:30:2:0] Earth
+  </a>
+  <a class="panel-block" href="/dashboard/planet">
+    <span class="panel-icon">
+		<figure class="image is-16x16">
+				<img src="/static/images/planet.jpg" class="is-rounded" alt="planet image" width="25px" height="25px">
+		</figure>
+    </span>
+	<span>
+	[0:30:2:0] Earth
+	</span>
+  </a>
+  <a class="panel-block" href="/dashboard/planet">
+    <span class="panel-icon">
+      <i class="fas fa-globe" aria-hidden="true"></i>
+    </span>
+	[0:30:2:0] Earth
+  </a>
+  <a class="panel-block" href="/dashboard/planet">
+    <span class="panel-icon">
+      <i class="fas fa-globe" aria-hidden="true"></i>
+    </span>
+	[0:30:2:0] Earth
+  </a>
+  <a class="panel-block" href="/dashboard/planet">
+    <span class="panel-icon">
+      <i class="fas fa-globe" aria-hidden="true"></i>
+    </span>
+	[0:30:2:0] Earth
+  </a>
+</nav>
 
 {{ end }}

@@ -1,46 +1,61 @@
 {{ define "navbar" }}
 
-<nav class="navbar navbar-expand-lg">
-  <a class="navbar-brand" href="/dashboard">Empire and Foundation</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+<nav class="navbar is-black" role="navigation" aria-label="main navigation" style="margin-bottom: 10px;">
+  <div class="navbar-brand">
+    <a class="navbar-item" href="/dashboard">
+		Empire and Foundation
+    </a>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mx-auto">
-      <li class="nav-item">
-		<a class="nav-link" href="/dashboard">Empire</a>
-      </li>
-      <li class="nav-item">
-		<a class="nav-link" href="/dashboard/cartography">Cartography</a>
-      </li>
-      <li class="nav-item">
-		<a class="nav-link" href="/dashboard/fleetcontrol">Fleet control</a>
-      </li>
-      <li class="nav-item">
-		<a class="nav-link" href="/dashboard/technology">Technology</a>
-      </li>
-      <li class="nav-item">
-		<a class="nav-link" href="/dashboard/diplomacy">Diplomacy</a>
-      </li>
-      <li class="nav-item">
-		<a class="nav-link" href="/dashboard/story">Story</a>
-      </li>
-      <li class="nav-item">
-		<a class="nav-link" href="/dashboard/wiki">Wiki</a>
-      </li>
-      <li class="nav-item">
-		<a class="nav-link" href="/dashboard/news">News</a>
-      </li>
-      <li class="nav-item">
-		  <a class="nav-link" href="/dashboard"><i class="fab fa-discord"></i> Discord</a>
-      </li>
-    </ul>
-    <ul class="navbar-nav ml-auto">
-      <li class="nav-item">
-		<a class="nav-link" href="/logout">Logout</a>
-      </li>
-    </ul>
+    <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+
+  <div id="navbarMain" class="navbar-menu">
+    <div class="navbar-start">
+      <a class="navbar-item" href="/dashboard">
+		Empire 
+      </a>
+      <a class="navbar-item" href="/dashboard/cartography">
+		Cartography
+      </a>
+      <a class="navbar-item" href="/dashboard/fleetcontrol">
+		Fleet control
+      </a>
+      <a class="navbar-item" href="/dashboard/technology">
+		Technology
+      </a>
+      <a class="navbar-item" href="/dashboard/Diplomacy">
+		Diplomacy
+      </a>
+      <a class="navbar-item" href="/dashboard/story">
+		Story
+      </a>
+      <a class="navbar-item" href="/dashboard/wiki">
+		Wiki
+      </a>
+      <a class="navbar-item" href="/dashboard/news">
+		News
+      </a>
+      <a class="navbar-item" href="/dashboard">
+		<span class="icon is-small"><i class="fab fa-discord" aria-hidden="true"></i></span>
+		<span>Discord</span>
+      </a>
+
+
+    </div>
+
+    <div class="navbar-end">
+      <div class="navbar-item">
+        <div class="buttons">
+          <a class="button is-outlined is-black is-inverted">
+            Log out 
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
 </nav>
 

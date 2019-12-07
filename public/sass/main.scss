@@ -1,0 +1,41 @@
+@charset "utf-8";
+
+// Import a Google Font
+@import url('https://fonts.googleapis.com/css?family=Fira+Mono:400,700&display=swap');
+
+$size-4: 1.25rem;
+$size-5: 1rem;
+$size-6: 0.80rem;
+$size-7: 0.60rem;
+
+@import "../../node_modules/bulma/sass/utilities/_all.sass";
+
+// Set your brand colors
+
+// Update Bulma's global variables
+
+// Update some of Bulma's component variables
+$light: $grey-darker;
+$scheme-main: $black;
+$scheme-main-bis: $black-bis;
+$scheme-main-ter: $black-ter;
+$background: $black;
+$border: $black-ter;
+$text: $white-bis;
+$card-footer-border-top: 1px solid $border;
+$panel-item-border: 1px solid $border;
+$panel-block-color: $text;
+$link-active: $grey-lighter;
+$link-hover: $grey-dark;
+$panel-radius: none;
+$text-strong: $grey-light;
+$family-monospace: 'Fira Mono', monospace;
+$family-primary: $family-monospace;
+
+// Import only what you need from Bulma
+@import "../../node_modules/bulma/sass/base/_all.sass";
+@import "../../node_modules/bulma/sass/elements/_all.sass";
+@import "../../node_modules/bulma/sass/form/_all.sass";
+@import "../../node_modules/bulma/sass/components/_all.sass";
+@import "../../node_modules/bulma/sass/layout/_all.sass";
+@import "../../node_modules/bulma/sass/grid/_all.sass";

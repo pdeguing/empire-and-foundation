@@ -1,0 +1,28 @@
+{
+  "name": "empire-and-foundation",
+  "version": "1.0.0",
+  "description": "A MMORTS taking place far away, not so long from now.",
+  "main": "public/sass/main.scss",
+  "scripts": {
+    "css-build": "node-sass --omit-source-map-url public/sass/main.scss public/css/main.css",
+    "css-watch": "npm run css-build -- --watch",
+    "start": "npm run css-watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pdeguing/empire-and-foundation.git"
+  },
+  "author": "pdeguing MarkKremer",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pdeguing/empire-and-foundation/issues"
+  },
+  "homepage": "https://github.com/pdeguing/empire-and-foundation#readme",
+  "devDependencies": {
+    "bulma": "^0.8.0",
+    "node-sass": "^4.13.0"
+  },
+  "dependencies": {
+    "vue": "^2.6.10"
+  }
+}
