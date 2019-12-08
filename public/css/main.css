@@ -2497,7 +2497,7 @@ a.box:active {
     border: 1px solid #1e1e1e;
     border-width: 0 0 1px;
     padding: 0.5em 0.75em;
-    vertical-align: top; }
+    vertical-align: middle; }
     .table td.is-white,
     .table th.is-white {
       background-color: rgba(255, 255, 255, 0.87);
@@ -3724,7 +3724,7 @@ a.tag:hover {
 
 .card {
   background-color: #171717;
-  box-shadow: 0 0.5em 1em -0.125em rgba(18, 18, 18, 0.1), 0 0px 0 1px rgba(18, 18, 18, 0.02);
+  box-shadow: 0 4px 8px 0 rgba(18, 18, 18, 0.05), 0 6px 5px 0 rgba(18, 18, 18, 0.01);
   color: rgba(255, 255, 255, 0.38);
   max-width: 100%;
   position: relative; }
