@@ -1,2 +1,18 @@
+# Files
+
 empire-and-foundation
 empire-and-foundation.log
+
+.DS_Store
+.ruby-version
+npm-debug.log
+
+# Folders
+
+public/css
+
+.idea/
+.sass-cache
+_gh_pages
+_site
+node_modules

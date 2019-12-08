@@ -1,9 +1,177 @@
 {{ define "dashboardBody" }}
 
-<h1>Cartography</h1>
+<h1 class="title">Cartography</h1>
 
-<p>
-Maybe the best part, probably the hardest. Here comes the map of the universe. I guess the simplest version is a 2D grid with solar system as tile. The problem is that if tiles are squares, distance calculation will be strange. The best would then be hexagonal tiles. But that's messy to implement. We could also just go for a "per system display" at first with systems displayed one by one as a table. It's easy, and we will need this system view anyway even with a graphical map.
-</p>
+
+<table class="table is-striped is-fullwidth">
+	<thead>
+		<tr>
+			<th scope="col">#</th>
+			<th scope="col">Name</th>
+			<th scope="col">Position</th>
+			<th scope="col">Moons</th>
+			<th scope="col">Orbit</th>
+			<th scope="col">Player</th>
+			<th scope="col">Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th scope="row">
+				<figure class="image is-32x32">
+					<img src="/static/images/blue-star.jpg" class="is-rounded" alt="planet image">
+				</figure>
+			</th>
+			<td></td>
+			<td>[0:0:0:0]</td>
+			<td></td>
+			<td></td>
+			<td>@drakker</td>
+			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
+		</tr>
+		<tr>
+			<th scope="row">
+				<figure class="image is-32x32">
+				</figure>
+			</th>
+			<td></td>
+			<td>[0:0:1:0]</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
+		</tr>
+		<tr>
+			<th scope="row">
+				<figure class="image is-32x32">
+				</figure>
+			</th>
+			<td></td>
+			<td>[0:0:2:0]</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
+		</tr>
+		<tr>
+			<th scope="row">
+				<figure class="image is-32x32">
+					<img src="/static/images/planet.jpg" class="is-rounded" alt="planet image">
+				</figure>
+			</th>
+			<td>Earth</td>
+			<td>[0:0:3:0]</td>
+			<td></td>
+			<td></td>
+			<td>@drakker</td>
+			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
+		</tr>
+		<tr>
+			<th scope="row">
+				<figure class="image is-32x32">
+				</figure>
+			</th>
+			<td></td>
+			<td>[0:0:4:0]</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
+		</tr>
+		<tr>
+			<th scope="row">
+				<figure class="image is-32x32">
+				</figure>
+			</th>
+			<td></td>
+			<td>[0:0:5:0]</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
+		</tr>
+		<tr>
+			<th scope="row">
+				<figure class="image is-32x32">
+					<img src="/static/images/planet.jpg" class="is-rounded" alt="planet image">
+				</figure>
+			</th>
+			<td></td>
+			<td>[0:0:6:0]</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
+		</tr>
+		<tr>
+			<th scope="row">
+				<figure class="image is-32x32">
+				</figure>
+			</th>
+			<td></td>
+			<td>[0:0:7:0]</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
+		</tr>
+		<tr>
+			<th scope="row">
+					<figure class="image is-32x32">
+					</figure>
+			</th>
+			<td></td>
+			<td>[0:0:8:0]</td>
+			<td></td>
+			<td></td>
+			<td>@drakker</td>
+			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
+		</tr>
+		<tr>
+			<th scope="row">
+				<figure class="image is-32x32">
+					<img src="/static/images/planet.jpg" class="is-rounded" alt="planet image">
+				</figure>
+			</th>
+			<td>Mars</td>
+			<td>[0:0:9:0]</td>
+			<td></td>
+			<td></td>
+			<td>@louise</td>
+			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
+		</tr>
+		<tr>
+		<th scope="row">
+				<figure class="image is-32x32">
+				</figure>
+		</th>
+		<td></td>
+		<td>[0:0:10:0]</td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
+		</tr>
+		<tr>
+			<th scope="row">
+				<figure class="image is-32x32">
+					<img src="/static/images/planet.jpg" class="is-rounded" alt="planet image">
+				</figure>
+			</th>
+			<td></td>
+			<td>[0:0:11:0]</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
+		</tr>
+	</tbody>
+</table>
+
+<article class="message">
+  <div class="message-body">
+	Maybe the best part, probably the hardest. Here comes the map of the universe. I guess the simplest version is a 2D grid with solar system as tile. The problem is that if tiles are squares, distance calculation will be strange. The best would then be hexagonal tiles. But that's messy to implement. We could also just go for a "per system display" at first with systems displayed one by one as a table. It's easy, and we will need this system view anyway even with a graphical map.
+  </div>
+</article>
 
 {{ end }}

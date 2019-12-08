@@ -1,55 +1,52 @@
 {{ define "planetHeader" }}
 
-<nav class="navbar navbar-expand-lg">
-	<a class="navbar-brand" href="#">Earth</a>
-	<span class="navbar-text">
-		[0, 30, 2, 0]
-	</span>
-	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-		aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-		<span class="navbar-toggler-icon"></span>
-	</button>
-
-	<div class="collapse navbar-collapse" id="navbarSupportedContent">
-		<ul class="navbar-nav ml-auto">
-			<li class="nav-item">
-				<a class="nav-link" href="/dashboard/planet">Overview</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link" href="/dashboard/planet/constructions">Constructions</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link" href="/dashboard/planet/factories">Factories</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link" href="/dashboard/planet/research">Research</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link" href="/dashboard/planet/fleets">Fleets</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link" href="/dashboard/planet/defenses">Defenses</a>
-			</li>
-		</ul>
+<nav class="level is-mobile is-black">
+	<!-- Left side -->
+	<div class="level-left">
+		<div class="level-item">
+			<p class="subtitle is-5">
+				<strong>Earth</strong> [0:30:2:0]
+			</p>
+		</div>
 	</div>
+
+	<div class="level-item has-text-centered">
+		<div>
+			<p><span class="is-size-7">Metal</span> <span class="title is-6">{{ quantity .MetalStock }}</span></p>
+		</div>
+	</div>
+	<div class="level-item has-text-centered">
+		<div>
+			<p><span class="is-size-7">Tritium</span> <span class="title is-6">{{ quantity .MetalStock }}</span></p>
+		</div>
+	</div>
+	<div class="level-item has-text-centered">
+		<div>
+			<p><span class="is-size-7">Water</span> <span class="title is-6">306/420</span></p>
+		</div>
+	</div>
+	<div class="level-item has-text-centered">
+		<div>
+			<p><span class="is-size-7">Population</span> <span class="title is-6">{{ quantity 3e5 }}</span></p>
+		</div>
+	</div>
+	<div class="level-item has-text-centered">
+		<div>
+			<p><span class="is-size-7">Energy</span> <span class="title is-6">1276/1700</span></p>
+		</div>
+	</div>
+
 </nav>
 
-<div class="row text-center">
-	<div class="col">
-		Metal: {{ quantity .MetalStock }}
-	</div>
-	<div class="col">
-		Lithium: {{ quantity .MetalStock }}
-	</div>
-	<div class="col">
-		Water: 306/420
-	</div>
-	<div class="col">
-		Population: {{ quantity 3e5 }}
-	</div>
-	<div class="col">
-		Energy: 1276/1700
-	</div>
+<div class="tabs">
+	<ul>
+		<li class="is-active"><a href="/dashboard/planet">Overview</a></li>
+		<li><a href="/dashboard/planet/constructions">Constructions</a></li>
+		<li><a href="/dashboard/planet/factories">Factories</a></li>
+		<li><a href="/dashboard/planet/research">Research</a></li>
+		<li><a href="/dashboard/planet/fleets">Fleets</a></li>
+		<li><a href="/dashboard/planet/defenses">Defenses</a></li>
+	</ul>
 </div>
 
 {{ end }}

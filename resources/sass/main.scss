@@ -1,0 +1,62 @@
+@charset "utf-8";
+
+// Import a Google Font
+@import url('https://fonts.googleapis.com/css?family=Fira+Mono:400,700&display=swap');
+
+$size-4: 1.25rem;
+$size-5: 1rem;
+$size-6: 0.80rem;
+$size-7: 0.60rem;
+
+$black: #121212;
+$black-bis: #171717;
+$black-ter: #1e1e1e;
+$grey-04: #222222;
+$grey-04: #242424;
+$grey-04: #272727;
+$grey-04: #2c2c2c;
+$grey-04: #2e2e2e;
+$grey-04: #323232;
+$grey-04: #353535;
+$grey-04: #383838;
+
+$white: rgba(255,255,255,0.87);
+$white-bis: rgba(255,255,255,0.60);
+$white-ter: rgba(255,255,255,0.38);
+
+@import "../../node_modules/bulma/sass/utilities/_all.sass";
+
+// Set your brand colors
+
+// Update Bulma's global variables
+
+// Update some of Bulma's component variables
+$light: $grey-darker;
+$scheme-main: $black;
+$scheme-main-bis: $black-bis;
+$scheme-main-ter: $black-ter;
+$background: $scheme-main;
+$border: $black-ter;
+$text: $white-ter;
+$card-footer-border-top: 1px solid $border;
+$card-background-color: $black-bis;
+$panel-item-border: 1px solid $border;
+$panel-block-color: $text;
+$link-active: $grey-lighter;
+$link-hover: $grey-dark;
+$panel-radius: none;
+$text-strong: $grey-light;
+$family-monospace: 'Fira Mono', monospace;
+$family-primary: $family-monospace;
+$card-shadow: 0 4px 8px 0 rgba($scheme-invert, 0.05), 0 6px 5px 0 rgba($scheme-invert, 0.01); 
+
+// Import only what you need from Bulma
+@import "../../node_modules/bulma/sass/base/_all.sass";
+@import "../../node_modules/bulma/sass/elements/_all.sass";
+@import "../../node_modules/bulma/sass/form/_all.sass";
+@import "../../node_modules/bulma/sass/components/_all.sass";
+@import "../../node_modules/bulma/sass/layout/_all.sass";
+@import "../../node_modules/bulma/sass/grid/_all.sass";
+
+// Import own files
+@import "rightbar.scss"
