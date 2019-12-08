@@ -8,6 +8,22 @@ $size-5: 1rem;
 $size-6: 0.80rem;
 $size-7: 0.60rem;
 
+$black: #121212;
+$black-bis: #171717;
+$black-ter: #1e1e1e;
+$grey-04: #222222;
+$grey-04: #242424;
+$grey-04: #272727;
+$grey-04: #2c2c2c;
+$grey-04: #2e2e2e;
+$grey-04: #323232;
+$grey-04: #353535;
+$grey-04: #383838;
+
+$white: rgba(255,255,255,0.87);
+$white-bis: rgba(255,255,255,0.60);
+$white-ter: rgba(255,255,255,0.38);
+
 @import "../../node_modules/bulma/sass/utilities/_all.sass";
 
 // Set your brand colors
@@ -19,10 +35,11 @@ $light: $grey-darker;
 $scheme-main: $black;
 $scheme-main-bis: $black-bis;
 $scheme-main-ter: $black-ter;
-$background: $black;
+$background: $scheme-main;
 $border: $black-ter;
-$text: $white-bis;
+$text: $white-ter;
 $card-footer-border-top: 1px solid $border;
+$card-background-color: $black-bis;
 $panel-item-border: 1px solid $border;
 $panel-block-color: $text;
 $link-active: $grey-lighter;
