@@ -100,15 +100,15 @@ func fmtQuantityFull(value int64) string {
 func fmtQuantityShort(value int64) string {
 	p := message.NewPrinter(language.English)
 	switch {
-	case value >= 5e15:
+	case value >= 10e15:
 		return p.Sprintf("%dP", value/1e15)
-	case value >= 5e12:
+	case value >= 10e12:
 		return p.Sprintf("%dT", value/1e12)
-	case value >= 5e9:
+	case value >= 10e9:
 		return p.Sprintf("%dG", value/1e9)
-	case value >= 5e6:
+	case value >= 10e6:
 		return p.Sprintf("%dM", value/1e6)
-	case value >= 5e3:
+	case value >= 10e3:
 		return p.Sprintf("%dk", value/1e3)
 	default:
 		return p.Sprintf("%d", value)
