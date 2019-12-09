@@ -9,8 +9,8 @@ create table users (
 create table planets (
   id serial primary key,
   uuid varchar(64) not null unique,
-  metal_stock varchar(255) not null,
-  metal_mine varchar(255) not null,
+  metal_stock bigint not null,
+  metal_mine integer not null,
   user_id integer references users(id),
   created_at timestamp not null,
   last_metal_update timestamp not null

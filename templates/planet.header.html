@@ -1,52 +1,52 @@
 {{ define "planetHeader" }}
 
 <nav class="level is-mobile is-black">
-  <!-- Left side -->
-  <div class="level-left">
-    <div class="level-item">
-      <p class="subtitle is-5">
-        <strong>Earth</strong> [0:30:2:0] 
-      </p>
-    </div>
-  </div>
+	<!-- Left side -->
+	<div class="level-left">
+		<div class="level-item">
+			<p class="subtitle is-5">
+				<strong>Earth</strong> [0:30:2:0]
+			</p>
+		</div>
+	</div>
 
-  <div class="level-item has-text-centered">
-    <div>
-		<p><span class="is-size-7">Metal</span> <span class="title is-6">{{ .MetalStock }}</span></p>
-    </div>
-  </div>
-  <div class="level-item has-text-centered">
-    <div>
-		<p><span class="is-size-7">Tritium</span> <span class="title is-6">{{ .MetalStock }}</span></p>
-    </div>
-  </div>
-  <div class="level-item has-text-centered">
-    <div>
-		<p><span class="is-size-7">Water</span> <span class="title is-6">306/420</span></p>
-    </div>
-  </div>
-  <div class="level-item has-text-centered">
-    <div>
-		<p><span class="is-size-7">Population</span> <span class="title is-6">300k</span></p>
-    </div>
-  </div>
-  <div class="level-item has-text-centered">
-    <div>
-		<p><span class="is-size-7">Energy</span> <span class="title is-6">1276/1700</span></p>
-    </div>
-  </div>
+	<div class="level-item has-text-centered">
+		<div>
+			<p><span class="is-size-7">Metal</span> <span class="title is-6">{{ quantity .MetalStock }}</span></p>
+		</div>
+	</div>
+	<div class="level-item has-text-centered">
+		<div>
+			<p><span class="is-size-7">Tritium</span> <span class="title is-6">{{ quantity .MetalStock }}</span></p>
+		</div>
+	</div>
+	<div class="level-item has-text-centered">
+		<div>
+			<p><span class="is-size-7">Water</span> <span class="title is-6">306/420</span></p>
+		</div>
+	</div>
+	<div class="level-item has-text-centered">
+		<div>
+			<p><span class="is-size-7">Population</span> <span class="title is-6">{{ quantity 3e5 }}</span></p>
+		</div>
+	</div>
+	<div class="level-item has-text-centered">
+		<div>
+			<p><span class="is-size-7">Energy</span> <span class="title is-6">1276/1700</span></p>
+		</div>
+	</div>
 
 </nav>
 
 <div class="tabs">
-  <ul>
-	<li class="is-active"><a href="/dashboard/planet">Overview</a></li>
-	<li><a href="/dashboard/planet/constructions">Constructions</a></li>
-	<li><a href="/dashboard/planet/factories">Factories</a></li>
-	<li><a href="/dashboard/planet/research">Research</a></li>
-	<li><a href="/dashboard/planet/fleets">Fleets</a></li>
-	<li><a href="/dashboard/planet/defenses">Defenses</a></li>
-  </ul>
+	<ul>
+		<li class="is-active"><a href="/dashboard/planet">Overview</a></li>
+		<li><a href="/dashboard/planet/constructions">Constructions</a></li>
+		<li><a href="/dashboard/planet/factories">Factories</a></li>
+		<li><a href="/dashboard/planet/research">Research</a></li>
+		<li><a href="/dashboard/planet/fleets">Fleets</a></li>
+		<li><a href="/dashboard/planet/defenses">Defenses</a></li>
+	</ul>
 </div>
 
 {{ end }}

@@ -7,6 +7,9 @@ import (
 	"log"
 	"net/http"
 	"os"
+
+	"golang.org/x/text/language"
+	"golang.org/x/text/message"
 )
 
 var logger *log.Logger
@@ -79,5 +82,35 @@ func generateHTML(w http.ResponseWriter, r *http.Request, data interface{}, fn .
 		// Executing the template doesn't even work so respond
 		// with the most basic error message as a fallback.
 		http.Error(w, "Something went wrong on our end.", 500)
+	}
+}
+
+// fmtQuantityFull returns the quantity value as a formatted string.
+func fmtQuantityFull(value int64) string {
+	p := message.NewPrinter(language.English)
+	return p.Sprintf("%d", value)
+}
+
+// fmtQuantityShort returns value as a rounded number with metric suffix.
+// The jump to the next suffix is deliberately done a little late. For
+// example, if you have just 1800 metal, you would probably care to
+// see when you reach 2000 metal. Once the value is over 5000 the jump
+// is made and it will just show 5k. For other suffixes the same
+// mechanism is used.
+func fmtQuantityShort(value int64) string {
+	p := message.NewPrinter(language.English)
+	switch {
+	case value >= 10e15:
+		return p.Sprintf("%dP", value/1e15)
+	case value >= 10e12:
+		return p.Sprintf("%dT", value/1e12)
+	case value >= 10e9:
+		return p.Sprintf("%dG", value/1e9)
+	case value >= 10e6:
+		return p.Sprintf("%dM", value/1e6)
+	case value >= 10e3:
+		return p.Sprintf("%dk", value/1e3)
+	default:
+		return p.Sprintf("%d", value)
 	}
 }
