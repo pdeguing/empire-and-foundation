@@ -13,6 +13,6 @@ func upMetalMine(w http.ResponseWriter, r *http.Request) {
 		info("could not get user planet: ", err)
 	}
 	planet.UpgradeMine()
-	http.Redirect(w, r, "/dashboard", 302)
+	http.Redirect(w, r, "/dashboard/planet/constructions", 302)
 	info("up metal mine")
 }
