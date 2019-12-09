@@ -7,6 +7,12 @@ type Planet struct {
 	ent.Schema
 }
 
+func (Planet) Mixin() []ent.Mixin {
+    return []ent.Mixin{
+        TimeMixin{},
+    }
+}
+
 // Fields of the Planet.
 func (Planet) Fields() []ent.Field {
 	return []ent.Field{
