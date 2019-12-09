@@ -1,6 +1,9 @@
 package schema
 
-import "github.com/facebookincubator/ent"
+import (
+	"github.com/facebookincubator/ent"
+	"github.com/facebookincubator/ent/schema/field"
+)
 
 // Session holds the schema definition for the Session entity.
 type Session struct {
@@ -12,7 +15,7 @@ func (Session) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("token").
 		Unique(),
-		field.[]byte("data"),
+		field.Bytes("data"),
 		field.Time("expiry"),
 	}
 }

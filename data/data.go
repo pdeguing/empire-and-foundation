@@ -2,20 +2,26 @@ package data
 
 import (
 	"crypto/rand"
-	"database/sql"
 	"fmt"
 	"log"
+	"context"
+
+	"github.com/pdeguing/empire-and-foundation/ent"
 
 	_ "github.com/lib/pq"
 )
 
-var Db *sql.DB
+var Client *ent.Client
 
 func init() {
 	var err error
-	Db, err = sql.Open("postgres", "dbname=empire_and_foundation sslmode=disable")
+	Client, err = ent.Open("postgres", "dbname=empire_and_foundation sslmode=disable")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("failed opening connection to postgres: %v", err)
+	}
+	defer Client.Close()
+	if err := Client.Schema.Create(context.Background()); err != nil {
+		log.Fatalf("failed creating schema resources: %v", err)
 	}
 	return
 }

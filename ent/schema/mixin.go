@@ -1,6 +1,11 @@
 package schema
 
-import "github.com/facebookincubator/ent"
+import (
+	"github.com/facebookincubator/ent"
+	"github.com/facebookincubator/ent/schema/field"
+
+	"time"
+)
 
 type TimeMixin struct{}
 

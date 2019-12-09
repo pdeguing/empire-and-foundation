@@ -1,6 +1,10 @@
 package schema
 
-import "github.com/facebookincubator/ent"
+import (
+	"github.com/facebookincubator/ent"
+	"github.com/facebookincubator/ent/schema/edge"
+	"github.com/facebookincubator/ent/schema/field"
+)
 
 // Planet holds the schema definition for the Planet entity.
 type Planet struct {

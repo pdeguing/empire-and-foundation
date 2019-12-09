@@ -1,6 +1,10 @@
 package schema
 
-import "github.com/facebookincubator/ent"
+import (
+	"github.com/facebookincubator/ent"
+	"github.com/facebookincubator/ent/schema/edge"
+	"github.com/facebookincubator/ent/schema/field"
+)
 
 type User struct {
 	ent.Schema
@@ -27,6 +31,6 @@ func (User) Fields() []ent.Field {
 
 func (User) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("planets", Planet.Type)
+		edge.To("planets", Planet.Type),
 	}
 }
