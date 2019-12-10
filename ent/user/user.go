@@ -18,8 +18,6 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at vertex property in the database.
 	FieldUpdatedAt = "updated_at"
-	// FieldUUID holds the string denoting the uuid vertex property in the database.
-	FieldUUID = "uuid"
 	// FieldUsername holds the string denoting the username vertex property in the database.
 	FieldUsername = "username"
 	// FieldEmail holds the string denoting the email vertex property in the database.
@@ -43,7 +41,6 @@ var Columns = []string{
 	FieldID,
 	FieldCreatedAt,
 	FieldUpdatedAt,
-	FieldUUID,
 	FieldUsername,
 	FieldEmail,
 	FieldPassword,

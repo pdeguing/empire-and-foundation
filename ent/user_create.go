@@ -18,7 +18,6 @@ type UserCreate struct {
 	config
 	created_at *time.Time
 	updated_at *time.Time
-	uuid       *string
 	username   *string
 	email      *string
 	password   *string
@@ -50,12 +49,6 @@ func (uc *UserCreate) SetNillableUpdatedAt(t *time.Time) *UserCreate {
 	if t != nil {
 		uc.SetUpdatedAt(*t)
 	}
-	return uc
-}
-
-// SetUUID sets the uuid field.
-func (uc *UserCreate) SetUUID(s string) *UserCreate {
-	uc.uuid = &s
 	return uc
 }
 
@@ -107,9 +100,6 @@ func (uc *UserCreate) Save(ctx context.Context) (*User, error) {
 		v := user.DefaultUpdatedAt()
 		uc.updated_at = &v
 	}
-	if uc.uuid == nil {
-		return nil, errors.New("ent: missing required field \"uuid\"")
-	}
 	if uc.username == nil {
 		return nil, errors.New("ent: missing required field \"username\"")
 	}
@@ -149,10 +139,6 @@ func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
 	if value := uc.updated_at; value != nil {
 		insert.Set(user.FieldUpdatedAt, *value)
 		u.UpdatedAt = *value
-	}
-	if value := uc.uuid; value != nil {
-		insert.Set(user.FieldUUID, *value)
-		u.UUID = *value
 	}
 	if value := uc.username; value != nil {
 		insert.Set(user.FieldUsername, *value)

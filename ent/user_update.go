@@ -18,7 +18,6 @@ type UserUpdate struct {
 	config
 
 	updated_at     *time.Time
-	uuid           *string
 	username       *string
 	email          *string
 	password       *string
@@ -36,12 +35,6 @@ func (uu *UserUpdate) Where(ps ...predicate.User) *UserUpdate {
 // SetUpdatedAt sets the updated_at field.
 func (uu *UserUpdate) SetUpdatedAt(t time.Time) *UserUpdate {
 	uu.updated_at = &t
-	return uu
-}
-
-// SetUUID sets the uuid field.
-func (uu *UserUpdate) SetUUID(s string) *UserUpdate {
-	uu.uuid = &s
 	return uu
 }
 
@@ -173,9 +166,6 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value := uu.updated_at; value != nil {
 		updater.Set(user.FieldUpdatedAt, *value)
 	}
-	if value := uu.uuid; value != nil {
-		updater.Set(user.FieldUUID, *value)
-	}
 	if value := uu.username; value != nil {
 		updater.Set(user.FieldUsername, *value)
 	}
@@ -239,7 +229,6 @@ type UserUpdateOne struct {
 	id int
 
 	updated_at     *time.Time
-	uuid           *string
 	username       *string
 	email          *string
 	password       *string
@@ -250,12 +239,6 @@ type UserUpdateOne struct {
 // SetUpdatedAt sets the updated_at field.
 func (uuo *UserUpdateOne) SetUpdatedAt(t time.Time) *UserUpdateOne {
 	uuo.updated_at = &t
-	return uuo
-}
-
-// SetUUID sets the uuid field.
-func (uuo *UserUpdateOne) SetUUID(s string) *UserUpdateOne {
-	uuo.uuid = &s
 	return uuo
 }
 
@@ -390,10 +373,6 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
 	if value := uuo.updated_at; value != nil {
 		updater.Set(user.FieldUpdatedAt, *value)
 		u.UpdatedAt = *value
-	}
-	if value := uuo.uuid; value != nil {
-		updater.Set(user.FieldUUID, *value)
-		u.UUID = *value
 	}
 	if value := uuo.username; value != nil {
 		updater.Set(user.FieldUsername, *value)

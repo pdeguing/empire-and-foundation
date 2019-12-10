@@ -19,8 +19,6 @@ type User struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
-	// UUID holds the value of the "uuid" field.
-	UUID string `json:"uuid,omitempty"`
 	// Username holds the value of the "username" field.
 	Username string `json:"username,omitempty"`
 	// Email holds the value of the "email" field.
@@ -35,7 +33,6 @@ func (u *User) FromRows(rows *sql.Rows) error {
 		ID        int
 		CreatedAt sql.NullTime
 		UpdatedAt sql.NullTime
-		UUID      sql.NullString
 		Username  sql.NullString
 		Email     sql.NullString
 		Password  sql.NullString
@@ -45,7 +42,6 @@ func (u *User) FromRows(rows *sql.Rows) error {
 		&scanu.ID,
 		&scanu.CreatedAt,
 		&scanu.UpdatedAt,
-		&scanu.UUID,
 		&scanu.Username,
 		&scanu.Email,
 		&scanu.Password,
@@ -55,7 +51,6 @@ func (u *User) FromRows(rows *sql.Rows) error {
 	u.ID = scanu.ID
 	u.CreatedAt = scanu.CreatedAt.Time
 	u.UpdatedAt = scanu.UpdatedAt.Time
-	u.UUID = scanu.UUID.String
 	u.Username = scanu.Username.String
 	u.Email = scanu.Email.String
 	u.Password = scanu.Password.String
@@ -94,8 +89,6 @@ func (u *User) String() string {
 	builder.WriteString(u.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", updated_at=")
 	builder.WriteString(u.UpdatedAt.Format(time.ANSIC))
-	builder.WriteString(", uuid=")
-	builder.WriteString(u.UUID)
 	builder.WriteString(", username=")
 	builder.WriteString(u.Username)
 	builder.WriteString(", email=")

@@ -10,6 +10,8 @@ import (
 	"github.com/alexedwards/scs"
 	"github.com/alexedwards/scs/postgresstore"
 	"github.com/pdeguing/empire-and-foundation/data"
+	"github.com/pdeguing/empire-and-foundation/ent"
+	"github.com/pdeguing/empire-and-foundation/ent/user"
 )
 
 func init() {
@@ -22,7 +24,7 @@ func init() {
 var sessionManager = func() *scs.SessionManager {
 	mngr := scs.New()
 	mngr.Lifetime = 24 * time.Hour
-	mngr.Store = postgresstore.New(data.Db)
+	mngr.Store = postgresstore.New(data.DB)
 	return mngr
 }()
 
@@ -55,13 +57,16 @@ func authMiddleware(next http.Handler) http.Handler {
 		}
 
 		userID := sessionManager.GetInt(ctx, userIDKey)
-		user, err := data.UserByID(userID)
+		u, err := data.Client.User.
+			Query().
+			Where(user.ID(userID)).
+			Only(r.Context())
 		if err != nil {
 			internalServerError(w, r, err, "Could not load logged in user from database")
 			return
 		}
 
-		ctx = context.WithValue(ctx, userKey, &user)
+		ctx = context.WithValue(ctx, userKey, &u)
 		sr := r.WithContext(ctx)
 		next.ServeHTTP(w, sr)
 	})
@@ -139,9 +144,9 @@ func oldFormValue(r *http.Request, field string) string {
 
 // authenticate sets user as the currently logged in user.
 // The change will take effect on the next request.
-func authenticate(r *http.Request, user *data.User) {
+func authenticate(r *http.Request, user *ent.User) {
 	renewSessionToken(r)
-	sessionManager.Put(r.Context(), userIDKey, user.Id)
+	sessionManager.Put(r.Context(), userIDKey, user.ID)
 }
 
 // logout logs the user out.
@@ -158,12 +163,12 @@ func isAuthenticated(r *http.Request) bool {
 
 // user returns the currently logged in user, or nil if the user
 // isn't logged in
-func user(r *http.Request) *data.User {
+func loggedInUser(r *http.Request) *ent.User {
 	val := r.Context().Value(userKey)
 	if val == nil {
 		return nil
 	}
-	user, ok := val.(*data.User)
+	user, ok := val.(*ent.User)
 	if !ok {
 		panic("Unable to cast the user object stored in the context to a *data.User")
 	}

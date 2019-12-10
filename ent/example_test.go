@@ -99,7 +99,6 @@ func ExampleUser() {
 		Create().
 		SetCreatedAt(time.Now()).
 		SetUpdatedAt(time.Now()).
-		SetUUID("string").
 		SetUsername("string").
 		SetEmail("string").
 		SetPassword("string").
