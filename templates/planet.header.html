@@ -5,19 +5,20 @@
 	<div class="level-left">
 		<div class="level-item">
 			<p class="subtitle is-5">
-				<strong>Earth</strong> [0:30:2:0]
+				<strong>Avalon</strong> [0:30:3:0]
 			</p>
 		</div>
 	</div>
 
 	<div class="level-item has-text-centered">
 		<div>
-			<p><span class="is-size-7">Metal</span> <span class="title is-6">{{ quantity .MetalStock }}</span></p>
+			<p><span class="is-size-7">Metal</span> <span class="title is-6">{{ quantity .Data.MetalStock }}</span></p>
 		</div>
 	</div>
 	<div class="level-item has-text-centered">
 		<div>
-			<p><span class="is-size-7">Tritium</span> <span class="title is-6">{{ quantity .MetalStock }}</span></p>
+			<p><span class="is-size-7">Tritium</span> <span class="title is-6">{{ quantity .Data.MetalStock }}</span>
+			</p>
 		</div>
 	</div>
 	<div class="level-item has-text-centered">
@@ -40,12 +41,24 @@
 
 <div class="tabs">
 	<ul>
-		<li class="is-active"><a href="/dashboard/planet">Overview</a></li>
-		<li><a href="/dashboard/planet/constructions">Constructions</a></li>
-		<li><a href="/dashboard/planet/factories">Factories</a></li>
-		<li><a href="/dashboard/planet/research">Research</a></li>
-		<li><a href="/dashboard/planet/fleets">Fleets</a></li>
-		<li><a href="/dashboard/planet/defenses">Defenses</a></li>
+		<li {{ if eq .PageName "planet-dashboard" }} class="is-active" {{end}}>
+			<a href="/dashboard/planet">Overview</a>
+		</li>
+		<li {{ if eq .PageName "planet-constructions" }} class="is-active" {{end}}>
+			<a href="/dashboard/planet/constructions">Constructions</a>
+		</li>
+		<li {{ if eq .PageName "planet-factories" }} class="is-active" {{end}}>
+			<a href="/dashboard/planet/factories">Factories</a>
+		</li>
+		<li {{ if eq .PageName "planet-research" }} class="is-active" {{end}}>
+			<a href="/dashboard/planet/research">Research</a>
+		</li>
+		<li {{ if eq .PageName "planet-fleets" }} class="is-active" {{end}}>
+			<a href="/dashboard/planet/fleets">Fleets</a>
+		</li>
+		<li {{ if eq .PageName "planet-defenses" }} class="is-active" {{end}}>
+			<a href="/dashboard/planet/defenses">Defenses</a>
+		</li>
 	</ul>
 </div>
 

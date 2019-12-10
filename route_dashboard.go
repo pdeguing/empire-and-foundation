@@ -18,7 +18,7 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	generateHTML(w, r, planet, "layout", "private.navbar", "dashboard", "rightbar", "empire")
+	generateHTML(w, r, "dashboard", planet, "layout", "private.navbar", "dashboard", "rightbar", "empire")
 }
 
 // GET /dashboard/cartography
@@ -32,7 +32,7 @@ func cartography(w http.ResponseWriter, r *http.Request) {
 			danger("could not create user planet:", err)
 		}
 	}
-	generateHTML(w, r, planet, "layout", "private.navbar", "dashboard", "rightbar", "cartography")
+	generateHTML(w, r, "cartography", planet, "layout", "private.navbar", "dashboard", "rightbar", "cartography")
 }
 
 // GET /dashboard/fleetcontrol
@@ -45,7 +45,7 @@ func fleetcontrol(w http.ResponseWriter, r *http.Request) {
 			danger("could not create user planet:", err)
 		}
 	}
-	generateHTML(w, r, planet, "layout", "private.navbar", "dashboard", "rightbar", "fleetcontrol")
+	generateHTML(w, r, "fleet", planet, "layout", "private.navbar", "dashboard", "rightbar", "fleetcontrol")
 }
 
 // GET /dashboard/technology
@@ -58,7 +58,7 @@ func technology(w http.ResponseWriter, r *http.Request) {
 			danger("could not create user planet:", err)
 		}
 	}
-	generateHTML(w, r, planet, "layout", "private.navbar", "dashboard", "rightbar", "technology")
+	generateHTML(w, r, "technology", planet, "layout", "private.navbar", "dashboard", "rightbar", "technology")
 }
 
 // GET /dashboard/diplomacy
@@ -71,7 +71,7 @@ func diplomacy(w http.ResponseWriter, r *http.Request) {
 			danger("could not create user planet:", err)
 		}
 	}
-	generateHTML(w, r, planet, "layout", "private.navbar", "dashboard", "rightbar", "diplomacy")
+	generateHTML(w, r, "diplomacy", planet, "layout", "private.navbar", "dashboard", "rightbar", "diplomacy")
 }
 
 // GET /dashboard/story
@@ -84,7 +84,7 @@ func story(w http.ResponseWriter, r *http.Request) {
 			danger("could not create user planet:", err)
 		}
 	}
-	generateHTML(w, r, planet, "layout", "private.navbar", "dashboard", "rightbar", "story")
+	generateHTML(w, r, "story", planet, "layout", "private.navbar", "dashboard", "rightbar", "story")
 }
 
 // GET /dashboard/wiki
@@ -97,7 +97,7 @@ func wiki(w http.ResponseWriter, r *http.Request) {
 			danger("could not create user planet:", err)
 		}
 	}
-	generateHTML(w, r, planet, "layout", "private.navbar", "dashboard", "rightbar", "wiki")
+	generateHTML(w, r, "wiki", planet, "layout", "private.navbar", "dashboard", "rightbar", "wiki")
 }
 
 // GET /dashboard/news
@@ -110,7 +110,7 @@ func news(w http.ResponseWriter, r *http.Request) {
 			danger("could not create user planet:", err)
 		}
 	}
-	generateHTML(w, r, planet, "layout", "private.navbar", "dashboard", "rightbar", "news")
+	generateHTML(w, r, "news", planet, "layout", "private.navbar", "dashboard", "rightbar", "news")
 }
 
 // GET /dashboard/planet
@@ -121,7 +121,7 @@ func planet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		info("could not get user planet", err)
 	}
-	generateHTML(w, r, planet, "layout", "private.navbar", "dashboard", "rightbar", "planet.layout", "planet.header", "planet.overview")
+	generateHTML(w, r, "planet-dashboard", planet, "layout", "private.navbar", "dashboard", "rightbar", "planet.layout", "planet.header", "planet.overview")
 }
 
 // GET /dashboard/planet/constructions
@@ -132,7 +132,7 @@ func constructions(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		info("could not get user planet", err)
 	}
-	generateHTML(w, r, planet, "layout", "private.navbar", "dashboard", "rightbar", "planet.layout", "planet.header", "planet.constructions")
+	generateHTML(w, r, "planet-constructions", planet, "layout", "private.navbar", "dashboard", "rightbar", "planet.layout", "planet.header", "planet.constructions")
 }
 
 // GET /dashboard/planet/factories
@@ -143,7 +143,7 @@ func factories(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		info("could not get user planet", err)
 	}
-	generateHTML(w, r, planet, "layout", "private.navbar", "dashboard", "rightbar", "planet.layout", "planet.header", "planet.factories")
+	generateHTML(w, r, "planet-factories", planet, "layout", "private.navbar", "dashboard", "rightbar", "planet.layout", "planet.header", "planet.factories")
 }
 
 // GET /dashboard/planet/research
@@ -154,7 +154,7 @@ func research(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		info("could not get user planet", err)
 	}
-	generateHTML(w, r, planet, "layout", "private.navbar", "dashboard", "rightbar", "planet.layout", "planet.header", "planet.research")
+	generateHTML(w, r, "planet-research", planet, "layout", "private.navbar", "dashboard", "rightbar", "planet.layout", "planet.header", "planet.research")
 }
 
 // GET /dashboard/planet/fleets
@@ -165,7 +165,7 @@ func fleets(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		info("could not get user planet", err)
 	}
-	generateHTML(w, r, planet, "layout", "private.navbar", "dashboard", "rightbar", "planet.layout", "planet.header", "planet.fleets")
+	generateHTML(w, r, "planet-fleets", planet, "layout", "private.navbar", "dashboard", "rightbar", "planet.layout", "planet.header", "planet.fleets")
 }
 
 // GET /dashboard/planet/defenses
@@ -176,5 +176,5 @@ func defenses(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		info("could not get user planet", err)
 	}
-	generateHTML(w, r, planet, "layout", "private.navbar", "dashboard", "rightbar", "planet.layout", "planet.header", "planet.defenses")
+	generateHTML(w, r, "planet-defenses", planet, "layout", "private.navbar", "dashboard", "rightbar", "planet.layout", "planet.header", "planet.defenses")
 }
