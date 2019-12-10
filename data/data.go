@@ -31,7 +31,8 @@ func open() (*ent.Client, error) {
 }
 
 func init() {
-	Client, err := open() 
+	var err error
+	Client, err = open()
 	if err != nil {
 		log.Fatalf("failed opening connection to postgres: %v", err)
 	}
