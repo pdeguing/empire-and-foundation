@@ -4,10 +4,9 @@ import (
 	"net/http"
 
 	"github.com/pdeguing/empire-and-foundation/data"
+	"github.com/pdeguing/empire-and-foundation/ent"
 	"github.com/pdeguing/empire-and-foundation/ent/user"
 	"golang.org/x/crypto/bcrypt"
-
-	"fmt"
 )
 
 // GET /login
@@ -27,37 +26,42 @@ func signup(w http.ResponseWriter, r *http.Request) {
 // POST /signup
 // Create the user account
 func signupAccount(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("1SALUT")
 	err := r.ParseForm()
 	if err != nil {
 		internalServerError(w, r, err, "Cannot parse form")
 		return
 	}
-	fmt.Println("2SALUT")
 	password, err := bcrypt.GenerateFromPassword([]byte(r.PostFormValue("password")), 14)
 	if err != nil {
 		internalServerError(w, r, err, "Cannot encrypt password")
 		return
 	}
 
-	fmt.Println("3SALUT")
-	if data.Client == nil {
-		fmt.Println("client is nil")
-	}
-	_, err = data.Client.User.    // UserClient.
-	    Create().               // User create builder.
-	    SetUsername(r.PostFormValue("name")).         // Set field value.
-	    SetEmail(r.PostFormValue("email")).
-	    SetPassword(string(password)).
-	    Save(r.Context())               // Create and return.
-	fmt.Println("4SALUT")
+	err = data.WithTx(r.Context(), data.Client, func(tx *ent.Tx) error {
+		u, err := tx.User. // UserClient.
+					Create().                             // User create builder.
+					SetUsername(r.PostFormValue("name")). // Set field value.
+					SetEmail(r.PostFormValue("email")).
+					SetPassword(string(password)).
+					Save(r.Context()) // Create and return.
 
-	// TODO: Check availability of email address.
-	// TODO: Validate inputs.
+		// TODO: Check availability of email address.
+		// TODO: Validate inputs.
+		if err != nil {
+			return err
+		}
+
+		_, err = tx.Planet.
+			Create().
+			SetOwner(u).
+			Save(r.Context())
+		return err
+	})
 	if err != nil {
-		internalServerError(w, r, err, "Cannot create user")
+		internalServerError(w, r, err, "Cannot create user or planet")
 		return
 	}
+
 	flash(r, flashSuccess, "Your account has been created. You can log in now.")
 	http.Redirect(w, r, "/login", 302)
 }

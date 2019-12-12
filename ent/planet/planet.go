@@ -18,8 +18,6 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at vertex property in the database.
 	FieldUpdatedAt = "updated_at"
-	// FieldUUID holds the string denoting the uuid vertex property in the database.
-	FieldUUID = "uuid"
 	// FieldMetalStock holds the string denoting the metal_stock vertex property in the database.
 	FieldMetalStock = "metal_stock"
 	// FieldMetalMine holds the string denoting the metal_mine vertex property in the database.
@@ -43,7 +41,6 @@ var Columns = []string{
 	FieldID,
 	FieldCreatedAt,
 	FieldUpdatedAt,
-	FieldUUID,
 	FieldMetalStock,
 	FieldMetalMine,
 	FieldLastMetalUpdate,
@@ -69,12 +66,21 @@ var (
 	UpdateDefaultUpdatedAt = descUpdatedAt.UpdateDefault.(func() time.Time)
 
 	// descMetalStock is the schema descriptor for metal_stock field.
-	descMetalStock = fields[1].Descriptor()
+	descMetalStock = fields[0].Descriptor()
+	// DefaultMetalStock holds the default value on creation for the metal_stock field.
+	DefaultMetalStock = descMetalStock.Default.(int64)
 	// MetalStockValidator is a validator for the "metal_stock" field. It is called by the builders before save.
-	MetalStockValidator = descMetalStock.Validators[0].(func(int) error)
+	MetalStockValidator = descMetalStock.Validators[0].(func(int64) error)
 
 	// descMetalMine is the schema descriptor for metal_mine field.
-	descMetalMine = fields[2].Descriptor()
+	descMetalMine = fields[1].Descriptor()
+	// DefaultMetalMine holds the default value on creation for the metal_mine field.
+	DefaultMetalMine = descMetalMine.Default.(int)
 	// MetalMineValidator is a validator for the "metal_mine" field. It is called by the builders before save.
 	MetalMineValidator = descMetalMine.Validators[0].(func(int) error)
+
+	// descLastMetalUpdate is the schema descriptor for last_metal_update field.
+	descLastMetalUpdate = fields[2].Descriptor()
+	// DefaultLastMetalUpdate holds the default value on creation for the last_metal_update field.
+	DefaultLastMetalUpdate = descLastMetalUpdate.Default.(func() time.Time)
 )

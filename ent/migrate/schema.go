@@ -3,6 +3,8 @@
 package migrate
 
 import (
+	"github.com/pdeguing/empire-and-foundation/ent/planet"
+
 	"github.com/facebookincubator/ent/dialect/sql/schema"
 	"github.com/facebookincubator/ent/schema/field"
 )
@@ -13,9 +15,8 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "uuid", Type: field.TypeString, Unique: true},
-		{Name: "metal_stock", Type: field.TypeInt},
-		{Name: "metal_mine", Type: field.TypeInt},
+		{Name: "metal_stock", Type: field.TypeInt64, Default: planet.DefaultMetalStock},
+		{Name: "metal_mine", Type: field.TypeInt, Default: planet.DefaultMetalMine},
 		{Name: "last_metal_update", Type: field.TypeTime},
 		{Name: "owner_id", Type: field.TypeInt, Nullable: true},
 	}
@@ -27,7 +28,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:  "planets_users_planets",
-				Columns: []*schema.Column{PlanetsColumns[7]},
+				Columns: []*schema.Column{PlanetsColumns[6]},
 
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,

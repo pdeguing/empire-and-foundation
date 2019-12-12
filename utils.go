@@ -60,9 +60,9 @@ func invalidCsrfToken(w http.ResponseWriter, r *http.Request) {
 func respondWithError(w http.ResponseWriter, r *http.Request, userMsg string, code int) {
 	w.WriteHeader(code)
 	if isAuthenticated(r) {
-		generateHTML(w, r, userMsg, "layout", "public.navbar", "error")
-	} else {
 		generateHTML(w, r, userMsg, "layout", "private.navbar", "error")
+	} else {
+		generateHTML(w, r, userMsg, "layout", "public.navbar", "error")
 	}
 }
 

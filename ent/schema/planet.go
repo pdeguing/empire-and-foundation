@@ -1,6 +1,8 @@
 package schema
 
 import (
+	"time"
+
 	"github.com/facebookincubator/ent"
 	"github.com/facebookincubator/ent/schema/edge"
 	"github.com/facebookincubator/ent/schema/field"
@@ -20,13 +22,14 @@ func (Planet) Mixin() []ent.Mixin {
 // Fields of the Planet.
 func (Planet) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("uuid").
-		Unique(),
-		field.Int("metal_stock").
-		Positive(),
+		field.Int64("metal_stock").
+			NonNegative().
+			Default(0),
 		field.Int("metal_mine").
-		Positive(),
-		field.Time("last_metal_update"),
+			NonNegative().
+			Default(0),
+		field.Time("last_metal_update").
+			Default(time.Now),
 	}
 }
 

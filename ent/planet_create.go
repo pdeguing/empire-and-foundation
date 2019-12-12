@@ -17,8 +17,7 @@ type PlanetCreate struct {
 	config
 	created_at        *time.Time
 	updated_at        *time.Time
-	uuid              *string
-	metal_stock       *int
+	metal_stock       *int64
 	metal_mine        *int
 	last_metal_update *time.Time
 	owner             map[int]struct{}
@@ -52,15 +51,17 @@ func (pc *PlanetCreate) SetNillableUpdatedAt(t *time.Time) *PlanetCreate {
 	return pc
 }
 
-// SetUUID sets the uuid field.
-func (pc *PlanetCreate) SetUUID(s string) *PlanetCreate {
-	pc.uuid = &s
+// SetMetalStock sets the metal_stock field.
+func (pc *PlanetCreate) SetMetalStock(i int64) *PlanetCreate {
+	pc.metal_stock = &i
 	return pc
 }
 
-// SetMetalStock sets the metal_stock field.
-func (pc *PlanetCreate) SetMetalStock(i int) *PlanetCreate {
-	pc.metal_stock = &i
+// SetNillableMetalStock sets the metal_stock field if the given value is not nil.
+func (pc *PlanetCreate) SetNillableMetalStock(i *int64) *PlanetCreate {
+	if i != nil {
+		pc.SetMetalStock(*i)
+	}
 	return pc
 }
 
@@ -70,9 +71,25 @@ func (pc *PlanetCreate) SetMetalMine(i int) *PlanetCreate {
 	return pc
 }
 
+// SetNillableMetalMine sets the metal_mine field if the given value is not nil.
+func (pc *PlanetCreate) SetNillableMetalMine(i *int) *PlanetCreate {
+	if i != nil {
+		pc.SetMetalMine(*i)
+	}
+	return pc
+}
+
 // SetLastMetalUpdate sets the last_metal_update field.
 func (pc *PlanetCreate) SetLastMetalUpdate(t time.Time) *PlanetCreate {
 	pc.last_metal_update = &t
+	return pc
+}
+
+// SetNillableLastMetalUpdate sets the last_metal_update field if the given value is not nil.
+func (pc *PlanetCreate) SetNillableLastMetalUpdate(t *time.Time) *PlanetCreate {
+	if t != nil {
+		pc.SetLastMetalUpdate(*t)
+	}
 	return pc
 }
 
@@ -108,23 +125,23 @@ func (pc *PlanetCreate) Save(ctx context.Context) (*Planet, error) {
 		v := planet.DefaultUpdatedAt()
 		pc.updated_at = &v
 	}
-	if pc.uuid == nil {
-		return nil, errors.New("ent: missing required field \"uuid\"")
-	}
 	if pc.metal_stock == nil {
-		return nil, errors.New("ent: missing required field \"metal_stock\"")
+		v := planet.DefaultMetalStock
+		pc.metal_stock = &v
 	}
 	if err := planet.MetalStockValidator(*pc.metal_stock); err != nil {
 		return nil, fmt.Errorf("ent: validator failed for field \"metal_stock\": %v", err)
 	}
 	if pc.metal_mine == nil {
-		return nil, errors.New("ent: missing required field \"metal_mine\"")
+		v := planet.DefaultMetalMine
+		pc.metal_mine = &v
 	}
 	if err := planet.MetalMineValidator(*pc.metal_mine); err != nil {
 		return nil, fmt.Errorf("ent: validator failed for field \"metal_mine\": %v", err)
 	}
 	if pc.last_metal_update == nil {
-		return nil, errors.New("ent: missing required field \"last_metal_update\"")
+		v := planet.DefaultLastMetalUpdate()
+		pc.last_metal_update = &v
 	}
 	if len(pc.owner) > 1 {
 		return nil, errors.New("ent: multiple assignments on a unique edge \"owner\"")
@@ -159,10 +176,6 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 	if value := pc.updated_at; value != nil {
 		insert.Set(planet.FieldUpdatedAt, *value)
 		pl.UpdatedAt = *value
-	}
-	if value := pc.uuid; value != nil {
-		insert.Set(planet.FieldUUID, *value)
-		pl.UUID = *value
 	}
 	if value := pc.metal_stock; value != nil {
 		insert.Set(planet.FieldMetalStock, *value)

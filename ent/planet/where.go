@@ -128,17 +128,8 @@ func UpdatedAt(v time.Time) predicate.Planet {
 	)
 }
 
-// UUID applies equality check predicate on the "uuid" field. It's identical to UUIDEQ.
-func UUID(v string) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldUUID), v))
-		},
-	)
-}
-
 // MetalStock applies equality check predicate on the "metal_stock" field. It's identical to MetalStockEQ.
-func MetalStock(v int) predicate.Planet {
+func MetalStock(v int64) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
 			s.Where(sql.EQ(s.C(FieldMetalStock), v))
@@ -348,145 +339,8 @@ func UpdatedAtLTE(v time.Time) predicate.Planet {
 	)
 }
 
-// UUIDEQ applies the EQ predicate on the "uuid" field.
-func UUIDEQ(v string) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldUUID), v))
-		},
-	)
-}
-
-// UUIDNEQ applies the NEQ predicate on the "uuid" field.
-func UUIDNEQ(v string) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.NEQ(s.C(FieldUUID), v))
-		},
-	)
-}
-
-// UUIDIn applies the In predicate on the "uuid" field.
-func UUIDIn(vs ...string) predicate.Planet {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.In(s.C(FieldUUID), v...))
-		},
-	)
-}
-
-// UUIDNotIn applies the NotIn predicate on the "uuid" field.
-func UUIDNotIn(vs ...string) predicate.Planet {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.NotIn(s.C(FieldUUID), v...))
-		},
-	)
-}
-
-// UUIDGT applies the GT predicate on the "uuid" field.
-func UUIDGT(v string) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.GT(s.C(FieldUUID), v))
-		},
-	)
-}
-
-// UUIDGTE applies the GTE predicate on the "uuid" field.
-func UUIDGTE(v string) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.GTE(s.C(FieldUUID), v))
-		},
-	)
-}
-
-// UUIDLT applies the LT predicate on the "uuid" field.
-func UUIDLT(v string) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.LT(s.C(FieldUUID), v))
-		},
-	)
-}
-
-// UUIDLTE applies the LTE predicate on the "uuid" field.
-func UUIDLTE(v string) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.LTE(s.C(FieldUUID), v))
-		},
-	)
-}
-
-// UUIDContains applies the Contains predicate on the "uuid" field.
-func UUIDContains(v string) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.Contains(s.C(FieldUUID), v))
-		},
-	)
-}
-
-// UUIDHasPrefix applies the HasPrefix predicate on the "uuid" field.
-func UUIDHasPrefix(v string) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.HasPrefix(s.C(FieldUUID), v))
-		},
-	)
-}
-
-// UUIDHasSuffix applies the HasSuffix predicate on the "uuid" field.
-func UUIDHasSuffix(v string) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.HasSuffix(s.C(FieldUUID), v))
-		},
-	)
-}
-
-// UUIDEqualFold applies the EqualFold predicate on the "uuid" field.
-func UUIDEqualFold(v string) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.EqualFold(s.C(FieldUUID), v))
-		},
-	)
-}
-
-// UUIDContainsFold applies the ContainsFold predicate on the "uuid" field.
-func UUIDContainsFold(v string) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.ContainsFold(s.C(FieldUUID), v))
-		},
-	)
-}
-
 // MetalStockEQ applies the EQ predicate on the "metal_stock" field.
-func MetalStockEQ(v int) predicate.Planet {
+func MetalStockEQ(v int64) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
 			s.Where(sql.EQ(s.C(FieldMetalStock), v))
@@ -495,7 +349,7 @@ func MetalStockEQ(v int) predicate.Planet {
 }
 
 // MetalStockNEQ applies the NEQ predicate on the "metal_stock" field.
-func MetalStockNEQ(v int) predicate.Planet {
+func MetalStockNEQ(v int64) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
 			s.Where(sql.NEQ(s.C(FieldMetalStock), v))
@@ -504,7 +358,7 @@ func MetalStockNEQ(v int) predicate.Planet {
 }
 
 // MetalStockIn applies the In predicate on the "metal_stock" field.
-func MetalStockIn(vs ...int) predicate.Planet {
+func MetalStockIn(vs ...int64) predicate.Planet {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -523,7 +377,7 @@ func MetalStockIn(vs ...int) predicate.Planet {
 }
 
 // MetalStockNotIn applies the NotIn predicate on the "metal_stock" field.
-func MetalStockNotIn(vs ...int) predicate.Planet {
+func MetalStockNotIn(vs ...int64) predicate.Planet {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -542,7 +396,7 @@ func MetalStockNotIn(vs ...int) predicate.Planet {
 }
 
 // MetalStockGT applies the GT predicate on the "metal_stock" field.
-func MetalStockGT(v int) predicate.Planet {
+func MetalStockGT(v int64) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
 			s.Where(sql.GT(s.C(FieldMetalStock), v))
@@ -551,7 +405,7 @@ func MetalStockGT(v int) predicate.Planet {
 }
 
 // MetalStockGTE applies the GTE predicate on the "metal_stock" field.
-func MetalStockGTE(v int) predicate.Planet {
+func MetalStockGTE(v int64) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
 			s.Where(sql.GTE(s.C(FieldMetalStock), v))
@@ -560,7 +414,7 @@ func MetalStockGTE(v int) predicate.Planet {
 }
 
 // MetalStockLT applies the LT predicate on the "metal_stock" field.
-func MetalStockLT(v int) predicate.Planet {
+func MetalStockLT(v int64) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
 			s.Where(sql.LT(s.C(FieldMetalStock), v))
@@ -569,7 +423,7 @@ func MetalStockLT(v int) predicate.Planet {
 }
 
 // MetalStockLTE applies the LTE predicate on the "metal_stock" field.
-func MetalStockLTE(v int) predicate.Planet {
+func MetalStockLTE(v int64) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
 			s.Where(sql.LTE(s.C(FieldMetalStock), v))

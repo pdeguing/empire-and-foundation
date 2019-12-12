@@ -66,7 +66,7 @@ func authMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx = context.WithValue(ctx, userKey, &u)
+		ctx = context.WithValue(ctx, userKey, u)
 		sr := r.WithContext(ctx)
 		next.ServeHTTP(w, sr)
 	})
@@ -170,7 +170,7 @@ func loggedInUser(r *http.Request) *ent.User {
 	}
 	user, ok := val.(*ent.User)
 	if !ok {
-		panic("Unable to cast the user object stored in the context to a *data.User")
+		panic("Unable to cast the user object stored in the context to a *ent.User")
 	}
 	return user
 }

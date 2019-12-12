@@ -19,10 +19,8 @@ type Planet struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
-	// UUID holds the value of the "uuid" field.
-	UUID string `json:"uuid,omitempty"`
 	// MetalStock holds the value of the "metal_stock" field.
-	MetalStock int `json:"metal_stock,omitempty"`
+	MetalStock int64 `json:"metal_stock,omitempty"`
 	// MetalMine holds the value of the "metal_mine" field.
 	MetalMine int `json:"metal_mine,omitempty"`
 	// LastMetalUpdate holds the value of the "last_metal_update" field.
@@ -35,7 +33,6 @@ func (pl *Planet) FromRows(rows *sql.Rows) error {
 		ID              int
 		CreatedAt       sql.NullTime
 		UpdatedAt       sql.NullTime
-		UUID            sql.NullString
 		MetalStock      sql.NullInt64
 		MetalMine       sql.NullInt64
 		LastMetalUpdate sql.NullTime
@@ -45,7 +42,6 @@ func (pl *Planet) FromRows(rows *sql.Rows) error {
 		&scanpl.ID,
 		&scanpl.CreatedAt,
 		&scanpl.UpdatedAt,
-		&scanpl.UUID,
 		&scanpl.MetalStock,
 		&scanpl.MetalMine,
 		&scanpl.LastMetalUpdate,
@@ -55,8 +51,7 @@ func (pl *Planet) FromRows(rows *sql.Rows) error {
 	pl.ID = scanpl.ID
 	pl.CreatedAt = scanpl.CreatedAt.Time
 	pl.UpdatedAt = scanpl.UpdatedAt.Time
-	pl.UUID = scanpl.UUID.String
-	pl.MetalStock = int(scanpl.MetalStock.Int64)
+	pl.MetalStock = scanpl.MetalStock.Int64
 	pl.MetalMine = int(scanpl.MetalMine.Int64)
 	pl.LastMetalUpdate = scanpl.LastMetalUpdate.Time
 	return nil
@@ -94,8 +89,6 @@ func (pl *Planet) String() string {
 	builder.WriteString(pl.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", updated_at=")
 	builder.WriteString(pl.UpdatedAt.Format(time.ANSIC))
-	builder.WriteString(", uuid=")
-	builder.WriteString(pl.UUID)
 	builder.WriteString(", metal_stock=")
 	builder.WriteString(fmt.Sprintf("%v", pl.MetalStock))
 	builder.WriteString(", metal_mine=")

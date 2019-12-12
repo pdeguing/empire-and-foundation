@@ -14,7 +14,7 @@ type Session struct {
 func (Session) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("token").
-		Unique(),
+			Unique(),
 		field.Bytes("data"),
 		field.Time("expiry"),
 	}

@@ -19,9 +19,8 @@ type PlanetUpdate struct {
 	config
 
 	updated_at        *time.Time
-	uuid              *string
-	metal_stock       *int
-	addmetal_stock    *int
+	metal_stock       *int64
+	addmetal_stock    *int64
 	metal_mine        *int
 	addmetal_mine     *int
 	last_metal_update *time.Time
@@ -42,21 +41,23 @@ func (pu *PlanetUpdate) SetUpdatedAt(t time.Time) *PlanetUpdate {
 	return pu
 }
 
-// SetUUID sets the uuid field.
-func (pu *PlanetUpdate) SetUUID(s string) *PlanetUpdate {
-	pu.uuid = &s
-	return pu
-}
-
 // SetMetalStock sets the metal_stock field.
-func (pu *PlanetUpdate) SetMetalStock(i int) *PlanetUpdate {
+func (pu *PlanetUpdate) SetMetalStock(i int64) *PlanetUpdate {
 	pu.metal_stock = &i
 	pu.addmetal_stock = nil
 	return pu
 }
 
+// SetNillableMetalStock sets the metal_stock field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableMetalStock(i *int64) *PlanetUpdate {
+	if i != nil {
+		pu.SetMetalStock(*i)
+	}
+	return pu
+}
+
 // AddMetalStock adds i to metal_stock.
-func (pu *PlanetUpdate) AddMetalStock(i int) *PlanetUpdate {
+func (pu *PlanetUpdate) AddMetalStock(i int64) *PlanetUpdate {
 	if pu.addmetal_stock == nil {
 		pu.addmetal_stock = &i
 	} else {
@@ -69,6 +70,14 @@ func (pu *PlanetUpdate) AddMetalStock(i int) *PlanetUpdate {
 func (pu *PlanetUpdate) SetMetalMine(i int) *PlanetUpdate {
 	pu.metal_mine = &i
 	pu.addmetal_mine = nil
+	return pu
+}
+
+// SetNillableMetalMine sets the metal_mine field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableMetalMine(i *int) *PlanetUpdate {
+	if i != nil {
+		pu.SetMetalMine(*i)
+	}
 	return pu
 }
 
@@ -85,6 +94,14 @@ func (pu *PlanetUpdate) AddMetalMine(i int) *PlanetUpdate {
 // SetLastMetalUpdate sets the last_metal_update field.
 func (pu *PlanetUpdate) SetLastMetalUpdate(t time.Time) *PlanetUpdate {
 	pu.last_metal_update = &t
+	return pu
+}
+
+// SetNillableLastMetalUpdate sets the last_metal_update field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableLastMetalUpdate(t *time.Time) *PlanetUpdate {
+	if t != nil {
+		pu.SetLastMetalUpdate(*t)
+	}
 	return pu
 }
 
@@ -199,9 +216,6 @@ func (pu *PlanetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value := pu.updated_at; value != nil {
 		updater.Set(planet.FieldUpdatedAt, *value)
 	}
-	if value := pu.uuid; value != nil {
-		updater.Set(planet.FieldUUID, *value)
-	}
 	if value := pu.metal_stock; value != nil {
 		updater.Set(planet.FieldMetalStock, *value)
 	}
@@ -255,9 +269,8 @@ type PlanetUpdateOne struct {
 	id int
 
 	updated_at        *time.Time
-	uuid              *string
-	metal_stock       *int
-	addmetal_stock    *int
+	metal_stock       *int64
+	addmetal_stock    *int64
 	metal_mine        *int
 	addmetal_mine     *int
 	last_metal_update *time.Time
@@ -271,21 +284,23 @@ func (puo *PlanetUpdateOne) SetUpdatedAt(t time.Time) *PlanetUpdateOne {
 	return puo
 }
 
-// SetUUID sets the uuid field.
-func (puo *PlanetUpdateOne) SetUUID(s string) *PlanetUpdateOne {
-	puo.uuid = &s
-	return puo
-}
-
 // SetMetalStock sets the metal_stock field.
-func (puo *PlanetUpdateOne) SetMetalStock(i int) *PlanetUpdateOne {
+func (puo *PlanetUpdateOne) SetMetalStock(i int64) *PlanetUpdateOne {
 	puo.metal_stock = &i
 	puo.addmetal_stock = nil
 	return puo
 }
 
+// SetNillableMetalStock sets the metal_stock field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableMetalStock(i *int64) *PlanetUpdateOne {
+	if i != nil {
+		puo.SetMetalStock(*i)
+	}
+	return puo
+}
+
 // AddMetalStock adds i to metal_stock.
-func (puo *PlanetUpdateOne) AddMetalStock(i int) *PlanetUpdateOne {
+func (puo *PlanetUpdateOne) AddMetalStock(i int64) *PlanetUpdateOne {
 	if puo.addmetal_stock == nil {
 		puo.addmetal_stock = &i
 	} else {
@@ -298,6 +313,14 @@ func (puo *PlanetUpdateOne) AddMetalStock(i int) *PlanetUpdateOne {
 func (puo *PlanetUpdateOne) SetMetalMine(i int) *PlanetUpdateOne {
 	puo.metal_mine = &i
 	puo.addmetal_mine = nil
+	return puo
+}
+
+// SetNillableMetalMine sets the metal_mine field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableMetalMine(i *int) *PlanetUpdateOne {
+	if i != nil {
+		puo.SetMetalMine(*i)
+	}
 	return puo
 }
 
@@ -314,6 +337,14 @@ func (puo *PlanetUpdateOne) AddMetalMine(i int) *PlanetUpdateOne {
 // SetLastMetalUpdate sets the last_metal_update field.
 func (puo *PlanetUpdateOne) SetLastMetalUpdate(t time.Time) *PlanetUpdateOne {
 	puo.last_metal_update = &t
+	return puo
+}
+
+// SetNillableLastMetalUpdate sets the last_metal_update field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableLastMetalUpdate(t *time.Time) *PlanetUpdateOne {
+	if t != nil {
+		puo.SetLastMetalUpdate(*t)
+	}
 	return puo
 }
 
@@ -431,10 +462,6 @@ func (puo *PlanetUpdateOne) sqlSave(ctx context.Context) (pl *Planet, err error)
 	if value := puo.updated_at; value != nil {
 		updater.Set(planet.FieldUpdatedAt, *value)
 		pl.UpdatedAt = *value
-	}
-	if value := puo.uuid; value != nil {
-		updater.Set(planet.FieldUUID, *value)
-		pl.UUID = *value
 	}
 	if value := puo.metal_stock; value != nil {
 		updater.Set(planet.FieldMetalStock, *value)

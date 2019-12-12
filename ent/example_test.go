@@ -34,7 +34,6 @@ func ExamplePlanet() {
 		Create().
 		SetCreatedAt(time.Now()).
 		SetUpdatedAt(time.Now()).
-		SetUUID("string").
 		SetMetalStock(1).
 		SetMetalMine(1).
 		SetLastMetalUpdate(time.Now()).
@@ -87,7 +86,6 @@ func ExampleUser() {
 		Create().
 		SetCreatedAt(time.Now()).
 		SetUpdatedAt(time.Now()).
-		SetUUID("string").
 		SetMetalStock(1).
 		SetMetalMine(1).
 		SetLastMetalUpdate(time.Now()).

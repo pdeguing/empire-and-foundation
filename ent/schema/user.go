@@ -19,11 +19,11 @@ func (User) Mixin() []ent.Mixin {
 func (User) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("username").
-		Unique(),
+			Unique(),
 		field.String("email").
-		Unique(),
+			Unique(),
 		field.String("password").
-		Sensitive(),
+			Sensitive(),
 	}
 }
 
