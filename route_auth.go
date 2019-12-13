@@ -12,14 +12,14 @@ import (
 // GET /login
 // Show the login page
 func login(w http.ResponseWriter, r *http.Request) {
-	generateHTML(w, r, nil, "login.layout", "public.navbar", "flash", "login")
+	generateHTML(w, r, "login", nil, "login.layout", "public.navbar", "flash", "login")
 	forgetForm(r)
 }
 
 // GET /signup
 // Show the signup page
 func signup(w http.ResponseWriter, r *http.Request) {
-	generateHTML(w, r, nil, "login.layout", "public.navbar", "flash", "signup")
+	generateHTML(w, r, "signup", nil, "login.layout", "public.navbar", "flash", "signup")
 	forgetForm(r)
 }
 

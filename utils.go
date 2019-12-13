@@ -60,9 +60,9 @@ func invalidCsrfToken(w http.ResponseWriter, r *http.Request) {
 func respondWithError(w http.ResponseWriter, r *http.Request, userMsg string, code int) {
 	w.WriteHeader(code)
 	if isAuthenticated(r) {
-		generateHTML(w, r, userMsg, "layout", "private.navbar", "error")
+		generateHTML(w, r, "error", userMsg, "layout", "private.navbar", "error")
 	} else {
-		generateHTML(w, r, userMsg, "layout", "public.navbar", "error")
+		generateHTML(w, r, "error", userMsg, "layout", "public.navbar", "error")
 	}
 }
 
@@ -70,13 +70,21 @@ func respondWithError(w http.ResponseWriter, r *http.Request, userMsg string, co
 // Other
 //
 
-func generateHTML(w http.ResponseWriter, r *http.Request, data interface{}, fn ...string) {
+type viewData struct {
+	PageName	string
+	Data		interface{}
+}
+
+func generateHTML(w http.ResponseWriter, r *http.Request, pageName string, data interface{}, fn ...string) {
 	var files []string
 	for _, file := range fn {
 		files = append(files, fmt.Sprintf("templates/%s.html", file))
 	}
 	templates := template.Must(template.New("layout").Funcs(templateFuncs(r)).ParseFiles(files...))
-	err := templates.Execute(w, data)
+	err := templates.Execute(w, viewData{
+		PageName: pageName,
+		Data: data,
+	})
 	if err != nil {
 		danger(err, "unable to render template")
 		// Executing the template doesn't even work so respond

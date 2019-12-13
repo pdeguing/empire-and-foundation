@@ -11,5 +11,5 @@ func index(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/dashboard", 302)
 		return
 	}
-	generateHTML(w, r, nil, "layout", "public.navbar", "index")
+	generateHTML(w, r, "frontpage", nil, "layout", "public.navbar", "index")
 }
