@@ -128,146 +128,29 @@ func UpdatedAt(v time.Time) predicate.Planet {
 	)
 }
 
-// Metal applies equality check predicate on the "metal" field. It's identical to MetalEQ.
-func Metal(v int64) predicate.Planet {
+// MetalStock applies equality check predicate on the "metal_stock" field. It's identical to MetalStockEQ.
+func MetalStock(v int64) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldMetal), v))
+			s.Where(sql.EQ(s.C(FieldMetalStock), v))
 		},
 	)
 }
 
-// Hydrogen applies equality check predicate on the "hydrogen" field. It's identical to HydrogenEQ.
-func Hydrogen(v int64) predicate.Planet {
+// MetalMine applies equality check predicate on the "metal_mine" field. It's identical to MetalMineEQ.
+func MetalMine(v int) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldHydrogen), v))
+			s.Where(sql.EQ(s.C(FieldMetalMine), v))
 		},
 	)
 }
 
-// Population applies equality check predicate on the "population" field. It's identical to PopulationEQ.
-func Population(v int64) predicate.Planet {
+// LastMetalUpdate applies equality check predicate on the "last_metal_update" field. It's identical to LastMetalUpdateEQ.
+func LastMetalUpdate(v time.Time) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldPopulation), v))
-		},
-	)
-}
-
-// MetalLastUpdate applies equality check predicate on the "metal_last_update" field. It's identical to MetalLastUpdateEQ.
-func MetalLastUpdate(v time.Time) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldMetalLastUpdate), v))
-		},
-	)
-}
-
-// MetalProdRate applies equality check predicate on the "metal_prod_rate" field. It's identical to MetalProdRateEQ.
-func MetalProdRate(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldMetalProdRate), v))
-		},
-	)
-}
-
-// HydrogenLastUpdate applies equality check predicate on the "hydrogen_last_update" field. It's identical to HydrogenLastUpdateEQ.
-func HydrogenLastUpdate(v time.Time) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldHydrogenLastUpdate), v))
-		},
-	)
-}
-
-// HydrogenProdRate applies equality check predicate on the "hydrogen_prod_rate" field. It's identical to HydrogenProdRateEQ.
-func HydrogenProdRate(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldHydrogenProdRate), v))
-		},
-	)
-}
-
-// PopulationLastUpdate applies equality check predicate on the "population_last_update" field. It's identical to PopulationLastUpdateEQ.
-func PopulationLastUpdate(v time.Time) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldPopulationLastUpdate), v))
-		},
-	)
-}
-
-// PopulationProdRate applies equality check predicate on the "population_prod_rate" field. It's identical to PopulationProdRateEQ.
-func PopulationProdRate(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldPopulationProdRate), v))
-		},
-	)
-}
-
-// EnergyCons applies equality check predicate on the "energy_cons" field. It's identical to EnergyConsEQ.
-func EnergyCons(v int64) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldEnergyCons), v))
-		},
-	)
-}
-
-// EnergyProd applies equality check predicate on the "energy_prod" field. It's identical to EnergyProdEQ.
-func EnergyProd(v int64) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldEnergyProd), v))
-		},
-	)
-}
-
-// MetalProdLevel applies equality check predicate on the "metal_prod_level" field. It's identical to MetalProdLevelEQ.
-func MetalProdLevel(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldMetalProdLevel), v))
-		},
-	)
-}
-
-// HydrogenProdLevel applies equality check predicate on the "hydrogen_prod_level" field. It's identical to HydrogenProdLevelEQ.
-func HydrogenProdLevel(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldHydrogenProdLevel), v))
-		},
-	)
-}
-
-// EnergyProdLevel applies equality check predicate on the "energy_prod_level" field. It's identical to EnergyProdLevelEQ.
-func EnergyProdLevel(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldEnergyProdLevel), v))
-		},
-	)
-}
-
-// PopulationProdLevel applies equality check predicate on the "population_prod_level" field. It's identical to PopulationProdLevelEQ.
-func PopulationProdLevel(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldPopulationProdLevel), v))
-		},
-	)
-}
-
-// Name applies equality check predicate on the "name" field. It's identical to NameEQ.
-func Name(v string) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldName), v))
+			s.Where(sql.EQ(s.C(FieldLastMetalUpdate), v))
 		},
 	)
 }
@@ -456,26 +339,26 @@ func UpdatedAtLTE(v time.Time) predicate.Planet {
 	)
 }
 
-// MetalEQ applies the EQ predicate on the "metal" field.
-func MetalEQ(v int64) predicate.Planet {
+// MetalStockEQ applies the EQ predicate on the "metal_stock" field.
+func MetalStockEQ(v int64) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldMetal), v))
+			s.Where(sql.EQ(s.C(FieldMetalStock), v))
 		},
 	)
 }
 
-// MetalNEQ applies the NEQ predicate on the "metal" field.
-func MetalNEQ(v int64) predicate.Planet {
+// MetalStockNEQ applies the NEQ predicate on the "metal_stock" field.
+func MetalStockNEQ(v int64) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
-			s.Where(sql.NEQ(s.C(FieldMetal), v))
+			s.Where(sql.NEQ(s.C(FieldMetalStock), v))
 		},
 	)
 }
 
-// MetalIn applies the In predicate on the "metal" field.
-func MetalIn(vs ...int64) predicate.Planet {
+// MetalStockIn applies the In predicate on the "metal_stock" field.
+func MetalStockIn(vs ...int64) predicate.Planet {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -488,13 +371,13 @@ func MetalIn(vs ...int64) predicate.Planet {
 				s.Where(sql.False())
 				return
 			}
-			s.Where(sql.In(s.C(FieldMetal), v...))
+			s.Where(sql.In(s.C(FieldMetalStock), v...))
 		},
 	)
 }
 
-// MetalNotIn applies the NotIn predicate on the "metal" field.
-func MetalNotIn(vs ...int64) predicate.Planet {
+// MetalStockNotIn applies the NotIn predicate on the "metal_stock" field.
+func MetalStockNotIn(vs ...int64) predicate.Planet {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -507,67 +390,67 @@ func MetalNotIn(vs ...int64) predicate.Planet {
 				s.Where(sql.False())
 				return
 			}
-			s.Where(sql.NotIn(s.C(FieldMetal), v...))
+			s.Where(sql.NotIn(s.C(FieldMetalStock), v...))
 		},
 	)
 }
 
-// MetalGT applies the GT predicate on the "metal" field.
-func MetalGT(v int64) predicate.Planet {
+// MetalStockGT applies the GT predicate on the "metal_stock" field.
+func MetalStockGT(v int64) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
-			s.Where(sql.GT(s.C(FieldMetal), v))
+			s.Where(sql.GT(s.C(FieldMetalStock), v))
 		},
 	)
 }
 
-// MetalGTE applies the GTE predicate on the "metal" field.
-func MetalGTE(v int64) predicate.Planet {
+// MetalStockGTE applies the GTE predicate on the "metal_stock" field.
+func MetalStockGTE(v int64) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
-			s.Where(sql.GTE(s.C(FieldMetal), v))
+			s.Where(sql.GTE(s.C(FieldMetalStock), v))
 		},
 	)
 }
 
-// MetalLT applies the LT predicate on the "metal" field.
-func MetalLT(v int64) predicate.Planet {
+// MetalStockLT applies the LT predicate on the "metal_stock" field.
+func MetalStockLT(v int64) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
-			s.Where(sql.LT(s.C(FieldMetal), v))
+			s.Where(sql.LT(s.C(FieldMetalStock), v))
 		},
 	)
 }
 
-// MetalLTE applies the LTE predicate on the "metal" field.
-func MetalLTE(v int64) predicate.Planet {
+// MetalStockLTE applies the LTE predicate on the "metal_stock" field.
+func MetalStockLTE(v int64) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
-			s.Where(sql.LTE(s.C(FieldMetal), v))
+			s.Where(sql.LTE(s.C(FieldMetalStock), v))
 		},
 	)
 }
 
-// HydrogenEQ applies the EQ predicate on the "hydrogen" field.
-func HydrogenEQ(v int64) predicate.Planet {
+// MetalMineEQ applies the EQ predicate on the "metal_mine" field.
+func MetalMineEQ(v int) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldHydrogen), v))
+			s.Where(sql.EQ(s.C(FieldMetalMine), v))
 		},
 	)
 }
 
-// HydrogenNEQ applies the NEQ predicate on the "hydrogen" field.
-func HydrogenNEQ(v int64) predicate.Planet {
+// MetalMineNEQ applies the NEQ predicate on the "metal_mine" field.
+func MetalMineNEQ(v int) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
-			s.Where(sql.NEQ(s.C(FieldHydrogen), v))
+			s.Where(sql.NEQ(s.C(FieldMetalMine), v))
 		},
 	)
 }
 
-// HydrogenIn applies the In predicate on the "hydrogen" field.
-func HydrogenIn(vs ...int64) predicate.Planet {
+// MetalMineIn applies the In predicate on the "metal_mine" field.
+func MetalMineIn(vs ...int) predicate.Planet {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -580,13 +463,13 @@ func HydrogenIn(vs ...int64) predicate.Planet {
 				s.Where(sql.False())
 				return
 			}
-			s.Where(sql.In(s.C(FieldHydrogen), v...))
+			s.Where(sql.In(s.C(FieldMetalMine), v...))
 		},
 	)
 }
 
-// HydrogenNotIn applies the NotIn predicate on the "hydrogen" field.
-func HydrogenNotIn(vs ...int64) predicate.Planet {
+// MetalMineNotIn applies the NotIn predicate on the "metal_mine" field.
+func MetalMineNotIn(vs ...int) predicate.Planet {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -599,67 +482,67 @@ func HydrogenNotIn(vs ...int64) predicate.Planet {
 				s.Where(sql.False())
 				return
 			}
-			s.Where(sql.NotIn(s.C(FieldHydrogen), v...))
+			s.Where(sql.NotIn(s.C(FieldMetalMine), v...))
 		},
 	)
 }
 
-// HydrogenGT applies the GT predicate on the "hydrogen" field.
-func HydrogenGT(v int64) predicate.Planet {
+// MetalMineGT applies the GT predicate on the "metal_mine" field.
+func MetalMineGT(v int) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
-			s.Where(sql.GT(s.C(FieldHydrogen), v))
+			s.Where(sql.GT(s.C(FieldMetalMine), v))
 		},
 	)
 }
 
-// HydrogenGTE applies the GTE predicate on the "hydrogen" field.
-func HydrogenGTE(v int64) predicate.Planet {
+// MetalMineGTE applies the GTE predicate on the "metal_mine" field.
+func MetalMineGTE(v int) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
-			s.Where(sql.GTE(s.C(FieldHydrogen), v))
+			s.Where(sql.GTE(s.C(FieldMetalMine), v))
 		},
 	)
 }
 
-// HydrogenLT applies the LT predicate on the "hydrogen" field.
-func HydrogenLT(v int64) predicate.Planet {
+// MetalMineLT applies the LT predicate on the "metal_mine" field.
+func MetalMineLT(v int) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
-			s.Where(sql.LT(s.C(FieldHydrogen), v))
+			s.Where(sql.LT(s.C(FieldMetalMine), v))
 		},
 	)
 }
 
-// HydrogenLTE applies the LTE predicate on the "hydrogen" field.
-func HydrogenLTE(v int64) predicate.Planet {
+// MetalMineLTE applies the LTE predicate on the "metal_mine" field.
+func MetalMineLTE(v int) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
-			s.Where(sql.LTE(s.C(FieldHydrogen), v))
+			s.Where(sql.LTE(s.C(FieldMetalMine), v))
 		},
 	)
 }
 
-// PopulationEQ applies the EQ predicate on the "population" field.
-func PopulationEQ(v int64) predicate.Planet {
+// LastMetalUpdateEQ applies the EQ predicate on the "last_metal_update" field.
+func LastMetalUpdateEQ(v time.Time) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldPopulation), v))
+			s.Where(sql.EQ(s.C(FieldLastMetalUpdate), v))
 		},
 	)
 }
 
-// PopulationNEQ applies the NEQ predicate on the "population" field.
-func PopulationNEQ(v int64) predicate.Planet {
+// LastMetalUpdateNEQ applies the NEQ predicate on the "last_metal_update" field.
+func LastMetalUpdateNEQ(v time.Time) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
-			s.Where(sql.NEQ(s.C(FieldPopulation), v))
+			s.Where(sql.NEQ(s.C(FieldLastMetalUpdate), v))
 		},
 	)
 }
 
-// PopulationIn applies the In predicate on the "population" field.
-func PopulationIn(vs ...int64) predicate.Planet {
+// LastMetalUpdateIn applies the In predicate on the "last_metal_update" field.
+func LastMetalUpdateIn(vs ...time.Time) predicate.Planet {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -672,13 +555,13 @@ func PopulationIn(vs ...int64) predicate.Planet {
 				s.Where(sql.False())
 				return
 			}
-			s.Where(sql.In(s.C(FieldPopulation), v...))
+			s.Where(sql.In(s.C(FieldLastMetalUpdate), v...))
 		},
 	)
 }
 
-// PopulationNotIn applies the NotIn predicate on the "population" field.
-func PopulationNotIn(vs ...int64) predicate.Planet {
+// LastMetalUpdateNotIn applies the NotIn predicate on the "last_metal_update" field.
+func LastMetalUpdateNotIn(vs ...time.Time) predicate.Planet {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -691,1284 +574,43 @@ func PopulationNotIn(vs ...int64) predicate.Planet {
 				s.Where(sql.False())
 				return
 			}
-			s.Where(sql.NotIn(s.C(FieldPopulation), v...))
+			s.Where(sql.NotIn(s.C(FieldLastMetalUpdate), v...))
 		},
 	)
 }
 
-// PopulationGT applies the GT predicate on the "population" field.
-func PopulationGT(v int64) predicate.Planet {
+// LastMetalUpdateGT applies the GT predicate on the "last_metal_update" field.
+func LastMetalUpdateGT(v time.Time) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
-			s.Where(sql.GT(s.C(FieldPopulation), v))
+			s.Where(sql.GT(s.C(FieldLastMetalUpdate), v))
 		},
 	)
 }
 
-// PopulationGTE applies the GTE predicate on the "population" field.
-func PopulationGTE(v int64) predicate.Planet {
+// LastMetalUpdateGTE applies the GTE predicate on the "last_metal_update" field.
+func LastMetalUpdateGTE(v time.Time) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
-			s.Where(sql.GTE(s.C(FieldPopulation), v))
+			s.Where(sql.GTE(s.C(FieldLastMetalUpdate), v))
 		},
 	)
 }
 
-// PopulationLT applies the LT predicate on the "population" field.
-func PopulationLT(v int64) predicate.Planet {
+// LastMetalUpdateLT applies the LT predicate on the "last_metal_update" field.
+func LastMetalUpdateLT(v time.Time) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
-			s.Where(sql.LT(s.C(FieldPopulation), v))
+			s.Where(sql.LT(s.C(FieldLastMetalUpdate), v))
 		},
 	)
 }
 
-// PopulationLTE applies the LTE predicate on the "population" field.
-func PopulationLTE(v int64) predicate.Planet {
+// LastMetalUpdateLTE applies the LTE predicate on the "last_metal_update" field.
+func LastMetalUpdateLTE(v time.Time) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
-			s.Where(sql.LTE(s.C(FieldPopulation), v))
-		},
-	)
-}
-
-// MetalLastUpdateEQ applies the EQ predicate on the "metal_last_update" field.
-func MetalLastUpdateEQ(v time.Time) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldMetalLastUpdate), v))
-		},
-	)
-}
-
-// MetalLastUpdateNEQ applies the NEQ predicate on the "metal_last_update" field.
-func MetalLastUpdateNEQ(v time.Time) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.NEQ(s.C(FieldMetalLastUpdate), v))
-		},
-	)
-}
-
-// MetalLastUpdateIn applies the In predicate on the "metal_last_update" field.
-func MetalLastUpdateIn(vs ...time.Time) predicate.Planet {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.In(s.C(FieldMetalLastUpdate), v...))
-		},
-	)
-}
-
-// MetalLastUpdateNotIn applies the NotIn predicate on the "metal_last_update" field.
-func MetalLastUpdateNotIn(vs ...time.Time) predicate.Planet {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.NotIn(s.C(FieldMetalLastUpdate), v...))
-		},
-	)
-}
-
-// MetalLastUpdateGT applies the GT predicate on the "metal_last_update" field.
-func MetalLastUpdateGT(v time.Time) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.GT(s.C(FieldMetalLastUpdate), v))
-		},
-	)
-}
-
-// MetalLastUpdateGTE applies the GTE predicate on the "metal_last_update" field.
-func MetalLastUpdateGTE(v time.Time) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.GTE(s.C(FieldMetalLastUpdate), v))
-		},
-	)
-}
-
-// MetalLastUpdateLT applies the LT predicate on the "metal_last_update" field.
-func MetalLastUpdateLT(v time.Time) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.LT(s.C(FieldMetalLastUpdate), v))
-		},
-	)
-}
-
-// MetalLastUpdateLTE applies the LTE predicate on the "metal_last_update" field.
-func MetalLastUpdateLTE(v time.Time) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.LTE(s.C(FieldMetalLastUpdate), v))
-		},
-	)
-}
-
-// MetalProdRateEQ applies the EQ predicate on the "metal_prod_rate" field.
-func MetalProdRateEQ(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldMetalProdRate), v))
-		},
-	)
-}
-
-// MetalProdRateNEQ applies the NEQ predicate on the "metal_prod_rate" field.
-func MetalProdRateNEQ(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.NEQ(s.C(FieldMetalProdRate), v))
-		},
-	)
-}
-
-// MetalProdRateIn applies the In predicate on the "metal_prod_rate" field.
-func MetalProdRateIn(vs ...int) predicate.Planet {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.In(s.C(FieldMetalProdRate), v...))
-		},
-	)
-}
-
-// MetalProdRateNotIn applies the NotIn predicate on the "metal_prod_rate" field.
-func MetalProdRateNotIn(vs ...int) predicate.Planet {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.NotIn(s.C(FieldMetalProdRate), v...))
-		},
-	)
-}
-
-// MetalProdRateGT applies the GT predicate on the "metal_prod_rate" field.
-func MetalProdRateGT(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.GT(s.C(FieldMetalProdRate), v))
-		},
-	)
-}
-
-// MetalProdRateGTE applies the GTE predicate on the "metal_prod_rate" field.
-func MetalProdRateGTE(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.GTE(s.C(FieldMetalProdRate), v))
-		},
-	)
-}
-
-// MetalProdRateLT applies the LT predicate on the "metal_prod_rate" field.
-func MetalProdRateLT(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.LT(s.C(FieldMetalProdRate), v))
-		},
-	)
-}
-
-// MetalProdRateLTE applies the LTE predicate on the "metal_prod_rate" field.
-func MetalProdRateLTE(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.LTE(s.C(FieldMetalProdRate), v))
-		},
-	)
-}
-
-// HydrogenLastUpdateEQ applies the EQ predicate on the "hydrogen_last_update" field.
-func HydrogenLastUpdateEQ(v time.Time) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldHydrogenLastUpdate), v))
-		},
-	)
-}
-
-// HydrogenLastUpdateNEQ applies the NEQ predicate on the "hydrogen_last_update" field.
-func HydrogenLastUpdateNEQ(v time.Time) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.NEQ(s.C(FieldHydrogenLastUpdate), v))
-		},
-	)
-}
-
-// HydrogenLastUpdateIn applies the In predicate on the "hydrogen_last_update" field.
-func HydrogenLastUpdateIn(vs ...time.Time) predicate.Planet {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.In(s.C(FieldHydrogenLastUpdate), v...))
-		},
-	)
-}
-
-// HydrogenLastUpdateNotIn applies the NotIn predicate on the "hydrogen_last_update" field.
-func HydrogenLastUpdateNotIn(vs ...time.Time) predicate.Planet {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.NotIn(s.C(FieldHydrogenLastUpdate), v...))
-		},
-	)
-}
-
-// HydrogenLastUpdateGT applies the GT predicate on the "hydrogen_last_update" field.
-func HydrogenLastUpdateGT(v time.Time) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.GT(s.C(FieldHydrogenLastUpdate), v))
-		},
-	)
-}
-
-// HydrogenLastUpdateGTE applies the GTE predicate on the "hydrogen_last_update" field.
-func HydrogenLastUpdateGTE(v time.Time) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.GTE(s.C(FieldHydrogenLastUpdate), v))
-		},
-	)
-}
-
-// HydrogenLastUpdateLT applies the LT predicate on the "hydrogen_last_update" field.
-func HydrogenLastUpdateLT(v time.Time) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.LT(s.C(FieldHydrogenLastUpdate), v))
-		},
-	)
-}
-
-// HydrogenLastUpdateLTE applies the LTE predicate on the "hydrogen_last_update" field.
-func HydrogenLastUpdateLTE(v time.Time) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.LTE(s.C(FieldHydrogenLastUpdate), v))
-		},
-	)
-}
-
-// HydrogenProdRateEQ applies the EQ predicate on the "hydrogen_prod_rate" field.
-func HydrogenProdRateEQ(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldHydrogenProdRate), v))
-		},
-	)
-}
-
-// HydrogenProdRateNEQ applies the NEQ predicate on the "hydrogen_prod_rate" field.
-func HydrogenProdRateNEQ(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.NEQ(s.C(FieldHydrogenProdRate), v))
-		},
-	)
-}
-
-// HydrogenProdRateIn applies the In predicate on the "hydrogen_prod_rate" field.
-func HydrogenProdRateIn(vs ...int) predicate.Planet {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.In(s.C(FieldHydrogenProdRate), v...))
-		},
-	)
-}
-
-// HydrogenProdRateNotIn applies the NotIn predicate on the "hydrogen_prod_rate" field.
-func HydrogenProdRateNotIn(vs ...int) predicate.Planet {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.NotIn(s.C(FieldHydrogenProdRate), v...))
-		},
-	)
-}
-
-// HydrogenProdRateGT applies the GT predicate on the "hydrogen_prod_rate" field.
-func HydrogenProdRateGT(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.GT(s.C(FieldHydrogenProdRate), v))
-		},
-	)
-}
-
-// HydrogenProdRateGTE applies the GTE predicate on the "hydrogen_prod_rate" field.
-func HydrogenProdRateGTE(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.GTE(s.C(FieldHydrogenProdRate), v))
-		},
-	)
-}
-
-// HydrogenProdRateLT applies the LT predicate on the "hydrogen_prod_rate" field.
-func HydrogenProdRateLT(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.LT(s.C(FieldHydrogenProdRate), v))
-		},
-	)
-}
-
-// HydrogenProdRateLTE applies the LTE predicate on the "hydrogen_prod_rate" field.
-func HydrogenProdRateLTE(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.LTE(s.C(FieldHydrogenProdRate), v))
-		},
-	)
-}
-
-// PopulationLastUpdateEQ applies the EQ predicate on the "population_last_update" field.
-func PopulationLastUpdateEQ(v time.Time) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldPopulationLastUpdate), v))
-		},
-	)
-}
-
-// PopulationLastUpdateNEQ applies the NEQ predicate on the "population_last_update" field.
-func PopulationLastUpdateNEQ(v time.Time) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.NEQ(s.C(FieldPopulationLastUpdate), v))
-		},
-	)
-}
-
-// PopulationLastUpdateIn applies the In predicate on the "population_last_update" field.
-func PopulationLastUpdateIn(vs ...time.Time) predicate.Planet {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.In(s.C(FieldPopulationLastUpdate), v...))
-		},
-	)
-}
-
-// PopulationLastUpdateNotIn applies the NotIn predicate on the "population_last_update" field.
-func PopulationLastUpdateNotIn(vs ...time.Time) predicate.Planet {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.NotIn(s.C(FieldPopulationLastUpdate), v...))
-		},
-	)
-}
-
-// PopulationLastUpdateGT applies the GT predicate on the "population_last_update" field.
-func PopulationLastUpdateGT(v time.Time) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.GT(s.C(FieldPopulationLastUpdate), v))
-		},
-	)
-}
-
-// PopulationLastUpdateGTE applies the GTE predicate on the "population_last_update" field.
-func PopulationLastUpdateGTE(v time.Time) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.GTE(s.C(FieldPopulationLastUpdate), v))
-		},
-	)
-}
-
-// PopulationLastUpdateLT applies the LT predicate on the "population_last_update" field.
-func PopulationLastUpdateLT(v time.Time) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.LT(s.C(FieldPopulationLastUpdate), v))
-		},
-	)
-}
-
-// PopulationLastUpdateLTE applies the LTE predicate on the "population_last_update" field.
-func PopulationLastUpdateLTE(v time.Time) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.LTE(s.C(FieldPopulationLastUpdate), v))
-		},
-	)
-}
-
-// PopulationProdRateEQ applies the EQ predicate on the "population_prod_rate" field.
-func PopulationProdRateEQ(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldPopulationProdRate), v))
-		},
-	)
-}
-
-// PopulationProdRateNEQ applies the NEQ predicate on the "population_prod_rate" field.
-func PopulationProdRateNEQ(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.NEQ(s.C(FieldPopulationProdRate), v))
-		},
-	)
-}
-
-// PopulationProdRateIn applies the In predicate on the "population_prod_rate" field.
-func PopulationProdRateIn(vs ...int) predicate.Planet {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.In(s.C(FieldPopulationProdRate), v...))
-		},
-	)
-}
-
-// PopulationProdRateNotIn applies the NotIn predicate on the "population_prod_rate" field.
-func PopulationProdRateNotIn(vs ...int) predicate.Planet {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.NotIn(s.C(FieldPopulationProdRate), v...))
-		},
-	)
-}
-
-// PopulationProdRateGT applies the GT predicate on the "population_prod_rate" field.
-func PopulationProdRateGT(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.GT(s.C(FieldPopulationProdRate), v))
-		},
-	)
-}
-
-// PopulationProdRateGTE applies the GTE predicate on the "population_prod_rate" field.
-func PopulationProdRateGTE(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.GTE(s.C(FieldPopulationProdRate), v))
-		},
-	)
-}
-
-// PopulationProdRateLT applies the LT predicate on the "population_prod_rate" field.
-func PopulationProdRateLT(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.LT(s.C(FieldPopulationProdRate), v))
-		},
-	)
-}
-
-// PopulationProdRateLTE applies the LTE predicate on the "population_prod_rate" field.
-func PopulationProdRateLTE(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.LTE(s.C(FieldPopulationProdRate), v))
-		},
-	)
-}
-
-// EnergyConsEQ applies the EQ predicate on the "energy_cons" field.
-func EnergyConsEQ(v int64) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldEnergyCons), v))
-		},
-	)
-}
-
-// EnergyConsNEQ applies the NEQ predicate on the "energy_cons" field.
-func EnergyConsNEQ(v int64) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.NEQ(s.C(FieldEnergyCons), v))
-		},
-	)
-}
-
-// EnergyConsIn applies the In predicate on the "energy_cons" field.
-func EnergyConsIn(vs ...int64) predicate.Planet {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.In(s.C(FieldEnergyCons), v...))
-		},
-	)
-}
-
-// EnergyConsNotIn applies the NotIn predicate on the "energy_cons" field.
-func EnergyConsNotIn(vs ...int64) predicate.Planet {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.NotIn(s.C(FieldEnergyCons), v...))
-		},
-	)
-}
-
-// EnergyConsGT applies the GT predicate on the "energy_cons" field.
-func EnergyConsGT(v int64) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.GT(s.C(FieldEnergyCons), v))
-		},
-	)
-}
-
-// EnergyConsGTE applies the GTE predicate on the "energy_cons" field.
-func EnergyConsGTE(v int64) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.GTE(s.C(FieldEnergyCons), v))
-		},
-	)
-}
-
-// EnergyConsLT applies the LT predicate on the "energy_cons" field.
-func EnergyConsLT(v int64) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.LT(s.C(FieldEnergyCons), v))
-		},
-	)
-}
-
-// EnergyConsLTE applies the LTE predicate on the "energy_cons" field.
-func EnergyConsLTE(v int64) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.LTE(s.C(FieldEnergyCons), v))
-		},
-	)
-}
-
-// EnergyProdEQ applies the EQ predicate on the "energy_prod" field.
-func EnergyProdEQ(v int64) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldEnergyProd), v))
-		},
-	)
-}
-
-// EnergyProdNEQ applies the NEQ predicate on the "energy_prod" field.
-func EnergyProdNEQ(v int64) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.NEQ(s.C(FieldEnergyProd), v))
-		},
-	)
-}
-
-// EnergyProdIn applies the In predicate on the "energy_prod" field.
-func EnergyProdIn(vs ...int64) predicate.Planet {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.In(s.C(FieldEnergyProd), v...))
-		},
-	)
-}
-
-// EnergyProdNotIn applies the NotIn predicate on the "energy_prod" field.
-func EnergyProdNotIn(vs ...int64) predicate.Planet {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.NotIn(s.C(FieldEnergyProd), v...))
-		},
-	)
-}
-
-// EnergyProdGT applies the GT predicate on the "energy_prod" field.
-func EnergyProdGT(v int64) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.GT(s.C(FieldEnergyProd), v))
-		},
-	)
-}
-
-// EnergyProdGTE applies the GTE predicate on the "energy_prod" field.
-func EnergyProdGTE(v int64) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.GTE(s.C(FieldEnergyProd), v))
-		},
-	)
-}
-
-// EnergyProdLT applies the LT predicate on the "energy_prod" field.
-func EnergyProdLT(v int64) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.LT(s.C(FieldEnergyProd), v))
-		},
-	)
-}
-
-// EnergyProdLTE applies the LTE predicate on the "energy_prod" field.
-func EnergyProdLTE(v int64) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.LTE(s.C(FieldEnergyProd), v))
-		},
-	)
-}
-
-// MetalProdLevelEQ applies the EQ predicate on the "metal_prod_level" field.
-func MetalProdLevelEQ(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldMetalProdLevel), v))
-		},
-	)
-}
-
-// MetalProdLevelNEQ applies the NEQ predicate on the "metal_prod_level" field.
-func MetalProdLevelNEQ(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.NEQ(s.C(FieldMetalProdLevel), v))
-		},
-	)
-}
-
-// MetalProdLevelIn applies the In predicate on the "metal_prod_level" field.
-func MetalProdLevelIn(vs ...int) predicate.Planet {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.In(s.C(FieldMetalProdLevel), v...))
-		},
-	)
-}
-
-// MetalProdLevelNotIn applies the NotIn predicate on the "metal_prod_level" field.
-func MetalProdLevelNotIn(vs ...int) predicate.Planet {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.NotIn(s.C(FieldMetalProdLevel), v...))
-		},
-	)
-}
-
-// MetalProdLevelGT applies the GT predicate on the "metal_prod_level" field.
-func MetalProdLevelGT(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.GT(s.C(FieldMetalProdLevel), v))
-		},
-	)
-}
-
-// MetalProdLevelGTE applies the GTE predicate on the "metal_prod_level" field.
-func MetalProdLevelGTE(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.GTE(s.C(FieldMetalProdLevel), v))
-		},
-	)
-}
-
-// MetalProdLevelLT applies the LT predicate on the "metal_prod_level" field.
-func MetalProdLevelLT(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.LT(s.C(FieldMetalProdLevel), v))
-		},
-	)
-}
-
-// MetalProdLevelLTE applies the LTE predicate on the "metal_prod_level" field.
-func MetalProdLevelLTE(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.LTE(s.C(FieldMetalProdLevel), v))
-		},
-	)
-}
-
-// HydrogenProdLevelEQ applies the EQ predicate on the "hydrogen_prod_level" field.
-func HydrogenProdLevelEQ(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldHydrogenProdLevel), v))
-		},
-	)
-}
-
-// HydrogenProdLevelNEQ applies the NEQ predicate on the "hydrogen_prod_level" field.
-func HydrogenProdLevelNEQ(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.NEQ(s.C(FieldHydrogenProdLevel), v))
-		},
-	)
-}
-
-// HydrogenProdLevelIn applies the In predicate on the "hydrogen_prod_level" field.
-func HydrogenProdLevelIn(vs ...int) predicate.Planet {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.In(s.C(FieldHydrogenProdLevel), v...))
-		},
-	)
-}
-
-// HydrogenProdLevelNotIn applies the NotIn predicate on the "hydrogen_prod_level" field.
-func HydrogenProdLevelNotIn(vs ...int) predicate.Planet {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.NotIn(s.C(FieldHydrogenProdLevel), v...))
-		},
-	)
-}
-
-// HydrogenProdLevelGT applies the GT predicate on the "hydrogen_prod_level" field.
-func HydrogenProdLevelGT(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.GT(s.C(FieldHydrogenProdLevel), v))
-		},
-	)
-}
-
-// HydrogenProdLevelGTE applies the GTE predicate on the "hydrogen_prod_level" field.
-func HydrogenProdLevelGTE(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.GTE(s.C(FieldHydrogenProdLevel), v))
-		},
-	)
-}
-
-// HydrogenProdLevelLT applies the LT predicate on the "hydrogen_prod_level" field.
-func HydrogenProdLevelLT(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.LT(s.C(FieldHydrogenProdLevel), v))
-		},
-	)
-}
-
-// HydrogenProdLevelLTE applies the LTE predicate on the "hydrogen_prod_level" field.
-func HydrogenProdLevelLTE(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.LTE(s.C(FieldHydrogenProdLevel), v))
-		},
-	)
-}
-
-// EnergyProdLevelEQ applies the EQ predicate on the "energy_prod_level" field.
-func EnergyProdLevelEQ(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldEnergyProdLevel), v))
-		},
-	)
-}
-
-// EnergyProdLevelNEQ applies the NEQ predicate on the "energy_prod_level" field.
-func EnergyProdLevelNEQ(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.NEQ(s.C(FieldEnergyProdLevel), v))
-		},
-	)
-}
-
-// EnergyProdLevelIn applies the In predicate on the "energy_prod_level" field.
-func EnergyProdLevelIn(vs ...int) predicate.Planet {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.In(s.C(FieldEnergyProdLevel), v...))
-		},
-	)
-}
-
-// EnergyProdLevelNotIn applies the NotIn predicate on the "energy_prod_level" field.
-func EnergyProdLevelNotIn(vs ...int) predicate.Planet {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.NotIn(s.C(FieldEnergyProdLevel), v...))
-		},
-	)
-}
-
-// EnergyProdLevelGT applies the GT predicate on the "energy_prod_level" field.
-func EnergyProdLevelGT(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.GT(s.C(FieldEnergyProdLevel), v))
-		},
-	)
-}
-
-// EnergyProdLevelGTE applies the GTE predicate on the "energy_prod_level" field.
-func EnergyProdLevelGTE(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.GTE(s.C(FieldEnergyProdLevel), v))
-		},
-	)
-}
-
-// EnergyProdLevelLT applies the LT predicate on the "energy_prod_level" field.
-func EnergyProdLevelLT(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.LT(s.C(FieldEnergyProdLevel), v))
-		},
-	)
-}
-
-// EnergyProdLevelLTE applies the LTE predicate on the "energy_prod_level" field.
-func EnergyProdLevelLTE(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.LTE(s.C(FieldEnergyProdLevel), v))
-		},
-	)
-}
-
-// PopulationProdLevelEQ applies the EQ predicate on the "population_prod_level" field.
-func PopulationProdLevelEQ(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldPopulationProdLevel), v))
-		},
-	)
-}
-
-// PopulationProdLevelNEQ applies the NEQ predicate on the "population_prod_level" field.
-func PopulationProdLevelNEQ(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.NEQ(s.C(FieldPopulationProdLevel), v))
-		},
-	)
-}
-
-// PopulationProdLevelIn applies the In predicate on the "population_prod_level" field.
-func PopulationProdLevelIn(vs ...int) predicate.Planet {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.In(s.C(FieldPopulationProdLevel), v...))
-		},
-	)
-}
-
-// PopulationProdLevelNotIn applies the NotIn predicate on the "population_prod_level" field.
-func PopulationProdLevelNotIn(vs ...int) predicate.Planet {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.NotIn(s.C(FieldPopulationProdLevel), v...))
-		},
-	)
-}
-
-// PopulationProdLevelGT applies the GT predicate on the "population_prod_level" field.
-func PopulationProdLevelGT(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.GT(s.C(FieldPopulationProdLevel), v))
-		},
-	)
-}
-
-// PopulationProdLevelGTE applies the GTE predicate on the "population_prod_level" field.
-func PopulationProdLevelGTE(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.GTE(s.C(FieldPopulationProdLevel), v))
-		},
-	)
-}
-
-// PopulationProdLevelLT applies the LT predicate on the "population_prod_level" field.
-func PopulationProdLevelLT(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.LT(s.C(FieldPopulationProdLevel), v))
-		},
-	)
-}
-
-// PopulationProdLevelLTE applies the LTE predicate on the "population_prod_level" field.
-func PopulationProdLevelLTE(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.LTE(s.C(FieldPopulationProdLevel), v))
-		},
-	)
-}
-
-// NameEQ applies the EQ predicate on the "name" field.
-func NameEQ(v string) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldName), v))
-		},
-	)
-}
-
-// NameNEQ applies the NEQ predicate on the "name" field.
-func NameNEQ(v string) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.NEQ(s.C(FieldName), v))
-		},
-	)
-}
-
-// NameIn applies the In predicate on the "name" field.
-func NameIn(vs ...string) predicate.Planet {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.In(s.C(FieldName), v...))
-		},
-	)
-}
-
-// NameNotIn applies the NotIn predicate on the "name" field.
-func NameNotIn(vs ...string) predicate.Planet {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.NotIn(s.C(FieldName), v...))
-		},
-	)
-}
-
-// NameGT applies the GT predicate on the "name" field.
-func NameGT(v string) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.GT(s.C(FieldName), v))
-		},
-	)
-}
-
-// NameGTE applies the GTE predicate on the "name" field.
-func NameGTE(v string) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.GTE(s.C(FieldName), v))
-		},
-	)
-}
-
-// NameLT applies the LT predicate on the "name" field.
-func NameLT(v string) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.LT(s.C(FieldName), v))
-		},
-	)
-}
-
-// NameLTE applies the LTE predicate on the "name" field.
-func NameLTE(v string) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.LTE(s.C(FieldName), v))
-		},
-	)
-}
-
-// NameContains applies the Contains predicate on the "name" field.
-func NameContains(v string) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.Contains(s.C(FieldName), v))
-		},
-	)
-}
-
-// NameHasPrefix applies the HasPrefix predicate on the "name" field.
-func NameHasPrefix(v string) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.HasPrefix(s.C(FieldName), v))
-		},
-	)
-}
-
-// NameHasSuffix applies the HasSuffix predicate on the "name" field.
-func NameHasSuffix(v string) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.HasSuffix(s.C(FieldName), v))
-		},
-	)
-}
-
-// NameEqualFold applies the EqualFold predicate on the "name" field.
-func NameEqualFold(v string) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.EqualFold(s.C(FieldName), v))
-		},
-	)
-}
-
-// NameContainsFold applies the ContainsFold predicate on the "name" field.
-func NameContainsFold(v string) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.ContainsFold(s.C(FieldName), v))
+			s.Where(sql.LTE(s.C(FieldLastMetalUpdate), v))
 		},
 	)
 }
