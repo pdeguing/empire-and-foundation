@@ -15,22 +15,9 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "metal", Type: field.TypeInt64, Default: planet.DefaultMetal},
-		{Name: "hydrogen", Type: field.TypeInt64, Default: planet.DefaultHydrogen},
-		{Name: "population", Type: field.TypeInt64, Default: planet.DefaultPopulation},
-		{Name: "metal_last_update", Type: field.TypeTime},
-		{Name: "metal_prod_rate", Type: field.TypeInt, Default: planet.DefaultMetalProdRate},
-		{Name: "hydrogen_last_update", Type: field.TypeTime},
-		{Name: "hydrogen_prod_rate", Type: field.TypeInt, Default: planet.DefaultHydrogenProdRate},
-		{Name: "population_last_update", Type: field.TypeTime},
-		{Name: "population_prod_rate", Type: field.TypeInt, Default: planet.DefaultPopulationProdRate},
-		{Name: "energy_cons", Type: field.TypeInt64, Default: planet.DefaultEnergyCons},
-		{Name: "energy_prod", Type: field.TypeInt64, Default: planet.DefaultEnergyProd},
-		{Name: "metal_prod_level", Type: field.TypeInt, Default: planet.DefaultMetalProdLevel},
-		{Name: "hydrogen_prod_level", Type: field.TypeInt, Default: planet.DefaultHydrogenProdLevel},
-		{Name: "energy_prod_level", Type: field.TypeInt, Default: planet.DefaultEnergyProdLevel},
-		{Name: "population_prod_level", Type: field.TypeInt, Default: planet.DefaultPopulationProdLevel},
-		{Name: "name", Type: field.TypeString, Default: planet.DefaultName},
+		{Name: "metal_stock", Type: field.TypeInt64, Default: planet.DefaultMetalStock},
+		{Name: "metal_mine", Type: field.TypeInt, Default: planet.DefaultMetalMine},
+		{Name: "last_metal_update", Type: field.TypeTime},
 		{Name: "owner_id", Type: field.TypeInt, Nullable: true},
 	}
 	// PlanetsTable holds the schema information for the "planets" table.
@@ -41,7 +28,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:  "planets_users_planets",
-				Columns: []*schema.Column{PlanetsColumns[19]},
+				Columns: []*schema.Column{PlanetsColumns[6]},
 
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,
