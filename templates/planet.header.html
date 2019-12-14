@@ -14,23 +14,23 @@
 		<div>
 			<p>
 				<span class="is-size-7">Metal</span>
-				<span class="title is-6">{{ quantity .Data.MetalStock }}</span>
+				<span class="title is-6">{{ quantity .Data.Metal }}</span>
 			</p>
 		</div>
 	</div>
 	<div class="level-item has-text-centered">
 		<div>
 			<p>
-				<span class="is-size-7">Tritium</span>
-				<span class="title is-6">{{ quantity .Data.MetalStock }}</span>
+				<span class="is-size-7">Hydrogen</span>
+				<span class="title is-6">{{ quantity .Data.Hydrogen }}</span>
 			</p>
 		</div>
 	</div>
 	<div class="level-item has-text-centered">
 		<div>
 			<p>
-				<span class="is-size-7">Water</span>
-				<span class="title is-6">306/420</span>
+				<span class="is-size-7">Silica</span>
+				<span class="title is-6">{{ quantity .Data.Silica }}</span>
 			</p>
 		</div>
 	</div>
@@ -38,7 +38,7 @@
 		<div>
 			<p>
 				<span class="is-size-7">Population</span>
-				<span class="title is-6">{{ quantity 3e5 }}</span>
+				<span class="title is-6">{{ quantity .Data.Population }}</span>
 			</p>
 		</div>
 	</div>
@@ -46,7 +46,7 @@
 		<div>
 			<p>
 				<span class="is-size-7">Energy</span>
-				<span class="title is-6">1276/1700</span>
+				<span class="title is-6">{{ quantity .Data.EnergyCons }}/{{ quantity .Data.EnergyProd }}</span>
 			</p>
 		</div>
 	</div>
