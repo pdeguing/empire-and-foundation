@@ -21,34 +21,50 @@ type Planet struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// Metal holds the value of the "metal" field.
 	Metal int64 `json:"metal,omitempty"`
-	// Hydrogen holds the value of the "hydrogen" field.
-	Hydrogen int64 `json:"hydrogen,omitempty"`
-	// Population holds the value of the "population" field.
-	Population int64 `json:"population,omitempty"`
 	// MetalLastUpdate holds the value of the "metal_last_update" field.
 	MetalLastUpdate time.Time `json:"metal_last_update,omitempty"`
-	// MetalProdRate holds the value of the "metal_prod_rate" field.
-	MetalProdRate int `json:"metal_prod_rate,omitempty"`
+	// MetalRate holds the value of the "metal_rate" field.
+	MetalRate int `json:"metal_rate,omitempty"`
+	// MetalProdLevel holds the value of the "metal_prod_level" field.
+	MetalProdLevel int `json:"metal_prod_level,omitempty"`
+	// MetalStorageLevel holds the value of the "metal_storage_level" field.
+	MetalStorageLevel int `json:"metal_storage_level,omitempty"`
+	// Hydrogen holds the value of the "hydrogen" field.
+	Hydrogen int64 `json:"hydrogen,omitempty"`
 	// HydrogenLastUpdate holds the value of the "hydrogen_last_update" field.
 	HydrogenLastUpdate time.Time `json:"hydrogen_last_update,omitempty"`
-	// HydrogenProdRate holds the value of the "hydrogen_prod_rate" field.
-	HydrogenProdRate int `json:"hydrogen_prod_rate,omitempty"`
+	// HydrogenRate holds the value of the "hydrogen_rate" field.
+	HydrogenRate int `json:"hydrogen_rate,omitempty"`
+	// HydrogenProdLevel holds the value of the "hydrogen_prod_level" field.
+	HydrogenProdLevel int `json:"hydrogen_prod_level,omitempty"`
+	// HydrogenStorageLevel holds the value of the "hydrogen_storage_level" field.
+	HydrogenStorageLevel int `json:"hydrogen_storage_level,omitempty"`
+	// Silica holds the value of the "silica" field.
+	Silica int64 `json:"silica,omitempty"`
+	// SilicaLastUpdate holds the value of the "silica_last_update" field.
+	SilicaLastUpdate time.Time `json:"silica_last_update,omitempty"`
+	// SilicaRate holds the value of the "silica_rate" field.
+	SilicaRate int `json:"silica_rate,omitempty"`
+	// SilicaProdLevel holds the value of the "silica_prod_level" field.
+	SilicaProdLevel int `json:"silica_prod_level,omitempty"`
+	// SilicaStorageLevel holds the value of the "silica_storage_level" field.
+	SilicaStorageLevel int `json:"silica_storage_level,omitempty"`
+	// Population holds the value of the "population" field.
+	Population int64 `json:"population,omitempty"`
 	// PopulationLastUpdate holds the value of the "population_last_update" field.
 	PopulationLastUpdate time.Time `json:"population_last_update,omitempty"`
-	// PopulationProdRate holds the value of the "population_prod_rate" field.
-	PopulationProdRate int `json:"population_prod_rate,omitempty"`
+	// PopulationRate holds the value of the "population_rate" field.
+	PopulationRate int `json:"population_rate,omitempty"`
+	// PopulationProdLevel holds the value of the "population_prod_level" field.
+	PopulationProdLevel int `json:"population_prod_level,omitempty"`
+	// PopulationStorageLevel holds the value of the "population_storage_level" field.
+	PopulationStorageLevel int `json:"population_storage_level,omitempty"`
 	// EnergyCons holds the value of the "energy_cons" field.
 	EnergyCons int64 `json:"energy_cons,omitempty"`
 	// EnergyProd holds the value of the "energy_prod" field.
 	EnergyProd int64 `json:"energy_prod,omitempty"`
-	// MetalProdLevel holds the value of the "metal_prod_level" field.
-	MetalProdLevel int `json:"metal_prod_level,omitempty"`
-	// HydrogenProdLevel holds the value of the "hydrogen_prod_level" field.
-	HydrogenProdLevel int `json:"hydrogen_prod_level,omitempty"`
-	// EnergyProdLevel holds the value of the "energy_prod_level" field.
-	EnergyProdLevel int `json:"energy_prod_level,omitempty"`
-	// PopulationProdLevel holds the value of the "population_prod_level" field.
-	PopulationProdLevel int `json:"population_prod_level,omitempty"`
+	// SolarProdLevel holds the value of the "solar_prod_level" field.
+	SolarProdLevel int `json:"solar_prod_level,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 }
@@ -56,25 +72,33 @@ type Planet struct {
 // FromRows scans the sql response data into Planet.
 func (pl *Planet) FromRows(rows *sql.Rows) error {
 	var scanpl struct {
-		ID                   int
-		CreatedAt            sql.NullTime
-		UpdatedAt            sql.NullTime
-		Metal                sql.NullInt64
-		Hydrogen             sql.NullInt64
-		Population           sql.NullInt64
-		MetalLastUpdate      sql.NullTime
-		MetalProdRate        sql.NullInt64
-		HydrogenLastUpdate   sql.NullTime
-		HydrogenProdRate     sql.NullInt64
-		PopulationLastUpdate sql.NullTime
-		PopulationProdRate   sql.NullInt64
-		EnergyCons           sql.NullInt64
-		EnergyProd           sql.NullInt64
-		MetalProdLevel       sql.NullInt64
-		HydrogenProdLevel    sql.NullInt64
-		EnergyProdLevel      sql.NullInt64
-		PopulationProdLevel  sql.NullInt64
-		Name                 sql.NullString
+		ID                     int
+		CreatedAt              sql.NullTime
+		UpdatedAt              sql.NullTime
+		Metal                  sql.NullInt64
+		MetalLastUpdate        sql.NullTime
+		MetalRate              sql.NullInt64
+		MetalProdLevel         sql.NullInt64
+		MetalStorageLevel      sql.NullInt64
+		Hydrogen               sql.NullInt64
+		HydrogenLastUpdate     sql.NullTime
+		HydrogenRate           sql.NullInt64
+		HydrogenProdLevel      sql.NullInt64
+		HydrogenStorageLevel   sql.NullInt64
+		Silica                 sql.NullInt64
+		SilicaLastUpdate       sql.NullTime
+		SilicaRate             sql.NullInt64
+		SilicaProdLevel        sql.NullInt64
+		SilicaStorageLevel     sql.NullInt64
+		Population             sql.NullInt64
+		PopulationLastUpdate   sql.NullTime
+		PopulationRate         sql.NullInt64
+		PopulationProdLevel    sql.NullInt64
+		PopulationStorageLevel sql.NullInt64
+		EnergyCons             sql.NullInt64
+		EnergyProd             sql.NullInt64
+		SolarProdLevel         sql.NullInt64
+		Name                   sql.NullString
 	}
 	// the order here should be the same as in the `planet.Columns`.
 	if err := rows.Scan(
@@ -82,20 +106,28 @@ func (pl *Planet) FromRows(rows *sql.Rows) error {
 		&scanpl.CreatedAt,
 		&scanpl.UpdatedAt,
 		&scanpl.Metal,
-		&scanpl.Hydrogen,
-		&scanpl.Population,
 		&scanpl.MetalLastUpdate,
-		&scanpl.MetalProdRate,
+		&scanpl.MetalRate,
+		&scanpl.MetalProdLevel,
+		&scanpl.MetalStorageLevel,
+		&scanpl.Hydrogen,
 		&scanpl.HydrogenLastUpdate,
-		&scanpl.HydrogenProdRate,
+		&scanpl.HydrogenRate,
+		&scanpl.HydrogenProdLevel,
+		&scanpl.HydrogenStorageLevel,
+		&scanpl.Silica,
+		&scanpl.SilicaLastUpdate,
+		&scanpl.SilicaRate,
+		&scanpl.SilicaProdLevel,
+		&scanpl.SilicaStorageLevel,
+		&scanpl.Population,
 		&scanpl.PopulationLastUpdate,
-		&scanpl.PopulationProdRate,
+		&scanpl.PopulationRate,
+		&scanpl.PopulationProdLevel,
+		&scanpl.PopulationStorageLevel,
 		&scanpl.EnergyCons,
 		&scanpl.EnergyProd,
-		&scanpl.MetalProdLevel,
-		&scanpl.HydrogenProdLevel,
-		&scanpl.EnergyProdLevel,
-		&scanpl.PopulationProdLevel,
+		&scanpl.SolarProdLevel,
 		&scanpl.Name,
 	); err != nil {
 		return err
@@ -104,20 +136,28 @@ func (pl *Planet) FromRows(rows *sql.Rows) error {
 	pl.CreatedAt = scanpl.CreatedAt.Time
 	pl.UpdatedAt = scanpl.UpdatedAt.Time
 	pl.Metal = scanpl.Metal.Int64
-	pl.Hydrogen = scanpl.Hydrogen.Int64
-	pl.Population = scanpl.Population.Int64
 	pl.MetalLastUpdate = scanpl.MetalLastUpdate.Time
-	pl.MetalProdRate = int(scanpl.MetalProdRate.Int64)
+	pl.MetalRate = int(scanpl.MetalRate.Int64)
+	pl.MetalProdLevel = int(scanpl.MetalProdLevel.Int64)
+	pl.MetalStorageLevel = int(scanpl.MetalStorageLevel.Int64)
+	pl.Hydrogen = scanpl.Hydrogen.Int64
 	pl.HydrogenLastUpdate = scanpl.HydrogenLastUpdate.Time
-	pl.HydrogenProdRate = int(scanpl.HydrogenProdRate.Int64)
+	pl.HydrogenRate = int(scanpl.HydrogenRate.Int64)
+	pl.HydrogenProdLevel = int(scanpl.HydrogenProdLevel.Int64)
+	pl.HydrogenStorageLevel = int(scanpl.HydrogenStorageLevel.Int64)
+	pl.Silica = scanpl.Silica.Int64
+	pl.SilicaLastUpdate = scanpl.SilicaLastUpdate.Time
+	pl.SilicaRate = int(scanpl.SilicaRate.Int64)
+	pl.SilicaProdLevel = int(scanpl.SilicaProdLevel.Int64)
+	pl.SilicaStorageLevel = int(scanpl.SilicaStorageLevel.Int64)
+	pl.Population = scanpl.Population.Int64
 	pl.PopulationLastUpdate = scanpl.PopulationLastUpdate.Time
-	pl.PopulationProdRate = int(scanpl.PopulationProdRate.Int64)
+	pl.PopulationRate = int(scanpl.PopulationRate.Int64)
+	pl.PopulationProdLevel = int(scanpl.PopulationProdLevel.Int64)
+	pl.PopulationStorageLevel = int(scanpl.PopulationStorageLevel.Int64)
 	pl.EnergyCons = scanpl.EnergyCons.Int64
 	pl.EnergyProd = scanpl.EnergyProd.Int64
-	pl.MetalProdLevel = int(scanpl.MetalProdLevel.Int64)
-	pl.HydrogenProdLevel = int(scanpl.HydrogenProdLevel.Int64)
-	pl.EnergyProdLevel = int(scanpl.EnergyProdLevel.Int64)
-	pl.PopulationProdLevel = int(scanpl.PopulationProdLevel.Int64)
+	pl.SolarProdLevel = int(scanpl.SolarProdLevel.Int64)
 	pl.Name = scanpl.Name.String
 	return nil
 }
@@ -156,34 +196,50 @@ func (pl *Planet) String() string {
 	builder.WriteString(pl.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", metal=")
 	builder.WriteString(fmt.Sprintf("%v", pl.Metal))
-	builder.WriteString(", hydrogen=")
-	builder.WriteString(fmt.Sprintf("%v", pl.Hydrogen))
-	builder.WriteString(", population=")
-	builder.WriteString(fmt.Sprintf("%v", pl.Population))
 	builder.WriteString(", metal_last_update=")
 	builder.WriteString(pl.MetalLastUpdate.Format(time.ANSIC))
-	builder.WriteString(", metal_prod_rate=")
-	builder.WriteString(fmt.Sprintf("%v", pl.MetalProdRate))
+	builder.WriteString(", metal_rate=")
+	builder.WriteString(fmt.Sprintf("%v", pl.MetalRate))
+	builder.WriteString(", metal_prod_level=")
+	builder.WriteString(fmt.Sprintf("%v", pl.MetalProdLevel))
+	builder.WriteString(", metal_storage_level=")
+	builder.WriteString(fmt.Sprintf("%v", pl.MetalStorageLevel))
+	builder.WriteString(", hydrogen=")
+	builder.WriteString(fmt.Sprintf("%v", pl.Hydrogen))
 	builder.WriteString(", hydrogen_last_update=")
 	builder.WriteString(pl.HydrogenLastUpdate.Format(time.ANSIC))
-	builder.WriteString(", hydrogen_prod_rate=")
-	builder.WriteString(fmt.Sprintf("%v", pl.HydrogenProdRate))
+	builder.WriteString(", hydrogen_rate=")
+	builder.WriteString(fmt.Sprintf("%v", pl.HydrogenRate))
+	builder.WriteString(", hydrogen_prod_level=")
+	builder.WriteString(fmt.Sprintf("%v", pl.HydrogenProdLevel))
+	builder.WriteString(", hydrogen_storage_level=")
+	builder.WriteString(fmt.Sprintf("%v", pl.HydrogenStorageLevel))
+	builder.WriteString(", silica=")
+	builder.WriteString(fmt.Sprintf("%v", pl.Silica))
+	builder.WriteString(", silica_last_update=")
+	builder.WriteString(pl.SilicaLastUpdate.Format(time.ANSIC))
+	builder.WriteString(", silica_rate=")
+	builder.WriteString(fmt.Sprintf("%v", pl.SilicaRate))
+	builder.WriteString(", silica_prod_level=")
+	builder.WriteString(fmt.Sprintf("%v", pl.SilicaProdLevel))
+	builder.WriteString(", silica_storage_level=")
+	builder.WriteString(fmt.Sprintf("%v", pl.SilicaStorageLevel))
+	builder.WriteString(", population=")
+	builder.WriteString(fmt.Sprintf("%v", pl.Population))
 	builder.WriteString(", population_last_update=")
 	builder.WriteString(pl.PopulationLastUpdate.Format(time.ANSIC))
-	builder.WriteString(", population_prod_rate=")
-	builder.WriteString(fmt.Sprintf("%v", pl.PopulationProdRate))
+	builder.WriteString(", population_rate=")
+	builder.WriteString(fmt.Sprintf("%v", pl.PopulationRate))
+	builder.WriteString(", population_prod_level=")
+	builder.WriteString(fmt.Sprintf("%v", pl.PopulationProdLevel))
+	builder.WriteString(", population_storage_level=")
+	builder.WriteString(fmt.Sprintf("%v", pl.PopulationStorageLevel))
 	builder.WriteString(", energy_cons=")
 	builder.WriteString(fmt.Sprintf("%v", pl.EnergyCons))
 	builder.WriteString(", energy_prod=")
 	builder.WriteString(fmt.Sprintf("%v", pl.EnergyProd))
-	builder.WriteString(", metal_prod_level=")
-	builder.WriteString(fmt.Sprintf("%v", pl.MetalProdLevel))
-	builder.WriteString(", hydrogen_prod_level=")
-	builder.WriteString(fmt.Sprintf("%v", pl.HydrogenProdLevel))
-	builder.WriteString(", energy_prod_level=")
-	builder.WriteString(fmt.Sprintf("%v", pl.EnergyProdLevel))
-	builder.WriteString(", population_prod_level=")
-	builder.WriteString(fmt.Sprintf("%v", pl.PopulationProdLevel))
+	builder.WriteString(", solar_prod_level=")
+	builder.WriteString(fmt.Sprintf("%v", pl.SolarProdLevel))
 	builder.WriteString(", name=")
 	builder.WriteString(pl.Name)
 	builder.WriteByte(')')

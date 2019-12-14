@@ -35,20 +35,28 @@ func ExamplePlanet() {
 		SetCreatedAt(time.Now()).
 		SetUpdatedAt(time.Now()).
 		SetMetal(1).
-		SetHydrogen(1).
-		SetPopulation(1).
 		SetMetalLastUpdate(time.Now()).
-		SetMetalProdRate(1).
+		SetMetalRate(1).
+		SetMetalProdLevel(1).
+		SetMetalStorageLevel(1).
+		SetHydrogen(1).
 		SetHydrogenLastUpdate(time.Now()).
-		SetHydrogenProdRate(1).
+		SetHydrogenRate(1).
+		SetHydrogenProdLevel(1).
+		SetHydrogenStorageLevel(1).
+		SetSilica(1).
+		SetSilicaLastUpdate(time.Now()).
+		SetSilicaRate(1).
+		SetSilicaProdLevel(1).
+		SetSilicaStorageLevel(1).
+		SetPopulation(1).
 		SetPopulationLastUpdate(time.Now()).
-		SetPopulationProdRate(1).
+		SetPopulationRate(1).
+		SetPopulationProdLevel(1).
+		SetPopulationStorageLevel(1).
 		SetEnergyCons(1).
 		SetEnergyProd(1).
-		SetMetalProdLevel(1).
-		SetHydrogenProdLevel(1).
-		SetEnergyProdLevel(1).
-		SetPopulationProdLevel(1).
+		SetSolarProdLevel(1).
 		SetName("string").
 		SaveX(ctx)
 	log.Println("planet created:", pl)
@@ -100,20 +108,28 @@ func ExampleUser() {
 		SetCreatedAt(time.Now()).
 		SetUpdatedAt(time.Now()).
 		SetMetal(1).
-		SetHydrogen(1).
-		SetPopulation(1).
 		SetMetalLastUpdate(time.Now()).
-		SetMetalProdRate(1).
+		SetMetalRate(1).
+		SetMetalProdLevel(1).
+		SetMetalStorageLevel(1).
+		SetHydrogen(1).
 		SetHydrogenLastUpdate(time.Now()).
-		SetHydrogenProdRate(1).
+		SetHydrogenRate(1).
+		SetHydrogenProdLevel(1).
+		SetHydrogenStorageLevel(1).
+		SetSilica(1).
+		SetSilicaLastUpdate(time.Now()).
+		SetSilicaRate(1).
+		SetSilicaProdLevel(1).
+		SetSilicaStorageLevel(1).
+		SetPopulation(1).
 		SetPopulationLastUpdate(time.Now()).
-		SetPopulationProdRate(1).
+		SetPopulationRate(1).
+		SetPopulationProdLevel(1).
+		SetPopulationStorageLevel(1).
 		SetEnergyCons(1).
 		SetEnergyProd(1).
-		SetMetalProdLevel(1).
-		SetHydrogenProdLevel(1).
-		SetEnergyProdLevel(1).
-		SetPopulationProdLevel(1).
+		SetSolarProdLevel(1).
 		SetName("string").
 		SaveX(ctx)
 	log.Println("planet created:", pl0)

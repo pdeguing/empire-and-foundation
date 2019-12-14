@@ -15,25 +15,33 @@ import (
 // PlanetCreate is the builder for creating a Planet entity.
 type PlanetCreate struct {
 	config
-	created_at             *time.Time
-	updated_at             *time.Time
-	metal                  *int64
-	hydrogen               *int64
-	population             *int64
-	metal_last_update      *time.Time
-	metal_prod_rate        *int
-	hydrogen_last_update   *time.Time
-	hydrogen_prod_rate     *int
-	population_last_update *time.Time
-	population_prod_rate   *int
-	energy_cons            *int64
-	energy_prod            *int64
-	metal_prod_level       *int
-	hydrogen_prod_level    *int
-	energy_prod_level      *int
-	population_prod_level  *int
-	name                   *string
-	owner                  map[int]struct{}
+	created_at               *time.Time
+	updated_at               *time.Time
+	metal                    *int64
+	metal_last_update        *time.Time
+	metal_rate               *int
+	metal_prod_level         *int
+	metal_storage_level      *int
+	hydrogen                 *int64
+	hydrogen_last_update     *time.Time
+	hydrogen_rate            *int
+	hydrogen_prod_level      *int
+	hydrogen_storage_level   *int
+	silica                   *int64
+	silica_last_update       *time.Time
+	silica_rate              *int
+	silica_prod_level        *int
+	silica_storage_level     *int
+	population               *int64
+	population_last_update   *time.Time
+	population_rate          *int
+	population_prod_level    *int
+	population_storage_level *int
+	energy_cons              *int64
+	energy_prod              *int64
+	solar_prod_level         *int
+	name                     *string
+	owner                    map[int]struct{}
 }
 
 // SetCreatedAt sets the created_at field.
@@ -78,34 +86,6 @@ func (pc *PlanetCreate) SetNillableMetal(i *int64) *PlanetCreate {
 	return pc
 }
 
-// SetHydrogen sets the hydrogen field.
-func (pc *PlanetCreate) SetHydrogen(i int64) *PlanetCreate {
-	pc.hydrogen = &i
-	return pc
-}
-
-// SetNillableHydrogen sets the hydrogen field if the given value is not nil.
-func (pc *PlanetCreate) SetNillableHydrogen(i *int64) *PlanetCreate {
-	if i != nil {
-		pc.SetHydrogen(*i)
-	}
-	return pc
-}
-
-// SetPopulation sets the population field.
-func (pc *PlanetCreate) SetPopulation(i int64) *PlanetCreate {
-	pc.population = &i
-	return pc
-}
-
-// SetNillablePopulation sets the population field if the given value is not nil.
-func (pc *PlanetCreate) SetNillablePopulation(i *int64) *PlanetCreate {
-	if i != nil {
-		pc.SetPopulation(*i)
-	}
-	return pc
-}
-
 // SetMetalLastUpdate sets the metal_last_update field.
 func (pc *PlanetCreate) SetMetalLastUpdate(t time.Time) *PlanetCreate {
 	pc.metal_last_update = &t
@@ -120,16 +100,58 @@ func (pc *PlanetCreate) SetNillableMetalLastUpdate(t *time.Time) *PlanetCreate {
 	return pc
 }
 
-// SetMetalProdRate sets the metal_prod_rate field.
-func (pc *PlanetCreate) SetMetalProdRate(i int) *PlanetCreate {
-	pc.metal_prod_rate = &i
+// SetMetalRate sets the metal_rate field.
+func (pc *PlanetCreate) SetMetalRate(i int) *PlanetCreate {
+	pc.metal_rate = &i
 	return pc
 }
 
-// SetNillableMetalProdRate sets the metal_prod_rate field if the given value is not nil.
-func (pc *PlanetCreate) SetNillableMetalProdRate(i *int) *PlanetCreate {
+// SetNillableMetalRate sets the metal_rate field if the given value is not nil.
+func (pc *PlanetCreate) SetNillableMetalRate(i *int) *PlanetCreate {
 	if i != nil {
-		pc.SetMetalProdRate(*i)
+		pc.SetMetalRate(*i)
+	}
+	return pc
+}
+
+// SetMetalProdLevel sets the metal_prod_level field.
+func (pc *PlanetCreate) SetMetalProdLevel(i int) *PlanetCreate {
+	pc.metal_prod_level = &i
+	return pc
+}
+
+// SetNillableMetalProdLevel sets the metal_prod_level field if the given value is not nil.
+func (pc *PlanetCreate) SetNillableMetalProdLevel(i *int) *PlanetCreate {
+	if i != nil {
+		pc.SetMetalProdLevel(*i)
+	}
+	return pc
+}
+
+// SetMetalStorageLevel sets the metal_storage_level field.
+func (pc *PlanetCreate) SetMetalStorageLevel(i int) *PlanetCreate {
+	pc.metal_storage_level = &i
+	return pc
+}
+
+// SetNillableMetalStorageLevel sets the metal_storage_level field if the given value is not nil.
+func (pc *PlanetCreate) SetNillableMetalStorageLevel(i *int) *PlanetCreate {
+	if i != nil {
+		pc.SetMetalStorageLevel(*i)
+	}
+	return pc
+}
+
+// SetHydrogen sets the hydrogen field.
+func (pc *PlanetCreate) SetHydrogen(i int64) *PlanetCreate {
+	pc.hydrogen = &i
+	return pc
+}
+
+// SetNillableHydrogen sets the hydrogen field if the given value is not nil.
+func (pc *PlanetCreate) SetNillableHydrogen(i *int64) *PlanetCreate {
+	if i != nil {
+		pc.SetHydrogen(*i)
 	}
 	return pc
 }
@@ -148,16 +170,128 @@ func (pc *PlanetCreate) SetNillableHydrogenLastUpdate(t *time.Time) *PlanetCreat
 	return pc
 }
 
-// SetHydrogenProdRate sets the hydrogen_prod_rate field.
-func (pc *PlanetCreate) SetHydrogenProdRate(i int) *PlanetCreate {
-	pc.hydrogen_prod_rate = &i
+// SetHydrogenRate sets the hydrogen_rate field.
+func (pc *PlanetCreate) SetHydrogenRate(i int) *PlanetCreate {
+	pc.hydrogen_rate = &i
 	return pc
 }
 
-// SetNillableHydrogenProdRate sets the hydrogen_prod_rate field if the given value is not nil.
-func (pc *PlanetCreate) SetNillableHydrogenProdRate(i *int) *PlanetCreate {
+// SetNillableHydrogenRate sets the hydrogen_rate field if the given value is not nil.
+func (pc *PlanetCreate) SetNillableHydrogenRate(i *int) *PlanetCreate {
 	if i != nil {
-		pc.SetHydrogenProdRate(*i)
+		pc.SetHydrogenRate(*i)
+	}
+	return pc
+}
+
+// SetHydrogenProdLevel sets the hydrogen_prod_level field.
+func (pc *PlanetCreate) SetHydrogenProdLevel(i int) *PlanetCreate {
+	pc.hydrogen_prod_level = &i
+	return pc
+}
+
+// SetNillableHydrogenProdLevel sets the hydrogen_prod_level field if the given value is not nil.
+func (pc *PlanetCreate) SetNillableHydrogenProdLevel(i *int) *PlanetCreate {
+	if i != nil {
+		pc.SetHydrogenProdLevel(*i)
+	}
+	return pc
+}
+
+// SetHydrogenStorageLevel sets the hydrogen_storage_level field.
+func (pc *PlanetCreate) SetHydrogenStorageLevel(i int) *PlanetCreate {
+	pc.hydrogen_storage_level = &i
+	return pc
+}
+
+// SetNillableHydrogenStorageLevel sets the hydrogen_storage_level field if the given value is not nil.
+func (pc *PlanetCreate) SetNillableHydrogenStorageLevel(i *int) *PlanetCreate {
+	if i != nil {
+		pc.SetHydrogenStorageLevel(*i)
+	}
+	return pc
+}
+
+// SetSilica sets the silica field.
+func (pc *PlanetCreate) SetSilica(i int64) *PlanetCreate {
+	pc.silica = &i
+	return pc
+}
+
+// SetNillableSilica sets the silica field if the given value is not nil.
+func (pc *PlanetCreate) SetNillableSilica(i *int64) *PlanetCreate {
+	if i != nil {
+		pc.SetSilica(*i)
+	}
+	return pc
+}
+
+// SetSilicaLastUpdate sets the silica_last_update field.
+func (pc *PlanetCreate) SetSilicaLastUpdate(t time.Time) *PlanetCreate {
+	pc.silica_last_update = &t
+	return pc
+}
+
+// SetNillableSilicaLastUpdate sets the silica_last_update field if the given value is not nil.
+func (pc *PlanetCreate) SetNillableSilicaLastUpdate(t *time.Time) *PlanetCreate {
+	if t != nil {
+		pc.SetSilicaLastUpdate(*t)
+	}
+	return pc
+}
+
+// SetSilicaRate sets the silica_rate field.
+func (pc *PlanetCreate) SetSilicaRate(i int) *PlanetCreate {
+	pc.silica_rate = &i
+	return pc
+}
+
+// SetNillableSilicaRate sets the silica_rate field if the given value is not nil.
+func (pc *PlanetCreate) SetNillableSilicaRate(i *int) *PlanetCreate {
+	if i != nil {
+		pc.SetSilicaRate(*i)
+	}
+	return pc
+}
+
+// SetSilicaProdLevel sets the silica_prod_level field.
+func (pc *PlanetCreate) SetSilicaProdLevel(i int) *PlanetCreate {
+	pc.silica_prod_level = &i
+	return pc
+}
+
+// SetNillableSilicaProdLevel sets the silica_prod_level field if the given value is not nil.
+func (pc *PlanetCreate) SetNillableSilicaProdLevel(i *int) *PlanetCreate {
+	if i != nil {
+		pc.SetSilicaProdLevel(*i)
+	}
+	return pc
+}
+
+// SetSilicaStorageLevel sets the silica_storage_level field.
+func (pc *PlanetCreate) SetSilicaStorageLevel(i int) *PlanetCreate {
+	pc.silica_storage_level = &i
+	return pc
+}
+
+// SetNillableSilicaStorageLevel sets the silica_storage_level field if the given value is not nil.
+func (pc *PlanetCreate) SetNillableSilicaStorageLevel(i *int) *PlanetCreate {
+	if i != nil {
+		pc.SetSilicaStorageLevel(*i)
+	}
+	return pc
+}
+
+// SetPopulation sets the population field.
+func (pc *PlanetCreate) SetPopulation(i int64) *PlanetCreate {
+	pc.population = &i
+	return pc
+}
+
+// SetNillablePopulation sets the population field if the given value is not nil.
+func (pc *PlanetCreate) SetNillablePopulation(i *int64) *PlanetCreate {
+	if i != nil {
+		pc.SetPopulation(*i)
 	}
 	return pc
 }
@@ -176,16 +310,44 @@ func (pc *PlanetCreate) SetNillablePopulationLastUpdate(t *time.Time) *PlanetCre
 	return pc
 }
 
-// SetPopulationProdRate sets the population_prod_rate field.
-func (pc *PlanetCreate) SetPopulationProdRate(i int) *PlanetCreate {
-	pc.population_prod_rate = &i
+// SetPopulationRate sets the population_rate field.
+func (pc *PlanetCreate) SetPopulationRate(i int) *PlanetCreate {
+	pc.population_rate = &i
 	return pc
 }
 
-// SetNillablePopulationProdRate sets the population_prod_rate field if the given value is not nil.
-func (pc *PlanetCreate) SetNillablePopulationProdRate(i *int) *PlanetCreate {
+// SetNillablePopulationRate sets the population_rate field if the given value is not nil.
+func (pc *PlanetCreate) SetNillablePopulationRate(i *int) *PlanetCreate {
 	if i != nil {
-		pc.SetPopulationProdRate(*i)
+		pc.SetPopulationRate(*i)
+	}
+	return pc
+}
+
+// SetPopulationProdLevel sets the population_prod_level field.
+func (pc *PlanetCreate) SetPopulationProdLevel(i int) *PlanetCreate {
+	pc.population_prod_level = &i
+	return pc
+}
+
+// SetNillablePopulationProdLevel sets the population_prod_level field if the given value is not nil.
+func (pc *PlanetCreate) SetNillablePopulationProdLevel(i *int) *PlanetCreate {
+	if i != nil {
+		pc.SetPopulationProdLevel(*i)
+	}
+	return pc
+}
+
+// SetPopulationStorageLevel sets the population_storage_level field.
+func (pc *PlanetCreate) SetPopulationStorageLevel(i int) *PlanetCreate {
+	pc.population_storage_level = &i
+	return pc
+}
+
+// SetNillablePopulationStorageLevel sets the population_storage_level field if the given value is not nil.
+func (pc *PlanetCreate) SetNillablePopulationStorageLevel(i *int) *PlanetCreate {
+	if i != nil {
+		pc.SetPopulationStorageLevel(*i)
 	}
 	return pc
 }
@@ -218,58 +380,16 @@ func (pc *PlanetCreate) SetNillableEnergyProd(i *int64) *PlanetCreate {
 	return pc
 }
 
-// SetMetalProdLevel sets the metal_prod_level field.
-func (pc *PlanetCreate) SetMetalProdLevel(i int) *PlanetCreate {
-	pc.metal_prod_level = &i
+// SetSolarProdLevel sets the solar_prod_level field.
+func (pc *PlanetCreate) SetSolarProdLevel(i int) *PlanetCreate {
+	pc.solar_prod_level = &i
 	return pc
 }
 
-// SetNillableMetalProdLevel sets the metal_prod_level field if the given value is not nil.
-func (pc *PlanetCreate) SetNillableMetalProdLevel(i *int) *PlanetCreate {
+// SetNillableSolarProdLevel sets the solar_prod_level field if the given value is not nil.
+func (pc *PlanetCreate) SetNillableSolarProdLevel(i *int) *PlanetCreate {
 	if i != nil {
-		pc.SetMetalProdLevel(*i)
-	}
-	return pc
-}
-
-// SetHydrogenProdLevel sets the hydrogen_prod_level field.
-func (pc *PlanetCreate) SetHydrogenProdLevel(i int) *PlanetCreate {
-	pc.hydrogen_prod_level = &i
-	return pc
-}
-
-// SetNillableHydrogenProdLevel sets the hydrogen_prod_level field if the given value is not nil.
-func (pc *PlanetCreate) SetNillableHydrogenProdLevel(i *int) *PlanetCreate {
-	if i != nil {
-		pc.SetHydrogenProdLevel(*i)
-	}
-	return pc
-}
-
-// SetEnergyProdLevel sets the energy_prod_level field.
-func (pc *PlanetCreate) SetEnergyProdLevel(i int) *PlanetCreate {
-	pc.energy_prod_level = &i
-	return pc
-}
-
-// SetNillableEnergyProdLevel sets the energy_prod_level field if the given value is not nil.
-func (pc *PlanetCreate) SetNillableEnergyProdLevel(i *int) *PlanetCreate {
-	if i != nil {
-		pc.SetEnergyProdLevel(*i)
-	}
-	return pc
-}
-
-// SetPopulationProdLevel sets the population_prod_level field.
-func (pc *PlanetCreate) SetPopulationProdLevel(i int) *PlanetCreate {
-	pc.population_prod_level = &i
-	return pc
-}
-
-// SetNillablePopulationProdLevel sets the population_prod_level field if the given value is not nil.
-func (pc *PlanetCreate) SetNillablePopulationProdLevel(i *int) *PlanetCreate {
-	if i != nil {
-		pc.SetPopulationProdLevel(*i)
+		pc.SetSolarProdLevel(*i)
 	}
 	return pc
 }
@@ -327,12 +447,85 @@ func (pc *PlanetCreate) Save(ctx context.Context) (*Planet, error) {
 	if err := planet.MetalValidator(*pc.metal); err != nil {
 		return nil, fmt.Errorf("ent: validator failed for field \"metal\": %v", err)
 	}
+	if pc.metal_last_update == nil {
+		v := planet.DefaultMetalLastUpdate()
+		pc.metal_last_update = &v
+	}
+	if pc.metal_rate == nil {
+		v := planet.DefaultMetalRate
+		pc.metal_rate = &v
+	}
+	if pc.metal_prod_level == nil {
+		v := planet.DefaultMetalProdLevel
+		pc.metal_prod_level = &v
+	}
+	if err := planet.MetalProdLevelValidator(*pc.metal_prod_level); err != nil {
+		return nil, fmt.Errorf("ent: validator failed for field \"metal_prod_level\": %v", err)
+	}
+	if pc.metal_storage_level == nil {
+		v := planet.DefaultMetalStorageLevel
+		pc.metal_storage_level = &v
+	}
+	if err := planet.MetalStorageLevelValidator(*pc.metal_storage_level); err != nil {
+		return nil, fmt.Errorf("ent: validator failed for field \"metal_storage_level\": %v", err)
+	}
 	if pc.hydrogen == nil {
 		v := planet.DefaultHydrogen
 		pc.hydrogen = &v
 	}
 	if err := planet.HydrogenValidator(*pc.hydrogen); err != nil {
 		return nil, fmt.Errorf("ent: validator failed for field \"hydrogen\": %v", err)
+	}
+	if pc.hydrogen_last_update == nil {
+		v := planet.DefaultHydrogenLastUpdate()
+		pc.hydrogen_last_update = &v
+	}
+	if pc.hydrogen_rate == nil {
+		v := planet.DefaultHydrogenRate
+		pc.hydrogen_rate = &v
+	}
+	if pc.hydrogen_prod_level == nil {
+		v := planet.DefaultHydrogenProdLevel
+		pc.hydrogen_prod_level = &v
+	}
+	if err := planet.HydrogenProdLevelValidator(*pc.hydrogen_prod_level); err != nil {
+		return nil, fmt.Errorf("ent: validator failed for field \"hydrogen_prod_level\": %v", err)
+	}
+	if pc.hydrogen_storage_level == nil {
+		v := planet.DefaultHydrogenStorageLevel
+		pc.hydrogen_storage_level = &v
+	}
+	if err := planet.HydrogenStorageLevelValidator(*pc.hydrogen_storage_level); err != nil {
+		return nil, fmt.Errorf("ent: validator failed for field \"hydrogen_storage_level\": %v", err)
+	}
+	if pc.silica == nil {
+		v := planet.DefaultSilica
+		pc.silica = &v
+	}
+	if err := planet.SilicaValidator(*pc.silica); err != nil {
+		return nil, fmt.Errorf("ent: validator failed for field \"silica\": %v", err)
+	}
+	if pc.silica_last_update == nil {
+		v := planet.DefaultSilicaLastUpdate()
+		pc.silica_last_update = &v
+	}
+	if pc.silica_rate == nil {
+		v := planet.DefaultSilicaRate
+		pc.silica_rate = &v
+	}
+	if pc.silica_prod_level == nil {
+		v := planet.DefaultSilicaProdLevel
+		pc.silica_prod_level = &v
+	}
+	if err := planet.SilicaProdLevelValidator(*pc.silica_prod_level); err != nil {
+		return nil, fmt.Errorf("ent: validator failed for field \"silica_prod_level\": %v", err)
+	}
+	if pc.silica_storage_level == nil {
+		v := planet.DefaultSilicaStorageLevel
+		pc.silica_storage_level = &v
+	}
+	if err := planet.SilicaStorageLevelValidator(*pc.silica_storage_level); err != nil {
+		return nil, fmt.Errorf("ent: validator failed for field \"silica_storage_level\": %v", err)
 	}
 	if pc.population == nil {
 		v := planet.DefaultPopulation
@@ -341,29 +534,27 @@ func (pc *PlanetCreate) Save(ctx context.Context) (*Planet, error) {
 	if err := planet.PopulationValidator(*pc.population); err != nil {
 		return nil, fmt.Errorf("ent: validator failed for field \"population\": %v", err)
 	}
-	if pc.metal_last_update == nil {
-		v := planet.DefaultMetalLastUpdate()
-		pc.metal_last_update = &v
-	}
-	if pc.metal_prod_rate == nil {
-		v := planet.DefaultMetalProdRate
-		pc.metal_prod_rate = &v
-	}
-	if pc.hydrogen_last_update == nil {
-		v := planet.DefaultHydrogenLastUpdate()
-		pc.hydrogen_last_update = &v
-	}
-	if pc.hydrogen_prod_rate == nil {
-		v := planet.DefaultHydrogenProdRate
-		pc.hydrogen_prod_rate = &v
-	}
 	if pc.population_last_update == nil {
 		v := planet.DefaultPopulationLastUpdate()
 		pc.population_last_update = &v
 	}
-	if pc.population_prod_rate == nil {
-		v := planet.DefaultPopulationProdRate
-		pc.population_prod_rate = &v
+	if pc.population_rate == nil {
+		v := planet.DefaultPopulationRate
+		pc.population_rate = &v
+	}
+	if pc.population_prod_level == nil {
+		v := planet.DefaultPopulationProdLevel
+		pc.population_prod_level = &v
+	}
+	if err := planet.PopulationProdLevelValidator(*pc.population_prod_level); err != nil {
+		return nil, fmt.Errorf("ent: validator failed for field \"population_prod_level\": %v", err)
+	}
+	if pc.population_storage_level == nil {
+		v := planet.DefaultPopulationStorageLevel
+		pc.population_storage_level = &v
+	}
+	if err := planet.PopulationStorageLevelValidator(*pc.population_storage_level); err != nil {
+		return nil, fmt.Errorf("ent: validator failed for field \"population_storage_level\": %v", err)
 	}
 	if pc.energy_cons == nil {
 		v := planet.DefaultEnergyCons
@@ -379,33 +570,12 @@ func (pc *PlanetCreate) Save(ctx context.Context) (*Planet, error) {
 	if err := planet.EnergyProdValidator(*pc.energy_prod); err != nil {
 		return nil, fmt.Errorf("ent: validator failed for field \"energy_prod\": %v", err)
 	}
-	if pc.metal_prod_level == nil {
-		v := planet.DefaultMetalProdLevel
-		pc.metal_prod_level = &v
+	if pc.solar_prod_level == nil {
+		v := planet.DefaultSolarProdLevel
+		pc.solar_prod_level = &v
 	}
-	if err := planet.MetalProdLevelValidator(*pc.metal_prod_level); err != nil {
-		return nil, fmt.Errorf("ent: validator failed for field \"metal_prod_level\": %v", err)
-	}
-	if pc.hydrogen_prod_level == nil {
-		v := planet.DefaultHydrogenProdLevel
-		pc.hydrogen_prod_level = &v
-	}
-	if err := planet.HydrogenProdLevelValidator(*pc.hydrogen_prod_level); err != nil {
-		return nil, fmt.Errorf("ent: validator failed for field \"hydrogen_prod_level\": %v", err)
-	}
-	if pc.energy_prod_level == nil {
-		v := planet.DefaultEnergyProdLevel
-		pc.energy_prod_level = &v
-	}
-	if err := planet.EnergyProdLevelValidator(*pc.energy_prod_level); err != nil {
-		return nil, fmt.Errorf("ent: validator failed for field \"energy_prod_level\": %v", err)
-	}
-	if pc.population_prod_level == nil {
-		v := planet.DefaultPopulationProdLevel
-		pc.population_prod_level = &v
-	}
-	if err := planet.PopulationProdLevelValidator(*pc.population_prod_level); err != nil {
-		return nil, fmt.Errorf("ent: validator failed for field \"population_prod_level\": %v", err)
+	if err := planet.SolarProdLevelValidator(*pc.solar_prod_level); err != nil {
+		return nil, fmt.Errorf("ent: validator failed for field \"solar_prod_level\": %v", err)
 	}
 	if pc.name == nil {
 		v := planet.DefaultName
@@ -449,37 +619,81 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		insert.Set(planet.FieldMetal, *value)
 		pl.Metal = *value
 	}
-	if value := pc.hydrogen; value != nil {
-		insert.Set(planet.FieldHydrogen, *value)
-		pl.Hydrogen = *value
-	}
-	if value := pc.population; value != nil {
-		insert.Set(planet.FieldPopulation, *value)
-		pl.Population = *value
-	}
 	if value := pc.metal_last_update; value != nil {
 		insert.Set(planet.FieldMetalLastUpdate, *value)
 		pl.MetalLastUpdate = *value
 	}
-	if value := pc.metal_prod_rate; value != nil {
-		insert.Set(planet.FieldMetalProdRate, *value)
-		pl.MetalProdRate = *value
+	if value := pc.metal_rate; value != nil {
+		insert.Set(planet.FieldMetalRate, *value)
+		pl.MetalRate = *value
+	}
+	if value := pc.metal_prod_level; value != nil {
+		insert.Set(planet.FieldMetalProdLevel, *value)
+		pl.MetalProdLevel = *value
+	}
+	if value := pc.metal_storage_level; value != nil {
+		insert.Set(planet.FieldMetalStorageLevel, *value)
+		pl.MetalStorageLevel = *value
+	}
+	if value := pc.hydrogen; value != nil {
+		insert.Set(planet.FieldHydrogen, *value)
+		pl.Hydrogen = *value
 	}
 	if value := pc.hydrogen_last_update; value != nil {
 		insert.Set(planet.FieldHydrogenLastUpdate, *value)
 		pl.HydrogenLastUpdate = *value
 	}
-	if value := pc.hydrogen_prod_rate; value != nil {
-		insert.Set(planet.FieldHydrogenProdRate, *value)
-		pl.HydrogenProdRate = *value
+	if value := pc.hydrogen_rate; value != nil {
+		insert.Set(planet.FieldHydrogenRate, *value)
+		pl.HydrogenRate = *value
+	}
+	if value := pc.hydrogen_prod_level; value != nil {
+		insert.Set(planet.FieldHydrogenProdLevel, *value)
+		pl.HydrogenProdLevel = *value
+	}
+	if value := pc.hydrogen_storage_level; value != nil {
+		insert.Set(planet.FieldHydrogenStorageLevel, *value)
+		pl.HydrogenStorageLevel = *value
+	}
+	if value := pc.silica; value != nil {
+		insert.Set(planet.FieldSilica, *value)
+		pl.Silica = *value
+	}
+	if value := pc.silica_last_update; value != nil {
+		insert.Set(planet.FieldSilicaLastUpdate, *value)
+		pl.SilicaLastUpdate = *value
+	}
+	if value := pc.silica_rate; value != nil {
+		insert.Set(planet.FieldSilicaRate, *value)
+		pl.SilicaRate = *value
+	}
+	if value := pc.silica_prod_level; value != nil {
+		insert.Set(planet.FieldSilicaProdLevel, *value)
+		pl.SilicaProdLevel = *value
+	}
+	if value := pc.silica_storage_level; value != nil {
+		insert.Set(planet.FieldSilicaStorageLevel, *value)
+		pl.SilicaStorageLevel = *value
+	}
+	if value := pc.population; value != nil {
+		insert.Set(planet.FieldPopulation, *value)
+		pl.Population = *value
 	}
 	if value := pc.population_last_update; value != nil {
 		insert.Set(planet.FieldPopulationLastUpdate, *value)
 		pl.PopulationLastUpdate = *value
 	}
-	if value := pc.population_prod_rate; value != nil {
-		insert.Set(planet.FieldPopulationProdRate, *value)
-		pl.PopulationProdRate = *value
+	if value := pc.population_rate; value != nil {
+		insert.Set(planet.FieldPopulationRate, *value)
+		pl.PopulationRate = *value
+	}
+	if value := pc.population_prod_level; value != nil {
+		insert.Set(planet.FieldPopulationProdLevel, *value)
+		pl.PopulationProdLevel = *value
+	}
+	if value := pc.population_storage_level; value != nil {
+		insert.Set(planet.FieldPopulationStorageLevel, *value)
+		pl.PopulationStorageLevel = *value
 	}
 	if value := pc.energy_cons; value != nil {
 		insert.Set(planet.FieldEnergyCons, *value)
@@ -489,21 +703,9 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		insert.Set(planet.FieldEnergyProd, *value)
 		pl.EnergyProd = *value
 	}
-	if value := pc.metal_prod_level; value != nil {
-		insert.Set(planet.FieldMetalProdLevel, *value)
-		pl.MetalProdLevel = *value
-	}
-	if value := pc.hydrogen_prod_level; value != nil {
-		insert.Set(planet.FieldHydrogenProdLevel, *value)
-		pl.HydrogenProdLevel = *value
-	}
-	if value := pc.energy_prod_level; value != nil {
-		insert.Set(planet.FieldEnergyProdLevel, *value)
-		pl.EnergyProdLevel = *value
-	}
-	if value := pc.population_prod_level; value != nil {
-		insert.Set(planet.FieldPopulationProdLevel, *value)
-		pl.PopulationProdLevel = *value
+	if value := pc.solar_prod_level; value != nil {
+		insert.Set(planet.FieldSolarProdLevel, *value)
+		pl.SolarProdLevel = *value
 	}
 	if value := pc.name; value != nil {
 		insert.Set(planet.FieldName, *value)

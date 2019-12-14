@@ -24,6 +24,9 @@ func (r ResourceMixin) Fields() []ent.Field {
         field.Int(r.Type + "_prod_level").
             NonNegative().
             Default(0),
+        field.Int(r.Type + "_storage_level").
+            NonNegative().
+            Default(0),
     }
 }
 
@@ -37,23 +40,7 @@ func (EnergyMixin) Fields() []ent.Field {
 		field.Int64("energy_prod").
 			NonNegative().
 			Default(0),
-	}
-}
-
-type BuildingsMixin struct{}
-
-func (BuildingsMixin) Fields() []ent.Field {
-	return []ent.Field{
-		field.Int("metal_prod_level").
-			NonNegative().
-			Default(0),
-		field.Int("hydrogen_prod_level").
-			NonNegative().
-			Default(0),
-		field.Int("energy_prod_level").
-			NonNegative().
-			Default(0),
-		field.Int("population_prod_level").
+		field.Int("solar_prod_level").
 			NonNegative().
 			Default(0),
 	}
@@ -72,7 +59,6 @@ func (Planet) Mixin() []ent.Mixin {
 	ResourceMixin{Type: "silica"},
 	ResourceMixin{Type: "population"},
 	EnergyMixin{},
-	BuildingsMixin{},
     }
 }
 

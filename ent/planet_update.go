@@ -18,38 +18,53 @@ import (
 type PlanetUpdate struct {
 	config
 
-	updated_at               *time.Time
-	metal                    *int64
-	addmetal                 *int64
-	hydrogen                 *int64
-	addhydrogen              *int64
-	population               *int64
-	addpopulation            *int64
-	metal_last_update        *time.Time
-	metal_prod_rate          *int
-	addmetal_prod_rate       *int
-	hydrogen_last_update     *time.Time
-	hydrogen_prod_rate       *int
-	addhydrogen_prod_rate    *int
-	population_last_update   *time.Time
-	population_prod_rate     *int
-	addpopulation_prod_rate  *int
-	energy_cons              *int64
-	addenergy_cons           *int64
-	energy_prod              *int64
-	addenergy_prod           *int64
-	metal_prod_level         *int
-	addmetal_prod_level      *int
-	hydrogen_prod_level      *int
-	addhydrogen_prod_level   *int
-	energy_prod_level        *int
-	addenergy_prod_level     *int
-	population_prod_level    *int
-	addpopulation_prod_level *int
-	name                     *string
-	owner                    map[int]struct{}
-	clearedOwner             bool
-	predicates               []predicate.Planet
+	updated_at                  *time.Time
+	metal                       *int64
+	addmetal                    *int64
+	metal_last_update           *time.Time
+	metal_rate                  *int
+	addmetal_rate               *int
+	metal_prod_level            *int
+	addmetal_prod_level         *int
+	metal_storage_level         *int
+	addmetal_storage_level      *int
+	hydrogen                    *int64
+	addhydrogen                 *int64
+	hydrogen_last_update        *time.Time
+	hydrogen_rate               *int
+	addhydrogen_rate            *int
+	hydrogen_prod_level         *int
+	addhydrogen_prod_level      *int
+	hydrogen_storage_level      *int
+	addhydrogen_storage_level   *int
+	silica                      *int64
+	addsilica                   *int64
+	silica_last_update          *time.Time
+	silica_rate                 *int
+	addsilica_rate              *int
+	silica_prod_level           *int
+	addsilica_prod_level        *int
+	silica_storage_level        *int
+	addsilica_storage_level     *int
+	population                  *int64
+	addpopulation               *int64
+	population_last_update      *time.Time
+	population_rate             *int
+	addpopulation_rate          *int
+	population_prod_level       *int
+	addpopulation_prod_level    *int
+	population_storage_level    *int
+	addpopulation_storage_level *int
+	energy_cons                 *int64
+	addenergy_cons              *int64
+	energy_prod                 *int64
+	addenergy_prod              *int64
+	solar_prod_level            *int
+	addsolar_prod_level         *int
+	name                        *string
+	owner                       map[int]struct{}
+	clearedOwner                bool
+	predicates                  []predicate.Planet
 }
 
 // Where adds a new predicate for the builder.
@@ -89,6 +104,95 @@ func (pu *PlanetUpdate) AddMetal(i int64) *PlanetUpdate {
 	return pu
 }
 
+// SetMetalLastUpdate sets the metal_last_update field.
+func (pu *PlanetUpdate) SetMetalLastUpdate(t time.Time) *PlanetUpdate {
+	pu.metal_last_update = &t
+	return pu
+}
+
+// SetNillableMetalLastUpdate sets the metal_last_update field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableMetalLastUpdate(t *time.Time) *PlanetUpdate {
+	if t != nil {
+		pu.SetMetalLastUpdate(*t)
+	}
+	return pu
+}
+
+// SetMetalRate sets the metal_rate field.
+func (pu *PlanetUpdate) SetMetalRate(i int) *PlanetUpdate {
+	pu.metal_rate = &i
+	pu.addmetal_rate = nil
+	return pu
+}
+
+// SetNillableMetalRate sets the metal_rate field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableMetalRate(i *int) *PlanetUpdate {
+	if i != nil {
+		pu.SetMetalRate(*i)
+	}
+	return pu
+}
+
+// AddMetalRate adds i to metal_rate.
+func (pu *PlanetUpdate) AddMetalRate(i int) *PlanetUpdate {
+	if pu.addmetal_rate == nil {
+		pu.addmetal_rate = &i
+	} else {
+		*pu.addmetal_rate += i
+	}
+	return pu
+}
+
+// SetMetalProdLevel sets the metal_prod_level field.
+func (pu *PlanetUpdate) SetMetalProdLevel(i int) *PlanetUpdate {
+	pu.metal_prod_level = &i
+	pu.addmetal_prod_level = nil
+	return pu
+}
+
+// SetNillableMetalProdLevel sets the metal_prod_level field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableMetalProdLevel(i *int) *PlanetUpdate {
+	if i != nil {
+		pu.SetMetalProdLevel(*i)
+	}
+	return pu
+}
+
+// AddMetalProdLevel adds i to metal_prod_level.
+func (pu *PlanetUpdate) AddMetalProdLevel(i int) *PlanetUpdate {
+	if pu.addmetal_prod_level == nil {
+		pu.addmetal_prod_level = &i
+	} else {
+		*pu.addmetal_prod_level += i
+	}
+	return pu
+}
+
+// SetMetalStorageLevel sets the metal_storage_level field.
+func (pu *PlanetUpdate) SetMetalStorageLevel(i int) *PlanetUpdate {
+	pu.metal_storage_level = &i
+	pu.addmetal_storage_level = nil
+	return pu
+}
+
+// SetNillableMetalStorageLevel sets the metal_storage_level field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableMetalStorageLevel(i *int) *PlanetUpdate {
+	if i != nil {
+		pu.SetMetalStorageLevel(*i)
+	}
+	return pu
+}
+
+// AddMetalStorageLevel adds i to metal_storage_level.
+func (pu *PlanetUpdate) AddMetalStorageLevel(i int) *PlanetUpdate {
+	if pu.addmetal_storage_level == nil {
+		pu.addmetal_storage_level = &i
+	} else {
+		*pu.addmetal_storage_level += i
+	}
+	return pu
+}
+
 // SetHydrogen sets the hydrogen field.
 func (pu *PlanetUpdate) SetHydrogen(i int64) *PlanetUpdate {
 	pu.hydrogen = &i
@@ -110,6 +214,209 @@ func (pu *PlanetUpdate) AddHydrogen(i int64) *PlanetUpdate {
 		pu.addhydrogen = &i
 	} else {
 		*pu.addhydrogen += i
+	}
+	return pu
+}
+
+// SetHydrogenLastUpdate sets the hydrogen_last_update field.
+func (pu *PlanetUpdate) SetHydrogenLastUpdate(t time.Time) *PlanetUpdate {
+	pu.hydrogen_last_update = &t
+	return pu
+}
+
+// SetNillableHydrogenLastUpdate sets the hydrogen_last_update field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableHydrogenLastUpdate(t *time.Time) *PlanetUpdate {
+	if t != nil {
+		pu.SetHydrogenLastUpdate(*t)
+	}
+	return pu
+}
+
+// SetHydrogenRate sets the hydrogen_rate field.
+func (pu *PlanetUpdate) SetHydrogenRate(i int) *PlanetUpdate {
+	pu.hydrogen_rate = &i
+	pu.addhydrogen_rate = nil
+	return pu
+}
+
+// SetNillableHydrogenRate sets the hydrogen_rate field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableHydrogenRate(i *int) *PlanetUpdate {
+	if i != nil {
+		pu.SetHydrogenRate(*i)
+	}
+	return pu
+}
+
+// AddHydrogenRate adds i to hydrogen_rate.
+func (pu *PlanetUpdate) AddHydrogenRate(i int) *PlanetUpdate {
+	if pu.addhydrogen_rate == nil {
+		pu.addhydrogen_rate = &i
+	} else {
+		*pu.addhydrogen_rate += i
+	}
+	return pu
+}
+
+// SetHydrogenProdLevel sets the hydrogen_prod_level field.
+func (pu *PlanetUpdate) SetHydrogenProdLevel(i int) *PlanetUpdate {
+	pu.hydrogen_prod_level = &i
+	pu.addhydrogen_prod_level = nil
+	return pu
+}
+
+// SetNillableHydrogenProdLevel sets the hydrogen_prod_level field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableHydrogenProdLevel(i *int) *PlanetUpdate {
+	if i != nil {
+		pu.SetHydrogenProdLevel(*i)
+	}
+	return pu
+}
+
+// AddHydrogenProdLevel adds i to hydrogen_prod_level.
+func (pu *PlanetUpdate) AddHydrogenProdLevel(i int) *PlanetUpdate {
+	if pu.addhydrogen_prod_level == nil {
+		pu.addhydrogen_prod_level = &i
+	} else {
+		*pu.addhydrogen_prod_level += i
+	}
+	return pu
+}
+
+// SetHydrogenStorageLevel sets the hydrogen_storage_level field.
+func (pu *PlanetUpdate) SetHydrogenStorageLevel(i int) *PlanetUpdate {
+	pu.hydrogen_storage_level = &i
+	pu.addhydrogen_storage_level = nil
+	return pu
+}
+
+// SetNillableHydrogenStorageLevel sets the hydrogen_storage_level field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableHydrogenStorageLevel(i *int) *PlanetUpdate {
+	if i != nil {
+		pu.SetHydrogenStorageLevel(*i)
+	}
+	return pu
+}
+
+// AddHydrogenStorageLevel adds i to hydrogen_storage_level.
+func (pu *PlanetUpdate) AddHydrogenStorageLevel(i int) *PlanetUpdate {
+	if pu.addhydrogen_storage_level == nil {
+		pu.addhydrogen_storage_level = &i
+	} else {
+		*pu.addhydrogen_storage_level += i
+	}
+	return pu
+}
+
+// SetSilica sets the silica field.
+func (pu *PlanetUpdate) SetSilica(i int64) *PlanetUpdate {
+	pu.silica = &i
+	pu.addsilica = nil
+	return pu
+}
+
+// SetNillableSilica sets the silica field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableSilica(i *int64) *PlanetUpdate {
+	if i != nil {
+		pu.SetSilica(*i)
+	}
+	return pu
+}
+
+// AddSilica adds i to silica.
+func (pu *PlanetUpdate) AddSilica(i int64) *PlanetUpdate {
+	if pu.addsilica == nil {
+		pu.addsilica = &i
+	} else {
+		*pu.addsilica += i
+	}
+	return pu
+}
+
+// SetSilicaLastUpdate sets the silica_last_update field.
+func (pu *PlanetUpdate) SetSilicaLastUpdate(t time.Time) *PlanetUpdate {
+	pu.silica_last_update = &t
+	return pu
+}
+
+// SetNillableSilicaLastUpdate sets the silica_last_update field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableSilicaLastUpdate(t *time.Time) *PlanetUpdate {
+	if t != nil {
+		pu.SetSilicaLastUpdate(*t)
+	}
+	return pu
+}
+
+// SetSilicaRate sets the silica_rate field.
+func (pu *PlanetUpdate) SetSilicaRate(i int) *PlanetUpdate {
+	pu.silica_rate = &i
+	pu.addsilica_rate = nil
+	return pu
+}
+
+// SetNillableSilicaRate sets the silica_rate field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableSilicaRate(i *int) *PlanetUpdate {
+	if i != nil {
+		pu.SetSilicaRate(*i)
+	}
+	return pu
+}
+
+// AddSilicaRate adds i to silica_rate.
+func (pu *PlanetUpdate) AddSilicaRate(i int) *PlanetUpdate {
+	if pu.addsilica_rate == nil {
+		pu.addsilica_rate = &i
+	} else {
+		*pu.addsilica_rate += i
+	}
+	return pu
+}
+
+// SetSilicaProdLevel sets the silica_prod_level field.
+func (pu *PlanetUpdate) SetSilicaProdLevel(i int) *PlanetUpdate {
+	pu.silica_prod_level = &i
+	pu.addsilica_prod_level = nil
+	return pu
+}
+
+// SetNillableSilicaProdLevel sets the silica_prod_level field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableSilicaProdLevel(i *int) *PlanetUpdate {
+	if i != nil {
+		pu.SetSilicaProdLevel(*i)
+	}
+	return pu
+}
+
+// AddSilicaProdLevel adds i to silica_prod_level.
+func (pu *PlanetUpdate) AddSilicaProdLevel(i int) *PlanetUpdate {
+	if pu.addsilica_prod_level == nil {
+		pu.addsilica_prod_level = &i
+	} else {
+		*pu.addsilica_prod_level += i
+	}
+	return pu
+}
+
+// SetSilicaStorageLevel sets the silica_storage_level field.
+func (pu *PlanetUpdate) SetSilicaStorageLevel(i int) *PlanetUpdate {
+	pu.silica_storage_level = &i
+	pu.addsilica_storage_level = nil
+	return pu
+}
+
+// SetNillableSilicaStorageLevel sets the silica_storage_level field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableSilicaStorageLevel(i *int) *PlanetUpdate {
+	if i != nil {
+		pu.SetSilicaStorageLevel(*i)
+	}
+	return pu
+}
+
+// AddSilicaStorageLevel adds i to silica_storage_level.
+func (pu *PlanetUpdate) AddSilicaStorageLevel(i int) *PlanetUpdate {
+	if pu.addsilica_storage_level == nil {
+		pu.addsilica_storage_level = &i
+	} else {
+		*pu.addsilica_storage_level += i
 	}
 	return pu
 }
@@ -139,84 +446,6 @@ func (pu *PlanetUpdate) AddPopulation(i int64) *PlanetUpdate {
 	return pu
 }
 
-// SetMetalLastUpdate sets the metal_last_update field.
-func (pu *PlanetUpdate) SetMetalLastUpdate(t time.Time) *PlanetUpdate {
-	pu.metal_last_update = &t
-	return pu
-}
-
-// SetNillableMetalLastUpdate sets the metal_last_update field if the given value is not nil.
-func (pu *PlanetUpdate) SetNillableMetalLastUpdate(t *time.Time) *PlanetUpdate {
-	if t != nil {
-		pu.SetMetalLastUpdate(*t)
-	}
-	return pu
-}
-
-// SetMetalProdRate sets the metal_prod_rate field.
-func (pu *PlanetUpdate) SetMetalProdRate(i int) *PlanetUpdate {
-	pu.metal_prod_rate = &i
-	pu.addmetal_prod_rate = nil
-	return pu
-}
-
-// SetNillableMetalProdRate sets the metal_prod_rate field if the given value is not nil.
-func (pu *PlanetUpdate) SetNillableMetalProdRate(i *int) *PlanetUpdate {
-	if i != nil {
-		pu.SetMetalProdRate(*i)
-	}
-	return pu
-}
-
-// AddMetalProdRate adds i to metal_prod_rate.
-func (pu *PlanetUpdate) AddMetalProdRate(i int) *PlanetUpdate {
-	if pu.addmetal_prod_rate == nil {
-		pu.addmetal_prod_rate = &i
-	} else {
-		*pu.addmetal_prod_rate += i
-	}
-	return pu
-}
-
-// SetHydrogenLastUpdate sets the hydrogen_last_update field.
-func (pu *PlanetUpdate) SetHydrogenLastUpdate(t time.Time) *PlanetUpdate {
-	pu.hydrogen_last_update = &t
-	return pu
-}
-
-// SetNillableHydrogenLastUpdate sets the hydrogen_last_update field if the given value is not nil.
-func (pu *PlanetUpdate) SetNillableHydrogenLastUpdate(t *time.Time) *PlanetUpdate {
-	if t != nil {
-		pu.SetHydrogenLastUpdate(*t)
-	}
-	return pu
-}
-
-// SetHydrogenProdRate sets the hydrogen_prod_rate field.
-func (pu *PlanetUpdate) SetHydrogenProdRate(i int) *PlanetUpdate {
-	pu.hydrogen_prod_rate = &i
-	pu.addhydrogen_prod_rate = nil
-	return pu
-}
-
-// SetNillableHydrogenProdRate sets the hydrogen_prod_rate field if the given value is not nil.
-func (pu *PlanetUpdate) SetNillableHydrogenProdRate(i *int) *PlanetUpdate {
-	if i != nil {
-		pu.SetHydrogenProdRate(*i)
-	}
-	return pu
-}
-
-// AddHydrogenProdRate adds i to hydrogen_prod_rate.
-func (pu *PlanetUpdate) AddHydrogenProdRate(i int) *PlanetUpdate {
-	if pu.addhydrogen_prod_rate == nil {
-		pu.addhydrogen_prod_rate = &i
-	} else {
-		*pu.addhydrogen_prod_rate += i
-	}
-	return pu
-}
-
 // SetPopulationLastUpdate sets the population_last_update field.
 func (pu *PlanetUpdate) SetPopulationLastUpdate(t time.Time) *PlanetUpdate {
 	pu.population_last_update = &t
@@ -231,27 +460,77 @@ func (pu *PlanetUpdate) SetNillablePopulationLastUpdate(t *time.Time) *PlanetUpd
 	return pu
 }
 
-// SetPopulationProdRate sets the population_prod_rate field.
-func (pu *PlanetUpdate) SetPopulationProdRate(i int) *PlanetUpdate {
-	pu.population_prod_rate = &i
-	pu.addpopulation_prod_rate = nil
+// SetPopulationRate sets the population_rate field.
+func (pu *PlanetUpdate) SetPopulationRate(i int) *PlanetUpdate {
+	pu.population_rate = &i
+	pu.addpopulation_rate = nil
 	return pu
 }
 
-// SetNillablePopulationProdRate sets the population_prod_rate field if the given value is not nil.
-func (pu *PlanetUpdate) SetNillablePopulationProdRate(i *int) *PlanetUpdate {
+// SetNillablePopulationRate sets the population_rate field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillablePopulationRate(i *int) *PlanetUpdate {
 	if i != nil {
-		pu.SetPopulationProdRate(*i)
+		pu.SetPopulationRate(*i)
 	}
 	return pu
 }
 
-// AddPopulationProdRate adds i to population_prod_rate.
-func (pu *PlanetUpdate) AddPopulationProdRate(i int) *PlanetUpdate {
-	if pu.addpopulation_prod_rate == nil {
-		pu.addpopulation_prod_rate = &i
+// AddPopulationRate adds i to population_rate.
+func (pu *PlanetUpdate) AddPopulationRate(i int) *PlanetUpdate {
+	if pu.addpopulation_rate == nil {
+		pu.addpopulation_rate = &i
 	} else {
-		*pu.addpopulation_prod_rate += i
+		*pu.addpopulation_rate += i
+	}
+	return pu
+}
+
+// SetPopulationProdLevel sets the population_prod_level field.
+func (pu *PlanetUpdate) SetPopulationProdLevel(i int) *PlanetUpdate {
+	pu.population_prod_level = &i
+	pu.addpopulation_prod_level = nil
+	return pu
+}
+
+// SetNillablePopulationProdLevel sets the population_prod_level field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillablePopulationProdLevel(i *int) *PlanetUpdate {
+	if i != nil {
+		pu.SetPopulationProdLevel(*i)
+	}
+	return pu
+}
+
+// AddPopulationProdLevel adds i to population_prod_level.
+func (pu *PlanetUpdate) AddPopulationProdLevel(i int) *PlanetUpdate {
+	if pu.addpopulation_prod_level == nil {
+		pu.addpopulation_prod_level = &i
+	} else {
+		*pu.addpopulation_prod_level += i
+	}
+	return pu
+}
+
+// SetPopulationStorageLevel sets the population_storage_level field.
+func (pu *PlanetUpdate) SetPopulationStorageLevel(i int) *PlanetUpdate {
+	pu.population_storage_level = &i
+	pu.addpopulation_storage_level = nil
+	return pu
+}
+
+// SetNillablePopulationStorageLevel sets the population_storage_level field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillablePopulationStorageLevel(i *int) *PlanetUpdate {
+	if i != nil {
+		pu.SetPopulationStorageLevel(*i)
+	}
+	return pu
+}
+
+// AddPopulationStorageLevel adds i to population_storage_level.
+func (pu *PlanetUpdate) AddPopulationStorageLevel(i int) *PlanetUpdate {
+	if pu.addpopulation_storage_level == nil {
+		pu.addpopulation_storage_level = &i
+	} else {
+		*pu.addpopulation_storage_level += i
 	}
 	return pu
 }
@@ -306,102 +585,27 @@ func (pu *PlanetUpdate) AddEnergyProd(i int64) *PlanetUpdate {
 	return pu
 }
 
-// SetMetalProdLevel sets the metal_prod_level field.
-func (pu *PlanetUpdate) SetMetalProdLevel(i int) *PlanetUpdate {
-	pu.metal_prod_level = &i
-	pu.addmetal_prod_level = nil
+// SetSolarProdLevel sets the solar_prod_level field.
+func (pu *PlanetUpdate) SetSolarProdLevel(i int) *PlanetUpdate {
+	pu.solar_prod_level = &i
+	pu.addsolar_prod_level = nil
 	return pu
 }
 
-// SetNillableMetalProdLevel sets the metal_prod_level field if the given value is not nil.
-func (pu *PlanetUpdate) SetNillableMetalProdLevel(i *int) *PlanetUpdate {
+// SetNillableSolarProdLevel sets the solar_prod_level field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableSolarProdLevel(i *int) *PlanetUpdate {
 	if i != nil {
-		pu.SetMetalProdLevel(*i)
+		pu.SetSolarProdLevel(*i)
 	}
 	return pu
 }
 
-// AddMetalProdLevel adds i to metal_prod_level.
-func (pu *PlanetUpdate) AddMetalProdLevel(i int) *PlanetUpdate {
-	if pu.addmetal_prod_level == nil {
-		pu.addmetal_prod_level = &i
+// AddSolarProdLevel adds i to solar_prod_level.
+func (pu *PlanetUpdate) AddSolarProdLevel(i int) *PlanetUpdate {
+	if pu.addsolar_prod_level == nil {
+		pu.addsolar_prod_level = &i
 	} else {
-		*pu.addmetal_prod_level += i
-	}
-	return pu
-}
-
-// SetHydrogenProdLevel sets the hydrogen_prod_level field.
-func (pu *PlanetUpdate) SetHydrogenProdLevel(i int) *PlanetUpdate {
-	pu.hydrogen_prod_level = &i
-	pu.addhydrogen_prod_level = nil
-	return pu
-}
-
-// SetNillableHydrogenProdLevel sets the hydrogen_prod_level field if the given value is not nil.
-func (pu *PlanetUpdate) SetNillableHydrogenProdLevel(i *int) *PlanetUpdate {
-	if i != nil {
-		pu.SetHydrogenProdLevel(*i)
-	}
-	return pu
-}
-
-// AddHydrogenProdLevel adds i to hydrogen_prod_level.
-func (pu *PlanetUpdate) AddHydrogenProdLevel(i int) *PlanetUpdate {
-	if pu.addhydrogen_prod_level == nil {
-		pu.addhydrogen_prod_level = &i
-	} else {
-		*pu.addhydrogen_prod_level += i
-	}
-	return pu
-}
-
-// SetEnergyProdLevel sets the energy_prod_level field.
-func (pu *PlanetUpdate) SetEnergyProdLevel(i int) *PlanetUpdate {
-	pu.energy_prod_level = &i
-	pu.addenergy_prod_level = nil
-	return pu
-}
-
-// SetNillableEnergyProdLevel sets the energy_prod_level field if the given value is not nil.
-func (pu *PlanetUpdate) SetNillableEnergyProdLevel(i *int) *PlanetUpdate {
-	if i != nil {
-		pu.SetEnergyProdLevel(*i)
-	}
-	return pu
-}
-
-// AddEnergyProdLevel adds i to energy_prod_level.
-func (pu *PlanetUpdate) AddEnergyProdLevel(i int) *PlanetUpdate {
-	if pu.addenergy_prod_level == nil {
-		pu.addenergy_prod_level = &i
-	} else {
-		*pu.addenergy_prod_level += i
-	}
-	return pu
-}
-
-// SetPopulationProdLevel sets the population_prod_level field.
-func (pu *PlanetUpdate) SetPopulationProdLevel(i int) *PlanetUpdate {
-	pu.population_prod_level = &i
-	pu.addpopulation_prod_level = nil
-	return pu
-}
-
-// SetNillablePopulationProdLevel sets the population_prod_level field if the given value is not nil.
-func (pu *PlanetUpdate) SetNillablePopulationProdLevel(i *int) *PlanetUpdate {
-	if i != nil {
-		pu.SetPopulationProdLevel(*i)
-	}
-	return pu
-}
-
-// AddPopulationProdLevel adds i to population_prod_level.
-func (pu *PlanetUpdate) AddPopulationProdLevel(i int) *PlanetUpdate {
-	if pu.addpopulation_prod_level == nil {
-		pu.addpopulation_prod_level = &i
-	} else {
-		*pu.addpopulation_prod_level += i
+		*pu.addsolar_prod_level += i
 	}
 	return pu
 }
@@ -459,14 +663,59 @@ func (pu *PlanetUpdate) Save(ctx context.Context) (int, error) {
 			return 0, fmt.Errorf("ent: validator failed for field \"metal\": %v", err)
 		}
 	}
+	if pu.metal_prod_level != nil {
+		if err := planet.MetalProdLevelValidator(*pu.metal_prod_level); err != nil {
+			return 0, fmt.Errorf("ent: validator failed for field \"metal_prod_level\": %v", err)
+		}
+	}
+	if pu.metal_storage_level != nil {
+		if err := planet.MetalStorageLevelValidator(*pu.metal_storage_level); err != nil {
+			return 0, fmt.Errorf("ent: validator failed for field \"metal_storage_level\": %v", err)
+		}
+	}
 	if pu.hydrogen != nil {
 		if err := planet.HydrogenValidator(*pu.hydrogen); err != nil {
 			return 0, fmt.Errorf("ent: validator failed for field \"hydrogen\": %v", err)
 		}
 	}
+	if pu.hydrogen_prod_level != nil {
+		if err := planet.HydrogenProdLevelValidator(*pu.hydrogen_prod_level); err != nil {
+			return 0, fmt.Errorf("ent: validator failed for field \"hydrogen_prod_level\": %v", err)
+		}
+	}
+	if pu.hydrogen_storage_level != nil {
+		if err := planet.HydrogenStorageLevelValidator(*pu.hydrogen_storage_level); err != nil {
+			return 0, fmt.Errorf("ent: validator failed for field \"hydrogen_storage_level\": %v", err)
+		}
+	}
+	if pu.silica != nil {
+		if err := planet.SilicaValidator(*pu.silica); err != nil {
+			return 0, fmt.Errorf("ent: validator failed for field \"silica\": %v", err)
+		}
+	}
+	if pu.silica_prod_level != nil {
+		if err := planet.SilicaProdLevelValidator(*pu.silica_prod_level); err != nil {
+			return 0, fmt.Errorf("ent: validator failed for field \"silica_prod_level\": %v", err)
+		}
+	}
+	if pu.silica_storage_level != nil {
+		if err := planet.SilicaStorageLevelValidator(*pu.silica_storage_level); err != nil {
+			return 0, fmt.Errorf("ent: validator failed for field \"silica_storage_level\": %v", err)
+		}
+	}
 	if pu.population != nil {
 		if err := planet.PopulationValidator(*pu.population); err != nil {
 			return 0, fmt.Errorf("ent: validator failed for field \"population\": %v", err)
+		}
+	}
+	if pu.population_prod_level != nil {
+		if err := planet.PopulationProdLevelValidator(*pu.population_prod_level); err != nil {
+			return 0, fmt.Errorf("ent: validator failed for field \"population_prod_level\": %v", err)
+		}
+	}
+	if pu.population_storage_level != nil {
+		if err := planet.PopulationStorageLevelValidator(*pu.population_storage_level); err != nil {
+			return 0, fmt.Errorf("ent: validator failed for field \"population_storage_level\": %v", err)
 		}
 	}
 	if pu.energy_cons != nil {
@@ -479,24 +728,9 @@ func (pu *PlanetUpdate) Save(ctx context.Context) (int, error) {
 			return 0, fmt.Errorf("ent: validator failed for field \"energy_prod\": %v", err)
 		}
 	}
-	if pu.metal_prod_level != nil {
-		if err := planet.MetalProdLevelValidator(*pu.metal_prod_level); err != nil {
-			return 0, fmt.Errorf("ent: validator failed for field \"metal_prod_level\": %v", err)
-		}
-	}
-	if pu.hydrogen_prod_level != nil {
-		if err := planet.HydrogenProdLevelValidator(*pu.hydrogen_prod_level); err != nil {
-			return 0, fmt.Errorf("ent: validator failed for field \"hydrogen_prod_level\": %v", err)
-		}
-	}
-	if pu.energy_prod_level != nil {
-		if err := planet.EnergyProdLevelValidator(*pu.energy_prod_level); err != nil {
-			return 0, fmt.Errorf("ent: validator failed for field \"energy_prod_level\": %v", err)
-		}
-	}
-	if pu.population_prod_level != nil {
-		if err := planet.PopulationProdLevelValidator(*pu.population_prod_level); err != nil {
-			return 0, fmt.Errorf("ent: validator failed for field \"population_prod_level\": %v", err)
+	if pu.solar_prod_level != nil {
+		if err := planet.SolarProdLevelValidator(*pu.solar_prod_level); err != nil {
+			return 0, fmt.Errorf("ent: validator failed for field \"solar_prod_level\": %v", err)
 		}
 	}
 	if len(pu.owner) > 1 {
@@ -572,11 +806,80 @@ func (pu *PlanetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value := pu.addmetal; value != nil {
 		updater.Add(planet.FieldMetal, *value)
 	}
+	if value := pu.metal_last_update; value != nil {
+		updater.Set(planet.FieldMetalLastUpdate, *value)
+	}
+	if value := pu.metal_rate; value != nil {
+		updater.Set(planet.FieldMetalRate, *value)
+	}
+	if value := pu.addmetal_rate; value != nil {
+		updater.Add(planet.FieldMetalRate, *value)
+	}
+	if value := pu.metal_prod_level; value != nil {
+		updater.Set(planet.FieldMetalProdLevel, *value)
+	}
+	if value := pu.addmetal_prod_level; value != nil {
+		updater.Add(planet.FieldMetalProdLevel, *value)
+	}
+	if value := pu.metal_storage_level; value != nil {
+		updater.Set(planet.FieldMetalStorageLevel, *value)
+	}
+	if value := pu.addmetal_storage_level; value != nil {
+		updater.Add(planet.FieldMetalStorageLevel, *value)
+	}
 	if value := pu.hydrogen; value != nil {
 		updater.Set(planet.FieldHydrogen, *value)
 	}
 	if value := pu.addhydrogen; value != nil {
 		updater.Add(planet.FieldHydrogen, *value)
+	}
+	if value := pu.hydrogen_last_update; value != nil {
+		updater.Set(planet.FieldHydrogenLastUpdate, *value)
+	}
+	if value := pu.hydrogen_rate; value != nil {
+		updater.Set(planet.FieldHydrogenRate, *value)
+	}
+	if value := pu.addhydrogen_rate; value != nil {
+		updater.Add(planet.FieldHydrogenRate, *value)
+	}
+	if value := pu.hydrogen_prod_level; value != nil {
+		updater.Set(planet.FieldHydrogenProdLevel, *value)
+	}
+	if value := pu.addhydrogen_prod_level; value != nil {
+		updater.Add(planet.FieldHydrogenProdLevel, *value)
+	}
+	if value := pu.hydrogen_storage_level; value != nil {
+		updater.Set(planet.FieldHydrogenStorageLevel, *value)
+	}
+	if value := pu.addhydrogen_storage_level; value != nil {
+		updater.Add(planet.FieldHydrogenStorageLevel, *value)
+	}
+	if value := pu.silica; value != nil {
+		updater.Set(planet.FieldSilica, *value)
+	}
+	if value := pu.addsilica; value != nil {
+		updater.Add(planet.FieldSilica, *value)
+	}
+	if value := pu.silica_last_update; value != nil {
+		updater.Set(planet.FieldSilicaLastUpdate, *value)
+	}
+	if value := pu.silica_rate; value != nil {
+		updater.Set(planet.FieldSilicaRate, *value)
+	}
+	if value := pu.addsilica_rate; value != nil {
+		updater.Add(planet.FieldSilicaRate, *value)
+	}
+	if value := pu.silica_prod_level; value != nil {
+		updater.Set(planet.FieldSilicaProdLevel, *value)
+	}
+	if value := pu.addsilica_prod_level; value != nil {
+		updater.Add(planet.FieldSilicaProdLevel, *value)
+	}
+	if value := pu.silica_storage_level; value != nil {
+		updater.Set(planet.FieldSilicaStorageLevel, *value)
+	}
+	if value := pu.addsilica_storage_level; value != nil {
+		updater.Add(planet.FieldSilicaStorageLevel, *value)
 	}
 	if value := pu.population; value != nil {
 		updater.Set(planet.FieldPopulation, *value)
@@ -584,32 +887,26 @@ func (pu *PlanetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value := pu.addpopulation; value != nil {
 		updater.Add(planet.FieldPopulation, *value)
 	}
-	if value := pu.metal_last_update; value != nil {
-		updater.Set(planet.FieldMetalLastUpdate, *value)
-	}
-	if value := pu.metal_prod_rate; value != nil {
-		updater.Set(planet.FieldMetalProdRate, *value)
-	}
-	if value := pu.addmetal_prod_rate; value != nil {
-		updater.Add(planet.FieldMetalProdRate, *value)
-	}
-	if value := pu.hydrogen_last_update; value != nil {
-		updater.Set(planet.FieldHydrogenLastUpdate, *value)
-	}
-	if value := pu.hydrogen_prod_rate; value != nil {
-		updater.Set(planet.FieldHydrogenProdRate, *value)
-	}
-	if value := pu.addhydrogen_prod_rate; value != nil {
-		updater.Add(planet.FieldHydrogenProdRate, *value)
-	}
 	if value := pu.population_last_update; value != nil {
 		updater.Set(planet.FieldPopulationLastUpdate, *value)
 	}
-	if value := pu.population_prod_rate; value != nil {
-		updater.Set(planet.FieldPopulationProdRate, *value)
+	if value := pu.population_rate; value != nil {
+		updater.Set(planet.FieldPopulationRate, *value)
 	}
-	if value := pu.addpopulation_prod_rate; value != nil {
-		updater.Add(planet.FieldPopulationProdRate, *value)
+	if value := pu.addpopulation_rate; value != nil {
+		updater.Add(planet.FieldPopulationRate, *value)
+	}
+	if value := pu.population_prod_level; value != nil {
+		updater.Set(planet.FieldPopulationProdLevel, *value)
+	}
+	if value := pu.addpopulation_prod_level; value != nil {
+		updater.Add(planet.FieldPopulationProdLevel, *value)
+	}
+	if value := pu.population_storage_level; value != nil {
+		updater.Set(planet.FieldPopulationStorageLevel, *value)
+	}
+	if value := pu.addpopulation_storage_level; value != nil {
+		updater.Add(planet.FieldPopulationStorageLevel, *value)
 	}
 	if value := pu.energy_cons; value != nil {
 		updater.Set(planet.FieldEnergyCons, *value)
@@ -623,29 +920,11 @@ func (pu *PlanetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value := pu.addenergy_prod; value != nil {
 		updater.Add(planet.FieldEnergyProd, *value)
 	}
-	if value := pu.metal_prod_level; value != nil {
-		updater.Set(planet.FieldMetalProdLevel, *value)
+	if value := pu.solar_prod_level; value != nil {
+		updater.Set(planet.FieldSolarProdLevel, *value)
 	}
-	if value := pu.addmetal_prod_level; value != nil {
-		updater.Add(planet.FieldMetalProdLevel, *value)
-	}
-	if value := pu.hydrogen_prod_level; value != nil {
-		updater.Set(planet.FieldHydrogenProdLevel, *value)
-	}
-	if value := pu.addhydrogen_prod_level; value != nil {
-		updater.Add(planet.FieldHydrogenProdLevel, *value)
-	}
-	if value := pu.energy_prod_level; value != nil {
-		updater.Set(planet.FieldEnergyProdLevel, *value)
-	}
-	if value := pu.addenergy_prod_level; value != nil {
-		updater.Add(planet.FieldEnergyProdLevel, *value)
-	}
-	if value := pu.population_prod_level; value != nil {
-		updater.Set(planet.FieldPopulationProdLevel, *value)
-	}
-	if value := pu.addpopulation_prod_level; value != nil {
-		updater.Add(planet.FieldPopulationProdLevel, *value)
+	if value := pu.addsolar_prod_level; value != nil {
+		updater.Add(planet.FieldSolarProdLevel, *value)
 	}
 	if value := pu.name; value != nil {
 		updater.Set(planet.FieldName, *value)
@@ -687,37 +966,52 @@ type PlanetUpdateOne struct {
 	config
 	id int
 
-	updated_at               *time.Time
-	metal                    *int64
-	addmetal                 *int64
-	hydrogen                 *int64
-	addhydrogen              *int64
-	population               *int64
-	addpopulation            *int64
-	metal_last_update        *time.Time
-	metal_prod_rate          *int
-	addmetal_prod_rate       *int
-	hydrogen_last_update     *time.Time
-	hydrogen_prod_rate       *int
-	addhydrogen_prod_rate    *int
-	population_last_update   *time.Time
-	population_prod_rate     *int
-	addpopulation_prod_rate  *int
-	energy_cons              *int64
-	addenergy_cons           *int64
-	energy_prod              *int64
-	addenergy_prod           *int64
-	metal_prod_level         *int
-	addmetal_prod_level      *int
-	hydrogen_prod_level      *int
-	addhydrogen_prod_level   *int
-	energy_prod_level        *int
-	addenergy_prod_level     *int
-	population_prod_level    *int
-	addpopulation_prod_level *int
-	name                     *string
-	owner                    map[int]struct{}
-	clearedOwner             bool
+	updated_at                  *time.Time
+	metal                       *int64
+	addmetal                    *int64
+	metal_last_update           *time.Time
+	metal_rate                  *int
+	addmetal_rate               *int
+	metal_prod_level            *int
+	addmetal_prod_level         *int
+	metal_storage_level         *int
+	addmetal_storage_level      *int
+	hydrogen                    *int64
+	addhydrogen                 *int64
+	hydrogen_last_update        *time.Time
+	hydrogen_rate               *int
+	addhydrogen_rate            *int
+	hydrogen_prod_level         *int
+	addhydrogen_prod_level      *int
+	hydrogen_storage_level      *int
+	addhydrogen_storage_level   *int
+	silica                      *int64
+	addsilica                   *int64
+	silica_last_update          *time.Time
+	silica_rate                 *int
+	addsilica_rate              *int
+	silica_prod_level           *int
+	addsilica_prod_level        *int
+	silica_storage_level        *int
+	addsilica_storage_level     *int
+	population                  *int64
+	addpopulation               *int64
+	population_last_update      *time.Time
+	population_rate             *int
+	addpopulation_rate          *int
+	population_prod_level       *int
+	addpopulation_prod_level    *int
+	population_storage_level    *int
+	addpopulation_storage_level *int
+	energy_cons                 *int64
+	addenergy_cons              *int64
+	energy_prod                 *int64
+	addenergy_prod              *int64
+	solar_prod_level            *int
+	addsolar_prod_level         *int
+	name                        *string
+	owner                       map[int]struct{}
+	clearedOwner                bool
 }
 
 // SetUpdatedAt sets the updated_at field.
@@ -751,6 +1045,95 @@ func (puo *PlanetUpdateOne) AddMetal(i int64) *PlanetUpdateOne {
 	return puo
 }
 
+// SetMetalLastUpdate sets the metal_last_update field.
+func (puo *PlanetUpdateOne) SetMetalLastUpdate(t time.Time) *PlanetUpdateOne {
+	puo.metal_last_update = &t
+	return puo
+}
+
+// SetNillableMetalLastUpdate sets the metal_last_update field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableMetalLastUpdate(t *time.Time) *PlanetUpdateOne {
+	if t != nil {
+		puo.SetMetalLastUpdate(*t)
+	}
+	return puo
+}
+
+// SetMetalRate sets the metal_rate field.
+func (puo *PlanetUpdateOne) SetMetalRate(i int) *PlanetUpdateOne {
+	puo.metal_rate = &i
+	puo.addmetal_rate = nil
+	return puo
+}
+
+// SetNillableMetalRate sets the metal_rate field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableMetalRate(i *int) *PlanetUpdateOne {
+	if i != nil {
+		puo.SetMetalRate(*i)
+	}
+	return puo
+}
+
+// AddMetalRate adds i to metal_rate.
+func (puo *PlanetUpdateOne) AddMetalRate(i int) *PlanetUpdateOne {
+	if puo.addmetal_rate == nil {
+		puo.addmetal_rate = &i
+	} else {
+		*puo.addmetal_rate += i
+	}
+	return puo
+}
+
+// SetMetalProdLevel sets the metal_prod_level field.
+func (puo *PlanetUpdateOne) SetMetalProdLevel(i int) *PlanetUpdateOne {
+	puo.metal_prod_level = &i
+	puo.addmetal_prod_level = nil
+	return puo
+}
+
+// SetNillableMetalProdLevel sets the metal_prod_level field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableMetalProdLevel(i *int) *PlanetUpdateOne {
+	if i != nil {
+		puo.SetMetalProdLevel(*i)
+	}
+	return puo
+}
+
+// AddMetalProdLevel adds i to metal_prod_level.
+func (puo *PlanetUpdateOne) AddMetalProdLevel(i int) *PlanetUpdateOne {
+	if puo.addmetal_prod_level == nil {
+		puo.addmetal_prod_level = &i
+	} else {
+		*puo.addmetal_prod_level += i
+	}
+	return puo
+}
+
+// SetMetalStorageLevel sets the metal_storage_level field.
+func (puo *PlanetUpdateOne) SetMetalStorageLevel(i int) *PlanetUpdateOne {
+	puo.metal_storage_level = &i
+	puo.addmetal_storage_level = nil
+	return puo
+}
+
+// SetNillableMetalStorageLevel sets the metal_storage_level field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableMetalStorageLevel(i *int) *PlanetUpdateOne {
+	if i != nil {
+		puo.SetMetalStorageLevel(*i)
+	}
+	return puo
+}
+
+// AddMetalStorageLevel adds i to metal_storage_level.
+func (puo *PlanetUpdateOne) AddMetalStorageLevel(i int) *PlanetUpdateOne {
+	if puo.addmetal_storage_level == nil {
+		puo.addmetal_storage_level = &i
+	} else {
+		*puo.addmetal_storage_level += i
+	}
+	return puo
+}
+
 // SetHydrogen sets the hydrogen field.
 func (puo *PlanetUpdateOne) SetHydrogen(i int64) *PlanetUpdateOne {
 	puo.hydrogen = &i
@@ -772,6 +1155,209 @@ func (puo *PlanetUpdateOne) AddHydrogen(i int64) *PlanetUpdateOne {
 		puo.addhydrogen = &i
 	} else {
 		*puo.addhydrogen += i
+	}
+	return puo
+}
+
+// SetHydrogenLastUpdate sets the hydrogen_last_update field.
+func (puo *PlanetUpdateOne) SetHydrogenLastUpdate(t time.Time) *PlanetUpdateOne {
+	puo.hydrogen_last_update = &t
+	return puo
+}
+
+// SetNillableHydrogenLastUpdate sets the hydrogen_last_update field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableHydrogenLastUpdate(t *time.Time) *PlanetUpdateOne {
+	if t != nil {
+		puo.SetHydrogenLastUpdate(*t)
+	}
+	return puo
+}
+
+// SetHydrogenRate sets the hydrogen_rate field.
+func (puo *PlanetUpdateOne) SetHydrogenRate(i int) *PlanetUpdateOne {
+	puo.hydrogen_rate = &i
+	puo.addhydrogen_rate = nil
+	return puo
+}
+
+// SetNillableHydrogenRate sets the hydrogen_rate field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableHydrogenRate(i *int) *PlanetUpdateOne {
+	if i != nil {
+		puo.SetHydrogenRate(*i)
+	}
+	return puo
+}
+
+// AddHydrogenRate adds i to hydrogen_rate.
+func (puo *PlanetUpdateOne) AddHydrogenRate(i int) *PlanetUpdateOne {
+	if puo.addhydrogen_rate == nil {
+		puo.addhydrogen_rate = &i
+	} else {
+		*puo.addhydrogen_rate += i
+	}
+	return puo
+}
+
+// SetHydrogenProdLevel sets the hydrogen_prod_level field.
+func (puo *PlanetUpdateOne) SetHydrogenProdLevel(i int) *PlanetUpdateOne {
+	puo.hydrogen_prod_level = &i
+	puo.addhydrogen_prod_level = nil
+	return puo
+}
+
+// SetNillableHydrogenProdLevel sets the hydrogen_prod_level field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableHydrogenProdLevel(i *int) *PlanetUpdateOne {
+	if i != nil {
+		puo.SetHydrogenProdLevel(*i)
+	}
+	return puo
+}
+
+// AddHydrogenProdLevel adds i to hydrogen_prod_level.
+func (puo *PlanetUpdateOne) AddHydrogenProdLevel(i int) *PlanetUpdateOne {
+	if puo.addhydrogen_prod_level == nil {
+		puo.addhydrogen_prod_level = &i
+	} else {
+		*puo.addhydrogen_prod_level += i
+	}
+	return puo
+}
+
+// SetHydrogenStorageLevel sets the hydrogen_storage_level field.
+func (puo *PlanetUpdateOne) SetHydrogenStorageLevel(i int) *PlanetUpdateOne {
+	puo.hydrogen_storage_level = &i
+	puo.addhydrogen_storage_level = nil
+	return puo
+}
+
+// SetNillableHydrogenStorageLevel sets the hydrogen_storage_level field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableHydrogenStorageLevel(i *int) *PlanetUpdateOne {
+	if i != nil {
+		puo.SetHydrogenStorageLevel(*i)
+	}
+	return puo
+}
+
+// AddHydrogenStorageLevel adds i to hydrogen_storage_level.
+func (puo *PlanetUpdateOne) AddHydrogenStorageLevel(i int) *PlanetUpdateOne {
+	if puo.addhydrogen_storage_level == nil {
+		puo.addhydrogen_storage_level = &i
+	} else {
+		*puo.addhydrogen_storage_level += i
+	}
+	return puo
+}
+
+// SetSilica sets the silica field.
+func (puo *PlanetUpdateOne) SetSilica(i int64) *PlanetUpdateOne {
+	puo.silica = &i
+	puo.addsilica = nil
+	return puo
+}
+
+// SetNillableSilica sets the silica field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableSilica(i *int64) *PlanetUpdateOne {
+	if i != nil {
+		puo.SetSilica(*i)
+	}
+	return puo
+}
+
+// AddSilica adds i to silica.
+func (puo *PlanetUpdateOne) AddSilica(i int64) *PlanetUpdateOne {
+	if puo.addsilica == nil {
+		puo.addsilica = &i
+	} else {
+		*puo.addsilica += i
+	}
+	return puo
+}
+
+// SetSilicaLastUpdate sets the silica_last_update field.
+func (puo *PlanetUpdateOne) SetSilicaLastUpdate(t time.Time) *PlanetUpdateOne {
+	puo.silica_last_update = &t
+	return puo
+}
+
+// SetNillableSilicaLastUpdate sets the silica_last_update field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableSilicaLastUpdate(t *time.Time) *PlanetUpdateOne {
+	if t != nil {
+		puo.SetSilicaLastUpdate(*t)
+	}
+	return puo
+}
+
+// SetSilicaRate sets the silica_rate field.
+func (puo *PlanetUpdateOne) SetSilicaRate(i int) *PlanetUpdateOne {
+	puo.silica_rate = &i
+	puo.addsilica_rate = nil
+	return puo
+}
+
+// SetNillableSilicaRate sets the silica_rate field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableSilicaRate(i *int) *PlanetUpdateOne {
+	if i != nil {
+		puo.SetSilicaRate(*i)
+	}
+	return puo
+}
+
+// AddSilicaRate adds i to silica_rate.
+func (puo *PlanetUpdateOne) AddSilicaRate(i int) *PlanetUpdateOne {
+	if puo.addsilica_rate == nil {
+		puo.addsilica_rate = &i
+	} else {
+		*puo.addsilica_rate += i
+	}
+	return puo
+}
+
+// SetSilicaProdLevel sets the silica_prod_level field.
+func (puo *PlanetUpdateOne) SetSilicaProdLevel(i int) *PlanetUpdateOne {
+	puo.silica_prod_level = &i
+	puo.addsilica_prod_level = nil
+	return puo
+}
+
+// SetNillableSilicaProdLevel sets the silica_prod_level field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableSilicaProdLevel(i *int) *PlanetUpdateOne {
+	if i != nil {
+		puo.SetSilicaProdLevel(*i)
+	}
+	return puo
+}
+
+// AddSilicaProdLevel adds i to silica_prod_level.
+func (puo *PlanetUpdateOne) AddSilicaProdLevel(i int) *PlanetUpdateOne {
+	if puo.addsilica_prod_level == nil {
+		puo.addsilica_prod_level = &i
+	} else {
+		*puo.addsilica_prod_level += i
+	}
+	return puo
+}
+
+// SetSilicaStorageLevel sets the silica_storage_level field.
+func (puo *PlanetUpdateOne) SetSilicaStorageLevel(i int) *PlanetUpdateOne {
+	puo.silica_storage_level = &i
+	puo.addsilica_storage_level = nil
+	return puo
+}
+
+// SetNillableSilicaStorageLevel sets the silica_storage_level field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableSilicaStorageLevel(i *int) *PlanetUpdateOne {
+	if i != nil {
+		puo.SetSilicaStorageLevel(*i)
+	}
+	return puo
+}
+
+// AddSilicaStorageLevel adds i to silica_storage_level.
+func (puo *PlanetUpdateOne) AddSilicaStorageLevel(i int) *PlanetUpdateOne {
+	if puo.addsilica_storage_level == nil {
+		puo.addsilica_storage_level = &i
+	} else {
+		*puo.addsilica_storage_level += i
 	}
 	return puo
 }
@@ -801,84 +1387,6 @@ func (puo *PlanetUpdateOne) AddPopulation(i int64) *PlanetUpdateOne {
 	return puo
 }
 
-// SetMetalLastUpdate sets the metal_last_update field.
-func (puo *PlanetUpdateOne) SetMetalLastUpdate(t time.Time) *PlanetUpdateOne {
-	puo.metal_last_update = &t
-	return puo
-}
-
-// SetNillableMetalLastUpdate sets the metal_last_update field if the given value is not nil.
-func (puo *PlanetUpdateOne) SetNillableMetalLastUpdate(t *time.Time) *PlanetUpdateOne {
-	if t != nil {
-		puo.SetMetalLastUpdate(*t)
-	}
-	return puo
-}
-
-// SetMetalProdRate sets the metal_prod_rate field.
-func (puo *PlanetUpdateOne) SetMetalProdRate(i int) *PlanetUpdateOne {
-	puo.metal_prod_rate = &i
-	puo.addmetal_prod_rate = nil
-	return puo
-}
-
-// SetNillableMetalProdRate sets the metal_prod_rate field if the given value is not nil.
-func (puo *PlanetUpdateOne) SetNillableMetalProdRate(i *int) *PlanetUpdateOne {
-	if i != nil {
-		puo.SetMetalProdRate(*i)
-	}
-	return puo
-}
-
-// AddMetalProdRate adds i to metal_prod_rate.
-func (puo *PlanetUpdateOne) AddMetalProdRate(i int) *PlanetUpdateOne {
-	if puo.addmetal_prod_rate == nil {
-		puo.addmetal_prod_rate = &i
-	} else {
-		*puo.addmetal_prod_rate += i
-	}
-	return puo
-}
-
-// SetHydrogenLastUpdate sets the hydrogen_last_update field.
-func (puo *PlanetUpdateOne) SetHydrogenLastUpdate(t time.Time) *PlanetUpdateOne {
-	puo.hydrogen_last_update = &t
-	return puo
-}
-
-// SetNillableHydrogenLastUpdate sets the hydrogen_last_update field if the given value is not nil.
-func (puo *PlanetUpdateOne) SetNillableHydrogenLastUpdate(t *time.Time) *PlanetUpdateOne {
-	if t != nil {
-		puo.SetHydrogenLastUpdate(*t)
-	}
-	return puo
-}
-
-// SetHydrogenProdRate sets the hydrogen_prod_rate field.
-func (puo *PlanetUpdateOne) SetHydrogenProdRate(i int) *PlanetUpdateOne {
-	puo.hydrogen_prod_rate = &i
-	puo.addhydrogen_prod_rate = nil
-	return puo
-}
-
-// SetNillableHydrogenProdRate sets the hydrogen_prod_rate field if the given value is not nil.
-func (puo *PlanetUpdateOne) SetNillableHydrogenProdRate(i *int) *PlanetUpdateOne {
-	if i != nil {
-		puo.SetHydrogenProdRate(*i)
-	}
-	return puo
-}
-
-// AddHydrogenProdRate adds i to hydrogen_prod_rate.
-func (puo *PlanetUpdateOne) AddHydrogenProdRate(i int) *PlanetUpdateOne {
-	if puo.addhydrogen_prod_rate == nil {
-		puo.addhydrogen_prod_rate = &i
-	} else {
-		*puo.addhydrogen_prod_rate += i
-	}
-	return puo
-}
-
 // SetPopulationLastUpdate sets the population_last_update field.
 func (puo *PlanetUpdateOne) SetPopulationLastUpdate(t time.Time) *PlanetUpdateOne {
 	puo.population_last_update = &t
@@ -893,27 +1401,77 @@ func (puo *PlanetUpdateOne) SetNillablePopulationLastUpdate(t *time.Time) *Plane
 	return puo
 }
 
-// SetPopulationProdRate sets the population_prod_rate field.
-func (puo *PlanetUpdateOne) SetPopulationProdRate(i int) *PlanetUpdateOne {
-	puo.population_prod_rate = &i
-	puo.addpopulation_prod_rate = nil
+// SetPopulationRate sets the population_rate field.
+func (puo *PlanetUpdateOne) SetPopulationRate(i int) *PlanetUpdateOne {
+	puo.population_rate = &i
+	puo.addpopulation_rate = nil
 	return puo
 }
 
-// SetNillablePopulationProdRate sets the population_prod_rate field if the given value is not nil.
-func (puo *PlanetUpdateOne) SetNillablePopulationProdRate(i *int) *PlanetUpdateOne {
+// SetNillablePopulationRate sets the population_rate field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillablePopulationRate(i *int) *PlanetUpdateOne {
 	if i != nil {
-		puo.SetPopulationProdRate(*i)
+		puo.SetPopulationRate(*i)
 	}
 	return puo
 }
 
-// AddPopulationProdRate adds i to population_prod_rate.
-func (puo *PlanetUpdateOne) AddPopulationProdRate(i int) *PlanetUpdateOne {
-	if puo.addpopulation_prod_rate == nil {
-		puo.addpopulation_prod_rate = &i
+// AddPopulationRate adds i to population_rate.
+func (puo *PlanetUpdateOne) AddPopulationRate(i int) *PlanetUpdateOne {
+	if puo.addpopulation_rate == nil {
+		puo.addpopulation_rate = &i
 	} else {
-		*puo.addpopulation_prod_rate += i
+		*puo.addpopulation_rate += i
+	}
+	return puo
+}
+
+// SetPopulationProdLevel sets the population_prod_level field.
+func (puo *PlanetUpdateOne) SetPopulationProdLevel(i int) *PlanetUpdateOne {
+	puo.population_prod_level = &i
+	puo.addpopulation_prod_level = nil
+	return puo
+}
+
+// SetNillablePopulationProdLevel sets the population_prod_level field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillablePopulationProdLevel(i *int) *PlanetUpdateOne {
+	if i != nil {
+		puo.SetPopulationProdLevel(*i)
+	}
+	return puo
+}
+
+// AddPopulationProdLevel adds i to population_prod_level.
+func (puo *PlanetUpdateOne) AddPopulationProdLevel(i int) *PlanetUpdateOne {
+	if puo.addpopulation_prod_level == nil {
+		puo.addpopulation_prod_level = &i
+	} else {
+		*puo.addpopulation_prod_level += i
+	}
+	return puo
+}
+
+// SetPopulationStorageLevel sets the population_storage_level field.
+func (puo *PlanetUpdateOne) SetPopulationStorageLevel(i int) *PlanetUpdateOne {
+	puo.population_storage_level = &i
+	puo.addpopulation_storage_level = nil
+	return puo
+}
+
+// SetNillablePopulationStorageLevel sets the population_storage_level field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillablePopulationStorageLevel(i *int) *PlanetUpdateOne {
+	if i != nil {
+		puo.SetPopulationStorageLevel(*i)
+	}
+	return puo
+}
+
+// AddPopulationStorageLevel adds i to population_storage_level.
+func (puo *PlanetUpdateOne) AddPopulationStorageLevel(i int) *PlanetUpdateOne {
+	if puo.addpopulation_storage_level == nil {
+		puo.addpopulation_storage_level = &i
+	} else {
+		*puo.addpopulation_storage_level += i
 	}
 	return puo
 }
@@ -968,102 +1526,27 @@ func (puo *PlanetUpdateOne) AddEnergyProd(i int64) *PlanetUpdateOne {
 	return puo
 }
 
-// SetMetalProdLevel sets the metal_prod_level field.
-func (puo *PlanetUpdateOne) SetMetalProdLevel(i int) *PlanetUpdateOne {
-	puo.metal_prod_level = &i
-	puo.addmetal_prod_level = nil
+// SetSolarProdLevel sets the solar_prod_level field.
+func (puo *PlanetUpdateOne) SetSolarProdLevel(i int) *PlanetUpdateOne {
+	puo.solar_prod_level = &i
+	puo.addsolar_prod_level = nil
 	return puo
 }
 
-// SetNillableMetalProdLevel sets the metal_prod_level field if the given value is not nil.
-func (puo *PlanetUpdateOne) SetNillableMetalProdLevel(i *int) *PlanetUpdateOne {
+// SetNillableSolarProdLevel sets the solar_prod_level field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableSolarProdLevel(i *int) *PlanetUpdateOne {
 	if i != nil {
-		puo.SetMetalProdLevel(*i)
+		puo.SetSolarProdLevel(*i)
 	}
 	return puo
 }
 
-// AddMetalProdLevel adds i to metal_prod_level.
-func (puo *PlanetUpdateOne) AddMetalProdLevel(i int) *PlanetUpdateOne {
-	if puo.addmetal_prod_level == nil {
-		puo.addmetal_prod_level = &i
+// AddSolarProdLevel adds i to solar_prod_level.
+func (puo *PlanetUpdateOne) AddSolarProdLevel(i int) *PlanetUpdateOne {
+	if puo.addsolar_prod_level == nil {
+		puo.addsolar_prod_level = &i
 	} else {
-		*puo.addmetal_prod_level += i
-	}
-	return puo
-}
-
-// SetHydrogenProdLevel sets the hydrogen_prod_level field.
-func (puo *PlanetUpdateOne) SetHydrogenProdLevel(i int) *PlanetUpdateOne {
-	puo.hydrogen_prod_level = &i
-	puo.addhydrogen_prod_level = nil
-	return puo
-}
-
-// SetNillableHydrogenProdLevel sets the hydrogen_prod_level field if the given value is not nil.
-func (puo *PlanetUpdateOne) SetNillableHydrogenProdLevel(i *int) *PlanetUpdateOne {
-	if i != nil {
-		puo.SetHydrogenProdLevel(*i)
-	}
-	return puo
-}
-
-// AddHydrogenProdLevel adds i to hydrogen_prod_level.
-func (puo *PlanetUpdateOne) AddHydrogenProdLevel(i int) *PlanetUpdateOne {
-	if puo.addhydrogen_prod_level == nil {
-		puo.addhydrogen_prod_level = &i
-	} else {
-		*puo.addhydrogen_prod_level += i
-	}
-	return puo
-}
-
-// SetEnergyProdLevel sets the energy_prod_level field.
-func (puo *PlanetUpdateOne) SetEnergyProdLevel(i int) *PlanetUpdateOne {
-	puo.energy_prod_level = &i
-	puo.addenergy_prod_level = nil
-	return puo
-}
-
-// SetNillableEnergyProdLevel sets the energy_prod_level field if the given value is not nil.
-func (puo *PlanetUpdateOne) SetNillableEnergyProdLevel(i *int) *PlanetUpdateOne {
-	if i != nil {
-		puo.SetEnergyProdLevel(*i)
-	}
-	return puo
-}
-
-// AddEnergyProdLevel adds i to energy_prod_level.
-func (puo *PlanetUpdateOne) AddEnergyProdLevel(i int) *PlanetUpdateOne {
-	if puo.addenergy_prod_level == nil {
-		puo.addenergy_prod_level = &i
-	} else {
-		*puo.addenergy_prod_level += i
-	}
-	return puo
-}
-
-// SetPopulationProdLevel sets the population_prod_level field.
-func (puo *PlanetUpdateOne) SetPopulationProdLevel(i int) *PlanetUpdateOne {
-	puo.population_prod_level = &i
-	puo.addpopulation_prod_level = nil
-	return puo
-}
-
-// SetNillablePopulationProdLevel sets the population_prod_level field if the given value is not nil.
-func (puo *PlanetUpdateOne) SetNillablePopulationProdLevel(i *int) *PlanetUpdateOne {
-	if i != nil {
-		puo.SetPopulationProdLevel(*i)
-	}
-	return puo
-}
-
-// AddPopulationProdLevel adds i to population_prod_level.
-func (puo *PlanetUpdateOne) AddPopulationProdLevel(i int) *PlanetUpdateOne {
-	if puo.addpopulation_prod_level == nil {
-		puo.addpopulation_prod_level = &i
-	} else {
-		*puo.addpopulation_prod_level += i
+		*puo.addsolar_prod_level += i
 	}
 	return puo
 }
@@ -1121,14 +1604,59 @@ func (puo *PlanetUpdateOne) Save(ctx context.Context) (*Planet, error) {
 			return nil, fmt.Errorf("ent: validator failed for field \"metal\": %v", err)
 		}
 	}
+	if puo.metal_prod_level != nil {
+		if err := planet.MetalProdLevelValidator(*puo.metal_prod_level); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"metal_prod_level\": %v", err)
+		}
+	}
+	if puo.metal_storage_level != nil {
+		if err := planet.MetalStorageLevelValidator(*puo.metal_storage_level); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"metal_storage_level\": %v", err)
+		}
+	}
 	if puo.hydrogen != nil {
 		if err := planet.HydrogenValidator(*puo.hydrogen); err != nil {
 			return nil, fmt.Errorf("ent: validator failed for field \"hydrogen\": %v", err)
 		}
 	}
+	if puo.hydrogen_prod_level != nil {
+		if err := planet.HydrogenProdLevelValidator(*puo.hydrogen_prod_level); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"hydrogen_prod_level\": %v", err)
+		}
+	}
+	if puo.hydrogen_storage_level != nil {
+		if err := planet.HydrogenStorageLevelValidator(*puo.hydrogen_storage_level); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"hydrogen_storage_level\": %v", err)
+		}
+	}
+	if puo.silica != nil {
+		if err := planet.SilicaValidator(*puo.silica); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"silica\": %v", err)
+		}
+	}
+	if puo.silica_prod_level != nil {
+		if err := planet.SilicaProdLevelValidator(*puo.silica_prod_level); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"silica_prod_level\": %v", err)
+		}
+	}
+	if puo.silica_storage_level != nil {
+		if err := planet.SilicaStorageLevelValidator(*puo.silica_storage_level); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"silica_storage_level\": %v", err)
+		}
+	}
 	if puo.population != nil {
 		if err := planet.PopulationValidator(*puo.population); err != nil {
 			return nil, fmt.Errorf("ent: validator failed for field \"population\": %v", err)
+		}
+	}
+	if puo.population_prod_level != nil {
+		if err := planet.PopulationProdLevelValidator(*puo.population_prod_level); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"population_prod_level\": %v", err)
+		}
+	}
+	if puo.population_storage_level != nil {
+		if err := planet.PopulationStorageLevelValidator(*puo.population_storage_level); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"population_storage_level\": %v", err)
 		}
 	}
 	if puo.energy_cons != nil {
@@ -1141,24 +1669,9 @@ func (puo *PlanetUpdateOne) Save(ctx context.Context) (*Planet, error) {
 			return nil, fmt.Errorf("ent: validator failed for field \"energy_prod\": %v", err)
 		}
 	}
-	if puo.metal_prod_level != nil {
-		if err := planet.MetalProdLevelValidator(*puo.metal_prod_level); err != nil {
-			return nil, fmt.Errorf("ent: validator failed for field \"metal_prod_level\": %v", err)
-		}
-	}
-	if puo.hydrogen_prod_level != nil {
-		if err := planet.HydrogenProdLevelValidator(*puo.hydrogen_prod_level); err != nil {
-			return nil, fmt.Errorf("ent: validator failed for field \"hydrogen_prod_level\": %v", err)
-		}
-	}
-	if puo.energy_prod_level != nil {
-		if err := planet.EnergyProdLevelValidator(*puo.energy_prod_level); err != nil {
-			return nil, fmt.Errorf("ent: validator failed for field \"energy_prod_level\": %v", err)
-		}
-	}
-	if puo.population_prod_level != nil {
-		if err := planet.PopulationProdLevelValidator(*puo.population_prod_level); err != nil {
-			return nil, fmt.Errorf("ent: validator failed for field \"population_prod_level\": %v", err)
+	if puo.solar_prod_level != nil {
+		if err := planet.SolarProdLevelValidator(*puo.solar_prod_level); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"solar_prod_level\": %v", err)
 		}
 	}
 	if len(puo.owner) > 1 {
@@ -1240,6 +1753,34 @@ func (puo *PlanetUpdateOne) sqlSave(ctx context.Context) (pl *Planet, err error)
 		updater.Add(planet.FieldMetal, *value)
 		pl.Metal += *value
 	}
+	if value := puo.metal_last_update; value != nil {
+		updater.Set(planet.FieldMetalLastUpdate, *value)
+		pl.MetalLastUpdate = *value
+	}
+	if value := puo.metal_rate; value != nil {
+		updater.Set(planet.FieldMetalRate, *value)
+		pl.MetalRate = *value
+	}
+	if value := puo.addmetal_rate; value != nil {
+		updater.Add(planet.FieldMetalRate, *value)
+		pl.MetalRate += *value
+	}
+	if value := puo.metal_prod_level; value != nil {
+		updater.Set(planet.FieldMetalProdLevel, *value)
+		pl.MetalProdLevel = *value
+	}
+	if value := puo.addmetal_prod_level; value != nil {
+		updater.Add(planet.FieldMetalProdLevel, *value)
+		pl.MetalProdLevel += *value
+	}
+	if value := puo.metal_storage_level; value != nil {
+		updater.Set(planet.FieldMetalStorageLevel, *value)
+		pl.MetalStorageLevel = *value
+	}
+	if value := puo.addmetal_storage_level; value != nil {
+		updater.Add(planet.FieldMetalStorageLevel, *value)
+		pl.MetalStorageLevel += *value
+	}
 	if value := puo.hydrogen; value != nil {
 		updater.Set(planet.FieldHydrogen, *value)
 		pl.Hydrogen = *value
@@ -1247,6 +1788,70 @@ func (puo *PlanetUpdateOne) sqlSave(ctx context.Context) (pl *Planet, err error)
 	if value := puo.addhydrogen; value != nil {
 		updater.Add(planet.FieldHydrogen, *value)
 		pl.Hydrogen += *value
+	}
+	if value := puo.hydrogen_last_update; value != nil {
+		updater.Set(planet.FieldHydrogenLastUpdate, *value)
+		pl.HydrogenLastUpdate = *value
+	}
+	if value := puo.hydrogen_rate; value != nil {
+		updater.Set(planet.FieldHydrogenRate, *value)
+		pl.HydrogenRate = *value
+	}
+	if value := puo.addhydrogen_rate; value != nil {
+		updater.Add(planet.FieldHydrogenRate, *value)
+		pl.HydrogenRate += *value
+	}
+	if value := puo.hydrogen_prod_level; value != nil {
+		updater.Set(planet.FieldHydrogenProdLevel, *value)
+		pl.HydrogenProdLevel = *value
+	}
+	if value := puo.addhydrogen_prod_level; value != nil {
+		updater.Add(planet.FieldHydrogenProdLevel, *value)
+		pl.HydrogenProdLevel += *value
+	}
+	if value := puo.hydrogen_storage_level; value != nil {
+		updater.Set(planet.FieldHydrogenStorageLevel, *value)
+		pl.HydrogenStorageLevel = *value
+	}
+	if value := puo.addhydrogen_storage_level; value != nil {
+		updater.Add(planet.FieldHydrogenStorageLevel, *value)
+		pl.HydrogenStorageLevel += *value
+	}
+	if value := puo.silica; value != nil {
+		updater.Set(planet.FieldSilica, *value)
+		pl.Silica = *value
+	}
+	if value := puo.addsilica; value != nil {
+		updater.Add(planet.FieldSilica, *value)
+		pl.Silica += *value
+	}
+	if value := puo.silica_last_update; value != nil {
+		updater.Set(planet.FieldSilicaLastUpdate, *value)
+		pl.SilicaLastUpdate = *value
+	}
+	if value := puo.silica_rate; value != nil {
+		updater.Set(planet.FieldSilicaRate, *value)
+		pl.SilicaRate = *value
+	}
+	if value := puo.addsilica_rate; value != nil {
+		updater.Add(planet.FieldSilicaRate, *value)
+		pl.SilicaRate += *value
+	}
+	if value := puo.silica_prod_level; value != nil {
+		updater.Set(planet.FieldSilicaProdLevel, *value)
+		pl.SilicaProdLevel = *value
+	}
+	if value := puo.addsilica_prod_level; value != nil {
+		updater.Add(planet.FieldSilicaProdLevel, *value)
+		pl.SilicaProdLevel += *value
+	}
+	if value := puo.silica_storage_level; value != nil {
+		updater.Set(planet.FieldSilicaStorageLevel, *value)
+		pl.SilicaStorageLevel = *value
+	}
+	if value := puo.addsilica_storage_level; value != nil {
+		updater.Add(planet.FieldSilicaStorageLevel, *value)
+		pl.SilicaStorageLevel += *value
 	}
 	if value := puo.population; value != nil {
 		updater.Set(planet.FieldPopulation, *value)
@@ -1256,41 +1861,33 @@ func (puo *PlanetUpdateOne) sqlSave(ctx context.Context) (pl *Planet, err error)
 		updater.Add(planet.FieldPopulation, *value)
 		pl.Population += *value
 	}
-	if value := puo.metal_last_update; value != nil {
-		updater.Set(planet.FieldMetalLastUpdate, *value)
-		pl.MetalLastUpdate = *value
-	}
-	if value := puo.metal_prod_rate; value != nil {
-		updater.Set(planet.FieldMetalProdRate, *value)
-		pl.MetalProdRate = *value
-	}
-	if value := puo.addmetal_prod_rate; value != nil {
-		updater.Add(planet.FieldMetalProdRate, *value)
-		pl.MetalProdRate += *value
-	}
-	if value := puo.hydrogen_last_update; value != nil {
-		updater.Set(planet.FieldHydrogenLastUpdate, *value)
-		pl.HydrogenLastUpdate = *value
-	}
-	if value := puo.hydrogen_prod_rate; value != nil {
-		updater.Set(planet.FieldHydrogenProdRate, *value)
-		pl.HydrogenProdRate = *value
-	}
-	if value := puo.addhydrogen_prod_rate; value != nil {
-		updater.Add(planet.FieldHydrogenProdRate, *value)
-		pl.HydrogenProdRate += *value
-	}
 	if value := puo.population_last_update; value != nil {
 		updater.Set(planet.FieldPopulationLastUpdate, *value)
 		pl.PopulationLastUpdate = *value
 	}
-	if value := puo.population_prod_rate; value != nil {
-		updater.Set(planet.FieldPopulationProdRate, *value)
-		pl.PopulationProdRate = *value
+	if value := puo.population_rate; value != nil {
+		updater.Set(planet.FieldPopulationRate, *value)
+		pl.PopulationRate = *value
 	}
-	if value := puo.addpopulation_prod_rate; value != nil {
-		updater.Add(planet.FieldPopulationProdRate, *value)
-		pl.PopulationProdRate += *value
+	if value := puo.addpopulation_rate; value != nil {
+		updater.Add(planet.FieldPopulationRate, *value)
+		pl.PopulationRate += *value
+	}
+	if value := puo.population_prod_level; value != nil {
+		updater.Set(planet.FieldPopulationProdLevel, *value)
+		pl.PopulationProdLevel = *value
+	}
+	if value := puo.addpopulation_prod_level; value != nil {
+		updater.Add(planet.FieldPopulationProdLevel, *value)
+		pl.PopulationProdLevel += *value
+	}
+	if value := puo.population_storage_level; value != nil {
+		updater.Set(planet.FieldPopulationStorageLevel, *value)
+		pl.PopulationStorageLevel = *value
+	}
+	if value := puo.addpopulation_storage_level; value != nil {
+		updater.Add(planet.FieldPopulationStorageLevel, *value)
+		pl.PopulationStorageLevel += *value
 	}
 	if value := puo.energy_cons; value != nil {
 		updater.Set(planet.FieldEnergyCons, *value)
@@ -1308,37 +1905,13 @@ func (puo *PlanetUpdateOne) sqlSave(ctx context.Context) (pl *Planet, err error)
 		updater.Add(planet.FieldEnergyProd, *value)
 		pl.EnergyProd += *value
 	}
-	if value := puo.metal_prod_level; value != nil {
-		updater.Set(planet.FieldMetalProdLevel, *value)
-		pl.MetalProdLevel = *value
+	if value := puo.solar_prod_level; value != nil {
+		updater.Set(planet.FieldSolarProdLevel, *value)
+		pl.SolarProdLevel = *value
 	}
-	if value := puo.addmetal_prod_level; value != nil {
-		updater.Add(planet.FieldMetalProdLevel, *value)
-		pl.MetalProdLevel += *value
-	}
-	if value := puo.hydrogen_prod_level; value != nil {
-		updater.Set(planet.FieldHydrogenProdLevel, *value)
-		pl.HydrogenProdLevel = *value
-	}
-	if value := puo.addhydrogen_prod_level; value != nil {
-		updater.Add(planet.FieldHydrogenProdLevel, *value)
-		pl.HydrogenProdLevel += *value
-	}
-	if value := puo.energy_prod_level; value != nil {
-		updater.Set(planet.FieldEnergyProdLevel, *value)
-		pl.EnergyProdLevel = *value
-	}
-	if value := puo.addenergy_prod_level; value != nil {
-		updater.Add(planet.FieldEnergyProdLevel, *value)
-		pl.EnergyProdLevel += *value
-	}
-	if value := puo.population_prod_level; value != nil {
-		updater.Set(planet.FieldPopulationProdLevel, *value)
-		pl.PopulationProdLevel = *value
-	}
-	if value := puo.addpopulation_prod_level; value != nil {
-		updater.Add(planet.FieldPopulationProdLevel, *value)
-		pl.PopulationProdLevel += *value
+	if value := puo.addsolar_prod_level; value != nil {
+		updater.Add(planet.FieldSolarProdLevel, *value)
+		pl.SolarProdLevel += *value
 	}
 	if value := puo.name; value != nil {
 		updater.Set(planet.FieldName, *value)
