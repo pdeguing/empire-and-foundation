@@ -62,7 +62,7 @@ func authMiddleware(next http.Handler) http.Handler {
 			Where(user.ID(userID)).
 			Only(r.Context())
 		if err != nil {
-			internalServerError(w, r, err, "Could not load logged in user from database")
+			serveInternalServerError(w, r, err, "Could not load logged in user from database")
 			return
 		}
 

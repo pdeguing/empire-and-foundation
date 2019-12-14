@@ -11,29 +11,29 @@ import (
 
 // GET /login
 // Show the login page
-func login(w http.ResponseWriter, r *http.Request) {
+func serveLogin(w http.ResponseWriter, r *http.Request) {
 	generateHTML(w, r, "login", nil, "login.layout", "public.navbar", "flash", "login")
 	forgetForm(r)
 }
 
 // GET /signup
 // Show the signup page
-func signup(w http.ResponseWriter, r *http.Request) {
+func serveSignup(w http.ResponseWriter, r *http.Request) {
 	generateHTML(w, r, "signup", nil, "login.layout", "public.navbar", "flash", "signup")
 	forgetForm(r)
 }
 
 // POST /signup
 // Create the user account
-func signupAccount(w http.ResponseWriter, r *http.Request) {
+func serveSignupAccount(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
-		internalServerError(w, r, err, "Cannot parse form")
+		serveInternalServerError(w, r, err, "Cannot parse form")
 		return
 	}
 	password, err := bcrypt.GenerateFromPassword([]byte(r.PostFormValue("password")), 14)
 	if err != nil {
-		internalServerError(w, r, err, "Cannot encrypt password")
+		serveInternalServerError(w, r, err, "Cannot encrypt password")
 		return
 	}
 
@@ -58,7 +58,7 @@ func signupAccount(w http.ResponseWriter, r *http.Request) {
 		return err
 	})
 	if err != nil {
-		internalServerError(w, r, err, "Cannot create user or planet")
+		serveInternalServerError(w, r, err, "Cannot create user or planet")
 		return
 	}
 
@@ -82,7 +82,7 @@ func serveAuthenticate(w http.ResponseWriter, r *http.Request) {
 	}
 	ok, err := data.CheckPassword(u.Password, r.PostFormValue("password"))
 	if err != nil {
-		internalServerError(w, r, err, "Cannot check user's password")
+		serveInternalServerError(w, r, err, "Cannot check user's password")
 		return
 	}
 	if !ok {

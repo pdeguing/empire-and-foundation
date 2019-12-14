@@ -18,34 +18,34 @@ func main() {
 
 	r.HandleFunc("/", index)
 
-	r.HandleFunc("/login", login)
+	r.HandleFunc("/login", serveLogin)
 	r.HandleFunc("/logout", serveLogout)
-	r.HandleFunc("/signup", signup)
-	r.HandleFunc("/signup_account", signupAccount).Methods("POST")
+	r.HandleFunc("/signup", serveSignup)
+	r.HandleFunc("/signup_account", serveSignupAccount).Methods("POST")
 	r.HandleFunc("/authenticate", serveAuthenticate).Methods("POST")
 
 	// Routes that require authentication
 	rAuth := r.NewRoute().Subrouter()
-	rAuth.HandleFunc("/dashboard", dashboard)
+	rAuth.HandleFunc("/dashboard", serveDashboard)
 
-	// Those routes are temporary and should be adapted to handle multiple planets per user.
-	rAuth.HandleFunc("/dashboard", dashboard)
-	rAuth.HandleFunc("/dashboard/cartography", cartography)
-	rAuth.HandleFunc("/dashboard/fleetcontrol", fleetcontrol)
-	rAuth.HandleFunc("/dashboard/technology", technology)
-	rAuth.HandleFunc("/dashboard/diplomacy", diplomacy)
-	rAuth.HandleFunc("/dashboard/story", story)
-	rAuth.HandleFunc("/dashboard/wiki", wiki)
-	rAuth.HandleFunc("/dashboard/news", news)
+	rAuth.HandleFunc("/dashboard", serveDashboard)
+	rAuth.HandleFunc("/dashboard/cartography", serveCartography)
+	rAuth.HandleFunc("/dashboard/fleetcontrol", serveFleetControl)
+	rAuth.HandleFunc("/dashboard/technology", serveTechnology)
+	rAuth.HandleFunc("/dashboard/diplomacy", serveDiplomacy)
+	rAuth.HandleFunc("/dashboard/story", serveStory)
+	rAuth.HandleFunc("/dashboard/wiki", serveWiki)
+	rAuth.HandleFunc("/dashboard/news", serveNews)
 
-	rAuth.HandleFunc("/dashboard/planet", planet)
-	rAuth.HandleFunc("/dashboard/planet/constructions", constructions)
-	rAuth.HandleFunc("/dashboard/planet/factories", factories)
-	rAuth.HandleFunc("/dashboard/planet/research", research)
-	rAuth.HandleFunc("/dashboard/planet/fleets", fleets)
-	rAuth.HandleFunc("/dashboard/planet/defenses", defenses)
+	rPlanet := rAuth.PathPrefix("/dashboard/planet/{planetNumber:[0-9]+}").Subrouter()
+	rPlanet.HandleFunc("/", servePlanet)
+	rPlanet.HandleFunc("/constructions", serveConstructions)
+	rPlanet.HandleFunc("/factories", serveFactories)
+	rPlanet.HandleFunc("/research", serveResearch)
+	rPlanet.HandleFunc("/fleets", serveFleets)
+	rPlanet.HandleFunc("/defenses", serveDefenses)
 
-	rAuth.HandleFunc("/planet/up_metal_mine", upMetalMine)
+	rAuth.HandleFunc("/planet/up_metal_mine", serveUpMetalMine)
 
 	// Middleware
 	csrfMiddleware := csrf.Protect(
@@ -53,7 +53,7 @@ func main() {
 		csrf.FieldName("csrf_token"),
 		csrf.CookieName("csrf_cookie"),
 		csrf.Secure(false), // TODO: Remove this part once we support HTTPS.
-		csrf.ErrorHandler(http.HandlerFunc(invalidCsrfToken)),
+		csrf.ErrorHandler(http.HandlerFunc(serveInvalidCsrfToken)),
 	)
 	sessionMiddleware := sessionManager.LoadAndSave
 	r.Use(
