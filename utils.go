@@ -71,8 +71,8 @@ func respondWithError(w http.ResponseWriter, r *http.Request, userMsg string, co
 //
 
 type viewData struct {
-	PageName	string
-	Data		interface{}
+	PageName string
+	Data     interface{}
 }
 
 func generateHTML(w http.ResponseWriter, r *http.Request, pageName string, data interface{}, fn ...string) {
@@ -83,7 +83,7 @@ func generateHTML(w http.ResponseWriter, r *http.Request, pageName string, data 
 	templates := template.Must(template.New("layout").Funcs(templateFuncs(r)).ParseFiles(files...))
 	err := templates.Execute(w, viewData{
 		PageName: pageName,
-		Data: data,
+		Data:     data,
 	})
 	if err != nil {
 		danger(err, "unable to render template")

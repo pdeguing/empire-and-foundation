@@ -1,0 +1,97 @@
+$dashboard-title-color: white;
+$dashboard-info-color: white;
+$dashboard-danger-color: #ab2011;
+
+.page-planet-dashboard {
+    background-image: url('/static/images/planet-dashboards/avalon.png');
+    background-position: center top;
+    background-size: 100vw auto;
+    background-repeat: no-repeat;
+
+    .navbar {
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .dashboard-title {
+        margin: 0;
+        color: $dashboard-title-color;
+        font-family: inherit;
+    }
+
+    .dashboard-subtitle {
+        margin: 0;
+        color: $dashboard-title-color;
+        font-family: inherit;
+        font-weight: bold;
+        font-size: 1.5rem;
+    }
+
+    .planet-info {
+        position: absolute;
+        // Vertical center it on the page beside the planet,
+        // given that the image has a 16/9 aspect ratio. Add
+        // 1% just to make it look more balanced even if it
+        // isn't.
+        top: calc((100vw / 16 * 9) * 0.51);
+        // Vertical center it around its own center.
+        transform: translateY(-50%);
+
+        .dashboard-info {
+            margin-bottom: 1.5rem;
+        }
+
+        .dashboard-item {
+            position: relative;
+            width: 100%;
+            margin-bottom: 0;
+            font-size: 1.2em;
+            color: $dashboard-info-color;
+            
+            &.dashboard-item-link {
+                cursor: pointer;
+
+                &:before {
+                    content: '';
+                    position: absolute;
+                    left: 0;
+                    transform: translateX(-100%);
+                }
+    
+                &:hover:before {
+                    content: '⬣ ';
+                    white-space: pre;
+                }
+    
+                &:after {
+                    content: '';
+                    position: absolute;
+                    right: 0;
+                    transform: translateX(100%);
+                }
+    
+                &:hover:after {
+                    content: ' ⬣';
+                    white-space: pre;
+                }
+            }
+
+            &-danger {
+                color: $dashboard-danger-color;
+            }
+        }
+        
+        // Dots between the name and value.
+        .dashboard-item-name {
+            overflow: hidden;
+            white-space: nowrap;
+    
+            &:after {
+                content: '.........................................................................................';
+            }
+        }
+    
+        .dashboard-item-value {
+            overflow: hidden;
+        }
+    }
+}
