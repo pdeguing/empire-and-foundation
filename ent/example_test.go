@@ -34,9 +34,22 @@ func ExamplePlanet() {
 		Create().
 		SetCreatedAt(time.Now()).
 		SetUpdatedAt(time.Now()).
-		SetMetalStock(1).
-		SetMetalMine(1).
-		SetLastMetalUpdate(time.Now()).
+		SetMetal(1).
+		SetHydrogen(1).
+		SetPopulation(1).
+		SetMetalLastUpdate(time.Now()).
+		SetMetalProdRate(1).
+		SetHydrogenLastUpdate(time.Now()).
+		SetHydrogenProdRate(1).
+		SetPopulationLastUpdate(time.Now()).
+		SetPopulationProdRate(1).
+		SetEnergyCons(1).
+		SetEnergyProd(1).
+		SetMetalProdLevel(1).
+		SetHydrogenProdLevel(1).
+		SetEnergyProdLevel(1).
+		SetPopulationProdLevel(1).
+		SetName("string").
 		SaveX(ctx)
 	log.Println("planet created:", pl)
 
@@ -86,9 +99,22 @@ func ExampleUser() {
 		Create().
 		SetCreatedAt(time.Now()).
 		SetUpdatedAt(time.Now()).
-		SetMetalStock(1).
-		SetMetalMine(1).
-		SetLastMetalUpdate(time.Now()).
+		SetMetal(1).
+		SetHydrogen(1).
+		SetPopulation(1).
+		SetMetalLastUpdate(time.Now()).
+		SetMetalProdRate(1).
+		SetHydrogenLastUpdate(time.Now()).
+		SetHydrogenProdRate(1).
+		SetPopulationLastUpdate(time.Now()).
+		SetPopulationProdRate(1).
+		SetEnergyCons(1).
+		SetEnergyProd(1).
+		SetMetalProdLevel(1).
+		SetHydrogenProdLevel(1).
+		SetEnergyProdLevel(1).
+		SetPopulationProdLevel(1).
+		SetName("string").
 		SaveX(ctx)
 	log.Println("planet created:", pl0)
 
