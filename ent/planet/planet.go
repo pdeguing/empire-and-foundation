@@ -18,12 +18,54 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at vertex property in the database.
 	FieldUpdatedAt = "updated_at"
-	// FieldMetalStock holds the string denoting the metal_stock vertex property in the database.
-	FieldMetalStock = "metal_stock"
-	// FieldMetalMine holds the string denoting the metal_mine vertex property in the database.
-	FieldMetalMine = "metal_mine"
-	// FieldLastMetalUpdate holds the string denoting the last_metal_update vertex property in the database.
-	FieldLastMetalUpdate = "last_metal_update"
+	// FieldMetal holds the string denoting the metal vertex property in the database.
+	FieldMetal = "metal"
+	// FieldMetalLastUpdate holds the string denoting the metal_last_update vertex property in the database.
+	FieldMetalLastUpdate = "metal_last_update"
+	// FieldMetalRate holds the string denoting the metal_rate vertex property in the database.
+	FieldMetalRate = "metal_rate"
+	// FieldMetalProdLevel holds the string denoting the metal_prod_level vertex property in the database.
+	FieldMetalProdLevel = "metal_prod_level"
+	// FieldMetalStorageLevel holds the string denoting the metal_storage_level vertex property in the database.
+	FieldMetalStorageLevel = "metal_storage_level"
+	// FieldHydrogen holds the string denoting the hydrogen vertex property in the database.
+	FieldHydrogen = "hydrogen"
+	// FieldHydrogenLastUpdate holds the string denoting the hydrogen_last_update vertex property in the database.
+	FieldHydrogenLastUpdate = "hydrogen_last_update"
+	// FieldHydrogenRate holds the string denoting the hydrogen_rate vertex property in the database.
+	FieldHydrogenRate = "hydrogen_rate"
+	// FieldHydrogenProdLevel holds the string denoting the hydrogen_prod_level vertex property in the database.
+	FieldHydrogenProdLevel = "hydrogen_prod_level"
+	// FieldHydrogenStorageLevel holds the string denoting the hydrogen_storage_level vertex property in the database.
+	FieldHydrogenStorageLevel = "hydrogen_storage_level"
+	// FieldSilica holds the string denoting the silica vertex property in the database.
+	FieldSilica = "silica"
+	// FieldSilicaLastUpdate holds the string denoting the silica_last_update vertex property in the database.
+	FieldSilicaLastUpdate = "silica_last_update"
+	// FieldSilicaRate holds the string denoting the silica_rate vertex property in the database.
+	FieldSilicaRate = "silica_rate"
+	// FieldSilicaProdLevel holds the string denoting the silica_prod_level vertex property in the database.
+	FieldSilicaProdLevel = "silica_prod_level"
+	// FieldSilicaStorageLevel holds the string denoting the silica_storage_level vertex property in the database.
+	FieldSilicaStorageLevel = "silica_storage_level"
+	// FieldPopulation holds the string denoting the population vertex property in the database.
+	FieldPopulation = "population"
+	// FieldPopulationLastUpdate holds the string denoting the population_last_update vertex property in the database.
+	FieldPopulationLastUpdate = "population_last_update"
+	// FieldPopulationRate holds the string denoting the population_rate vertex property in the database.
+	FieldPopulationRate = "population_rate"
+	// FieldPopulationProdLevel holds the string denoting the population_prod_level vertex property in the database.
+	FieldPopulationProdLevel = "population_prod_level"
+	// FieldPopulationStorageLevel holds the string denoting the population_storage_level vertex property in the database.
+	FieldPopulationStorageLevel = "population_storage_level"
+	// FieldEnergyCons holds the string denoting the energy_cons vertex property in the database.
+	FieldEnergyCons = "energy_cons"
+	// FieldEnergyProd holds the string denoting the energy_prod vertex property in the database.
+	FieldEnergyProd = "energy_prod"
+	// FieldSolarProdLevel holds the string denoting the solar_prod_level vertex property in the database.
+	FieldSolarProdLevel = "solar_prod_level"
+	// FieldName holds the string denoting the name vertex property in the database.
+	FieldName = "name"
 
 	// Table holds the table name of the planet in the database.
 	Table = "planets"
@@ -41,15 +83,41 @@ var Columns = []string{
 	FieldID,
 	FieldCreatedAt,
 	FieldUpdatedAt,
-	FieldMetalStock,
-	FieldMetalMine,
-	FieldLastMetalUpdate,
+	FieldMetal,
+	FieldMetalLastUpdate,
+	FieldMetalRate,
+	FieldMetalProdLevel,
+	FieldMetalStorageLevel,
+	FieldHydrogen,
+	FieldHydrogenLastUpdate,
+	FieldHydrogenRate,
+	FieldHydrogenProdLevel,
+	FieldHydrogenStorageLevel,
+	FieldSilica,
+	FieldSilicaLastUpdate,
+	FieldSilicaRate,
+	FieldSilicaProdLevel,
+	FieldSilicaStorageLevel,
+	FieldPopulation,
+	FieldPopulationLastUpdate,
+	FieldPopulationRate,
+	FieldPopulationProdLevel,
+	FieldPopulationStorageLevel,
+	FieldEnergyCons,
+	FieldEnergyProd,
+	FieldSolarProdLevel,
+	FieldName,
 }
 
 var (
 	mixin       = schema.Planet{}.Mixin()
 	mixinFields = [...][]ent.Field{
 		mixin[0].Fields(),
+		mixin[1].Fields(),
+		mixin[2].Fields(),
+		mixin[3].Fields(),
+		mixin[4].Fields(),
+		mixin[5].Fields(),
 	}
 	fields = schema.Planet{}.Fields()
 
@@ -65,22 +133,153 @@ var (
 	// UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	UpdateDefaultUpdatedAt = descUpdatedAt.UpdateDefault.(func() time.Time)
 
-	// descMetalStock is the schema descriptor for metal_stock field.
-	descMetalStock = fields[0].Descriptor()
-	// DefaultMetalStock holds the default value on creation for the metal_stock field.
-	DefaultMetalStock = descMetalStock.Default.(int64)
-	// MetalStockValidator is a validator for the "metal_stock" field. It is called by the builders before save.
-	MetalStockValidator = descMetalStock.Validators[0].(func(int64) error)
+	// descMetal is the schema descriptor for metal field.
+	descMetal = mixinFields[1][0].Descriptor()
+	// DefaultMetal holds the default value on creation for the metal field.
+	DefaultMetal = descMetal.Default.(int64)
+	// MetalValidator is a validator for the "metal" field. It is called by the builders before save.
+	MetalValidator = descMetal.Validators[0].(func(int64) error)
 
-	// descMetalMine is the schema descriptor for metal_mine field.
-	descMetalMine = fields[1].Descriptor()
-	// DefaultMetalMine holds the default value on creation for the metal_mine field.
-	DefaultMetalMine = descMetalMine.Default.(int)
-	// MetalMineValidator is a validator for the "metal_mine" field. It is called by the builders before save.
-	MetalMineValidator = descMetalMine.Validators[0].(func(int) error)
+	// descMetalLastUpdate is the schema descriptor for metal_last_update field.
+	descMetalLastUpdate = mixinFields[1][1].Descriptor()
+	// DefaultMetalLastUpdate holds the default value on creation for the metal_last_update field.
+	DefaultMetalLastUpdate = descMetalLastUpdate.Default.(func() time.Time)
 
-	// descLastMetalUpdate is the schema descriptor for last_metal_update field.
-	descLastMetalUpdate = fields[2].Descriptor()
-	// DefaultLastMetalUpdate holds the default value on creation for the last_metal_update field.
-	DefaultLastMetalUpdate = descLastMetalUpdate.Default.(func() time.Time)
+	// descMetalRate is the schema descriptor for metal_rate field.
+	descMetalRate = mixinFields[1][2].Descriptor()
+	// DefaultMetalRate holds the default value on creation for the metal_rate field.
+	DefaultMetalRate = descMetalRate.Default.(int)
+
+	// descMetalProdLevel is the schema descriptor for metal_prod_level field.
+	descMetalProdLevel = mixinFields[1][3].Descriptor()
+	// DefaultMetalProdLevel holds the default value on creation for the metal_prod_level field.
+	DefaultMetalProdLevel = descMetalProdLevel.Default.(int)
+	// MetalProdLevelValidator is a validator for the "metal_prod_level" field. It is called by the builders before save.
+	MetalProdLevelValidator = descMetalProdLevel.Validators[0].(func(int) error)
+
+	// descMetalStorageLevel is the schema descriptor for metal_storage_level field.
+	descMetalStorageLevel = mixinFields[1][4].Descriptor()
+	// DefaultMetalStorageLevel holds the default value on creation for the metal_storage_level field.
+	DefaultMetalStorageLevel = descMetalStorageLevel.Default.(int)
+	// MetalStorageLevelValidator is a validator for the "metal_storage_level" field. It is called by the builders before save.
+	MetalStorageLevelValidator = descMetalStorageLevel.Validators[0].(func(int) error)
+
+	// descHydrogen is the schema descriptor for hydrogen field.
+	descHydrogen = mixinFields[2][0].Descriptor()
+	// DefaultHydrogen holds the default value on creation for the hydrogen field.
+	DefaultHydrogen = descHydrogen.Default.(int64)
+	// HydrogenValidator is a validator for the "hydrogen" field. It is called by the builders before save.
+	HydrogenValidator = descHydrogen.Validators[0].(func(int64) error)
+
+	// descHydrogenLastUpdate is the schema descriptor for hydrogen_last_update field.
+	descHydrogenLastUpdate = mixinFields[2][1].Descriptor()
+	// DefaultHydrogenLastUpdate holds the default value on creation for the hydrogen_last_update field.
+	DefaultHydrogenLastUpdate = descHydrogenLastUpdate.Default.(func() time.Time)
+
+	// descHydrogenRate is the schema descriptor for hydrogen_rate field.
+	descHydrogenRate = mixinFields[2][2].Descriptor()
+	// DefaultHydrogenRate holds the default value on creation for the hydrogen_rate field.
+	DefaultHydrogenRate = descHydrogenRate.Default.(int)
+
+	// descHydrogenProdLevel is the schema descriptor for hydrogen_prod_level field.
+	descHydrogenProdLevel = mixinFields[2][3].Descriptor()
+	// DefaultHydrogenProdLevel holds the default value on creation for the hydrogen_prod_level field.
+	DefaultHydrogenProdLevel = descHydrogenProdLevel.Default.(int)
+	// HydrogenProdLevelValidator is a validator for the "hydrogen_prod_level" field. It is called by the builders before save.
+	HydrogenProdLevelValidator = descHydrogenProdLevel.Validators[0].(func(int) error)
+
+	// descHydrogenStorageLevel is the schema descriptor for hydrogen_storage_level field.
+	descHydrogenStorageLevel = mixinFields[2][4].Descriptor()
+	// DefaultHydrogenStorageLevel holds the default value on creation for the hydrogen_storage_level field.
+	DefaultHydrogenStorageLevel = descHydrogenStorageLevel.Default.(int)
+	// HydrogenStorageLevelValidator is a validator for the "hydrogen_storage_level" field. It is called by the builders before save.
+	HydrogenStorageLevelValidator = descHydrogenStorageLevel.Validators[0].(func(int) error)
+
+	// descSilica is the schema descriptor for silica field.
+	descSilica = mixinFields[3][0].Descriptor()
+	// DefaultSilica holds the default value on creation for the silica field.
+	DefaultSilica = descSilica.Default.(int64)
+	// SilicaValidator is a validator for the "silica" field. It is called by the builders before save.
+	SilicaValidator = descSilica.Validators[0].(func(int64) error)
+
+	// descSilicaLastUpdate is the schema descriptor for silica_last_update field.
+	descSilicaLastUpdate = mixinFields[3][1].Descriptor()
+	// DefaultSilicaLastUpdate holds the default value on creation for the silica_last_update field.
+	DefaultSilicaLastUpdate = descSilicaLastUpdate.Default.(func() time.Time)
+
+	// descSilicaRate is the schema descriptor for silica_rate field.
+	descSilicaRate = mixinFields[3][2].Descriptor()
+	// DefaultSilicaRate holds the default value on creation for the silica_rate field.
+	DefaultSilicaRate = descSilicaRate.Default.(int)
+
+	// descSilicaProdLevel is the schema descriptor for silica_prod_level field.
+	descSilicaProdLevel = mixinFields[3][3].Descriptor()
+	// DefaultSilicaProdLevel holds the default value on creation for the silica_prod_level field.
+	DefaultSilicaProdLevel = descSilicaProdLevel.Default.(int)
+	// SilicaProdLevelValidator is a validator for the "silica_prod_level" field. It is called by the builders before save.
+	SilicaProdLevelValidator = descSilicaProdLevel.Validators[0].(func(int) error)
+
+	// descSilicaStorageLevel is the schema descriptor for silica_storage_level field.
+	descSilicaStorageLevel = mixinFields[3][4].Descriptor()
+	// DefaultSilicaStorageLevel holds the default value on creation for the silica_storage_level field.
+	DefaultSilicaStorageLevel = descSilicaStorageLevel.Default.(int)
+	// SilicaStorageLevelValidator is a validator for the "silica_storage_level" field. It is called by the builders before save.
+	SilicaStorageLevelValidator = descSilicaStorageLevel.Validators[0].(func(int) error)
+
+	// descPopulation is the schema descriptor for population field.
+	descPopulation = mixinFields[4][0].Descriptor()
+	// DefaultPopulation holds the default value on creation for the population field.
+	DefaultPopulation = descPopulation.Default.(int64)
+	// PopulationValidator is a validator for the "population" field. It is called by the builders before save.
+	PopulationValidator = descPopulation.Validators[0].(func(int64) error)
+
+	// descPopulationLastUpdate is the schema descriptor for population_last_update field.
+	descPopulationLastUpdate = mixinFields[4][1].Descriptor()
+	// DefaultPopulationLastUpdate holds the default value on creation for the population_last_update field.
+	DefaultPopulationLastUpdate = descPopulationLastUpdate.Default.(func() time.Time)
+
+	// descPopulationRate is the schema descriptor for population_rate field.
+	descPopulationRate = mixinFields[4][2].Descriptor()
+	// DefaultPopulationRate holds the default value on creation for the population_rate field.
+	DefaultPopulationRate = descPopulationRate.Default.(int)
+
+	// descPopulationProdLevel is the schema descriptor for population_prod_level field.
+	descPopulationProdLevel = mixinFields[4][3].Descriptor()
+	// DefaultPopulationProdLevel holds the default value on creation for the population_prod_level field.
+	DefaultPopulationProdLevel = descPopulationProdLevel.Default.(int)
+	// PopulationProdLevelValidator is a validator for the "population_prod_level" field. It is called by the builders before save.
+	PopulationProdLevelValidator = descPopulationProdLevel.Validators[0].(func(int) error)
+
+	// descPopulationStorageLevel is the schema descriptor for population_storage_level field.
+	descPopulationStorageLevel = mixinFields[4][4].Descriptor()
+	// DefaultPopulationStorageLevel holds the default value on creation for the population_storage_level field.
+	DefaultPopulationStorageLevel = descPopulationStorageLevel.Default.(int)
+	// PopulationStorageLevelValidator is a validator for the "population_storage_level" field. It is called by the builders before save.
+	PopulationStorageLevelValidator = descPopulationStorageLevel.Validators[0].(func(int) error)
+
+	// descEnergyCons is the schema descriptor for energy_cons field.
+	descEnergyCons = mixinFields[5][0].Descriptor()
+	// DefaultEnergyCons holds the default value on creation for the energy_cons field.
+	DefaultEnergyCons = descEnergyCons.Default.(int64)
+	// EnergyConsValidator is a validator for the "energy_cons" field. It is called by the builders before save.
+	EnergyConsValidator = descEnergyCons.Validators[0].(func(int64) error)
+
+	// descEnergyProd is the schema descriptor for energy_prod field.
+	descEnergyProd = mixinFields[5][1].Descriptor()
+	// DefaultEnergyProd holds the default value on creation for the energy_prod field.
+	DefaultEnergyProd = descEnergyProd.Default.(int64)
+	// EnergyProdValidator is a validator for the "energy_prod" field. It is called by the builders before save.
+	EnergyProdValidator = descEnergyProd.Validators[0].(func(int64) error)
+
+	// descSolarProdLevel is the schema descriptor for solar_prod_level field.
+	descSolarProdLevel = mixinFields[5][2].Descriptor()
+	// DefaultSolarProdLevel holds the default value on creation for the solar_prod_level field.
+	DefaultSolarProdLevel = descSolarProdLevel.Default.(int)
+	// SolarProdLevelValidator is a validator for the "solar_prod_level" field. It is called by the builders before save.
+	SolarProdLevelValidator = descSolarProdLevel.Validators[0].(func(int) error)
+
+	// descName is the schema descriptor for name field.
+	descName = fields[0].Descriptor()
+	// DefaultName holds the default value on creation for the name field.
+	DefaultName = descName.Default.(string)
 )
