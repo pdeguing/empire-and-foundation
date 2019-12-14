@@ -1,18 +1,43 @@
 {{ define "planetBody" }}
 
-<figure class="image is-16by9">
-  <img src="/static/images/planet-dashboards/avalon.png">
-</figure>
-
-<br>
-
-<article class="message">
-  <div class="message-body">
+<!--
     Here we want to display a quick snapshot of the planet state. So that the player can see quickly: resources on the
     planet, in progress jobs on the planet, various productions indicator, an illustration of the planet, and basic
     actions that would be suitable on a planet like rename or unsettle for example.
+-->
+
+<article class="planet-info columns">
+  <div class="column is-one-quarter">
+    <h1 class="title dashboard-title">Avalon</h1>
+    <ul class="dashboard-info">
+      <li>
+        <div class="columns is-inline-flex is-gapless dashboard-item">
+          <span class="column is-half is-growing dashboard-item-name">Surface area</span>
+          <span class="column is-narrow dashboard-item-value">510M km&sup2;</span>
+        </div>
+        <div class="columns is-inline-flex is-gapless dashboard-item">
+          <span class="column is-half is-growing dashboard-item-name">Planet type</span>
+          <span class="column is-narrow dashboard-item-value">habitable</span>
+        </div>
+      </li>
+    </ul>
+
+    <h2 class="subtitle dashboard-subtitle">Fleet</h2>
+    <ul class="dashboard-info">
+      <li>
+        <a href="/dashboard/planet/fleets"
+          class="columns is-inline-flex is-gapless dashboard-item dashboard-item-danger dashboard-item-link">
+          <span class="column is-half is-growing dashboard-item-name">Incoming hostile fleet</span>
+          <span class="column is-narrow dashboard-item-value">2m13s</span>
+        </a>
+        <a href="/dashboard/planet/fleets"
+          class="columns is-inline-flex is-gapless dashboard-item  dashboard-item-link">
+          <span class="column is-half is-growing dashboard-item-name">Shipment from Ako to Farma</span>
+          <span class="column is-narrow dashboard-item-value">1h13m</span>
+        </a>
+      </li>
+    </ul>
   </div>
 </article>
-
 
 {{ end }}
