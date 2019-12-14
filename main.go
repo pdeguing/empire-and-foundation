@@ -59,6 +59,7 @@ func main() {
 	r.Use(
 		csrfMiddleware,
 		sessionMiddleware,
+		loadUserMiddleware,
 	)
 	// Only apply the authentication middleware to the auth subrouter.
 	rAuth.Use(
