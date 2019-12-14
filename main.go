@@ -27,8 +27,6 @@ func main() {
 	// Routes that require authentication
 	rAuth := r.NewRoute().Subrouter()
 	rAuth.HandleFunc("/dashboard", serveDashboard)
-
-	rAuth.HandleFunc("/dashboard", serveDashboard)
 	rAuth.HandleFunc("/dashboard/cartography", serveCartography)
 	rAuth.HandleFunc("/dashboard/fleetcontrol", serveFleetControl)
 	rAuth.HandleFunc("/dashboard/technology", serveTechnology)
