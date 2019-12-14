@@ -46,18 +46,22 @@ func warning(args ...interface{}) {
 // For HTTP error responses
 //
 
-func internalServerError(w http.ResponseWriter, r *http.Request, err error, internalError string) {
+func serveNotFoundError(w http.ResponseWriter, r *http.Request) {
+	serveError(w, r, "Not Found", http.StatusNotFound)
+}
+
+func serveInternalServerError(w http.ResponseWriter, r *http.Request, err error, internalError string) {
 	danger(err, internalError)
-	respondWithError(w, r, "Something went wrong on our end.", http.StatusInternalServerError)
+	serveError(w, r, "Something went wrong on our end.", http.StatusInternalServerError)
 }
 
-func invalidCsrfToken(w http.ResponseWriter, r *http.Request) {
-	respondWithError(w, r, "It's not possible to do this right now. Please go back, reload, and try again.", 403)
+func serveInvalidCsrfToken(w http.ResponseWriter, r *http.Request) {
+	serveError(w, r, "It's not possible to do this right now. Please go back, reload, and try again.", 403)
 }
 
-// respondWithError will render a templated error page. userMsg will
+// serveError will render a templated error page. userMsg will
 // be shown as a message to the user.
-func respondWithError(w http.ResponseWriter, r *http.Request, userMsg string, code int) {
+func serveError(w http.ResponseWriter, r *http.Request, userMsg string, code int) {
 	w.WriteHeader(code)
 	if isAuthenticated(r) {
 		generateHTML(w, r, "error", userMsg, "layout", "private.navbar", "error")
