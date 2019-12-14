@@ -18,12 +18,38 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at vertex property in the database.
 	FieldUpdatedAt = "updated_at"
-	// FieldMetalStock holds the string denoting the metal_stock vertex property in the database.
-	FieldMetalStock = "metal_stock"
-	// FieldMetalMine holds the string denoting the metal_mine vertex property in the database.
-	FieldMetalMine = "metal_mine"
-	// FieldLastMetalUpdate holds the string denoting the last_metal_update vertex property in the database.
-	FieldLastMetalUpdate = "last_metal_update"
+	// FieldMetal holds the string denoting the metal vertex property in the database.
+	FieldMetal = "metal"
+	// FieldHydrogen holds the string denoting the hydrogen vertex property in the database.
+	FieldHydrogen = "hydrogen"
+	// FieldPopulation holds the string denoting the population vertex property in the database.
+	FieldPopulation = "population"
+	// FieldMetalLastUpdate holds the string denoting the metal_last_update vertex property in the database.
+	FieldMetalLastUpdate = "metal_last_update"
+	// FieldMetalProdRate holds the string denoting the metal_prod_rate vertex property in the database.
+	FieldMetalProdRate = "metal_prod_rate"
+	// FieldHydrogenLastUpdate holds the string denoting the hydrogen_last_update vertex property in the database.
+	FieldHydrogenLastUpdate = "hydrogen_last_update"
+	// FieldHydrogenProdRate holds the string denoting the hydrogen_prod_rate vertex property in the database.
+	FieldHydrogenProdRate = "hydrogen_prod_rate"
+	// FieldPopulationLastUpdate holds the string denoting the population_last_update vertex property in the database.
+	FieldPopulationLastUpdate = "population_last_update"
+	// FieldPopulationProdRate holds the string denoting the population_prod_rate vertex property in the database.
+	FieldPopulationProdRate = "population_prod_rate"
+	// FieldEnergyCons holds the string denoting the energy_cons vertex property in the database.
+	FieldEnergyCons = "energy_cons"
+	// FieldEnergyProd holds the string denoting the energy_prod vertex property in the database.
+	FieldEnergyProd = "energy_prod"
+	// FieldMetalProdLevel holds the string denoting the metal_prod_level vertex property in the database.
+	FieldMetalProdLevel = "metal_prod_level"
+	// FieldHydrogenProdLevel holds the string denoting the hydrogen_prod_level vertex property in the database.
+	FieldHydrogenProdLevel = "hydrogen_prod_level"
+	// FieldEnergyProdLevel holds the string denoting the energy_prod_level vertex property in the database.
+	FieldEnergyProdLevel = "energy_prod_level"
+	// FieldPopulationProdLevel holds the string denoting the population_prod_level vertex property in the database.
+	FieldPopulationProdLevel = "population_prod_level"
+	// FieldName holds the string denoting the name vertex property in the database.
+	FieldName = "name"
 
 	// Table holds the table name of the planet in the database.
 	Table = "planets"
@@ -41,15 +67,32 @@ var Columns = []string{
 	FieldID,
 	FieldCreatedAt,
 	FieldUpdatedAt,
-	FieldMetalStock,
-	FieldMetalMine,
-	FieldLastMetalUpdate,
+	FieldMetal,
+	FieldHydrogen,
+	FieldPopulation,
+	FieldMetalLastUpdate,
+	FieldMetalProdRate,
+	FieldHydrogenLastUpdate,
+	FieldHydrogenProdRate,
+	FieldPopulationLastUpdate,
+	FieldPopulationProdRate,
+	FieldEnergyCons,
+	FieldEnergyProd,
+	FieldMetalProdLevel,
+	FieldHydrogenProdLevel,
+	FieldEnergyProdLevel,
+	FieldPopulationProdLevel,
+	FieldName,
 }
 
 var (
 	mixin       = schema.Planet{}.Mixin()
 	mixinFields = [...][]ent.Field{
 		mixin[0].Fields(),
+		mixin[1].Fields(),
+		mixin[2].Fields(),
+		mixin[3].Fields(),
+		mixin[4].Fields(),
 	}
 	fields = schema.Planet{}.Fields()
 
@@ -65,22 +108,101 @@ var (
 	// UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	UpdateDefaultUpdatedAt = descUpdatedAt.UpdateDefault.(func() time.Time)
 
-	// descMetalStock is the schema descriptor for metal_stock field.
-	descMetalStock = fields[0].Descriptor()
-	// DefaultMetalStock holds the default value on creation for the metal_stock field.
-	DefaultMetalStock = descMetalStock.Default.(int64)
-	// MetalStockValidator is a validator for the "metal_stock" field. It is called by the builders before save.
-	MetalStockValidator = descMetalStock.Validators[0].(func(int64) error)
+	// descMetal is the schema descriptor for metal field.
+	descMetal = mixinFields[1][0].Descriptor()
+	// DefaultMetal holds the default value on creation for the metal field.
+	DefaultMetal = descMetal.Default.(int64)
+	// MetalValidator is a validator for the "metal" field. It is called by the builders before save.
+	MetalValidator = descMetal.Validators[0].(func(int64) error)
 
-	// descMetalMine is the schema descriptor for metal_mine field.
-	descMetalMine = fields[1].Descriptor()
-	// DefaultMetalMine holds the default value on creation for the metal_mine field.
-	DefaultMetalMine = descMetalMine.Default.(int)
-	// MetalMineValidator is a validator for the "metal_mine" field. It is called by the builders before save.
-	MetalMineValidator = descMetalMine.Validators[0].(func(int) error)
+	// descHydrogen is the schema descriptor for hydrogen field.
+	descHydrogen = mixinFields[1][1].Descriptor()
+	// DefaultHydrogen holds the default value on creation for the hydrogen field.
+	DefaultHydrogen = descHydrogen.Default.(int64)
+	// HydrogenValidator is a validator for the "hydrogen" field. It is called by the builders before save.
+	HydrogenValidator = descHydrogen.Validators[0].(func(int64) error)
 
-	// descLastMetalUpdate is the schema descriptor for last_metal_update field.
-	descLastMetalUpdate = fields[2].Descriptor()
-	// DefaultLastMetalUpdate holds the default value on creation for the last_metal_update field.
-	DefaultLastMetalUpdate = descLastMetalUpdate.Default.(func() time.Time)
+	// descPopulation is the schema descriptor for population field.
+	descPopulation = mixinFields[1][2].Descriptor()
+	// DefaultPopulation holds the default value on creation for the population field.
+	DefaultPopulation = descPopulation.Default.(int64)
+	// PopulationValidator is a validator for the "population" field. It is called by the builders before save.
+	PopulationValidator = descPopulation.Validators[0].(func(int64) error)
+
+	// descMetalLastUpdate is the schema descriptor for metal_last_update field.
+	descMetalLastUpdate = mixinFields[2][0].Descriptor()
+	// DefaultMetalLastUpdate holds the default value on creation for the metal_last_update field.
+	DefaultMetalLastUpdate = descMetalLastUpdate.Default.(func() time.Time)
+
+	// descMetalProdRate is the schema descriptor for metal_prod_rate field.
+	descMetalProdRate = mixinFields[2][1].Descriptor()
+	// DefaultMetalProdRate holds the default value on creation for the metal_prod_rate field.
+	DefaultMetalProdRate = descMetalProdRate.Default.(int)
+
+	// descHydrogenLastUpdate is the schema descriptor for hydrogen_last_update field.
+	descHydrogenLastUpdate = mixinFields[2][2].Descriptor()
+	// DefaultHydrogenLastUpdate holds the default value on creation for the hydrogen_last_update field.
+	DefaultHydrogenLastUpdate = descHydrogenLastUpdate.Default.(func() time.Time)
+
+	// descHydrogenProdRate is the schema descriptor for hydrogen_prod_rate field.
+	descHydrogenProdRate = mixinFields[2][3].Descriptor()
+	// DefaultHydrogenProdRate holds the default value on creation for the hydrogen_prod_rate field.
+	DefaultHydrogenProdRate = descHydrogenProdRate.Default.(int)
+
+	// descPopulationLastUpdate is the schema descriptor for population_last_update field.
+	descPopulationLastUpdate = mixinFields[2][4].Descriptor()
+	// DefaultPopulationLastUpdate holds the default value on creation for the population_last_update field.
+	DefaultPopulationLastUpdate = descPopulationLastUpdate.Default.(func() time.Time)
+
+	// descPopulationProdRate is the schema descriptor for population_prod_rate field.
+	descPopulationProdRate = mixinFields[2][5].Descriptor()
+	// DefaultPopulationProdRate holds the default value on creation for the population_prod_rate field.
+	DefaultPopulationProdRate = descPopulationProdRate.Default.(int)
+
+	// descEnergyCons is the schema descriptor for energy_cons field.
+	descEnergyCons = mixinFields[3][0].Descriptor()
+	// DefaultEnergyCons holds the default value on creation for the energy_cons field.
+	DefaultEnergyCons = descEnergyCons.Default.(int64)
+	// EnergyConsValidator is a validator for the "energy_cons" field. It is called by the builders before save.
+	EnergyConsValidator = descEnergyCons.Validators[0].(func(int64) error)
+
+	// descEnergyProd is the schema descriptor for energy_prod field.
+	descEnergyProd = mixinFields[3][1].Descriptor()
+	// DefaultEnergyProd holds the default value on creation for the energy_prod field.
+	DefaultEnergyProd = descEnergyProd.Default.(int64)
+	// EnergyProdValidator is a validator for the "energy_prod" field. It is called by the builders before save.
+	EnergyProdValidator = descEnergyProd.Validators[0].(func(int64) error)
+
+	// descMetalProdLevel is the schema descriptor for metal_prod_level field.
+	descMetalProdLevel = mixinFields[4][0].Descriptor()
+	// DefaultMetalProdLevel holds the default value on creation for the metal_prod_level field.
+	DefaultMetalProdLevel = descMetalProdLevel.Default.(int)
+	// MetalProdLevelValidator is a validator for the "metal_prod_level" field. It is called by the builders before save.
+	MetalProdLevelValidator = descMetalProdLevel.Validators[0].(func(int) error)
+
+	// descHydrogenProdLevel is the schema descriptor for hydrogen_prod_level field.
+	descHydrogenProdLevel = mixinFields[4][1].Descriptor()
+	// DefaultHydrogenProdLevel holds the default value on creation for the hydrogen_prod_level field.
+	DefaultHydrogenProdLevel = descHydrogenProdLevel.Default.(int)
+	// HydrogenProdLevelValidator is a validator for the "hydrogen_prod_level" field. It is called by the builders before save.
+	HydrogenProdLevelValidator = descHydrogenProdLevel.Validators[0].(func(int) error)
+
+	// descEnergyProdLevel is the schema descriptor for energy_prod_level field.
+	descEnergyProdLevel = mixinFields[4][2].Descriptor()
+	// DefaultEnergyProdLevel holds the default value on creation for the energy_prod_level field.
+	DefaultEnergyProdLevel = descEnergyProdLevel.Default.(int)
+	// EnergyProdLevelValidator is a validator for the "energy_prod_level" field. It is called by the builders before save.
+	EnergyProdLevelValidator = descEnergyProdLevel.Validators[0].(func(int) error)
+
+	// descPopulationProdLevel is the schema descriptor for population_prod_level field.
+	descPopulationProdLevel = mixinFields[4][3].Descriptor()
+	// DefaultPopulationProdLevel holds the default value on creation for the population_prod_level field.
+	DefaultPopulationProdLevel = descPopulationProdLevel.Default.(int)
+	// PopulationProdLevelValidator is a validator for the "population_prod_level" field. It is called by the builders before save.
+	PopulationProdLevelValidator = descPopulationProdLevel.Validators[0].(func(int) error)
+
+	// descName is the schema descriptor for name field.
+	descName = fields[0].Descriptor()
+	// DefaultName holds the default value on creation for the name field.
+	DefaultName = descName.Default.(string)
 )
