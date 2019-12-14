@@ -1,10 +1,63 @@
 package schema
 
 import (
+	"time"
+
 	"github.com/facebookincubator/ent"
 	"github.com/facebookincubator/ent/schema/edge"
 	"github.com/facebookincubator/ent/schema/field"
 )
+
+type ResourceMixin struct {
+    Type string
+}
+
+func (r ResourceMixin) Fields() []ent.Field {
+    return []ent.Field {
+        field.Int64(r.Type).
+            NonNegative().
+            Default(0),
+        field.Time(r.Type + "_last_update").
+            Default(time.Now),
+        field.Int(r.Type + "_rate").
+            Default(0),
+        field.Int(r.Type + "_prod_level").
+            NonNegative().
+            Default(0),
+    }
+}
+
+type EnergyMixin struct{}
+
+func (EnergyMixin) Fields() []ent.Field {
+	return []ent.Field{
+		field.Int64("energy_cons").
+			NonNegative().
+			Default(0),
+		field.Int64("energy_prod").
+			NonNegative().
+			Default(0),
+	}
+}
+
+type BuildingsMixin struct{}
+
+func (BuildingsMixin) Fields() []ent.Field {
+	return []ent.Field{
+		field.Int("metal_prod_level").
+			NonNegative().
+			Default(0),
+		field.Int("hydrogen_prod_level").
+			NonNegative().
+			Default(0),
+		field.Int("energy_prod_level").
+			NonNegative().
+			Default(0),
+		field.Int("population_prod_level").
+			NonNegative().
+			Default(0),
+	}
+}
 
 // Planet holds the schema definition for the Planet entity.
 type Planet struct {
@@ -14,8 +67,10 @@ type Planet struct {
 func (Planet) Mixin() []ent.Mixin {
     return []ent.Mixin{
         TimeMixin{},
-	ResourcesMixin{},
-	ProductionMixin{},
+	ResourceMixin{Type: "metal"},
+	ResourceMixin{Type: "hydrogen"},
+	ResourceMixin{Type: "silica"},
+	ResourceMixin{Type: "population"},
 	EnergyMixin{},
 	BuildingsMixin{},
     }
