@@ -27,8 +27,6 @@ func main() {
 	// Routes that require authentication
 	rAuth := r.NewRoute().Subrouter()
 	rAuth.HandleFunc("/dashboard", serveDashboard)
-
-	rAuth.HandleFunc("/dashboard", serveDashboard)
 	rAuth.HandleFunc("/dashboard/cartography", serveCartography)
 	rAuth.HandleFunc("/dashboard/fleetcontrol", serveFleetControl)
 	rAuth.HandleFunc("/dashboard/technology", serveTechnology)
@@ -59,6 +57,7 @@ func main() {
 	r.Use(
 		csrfMiddleware,
 		sessionMiddleware,
+		loadUserMiddleware,
 	)
 	// Only apply the authentication middleware to the auth subrouter.
 	rAuth.Use(
