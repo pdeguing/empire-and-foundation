@@ -44,22 +44,20 @@ const (
 	userIDKey       = "user_id"
 )
 
-// authMiddleware checks that the user is authenticated before
-// proceeding with the request. If the user is not authenticated,
-// they will be redirected to the login page. authMiddleware also
-// adds the user object to the request's context.
-func authMiddleware(next http.Handler) http.Handler {
+// loadUserMiddleware adds the user to the request context if
+// they are logged in.
+func loadUserMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 		if !sessionManager.Exists(ctx, userIDKey) {
-			http.Redirect(w, r, "/login", 302)
+			next.ServeHTTP(w, r)
 			return
 		}
 
-		userID := sessionManager.GetInt(ctx, userIDKey)
+		id := sessionManager.GetInt(ctx, userIDKey)
 		u, err := data.Client.User.
 			Query().
-			Where(user.ID(userID)).
+			Where(user.ID(id)).
 			Only(r.Context())
 		if err != nil {
 			serveInternalServerError(w, r, err, "Could not load logged in user from database")
@@ -69,6 +67,22 @@ func authMiddleware(next http.Handler) http.Handler {
 		ctx = context.WithValue(ctx, userKey, u)
 		sr := r.WithContext(ctx)
 		next.ServeHTTP(w, sr)
+	})
+}
+
+// authMiddleware checks that the user is authenticated before
+// proceeding with the request. If the user is not authenticated,
+// they will be redirected to the login page. authMiddleware
+// depends on loadUserMiddleware being executed before this
+// middleware is executed.
+func authMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if !isAuthenticated(r) {
+			http.Redirect(w, r, "/login", 302)
+			return
+		}
+
+		next.ServeHTTP(w, r)
 	})
 }
 
