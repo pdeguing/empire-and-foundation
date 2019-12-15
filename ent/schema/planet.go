@@ -74,7 +74,8 @@ func (Planet) Fields() []ent.Field {
 func (Planet) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("owner", User.Type).
-		Ref("planets").
-		Unique(),
+			Ref("planets").
+			Unique(),
+		edge.To("commands", CommandPlanet.Type),
 	}
 }

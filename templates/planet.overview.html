@@ -25,12 +25,12 @@
     <h2 class="subtitle dashboard-subtitle">Fleet</h2>
     <ul class="dashboard-info">
       <li>
-        <a href="/dashboard/planet/fleets"
+        <a href="/planet/{{ .Data.Planet.ID }}/fleets"
           class="columns is-inline-flex is-gapless dashboard-item dashboard-item-danger dashboard-item-link">
           <span class="column is-half is-growing dashboard-item-name">Incoming hostile fleet</span>
           <span class="column is-narrow dashboard-item-value">2m13s</span>
         </a>
-        <a href="/dashboard/planet/fleets"
+        <a href="/planet/{{ .Data.Planet.ID }}/fleets"
           class="columns is-inline-flex is-gapless dashboard-item  dashboard-item-link">
           <span class="column is-half is-growing dashboard-item-name">Shipment from Ako to Farma</span>
           <span class="column is-narrow dashboard-item-value">1h13m</span>

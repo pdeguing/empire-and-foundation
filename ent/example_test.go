@@ -8,6 +8,8 @@ import (
 	"time"
 
 	"github.com/facebookincubator/ent/dialect/sql"
+
+	"github.com/pdeguing/empire-and-foundation/ent/commandplanet"
 )
 
 // dsn for the database. In order to run the tests locally, run the following command:
@@ -16,6 +18,32 @@ import (
 //
 var dsn string
 
+func ExampleCommandPlanet() {
+	if dsn == "" {
+		return
+	}
+	ctx := context.Background()
+	drv, err := sql.Open("mysql", dsn)
+	if err != nil {
+		log.Fatalf("failed creating database client: %v", err)
+	}
+	defer drv.Close()
+	client := NewClient(Driver(drv))
+	// creating vertices for the commandplanet's edges.
+
+	// create commandplanet vertex with its edges.
+	cp := client.CommandPlanet.
+		Create().
+		SetTyp(commandplanet.TypUpgradeMetalMine).
+		SetGroup(commandplanet.GroupBuilding).
+		SetEndTime(time.Now()).
+		SaveX(ctx)
+	log.Println("commandplanet created:", cp)
+
+	// query edges.
+
+	// Output:
+}
 func ExamplePlanet() {
 	if dsn == "" {
 		return
@@ -28,6 +56,13 @@ func ExamplePlanet() {
 	defer drv.Close()
 	client := NewClient(Driver(drv))
 	// creating vertices for the planet's edges.
+	cp1 := client.CommandPlanet.
+		Create().
+		SetTyp(commandplanet.TypUpgradeMetalMine).
+		SetGroup(commandplanet.GroupBuilding).
+		SetEndTime(time.Now()).
+		SaveX(ctx)
+	log.Println("commandplanet created:", cp1)
 
 	// create planet vertex with its edges.
 	pl := client.Planet.
@@ -58,10 +93,17 @@ func ExamplePlanet() {
 		SetEnergyProd(1).
 		SetSolarProdLevel(1).
 		SetName("string").
+		AddCommands(cp1).
 		SaveX(ctx)
 	log.Println("planet created:", pl)
 
 	// query edges.
+
+	cp1, err = pl.QueryCommands().First(ctx)
+	if err != nil {
+		log.Fatalf("failed querying commands: %v", err)
+	}
+	log.Println("commands found:", cp1)
 
 	// Output:
 }

@@ -35,15 +35,14 @@ func main() {
 	rAuth.HandleFunc("/dashboard/wiki", serveWiki)
 	rAuth.HandleFunc("/dashboard/news", serveNews)
 
-	rPlanet := rAuth.PathPrefix("/dashboard/planet/{planetNumber:[0-9]+}").Subrouter()
+	rPlanet := rAuth.PathPrefix("/planet/{planetNumber:[0-9]+}").Subrouter()
 	rPlanet.HandleFunc("/", servePlanet)
 	rPlanet.HandleFunc("/constructions", serveConstructions)
 	rPlanet.HandleFunc("/factories", serveFactories)
 	rPlanet.HandleFunc("/research", serveResearch)
 	rPlanet.HandleFunc("/fleets", serveFleets)
 	rPlanet.HandleFunc("/defenses", serveDefenses)
-
-	rAuth.HandleFunc("/planet/up_metal_mine", serveUpMetalMine)
+	rPlanet.HandleFunc("/up_metal_mine", serveUpMetalMine).Methods("POST")
 
 	// Middleware
 	csrfMiddleware := csrf.Protect(

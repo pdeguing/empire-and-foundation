@@ -5,7 +5,9 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+	"github.com/pdeguing/empire-and-foundation/data"
 	"github.com/pdeguing/empire-and-foundation/ent"
+	"github.com/pdeguing/empire-and-foundation/ent/commandplanet"
 )
 
 // Helper
@@ -27,59 +29,108 @@ func userPlanet(w http.ResponseWriter, r *http.Request) (*ent.Planet, bool) {
 		serveInternalServerError(w, r, err, "Could not retrieve user's planet from database")
 		return nil, false
 	}
+	err = data.UpdateCommands(r.Context(), p)
+	if err != nil {
+		serveInternalServerError(w, r, err, "Cannot update the planet timers")
+		return nil, false
+	}
 	return p, true
 }
 
-// GET /dashboard/planet
+func newPlanetViewData(w http.ResponseWriter, r *http.Request, g commandplanet.Group) (*planetViewData, bool) {
+	p, ok := userPlanet(w, r)
+	if !ok {
+		return nil, false
+	}
+	var err error
+	var cmd *data.Timer
+	if g != "" {
+		cmd, err = data.GetCommandInGroup(r.Context(), p, g)
+		if err != nil {
+			serveInternalServerError(w, r, err, "Cannot get the planet timers")
+			return nil, false
+		}
+	}
+	return &planetViewData{
+		Planet: p,
+		Timer:  cmd,
+	}, true
+}
+
+type planetViewData struct {
+	Planet *ent.Planet
+	Timer  *data.Timer
+}
+
+// GET /planet/{id}
 // Show the dashboard page for a planet
 func servePlanet(w http.ResponseWriter, r *http.Request) {
-	if p, ok := userPlanet(w, r); ok {
+	if p, ok := newPlanetViewData(w, r, commandplanet.GroupBuilding); ok {
 		generateHTML(w, r, "planet-dashboard", p, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "planet.overview")
 	}
 }
 
-// GET /dashboard/planet/constructions
+// GET /planet/{id}/constructions
 // Show the constructions page for a planet
 func serveConstructions(w http.ResponseWriter, r *http.Request) {
-	if p, ok := userPlanet(w, r); ok {
+	if p, ok := newPlanetViewData(w, r, commandplanet.GroupBuilding); ok {
 		generateHTML(w, r, "planet-constructions", p, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "planet.constructions")
 	}
 }
 
-// GET /dashboard/planet/factories
+// GET /planet/{id}/factories
 // Show the factories page for a planet
 func serveFactories(w http.ResponseWriter, r *http.Request) {
-	if p, ok := userPlanet(w, r); ok {
+	if p, ok := newPlanetViewData(w, r, ""); ok {
 		generateHTML(w, r, "planet-factories", p, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "planet.factories")
 	}
 }
 
-// GET /dashboard/planet/research
+// GET /planet/{id}/research
 // Show the research page for a planet
 func serveResearch(w http.ResponseWriter, r *http.Request) {
-	if p, ok := userPlanet(w, r); ok {
+	if p, ok := newPlanetViewData(w, r, ""); ok {
 		generateHTML(w, r, "planet-research", p, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "planet.research")
 	}
 }
 
-// GET /dashboard/planet/fleets
+// GET /planet/{id}/fleets
 // Show the fleets page for a planet
 func serveFleets(w http.ResponseWriter, r *http.Request) {
-	if p, ok := userPlanet(w, r); ok {
+	if p, ok := newPlanetViewData(w, r, ""); ok {
 		generateHTML(w, r, "planet-fleets", p, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "planet.fleets")
 	}
 }
 
-// GET /dashboard/planet/defenses
+// GET /planet/{id}/defenses
 // Show the defenses page for a planet
 func serveDefenses(w http.ResponseWriter, r *http.Request) {
-	if p, ok := userPlanet(w, r); ok {
+	if p, ok := newPlanetViewData(w, r, ""); ok {
 		generateHTML(w, r, "planet-defenses", p, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "planet.defenses")
 	}
 }
 
-// Temporarily deprecated?
+// POST /planet/{id}/up_metal_mine
+// Upgrade the metal mine to the next level
 func serveUpMetalMine(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "/dashboard/planet/constructions", 302)
-	info("up metal mine")
+	p, ok := userPlanet(w, r)
+	if !ok {
+		return
+	}
+	err := data.StartCommand(r.Context(), p, commandplanet.TypUpgradeMetalMine)
+	if err == data.ErrCommandPrerequisitesNotMet {
+		// TODO: Flash message
+		http.Redirect(w, r, "/planet/"+strconv.Itoa(p.ID)+"/constructions", 302)
+		return
+	}
+	if err == data.ErrCommandBussy {
+		// TODO: Flash message
+		http.Redirect(w, r, "/planet/"+strconv.Itoa(p.ID)+"/constructions", 302)
+		return
+	}
+	if err != nil {
+		serveInternalServerError(w, r, err, "cannot start command")
+		return
+	}
+	http.Redirect(w, r, "/planet/"+strconv.Itoa(p.ID)+"/constructions", 302)
 }

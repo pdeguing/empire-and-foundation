@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/facebookincubator/ent/dialect/sql"
+	"github.com/pdeguing/empire-and-foundation/ent/commandplanet"
 	"github.com/pdeguing/empire-and-foundation/ent/planet"
 	"github.com/pdeguing/empire-and-foundation/ent/predicate"
 	"github.com/pdeguing/empire-and-foundation/ent/user"
@@ -63,7 +64,9 @@ type PlanetUpdate struct {
 	addsolar_prod_level         *int
 	name                        *string
 	owner                       map[int]struct{}
+	commands                    map[int]struct{}
 	clearedOwner                bool
+	removedCommands             map[int]struct{}
 	predicates                  []predicate.Planet
 }
 
@@ -646,10 +649,50 @@ func (pu *PlanetUpdate) SetOwner(u *User) *PlanetUpdate {
 	return pu.SetOwnerID(u.ID)
 }
 
+// AddCommandIDs adds the commands edge to CommandPlanet by ids.
+func (pu *PlanetUpdate) AddCommandIDs(ids ...int) *PlanetUpdate {
+	if pu.commands == nil {
+		pu.commands = make(map[int]struct{})
+	}
+	for i := range ids {
+		pu.commands[ids[i]] = struct{}{}
+	}
+	return pu
+}
+
+// AddCommands adds the commands edges to CommandPlanet.
+func (pu *PlanetUpdate) AddCommands(c ...*CommandPlanet) *PlanetUpdate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return pu.AddCommandIDs(ids...)
+}
+
 // ClearOwner clears the owner edge to User.
 func (pu *PlanetUpdate) ClearOwner() *PlanetUpdate {
 	pu.clearedOwner = true
 	return pu
+}
+
+// RemoveCommandIDs removes the commands edge to CommandPlanet by ids.
+func (pu *PlanetUpdate) RemoveCommandIDs(ids ...int) *PlanetUpdate {
+	if pu.removedCommands == nil {
+		pu.removedCommands = make(map[int]struct{})
+	}
+	for i := range ids {
+		pu.removedCommands[ids[i]] = struct{}{}
+	}
+	return pu
+}
+
+// RemoveCommands removes commands edges to CommandPlanet.
+func (pu *PlanetUpdate) RemoveCommands(c ...*CommandPlanet) *PlanetUpdate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return pu.RemoveCommandIDs(ids...)
 }
 
 // Save executes the query and returns the number of rows/vertices matched by this operation.
@@ -955,6 +998,42 @@ func (pu *PlanetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
+	if len(pu.removedCommands) > 0 {
+		eids := make([]int, len(pu.removedCommands))
+		for eid := range pu.removedCommands {
+			eids = append(eids, eid)
+		}
+		query, args := builder.Update(planet.CommandsTable).
+			SetNull(planet.CommandsColumn).
+			Where(sql.InInts(planet.CommandsColumn, ids...)).
+			Where(sql.InInts(commandplanet.FieldID, eids...)).
+			Query()
+		if err := tx.Exec(ctx, query, args, &res); err != nil {
+			return 0, rollback(tx, err)
+		}
+	}
+	if len(pu.commands) > 0 {
+		for _, id := range ids {
+			p := sql.P()
+			for eid := range pu.commands {
+				p.Or().EQ(commandplanet.FieldID, eid)
+			}
+			query, args := builder.Update(planet.CommandsTable).
+				Set(planet.CommandsColumn, id).
+				Where(sql.And(p, sql.IsNull(planet.CommandsColumn))).
+				Query()
+			if err := tx.Exec(ctx, query, args, &res); err != nil {
+				return 0, rollback(tx, err)
+			}
+			affected, err := res.RowsAffected()
+			if err != nil {
+				return 0, rollback(tx, err)
+			}
+			if int(affected) < len(pu.commands) {
+				return 0, rollback(tx, &ErrConstraintFailed{msg: fmt.Sprintf("one of \"commands\" %v already connected to a different \"Planet\"", keys(pu.commands))})
+			}
+		}
+	}
 	if err = tx.Commit(); err != nil {
 		return 0, err
 	}
@@ -1011,7 +1090,9 @@ type PlanetUpdateOne struct {
 	addsolar_prod_level         *int
 	name                        *string
 	owner                       map[int]struct{}
+	commands                    map[int]struct{}
 	clearedOwner                bool
+	removedCommands             map[int]struct{}
 }
 
 // SetUpdatedAt sets the updated_at field.
@@ -1587,10 +1668,50 @@ func (puo *PlanetUpdateOne) SetOwner(u *User) *PlanetUpdateOne {
 	return puo.SetOwnerID(u.ID)
 }
 
+// AddCommandIDs adds the commands edge to CommandPlanet by ids.
+func (puo *PlanetUpdateOne) AddCommandIDs(ids ...int) *PlanetUpdateOne {
+	if puo.commands == nil {
+		puo.commands = make(map[int]struct{})
+	}
+	for i := range ids {
+		puo.commands[ids[i]] = struct{}{}
+	}
+	return puo
+}
+
+// AddCommands adds the commands edges to CommandPlanet.
+func (puo *PlanetUpdateOne) AddCommands(c ...*CommandPlanet) *PlanetUpdateOne {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return puo.AddCommandIDs(ids...)
+}
+
 // ClearOwner clears the owner edge to User.
 func (puo *PlanetUpdateOne) ClearOwner() *PlanetUpdateOne {
 	puo.clearedOwner = true
 	return puo
+}
+
+// RemoveCommandIDs removes the commands edge to CommandPlanet by ids.
+func (puo *PlanetUpdateOne) RemoveCommandIDs(ids ...int) *PlanetUpdateOne {
+	if puo.removedCommands == nil {
+		puo.removedCommands = make(map[int]struct{})
+	}
+	for i := range ids {
+		puo.removedCommands[ids[i]] = struct{}{}
+	}
+	return puo
+}
+
+// RemoveCommands removes commands edges to CommandPlanet.
+func (puo *PlanetUpdateOne) RemoveCommands(c ...*CommandPlanet) *PlanetUpdateOne {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return puo.RemoveCommandIDs(ids...)
 }
 
 // Save executes the query and returns the updated entity.
@@ -1940,6 +2061,42 @@ func (puo *PlanetUpdateOne) sqlSave(ctx context.Context) (pl *Planet, err error)
 				Query()
 			if err := tx.Exec(ctx, query, args, &res); err != nil {
 				return nil, rollback(tx, err)
+			}
+		}
+	}
+	if len(puo.removedCommands) > 0 {
+		eids := make([]int, len(puo.removedCommands))
+		for eid := range puo.removedCommands {
+			eids = append(eids, eid)
+		}
+		query, args := builder.Update(planet.CommandsTable).
+			SetNull(planet.CommandsColumn).
+			Where(sql.InInts(planet.CommandsColumn, ids...)).
+			Where(sql.InInts(commandplanet.FieldID, eids...)).
+			Query()
+		if err := tx.Exec(ctx, query, args, &res); err != nil {
+			return nil, rollback(tx, err)
+		}
+	}
+	if len(puo.commands) > 0 {
+		for _, id := range ids {
+			p := sql.P()
+			for eid := range puo.commands {
+				p.Or().EQ(commandplanet.FieldID, eid)
+			}
+			query, args := builder.Update(planet.CommandsTable).
+				Set(planet.CommandsColumn, id).
+				Where(sql.And(p, sql.IsNull(planet.CommandsColumn))).
+				Query()
+			if err := tx.Exec(ctx, query, args, &res); err != nil {
+				return nil, rollback(tx, err)
+			}
+			affected, err := res.RowsAffected()
+			if err != nil {
+				return nil, rollback(tx, err)
+			}
+			if int(affected) < len(puo.commands) {
+				return nil, rollback(tx, &ErrConstraintFailed{msg: fmt.Sprintf("one of \"commands\" %v already connected to a different \"Planet\"", keys(puo.commands))})
 			}
 		}
 	}

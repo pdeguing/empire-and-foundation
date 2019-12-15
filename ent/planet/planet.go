@@ -76,6 +76,13 @@ const (
 	OwnerInverseTable = "users"
 	// OwnerColumn is the table column denoting the owner relation/edge.
 	OwnerColumn = "owner_id"
+	// CommandsTable is the table the holds the commands relation/edge.
+	CommandsTable = "command_planets"
+	// CommandsInverseTable is the table name for the CommandPlanet entity.
+	// It exists in this package in order to avoid circular dependency with the "commandplanet" package.
+	CommandsInverseTable = "command_planets"
+	// CommandsColumn is the table column denoting the commands relation/edge.
+	CommandsColumn = "planet_id"
 )
 
 // Columns holds all SQL columns are planet fields.

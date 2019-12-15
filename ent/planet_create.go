@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/facebookincubator/ent/dialect/sql"
+	"github.com/pdeguing/empire-and-foundation/ent/commandplanet"
 	"github.com/pdeguing/empire-and-foundation/ent/planet"
 )
 
@@ -42,6 +43,7 @@ type PlanetCreate struct {
 	solar_prod_level         *int
 	name                     *string
 	owner                    map[int]struct{}
+	commands                 map[int]struct{}
 }
 
 // SetCreatedAt sets the created_at field.
@@ -430,6 +432,26 @@ func (pc *PlanetCreate) SetOwner(u *User) *PlanetCreate {
 	return pc.SetOwnerID(u.ID)
 }
 
+// AddCommandIDs adds the commands edge to CommandPlanet by ids.
+func (pc *PlanetCreate) AddCommandIDs(ids ...int) *PlanetCreate {
+	if pc.commands == nil {
+		pc.commands = make(map[int]struct{})
+	}
+	for i := range ids {
+		pc.commands[ids[i]] = struct{}{}
+	}
+	return pc
+}
+
+// AddCommands adds the commands edges to CommandPlanet.
+func (pc *PlanetCreate) AddCommands(c ...*CommandPlanet) *PlanetCreate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return pc.AddCommandIDs(ids...)
+}
+
 // Save creates the Planet in the database.
 func (pc *PlanetCreate) Save(ctx context.Context) (*Planet, error) {
 	if pc.created_at == nil {
@@ -726,6 +748,26 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 			if err := tx.Exec(ctx, query, args, &res); err != nil {
 				return nil, rollback(tx, err)
 			}
+		}
+	}
+	if len(pc.commands) > 0 {
+		p := sql.P()
+		for eid := range pc.commands {
+			p.Or().EQ(commandplanet.FieldID, eid)
+		}
+		query, args := builder.Update(planet.CommandsTable).
+			Set(planet.CommandsColumn, id).
+			Where(sql.And(p, sql.IsNull(planet.CommandsColumn))).
+			Query()
+		if err := tx.Exec(ctx, query, args, &res); err != nil {
+			return nil, rollback(tx, err)
+		}
+		affected, err := res.RowsAffected()
+		if err != nil {
+			return nil, rollback(tx, err)
+		}
+		if int(affected) < len(pc.commands) {
+			return nil, rollback(tx, &ErrConstraintFailed{msg: fmt.Sprintf("one of \"commands\" %v already connected to a different \"Planet\"", keys(pc.commands))})
 		}
 	}
 	if err := tx.Commit(); err != nil {

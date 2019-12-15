@@ -9,6 +9,7 @@ import (
 	"math"
 
 	"github.com/facebookincubator/ent/dialect/sql"
+	"github.com/pdeguing/empire-and-foundation/ent/commandplanet"
 	"github.com/pdeguing/empire-and-foundation/ent/planet"
 	"github.com/pdeguing/empire-and-foundation/ent/predicate"
 	"github.com/pdeguing/empire-and-foundation/ent/user"
@@ -57,6 +58,18 @@ func (pq *PlanetQuery) QueryOwner() *UserQuery {
 		sql.From(planet.Table, planet.FieldID, pq.sqlQuery()),
 		sql.To(user.Table, user.FieldID),
 		sql.Edge(sql.M2O, true, planet.OwnerTable, planet.OwnerColumn),
+	)
+	query.sql = sql.SetNeighbors(pq.driver.Dialect(), step)
+	return query
+}
+
+// QueryCommands chains the current query on the commands edge.
+func (pq *PlanetQuery) QueryCommands() *CommandPlanetQuery {
+	query := &CommandPlanetQuery{config: pq.config}
+	step := sql.NewStep(
+		sql.From(planet.Table, planet.FieldID, pq.sqlQuery()),
+		sql.To(commandplanet.Table, commandplanet.FieldID),
+		sql.Edge(sql.O2M, false, planet.CommandsTable, planet.CommandsColumn),
 	)
 	query.sql = sql.SetNeighbors(pq.driver.Dialect(), step)
 	return query

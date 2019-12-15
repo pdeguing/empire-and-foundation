@@ -167,6 +167,11 @@ func (pl *Planet) QueryOwner() *UserQuery {
 	return (&PlanetClient{pl.config}).QueryOwner(pl)
 }
 
+// QueryCommands queries the commands edge of the Planet.
+func (pl *Planet) QueryCommands() *CommandPlanetQuery {
+	return (&PlanetClient{pl.config}).QueryCommands(pl)
+}
+
 // Update returns a builder for updating this Planet.
 // Note that, you need to call Planet.Unwrap() before calling this method, if this Planet
 // was returned from a transaction, and the transaction was committed or rolled back.

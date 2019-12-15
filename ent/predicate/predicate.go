@@ -6,6 +6,9 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql"
 )
 
+// CommandPlanet is the predicate function for commandplanet builders.
+type CommandPlanet func(*sql.Selector)
+
 // Planet is the predicate function for planet builders.
 type Planet func(*sql.Selector)
 

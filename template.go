@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/csrf"
 )
@@ -17,6 +18,7 @@ func templateFuncs(r *http.Request) template.FuncMap {
 		"bootrapAlertType": tmplBootstrapAlertType,
 		"old":              tmplOld(r),
 		"quantity":         tmplQuantity,
+		"duration":         tmplDuration,
 	}
 }
 
@@ -70,4 +72,14 @@ func tmplQuantity(value int64) template.HTML {
 	full := fmtQuantityFull(value)
 	short := fmtQuantityShort(value)
 	return template.HTML(fmt.Sprintf("<span title=\"%s\">%s</span>", full, short))
+}
+
+// tmplDuration display the duration in a way that the front-end
+// can update the value as time progresses without having to reload
+// the page.
+func tmplDuration(d time.Duration) template.HTML {
+	dInt := int64(d.Seconds())
+	atTime := time.Now().Add(d).Format("02-01-2006 15:04:05 MST")
+	dStr := fmt.Sprint(d.Round(time.Second))
+	return template.HTML(fmt.Sprintf("<span title=\"%s\" data-duration=\"%d\">%s</span>", atTime, dInt, dStr))
 }

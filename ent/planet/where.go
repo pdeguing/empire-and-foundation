@@ -2813,6 +2813,38 @@ func HasOwnerWith(preds ...predicate.User) predicate.Planet {
 	)
 }
 
+// HasCommands applies the HasEdge predicate on the "commands" edge.
+func HasCommands() predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			step := sql.NewStep(
+				sql.From(Table, FieldID),
+				sql.To(CommandsTable, FieldID),
+				sql.Edge(sql.O2M, false, CommandsTable, CommandsColumn),
+			)
+			sql.HasNeighbors(s, step)
+		},
+	)
+}
+
+// HasCommandsWith applies the HasEdge predicate on the "commands" edge with a given conditions (other predicates).
+func HasCommandsWith(preds ...predicate.CommandPlanet) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			step := sql.NewStep(
+				sql.From(Table, FieldID),
+				sql.To(CommandsInverseTable, FieldID),
+				sql.Edge(sql.O2M, false, CommandsTable, CommandsColumn),
+			)
+			sql.HasNeighborsWith(s, step, func(s *sql.Selector) {
+				for _, p := range preds {
+					p(s)
+				}
+			})
+		},
+	)
+}
+
 // And groups list of predicates with the AND operator between them.
 func And(predicates ...predicate.Planet) predicate.Planet {
 	return predicate.Planet(

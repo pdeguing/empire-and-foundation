@@ -10,15 +10,26 @@
 			</div>
 			<div class="card-content has-text-right">
 				<h1 class="title is-5">Metal mine</h1>
-				<h1 class="subtitle is-7">Level...{{ .Data.MetalProdLevel }}</h1>
+				<h1 class="subtitle is-7">Level...{{ .Data.Planet.MetalProdLevel }}</h1>
 				<div class="content">
 					<p>
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec iaculis mauris.
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec iaculis mauris.
 					</p>
 				</div>
 			</div>
 			<footer class="card-footer">
-				<a href="/planet/up_metal_mine" class="card-footer-item">Upgrade</a>
+				{{ if not .Data.Timer }}
+				<form action="/planet/{{ .Data.Planet.ID }}/up_metal_mine" method="POST">
+					{{ csrf }}
+					<button class="card-footer-item">Upgrade</button>
+				</form>
+				{{ else if eq .Data.Timer.Typ "upgrade_metal_mine" }}
+				<div class="card-footer-item">
+					{{ duration .Data.Timer.Duration }}
+				</div>
+				{{ else }}
+				<button class="card-footer-item" disabled>Upgrade</button>
+				{{ end }}
 				<a href="#" class="card-footer-item">Details</a>
 			</footer>
 		</div>
@@ -32,10 +43,10 @@
 			</div>
 			<div class="card-content has-text-right">
 				<h1 class="title is-5">Hydrogen extractor</h1>
-				<h1 class="subtitle is-7">Level...{{ .Data.HydrogenProdLevel }}</h1>
+				<h1 class="subtitle is-7">Level...{{ .Data.Planet.HydrogenProdLevel }}</h1>
 				<div class="content">
 					<p>
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec iaculis mauris.
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec iaculis mauris.
 					</p>
 				</div>
 			</div>
@@ -54,10 +65,10 @@
 			</div>
 			<div class="card-content has-text-right">
 				<h1 class="title is-5">Silica quarry</h1>
-				<h1 class="subtitle is-7">Level...{{ .Data.SilicaProdLevel }}</h1>
+				<h1 class="subtitle is-7">Level...{{ .Data.Planet.SilicaProdLevel }}</h1>
 				<div class="content">
 					<p>
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec iaculis mauris.
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec iaculis mauris.
 					</p>
 				</div>
 			</div>
@@ -76,10 +87,10 @@
 			</div>
 			<div class="card-content has-text-right">
 				<h1 class="title is-5">Solar central</h1>
-				<h1 class="subtitle is-7">Level...{{ .Data.SolarProdLevel }}</h1>
+				<h1 class="subtitle is-7">Level...{{ .Data.Planet.SolarProdLevel }}</h1>
 				<div class="content">
 					<p>
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec iaculis mauris.
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec iaculis mauris.
 					</p>
 				</div>
 			</div>
@@ -98,10 +109,10 @@
 			</div>
 			<div class="card-content has-text-right">
 				<h1 class="title is-5">Housing facilities</h1>
-				<h1 class="subtitle is-7">Level...{{ .Data.PopulationProdLevel }}</h1>
+				<h1 class="subtitle is-7">Level...{{ .Data.Planet.PopulationProdLevel }}</h1>
 				<div class="content">
 					<p>
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec iaculis mauris.
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec iaculis mauris.
 					</p>
 				</div>
 			</div>
