@@ -2,33 +2,7 @@ package main
 
 import (
 	"net/http"
-	"strconv"
-
-	"github.com/gorilla/mux"
-	"github.com/pdeguing/empire-and-foundation/ent"
 )
-
-// Helper
-func userPlanet(w http.ResponseWriter, r *http.Request) (*ent.Planet, bool) {
-	n, err := strconv.Atoi(mux.Vars(r)["planetNumber"])
-	if err != nil {
-		serveInternalServerError(w, r, err, "Cannot parse url variable 'planetNumber'")
-		return nil, false
-	}
-	u := loggedInUser(r)
-	p, err := u.QueryPlanets().
-		Offset(n - 1).
-		First(r.Context())
-	if _, ok := err.(*ent.ErrNotFound); ok {
-		serveNotFoundError(w, r)
-		return nil, false
-	}
-	if err != nil {
-		serveInternalServerError(w, r, err, "Could not retrieve user's planet from database")
-		return nil, false
-	}
-	return p, true
-}
 
 // GET /dashboard/planet
 // Show the dashboard page for a planet
