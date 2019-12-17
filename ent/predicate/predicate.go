@@ -6,14 +6,14 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql"
 )
 
-// CommandPlanet is the predicate function for commandplanet builders.
-type CommandPlanet func(*sql.Selector)
-
 // Planet is the predicate function for planet builders.
 type Planet func(*sql.Selector)
 
 // Session is the predicate function for session builders.
 type Session func(*sql.Selector)
+
+// Timer is the predicate function for timer builders.
+type Timer func(*sql.Selector)
 
 // User is the predicate function for user builders.
 type User func(*sql.Selector)

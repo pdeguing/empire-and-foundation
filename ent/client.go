@@ -9,9 +9,9 @@ import (
 
 	"github.com/pdeguing/empire-and-foundation/ent/migrate"
 
-	"github.com/pdeguing/empire-and-foundation/ent/commandplanet"
 	"github.com/pdeguing/empire-and-foundation/ent/planet"
 	"github.com/pdeguing/empire-and-foundation/ent/session"
+	"github.com/pdeguing/empire-and-foundation/ent/timer"
 	"github.com/pdeguing/empire-and-foundation/ent/user"
 
 	"github.com/facebookincubator/ent/dialect"
@@ -23,12 +23,12 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
-	// CommandPlanet is the client for interacting with the CommandPlanet builders.
-	CommandPlanet *CommandPlanetClient
 	// Planet is the client for interacting with the Planet builders.
 	Planet *PlanetClient
 	// Session is the client for interacting with the Session builders.
 	Session *SessionClient
+	// Timer is the client for interacting with the Timer builders.
+	Timer *TimerClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 }
@@ -38,12 +38,12 @@ func NewClient(opts ...Option) *Client {
 	c := config{log: log.Println}
 	c.options(opts...)
 	return &Client{
-		config:        c,
-		Schema:        migrate.NewSchema(c.driver),
-		CommandPlanet: NewCommandPlanetClient(c),
-		Planet:        NewPlanetClient(c),
-		Session:       NewSessionClient(c),
-		User:          NewUserClient(c),
+		config:  c,
+		Schema:  migrate.NewSchema(c.driver),
+		Planet:  NewPlanetClient(c),
+		Session: NewSessionClient(c),
+		Timer:   NewTimerClient(c),
+		User:    NewUserClient(c),
 	}
 }
 
@@ -75,18 +75,18 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	}
 	cfg := config{driver: tx, log: c.log, debug: c.debug}
 	return &Tx{
-		config:        cfg,
-		CommandPlanet: NewCommandPlanetClient(cfg),
-		Planet:        NewPlanetClient(cfg),
-		Session:       NewSessionClient(cfg),
-		User:          NewUserClient(cfg),
+		config:  cfg,
+		Planet:  NewPlanetClient(cfg),
+		Session: NewSessionClient(cfg),
+		Timer:   NewTimerClient(cfg),
+		User:    NewUserClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		CommandPlanet.
+//		Planet.
 //		Query().
 //		Count(ctx)
 //
@@ -96,96 +96,18 @@ func (c *Client) Debug() *Client {
 	}
 	cfg := config{driver: dialect.Debug(c.driver, c.log), log: c.log, debug: true}
 	return &Client{
-		config:        cfg,
-		Schema:        migrate.NewSchema(cfg.driver),
-		CommandPlanet: NewCommandPlanetClient(cfg),
-		Planet:        NewPlanetClient(cfg),
-		Session:       NewSessionClient(cfg),
-		User:          NewUserClient(cfg),
+		config:  cfg,
+		Schema:  migrate.NewSchema(cfg.driver),
+		Planet:  NewPlanetClient(cfg),
+		Session: NewSessionClient(cfg),
+		Timer:   NewTimerClient(cfg),
+		User:    NewUserClient(cfg),
 	}
 }
 
 // Close closes the database connection and prevents new queries from starting.
 func (c *Client) Close() error {
 	return c.driver.Close()
-}
-
-// CommandPlanetClient is a client for the CommandPlanet schema.
-type CommandPlanetClient struct {
-	config
-}
-
-// NewCommandPlanetClient returns a client for the CommandPlanet from the given config.
-func NewCommandPlanetClient(c config) *CommandPlanetClient {
-	return &CommandPlanetClient{config: c}
-}
-
-// Create returns a create builder for CommandPlanet.
-func (c *CommandPlanetClient) Create() *CommandPlanetCreate {
-	return &CommandPlanetCreate{config: c.config}
-}
-
-// Update returns an update builder for CommandPlanet.
-func (c *CommandPlanetClient) Update() *CommandPlanetUpdate {
-	return &CommandPlanetUpdate{config: c.config}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *CommandPlanetClient) UpdateOne(cp *CommandPlanet) *CommandPlanetUpdateOne {
-	return c.UpdateOneID(cp.ID)
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *CommandPlanetClient) UpdateOneID(id int) *CommandPlanetUpdateOne {
-	return &CommandPlanetUpdateOne{config: c.config, id: id}
-}
-
-// Delete returns a delete builder for CommandPlanet.
-func (c *CommandPlanetClient) Delete() *CommandPlanetDelete {
-	return &CommandPlanetDelete{config: c.config}
-}
-
-// DeleteOne returns a delete builder for the given entity.
-func (c *CommandPlanetClient) DeleteOne(cp *CommandPlanet) *CommandPlanetDeleteOne {
-	return c.DeleteOneID(cp.ID)
-}
-
-// DeleteOneID returns a delete builder for the given id.
-func (c *CommandPlanetClient) DeleteOneID(id int) *CommandPlanetDeleteOne {
-	return &CommandPlanetDeleteOne{c.Delete().Where(commandplanet.ID(id))}
-}
-
-// Create returns a query builder for CommandPlanet.
-func (c *CommandPlanetClient) Query() *CommandPlanetQuery {
-	return &CommandPlanetQuery{config: c.config}
-}
-
-// Get returns a CommandPlanet entity by its id.
-func (c *CommandPlanetClient) Get(ctx context.Context, id int) (*CommandPlanet, error) {
-	return c.Query().Where(commandplanet.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *CommandPlanetClient) GetX(ctx context.Context, id int) *CommandPlanet {
-	cp, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return cp
-}
-
-// QueryPlanet queries the planet edge of a CommandPlanet.
-func (c *CommandPlanetClient) QueryPlanet(cp *CommandPlanet) *PlanetQuery {
-	query := &PlanetQuery{config: c.config}
-	id := cp.ID
-	step := sql.NewStep(
-		sql.From(commandplanet.Table, commandplanet.FieldID, id),
-		sql.To(planet.Table, planet.FieldID),
-		sql.Edge(sql.M2O, true, commandplanet.PlanetTable, commandplanet.PlanetColumn),
-	)
-	query.sql = sql.Neighbors(cp.driver.Dialect(), step)
-
-	return query
 }
 
 // PlanetClient is a client for the Planet schema.
@@ -266,14 +188,14 @@ func (c *PlanetClient) QueryOwner(pl *Planet) *UserQuery {
 	return query
 }
 
-// QueryCommands queries the commands edge of a Planet.
-func (c *PlanetClient) QueryCommands(pl *Planet) *CommandPlanetQuery {
-	query := &CommandPlanetQuery{config: c.config}
+// QueryTimers queries the timers edge of a Planet.
+func (c *PlanetClient) QueryTimers(pl *Planet) *TimerQuery {
+	query := &TimerQuery{config: c.config}
 	id := pl.ID
 	step := sql.NewStep(
 		sql.From(planet.Table, planet.FieldID, id),
-		sql.To(commandplanet.Table, commandplanet.FieldID),
-		sql.Edge(sql.O2M, false, planet.CommandsTable, planet.CommandsColumn),
+		sql.To(timer.Table, timer.FieldID),
+		sql.Edge(sql.O2M, false, planet.TimersTable, planet.TimersColumn),
 	)
 	query.sql = sql.Neighbors(pl.driver.Dialect(), step)
 
@@ -342,6 +264,84 @@ func (c *SessionClient) GetX(ctx context.Context, id int) *Session {
 		panic(err)
 	}
 	return s
+}
+
+// TimerClient is a client for the Timer schema.
+type TimerClient struct {
+	config
+}
+
+// NewTimerClient returns a client for the Timer from the given config.
+func NewTimerClient(c config) *TimerClient {
+	return &TimerClient{config: c}
+}
+
+// Create returns a create builder for Timer.
+func (c *TimerClient) Create() *TimerCreate {
+	return &TimerCreate{config: c.config}
+}
+
+// Update returns an update builder for Timer.
+func (c *TimerClient) Update() *TimerUpdate {
+	return &TimerUpdate{config: c.config}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *TimerClient) UpdateOne(t *Timer) *TimerUpdateOne {
+	return c.UpdateOneID(t.ID)
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *TimerClient) UpdateOneID(id int) *TimerUpdateOne {
+	return &TimerUpdateOne{config: c.config, id: id}
+}
+
+// Delete returns a delete builder for Timer.
+func (c *TimerClient) Delete() *TimerDelete {
+	return &TimerDelete{config: c.config}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *TimerClient) DeleteOne(t *Timer) *TimerDeleteOne {
+	return c.DeleteOneID(t.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *TimerClient) DeleteOneID(id int) *TimerDeleteOne {
+	return &TimerDeleteOne{c.Delete().Where(timer.ID(id))}
+}
+
+// Create returns a query builder for Timer.
+func (c *TimerClient) Query() *TimerQuery {
+	return &TimerQuery{config: c.config}
+}
+
+// Get returns a Timer entity by its id.
+func (c *TimerClient) Get(ctx context.Context, id int) (*Timer, error) {
+	return c.Query().Where(timer.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *TimerClient) GetX(ctx context.Context, id int) *Timer {
+	t, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return t
+}
+
+// QueryPlanet queries the planet edge of a Timer.
+func (c *TimerClient) QueryPlanet(t *Timer) *PlanetQuery {
+	query := &PlanetQuery{config: c.config}
+	id := t.ID
+	step := sql.NewStep(
+		sql.From(timer.Table, timer.FieldID, id),
+		sql.To(planet.Table, planet.FieldID),
+		sql.Edge(sql.M2O, true, timer.PlanetTable, timer.PlanetColumn),
+	)
+	query.sql = sql.Neighbors(t.driver.Dialect(), step)
+
+	return query
 }
 
 // UserClient is a client for the User schema.

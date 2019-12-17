@@ -167,9 +167,9 @@ func (pl *Planet) QueryOwner() *UserQuery {
 	return (&PlanetClient{pl.config}).QueryOwner(pl)
 }
 
-// QueryCommands queries the commands edge of the Planet.
-func (pl *Planet) QueryCommands() *CommandPlanetQuery {
-	return (&PlanetClient{pl.config}).QueryCommands(pl)
+// QueryTimers queries the timers edge of the Planet.
+func (pl *Planet) QueryTimers() *TimerQuery {
+	return (&PlanetClient{pl.config}).QueryTimers(pl)
 }
 
 // Update returns a builder for updating this Planet.

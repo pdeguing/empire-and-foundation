@@ -12,12 +12,12 @@ import (
 // Tx is a transactional client that is created by calling Client.Tx().
 type Tx struct {
 	config
-	// CommandPlanet is the client for interacting with the CommandPlanet builders.
-	CommandPlanet *CommandPlanetClient
 	// Planet is the client for interacting with the Planet builders.
 	Planet *PlanetClient
 	// Session is the client for interacting with the Session builders.
 	Session *SessionClient
+	// Timer is the client for interacting with the Timer builders.
+	Timer *TimerClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 }
@@ -35,12 +35,12 @@ func (tx *Tx) Rollback() error {
 // Client returns a Client that binds to current transaction.
 func (tx *Tx) Client() *Client {
 	return &Client{
-		config:        tx.config,
-		Schema:        migrate.NewSchema(tx.driver),
-		CommandPlanet: NewCommandPlanetClient(tx.config),
-		Planet:        NewPlanetClient(tx.config),
-		Session:       NewSessionClient(tx.config),
-		User:          NewUserClient(tx.config),
+		config:  tx.config,
+		Schema:  migrate.NewSchema(tx.driver),
+		Planet:  NewPlanetClient(tx.config),
+		Session: NewSessionClient(tx.config),
+		Timer:   NewTimerClient(tx.config),
+		User:    NewUserClient(tx.config),
 	}
 }
 
@@ -51,7 +51,7 @@ func (tx *Tx) Client() *Client {
 // of them in order to commit or rollback the transaction.
 //
 // If a closed transaction is embedded in one of the generated entities, and the entity
-// applies a query, for example: CommandPlanet.QueryXXX(), the query will be executed
+// applies a query, for example: Planet.QueryXXX(), the query will be executed
 // through the driver which created this transaction.
 //
 // Note that txDriver is not goroutine safe.

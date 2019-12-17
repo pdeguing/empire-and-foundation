@@ -7,7 +7,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/pdeguing/empire-and-foundation/data"
 	"github.com/pdeguing/empire-and-foundation/ent"
-	"github.com/pdeguing/empire-and-foundation/ent/commandplanet"
+	"github.com/pdeguing/empire-and-foundation/ent/timer"
 )
 
 // Helper
@@ -29,7 +29,7 @@ func userPlanet(w http.ResponseWriter, r *http.Request) (*ent.Planet, bool) {
 		serveInternalServerError(w, r, err, "Could not retrieve user's planet from database")
 		return nil, false
 	}
-	err = data.UpdateCommands(r.Context(), p)
+	err = data.UpdateTimers(r.Context(), p)
 	if err != nil {
 		serveInternalServerError(w, r, err, "Cannot update the planet timers")
 		return nil, false
@@ -37,15 +37,15 @@ func userPlanet(w http.ResponseWriter, r *http.Request) (*ent.Planet, bool) {
 	return p, true
 }
 
-func newPlanetViewData(w http.ResponseWriter, r *http.Request, g commandplanet.Group) (*planetViewData, bool) {
+func newPlanetViewData(w http.ResponseWriter, r *http.Request, g timer.Group) (*planetViewData, bool) {
 	p, ok := userPlanet(w, r)
 	if !ok {
 		return nil, false
 	}
 	var err error
-	var cmd *data.Timer
+	var t *data.Timer
 	if g != "" {
-		cmd, err = data.GetCommandInGroup(r.Context(), p, g)
+		t, err = data.GetTimer(r.Context(), p, g)
 		if err != nil {
 			serveInternalServerError(w, r, err, "Cannot get the planet timers")
 			return nil, false
@@ -53,7 +53,7 @@ func newPlanetViewData(w http.ResponseWriter, r *http.Request, g commandplanet.G
 	}
 	return &planetViewData{
 		Planet: p,
-		Timer:  cmd,
+		Timer:  t,
 	}, true
 }
 
@@ -65,7 +65,7 @@ type planetViewData struct {
 // GET /planet/{id}
 // Show the dashboard page for a planet
 func servePlanet(w http.ResponseWriter, r *http.Request) {
-	if p, ok := newPlanetViewData(w, r, commandplanet.GroupBuilding); ok {
+	if p, ok := newPlanetViewData(w, r, timer.GroupBuilding); ok {
 		generateHTML(w, r, "planet-dashboard", p, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "planet.overview")
 	}
 }
@@ -73,7 +73,7 @@ func servePlanet(w http.ResponseWriter, r *http.Request) {
 // GET /planet/{id}/constructions
 // Show the constructions page for a planet
 func serveConstructions(w http.ResponseWriter, r *http.Request) {
-	if p, ok := newPlanetViewData(w, r, commandplanet.GroupBuilding); ok {
+	if p, ok := newPlanetViewData(w, r, timer.GroupBuilding); ok {
 		generateHTML(w, r, "planet-constructions", p, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "planet.constructions")
 	}
 }
@@ -117,13 +117,13 @@ func serveUpMetalMine(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
-	err := data.StartCommand(r.Context(), p, commandplanet.TypUpgradeMetalMine)
-	if err == data.ErrCommandPrerequisitesNotMet {
+	err := data.StartTimer(r.Context(), p, timer.ActionUpgradeMetalMine)
+	if err == data.ErrActionPrerequisitesNotMet {
 		// TODO: Flash message
 		http.Redirect(w, r, "/planet/"+strconv.Itoa(p.ID)+"/constructions", 302)
 		return
 	}
-	if err == data.ErrCommandBussy {
+	if err == data.ErrTimerBussy {
 		// TODO: Flash message
 		http.Redirect(w, r, "/planet/"+strconv.Itoa(p.ID)+"/constructions", 302)
 		return

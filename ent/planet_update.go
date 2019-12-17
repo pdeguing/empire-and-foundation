@@ -9,9 +9,9 @@ import (
 	"time"
 
 	"github.com/facebookincubator/ent/dialect/sql"
-	"github.com/pdeguing/empire-and-foundation/ent/commandplanet"
 	"github.com/pdeguing/empire-and-foundation/ent/planet"
 	"github.com/pdeguing/empire-and-foundation/ent/predicate"
+	"github.com/pdeguing/empire-and-foundation/ent/timer"
 	"github.com/pdeguing/empire-and-foundation/ent/user"
 )
 
@@ -64,9 +64,9 @@ type PlanetUpdate struct {
 	addsolar_prod_level         *int
 	name                        *string
 	owner                       map[int]struct{}
-	commands                    map[int]struct{}
+	timers                      map[int]struct{}
 	clearedOwner                bool
-	removedCommands             map[int]struct{}
+	removedTimers               map[int]struct{}
 	predicates                  []predicate.Planet
 }
 
@@ -649,24 +649,24 @@ func (pu *PlanetUpdate) SetOwner(u *User) *PlanetUpdate {
 	return pu.SetOwnerID(u.ID)
 }
 
-// AddCommandIDs adds the commands edge to CommandPlanet by ids.
-func (pu *PlanetUpdate) AddCommandIDs(ids ...int) *PlanetUpdate {
-	if pu.commands == nil {
-		pu.commands = make(map[int]struct{})
+// AddTimerIDs adds the timers edge to Timer by ids.
+func (pu *PlanetUpdate) AddTimerIDs(ids ...int) *PlanetUpdate {
+	if pu.timers == nil {
+		pu.timers = make(map[int]struct{})
 	}
 	for i := range ids {
-		pu.commands[ids[i]] = struct{}{}
+		pu.timers[ids[i]] = struct{}{}
 	}
 	return pu
 }
 
-// AddCommands adds the commands edges to CommandPlanet.
-func (pu *PlanetUpdate) AddCommands(c ...*CommandPlanet) *PlanetUpdate {
-	ids := make([]int, len(c))
-	for i := range c {
-		ids[i] = c[i].ID
+// AddTimers adds the timers edges to Timer.
+func (pu *PlanetUpdate) AddTimers(t ...*Timer) *PlanetUpdate {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
 	}
-	return pu.AddCommandIDs(ids...)
+	return pu.AddTimerIDs(ids...)
 }
 
 // ClearOwner clears the owner edge to User.
@@ -675,24 +675,24 @@ func (pu *PlanetUpdate) ClearOwner() *PlanetUpdate {
 	return pu
 }
 
-// RemoveCommandIDs removes the commands edge to CommandPlanet by ids.
-func (pu *PlanetUpdate) RemoveCommandIDs(ids ...int) *PlanetUpdate {
-	if pu.removedCommands == nil {
-		pu.removedCommands = make(map[int]struct{})
+// RemoveTimerIDs removes the timers edge to Timer by ids.
+func (pu *PlanetUpdate) RemoveTimerIDs(ids ...int) *PlanetUpdate {
+	if pu.removedTimers == nil {
+		pu.removedTimers = make(map[int]struct{})
 	}
 	for i := range ids {
-		pu.removedCommands[ids[i]] = struct{}{}
+		pu.removedTimers[ids[i]] = struct{}{}
 	}
 	return pu
 }
 
-// RemoveCommands removes commands edges to CommandPlanet.
-func (pu *PlanetUpdate) RemoveCommands(c ...*CommandPlanet) *PlanetUpdate {
-	ids := make([]int, len(c))
-	for i := range c {
-		ids[i] = c[i].ID
+// RemoveTimers removes timers edges to Timer.
+func (pu *PlanetUpdate) RemoveTimers(t ...*Timer) *PlanetUpdate {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
 	}
-	return pu.RemoveCommandIDs(ids...)
+	return pu.RemoveTimerIDs(ids...)
 }
 
 // Save executes the query and returns the number of rows/vertices matched by this operation.
@@ -998,29 +998,29 @@ func (pu *PlanetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if len(pu.removedCommands) > 0 {
-		eids := make([]int, len(pu.removedCommands))
-		for eid := range pu.removedCommands {
+	if len(pu.removedTimers) > 0 {
+		eids := make([]int, len(pu.removedTimers))
+		for eid := range pu.removedTimers {
 			eids = append(eids, eid)
 		}
-		query, args := builder.Update(planet.CommandsTable).
-			SetNull(planet.CommandsColumn).
-			Where(sql.InInts(planet.CommandsColumn, ids...)).
-			Where(sql.InInts(commandplanet.FieldID, eids...)).
+		query, args := builder.Update(planet.TimersTable).
+			SetNull(planet.TimersColumn).
+			Where(sql.InInts(planet.TimersColumn, ids...)).
+			Where(sql.InInts(timer.FieldID, eids...)).
 			Query()
 		if err := tx.Exec(ctx, query, args, &res); err != nil {
 			return 0, rollback(tx, err)
 		}
 	}
-	if len(pu.commands) > 0 {
+	if len(pu.timers) > 0 {
 		for _, id := range ids {
 			p := sql.P()
-			for eid := range pu.commands {
-				p.Or().EQ(commandplanet.FieldID, eid)
+			for eid := range pu.timers {
+				p.Or().EQ(timer.FieldID, eid)
 			}
-			query, args := builder.Update(planet.CommandsTable).
-				Set(planet.CommandsColumn, id).
-				Where(sql.And(p, sql.IsNull(planet.CommandsColumn))).
+			query, args := builder.Update(planet.TimersTable).
+				Set(planet.TimersColumn, id).
+				Where(sql.And(p, sql.IsNull(planet.TimersColumn))).
 				Query()
 			if err := tx.Exec(ctx, query, args, &res); err != nil {
 				return 0, rollback(tx, err)
@@ -1029,8 +1029,8 @@ func (pu *PlanetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			if err != nil {
 				return 0, rollback(tx, err)
 			}
-			if int(affected) < len(pu.commands) {
-				return 0, rollback(tx, &ErrConstraintFailed{msg: fmt.Sprintf("one of \"commands\" %v already connected to a different \"Planet\"", keys(pu.commands))})
+			if int(affected) < len(pu.timers) {
+				return 0, rollback(tx, &ErrConstraintFailed{msg: fmt.Sprintf("one of \"timers\" %v already connected to a different \"Planet\"", keys(pu.timers))})
 			}
 		}
 	}
@@ -1090,9 +1090,9 @@ type PlanetUpdateOne struct {
 	addsolar_prod_level         *int
 	name                        *string
 	owner                       map[int]struct{}
-	commands                    map[int]struct{}
+	timers                      map[int]struct{}
 	clearedOwner                bool
-	removedCommands             map[int]struct{}
+	removedTimers               map[int]struct{}
 }
 
 // SetUpdatedAt sets the updated_at field.
@@ -1668,24 +1668,24 @@ func (puo *PlanetUpdateOne) SetOwner(u *User) *PlanetUpdateOne {
 	return puo.SetOwnerID(u.ID)
 }
 
-// AddCommandIDs adds the commands edge to CommandPlanet by ids.
-func (puo *PlanetUpdateOne) AddCommandIDs(ids ...int) *PlanetUpdateOne {
-	if puo.commands == nil {
-		puo.commands = make(map[int]struct{})
+// AddTimerIDs adds the timers edge to Timer by ids.
+func (puo *PlanetUpdateOne) AddTimerIDs(ids ...int) *PlanetUpdateOne {
+	if puo.timers == nil {
+		puo.timers = make(map[int]struct{})
 	}
 	for i := range ids {
-		puo.commands[ids[i]] = struct{}{}
+		puo.timers[ids[i]] = struct{}{}
 	}
 	return puo
 }
 
-// AddCommands adds the commands edges to CommandPlanet.
-func (puo *PlanetUpdateOne) AddCommands(c ...*CommandPlanet) *PlanetUpdateOne {
-	ids := make([]int, len(c))
-	for i := range c {
-		ids[i] = c[i].ID
+// AddTimers adds the timers edges to Timer.
+func (puo *PlanetUpdateOne) AddTimers(t ...*Timer) *PlanetUpdateOne {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
 	}
-	return puo.AddCommandIDs(ids...)
+	return puo.AddTimerIDs(ids...)
 }
 
 // ClearOwner clears the owner edge to User.
@@ -1694,24 +1694,24 @@ func (puo *PlanetUpdateOne) ClearOwner() *PlanetUpdateOne {
 	return puo
 }
 
-// RemoveCommandIDs removes the commands edge to CommandPlanet by ids.
-func (puo *PlanetUpdateOne) RemoveCommandIDs(ids ...int) *PlanetUpdateOne {
-	if puo.removedCommands == nil {
-		puo.removedCommands = make(map[int]struct{})
+// RemoveTimerIDs removes the timers edge to Timer by ids.
+func (puo *PlanetUpdateOne) RemoveTimerIDs(ids ...int) *PlanetUpdateOne {
+	if puo.removedTimers == nil {
+		puo.removedTimers = make(map[int]struct{})
 	}
 	for i := range ids {
-		puo.removedCommands[ids[i]] = struct{}{}
+		puo.removedTimers[ids[i]] = struct{}{}
 	}
 	return puo
 }
 
-// RemoveCommands removes commands edges to CommandPlanet.
-func (puo *PlanetUpdateOne) RemoveCommands(c ...*CommandPlanet) *PlanetUpdateOne {
-	ids := make([]int, len(c))
-	for i := range c {
-		ids[i] = c[i].ID
+// RemoveTimers removes timers edges to Timer.
+func (puo *PlanetUpdateOne) RemoveTimers(t ...*Timer) *PlanetUpdateOne {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
 	}
-	return puo.RemoveCommandIDs(ids...)
+	return puo.RemoveTimerIDs(ids...)
 }
 
 // Save executes the query and returns the updated entity.
@@ -2064,29 +2064,29 @@ func (puo *PlanetUpdateOne) sqlSave(ctx context.Context) (pl *Planet, err error)
 			}
 		}
 	}
-	if len(puo.removedCommands) > 0 {
-		eids := make([]int, len(puo.removedCommands))
-		for eid := range puo.removedCommands {
+	if len(puo.removedTimers) > 0 {
+		eids := make([]int, len(puo.removedTimers))
+		for eid := range puo.removedTimers {
 			eids = append(eids, eid)
 		}
-		query, args := builder.Update(planet.CommandsTable).
-			SetNull(planet.CommandsColumn).
-			Where(sql.InInts(planet.CommandsColumn, ids...)).
-			Where(sql.InInts(commandplanet.FieldID, eids...)).
+		query, args := builder.Update(planet.TimersTable).
+			SetNull(planet.TimersColumn).
+			Where(sql.InInts(planet.TimersColumn, ids...)).
+			Where(sql.InInts(timer.FieldID, eids...)).
 			Query()
 		if err := tx.Exec(ctx, query, args, &res); err != nil {
 			return nil, rollback(tx, err)
 		}
 	}
-	if len(puo.commands) > 0 {
+	if len(puo.timers) > 0 {
 		for _, id := range ids {
 			p := sql.P()
-			for eid := range puo.commands {
-				p.Or().EQ(commandplanet.FieldID, eid)
+			for eid := range puo.timers {
+				p.Or().EQ(timer.FieldID, eid)
 			}
-			query, args := builder.Update(planet.CommandsTable).
-				Set(planet.CommandsColumn, id).
-				Where(sql.And(p, sql.IsNull(planet.CommandsColumn))).
+			query, args := builder.Update(planet.TimersTable).
+				Set(planet.TimersColumn, id).
+				Where(sql.And(p, sql.IsNull(planet.TimersColumn))).
 				Query()
 			if err := tx.Exec(ctx, query, args, &res); err != nil {
 				return nil, rollback(tx, err)
@@ -2095,8 +2095,8 @@ func (puo *PlanetUpdateOne) sqlSave(ctx context.Context) (pl *Planet, err error)
 			if err != nil {
 				return nil, rollback(tx, err)
 			}
-			if int(affected) < len(puo.commands) {
-				return nil, rollback(tx, &ErrConstraintFailed{msg: fmt.Sprintf("one of \"commands\" %v already connected to a different \"Planet\"", keys(puo.commands))})
+			if int(affected) < len(puo.timers) {
+				return nil, rollback(tx, &ErrConstraintFailed{msg: fmt.Sprintf("one of \"timers\" %v already connected to a different \"Planet\"", keys(puo.timers))})
 			}
 		}
 	}

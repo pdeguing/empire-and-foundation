@@ -2813,28 +2813,28 @@ func HasOwnerWith(preds ...predicate.User) predicate.Planet {
 	)
 }
 
-// HasCommands applies the HasEdge predicate on the "commands" edge.
-func HasCommands() predicate.Planet {
+// HasTimers applies the HasEdge predicate on the "timers" edge.
+func HasTimers() predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
 			step := sql.NewStep(
 				sql.From(Table, FieldID),
-				sql.To(CommandsTable, FieldID),
-				sql.Edge(sql.O2M, false, CommandsTable, CommandsColumn),
+				sql.To(TimersTable, FieldID),
+				sql.Edge(sql.O2M, false, TimersTable, TimersColumn),
 			)
 			sql.HasNeighbors(s, step)
 		},
 	)
 }
 
-// HasCommandsWith applies the HasEdge predicate on the "commands" edge with a given conditions (other predicates).
-func HasCommandsWith(preds ...predicate.CommandPlanet) predicate.Planet {
+// HasTimersWith applies the HasEdge predicate on the "timers" edge with a given conditions (other predicates).
+func HasTimersWith(preds ...predicate.Timer) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
 			step := sql.NewStep(
 				sql.From(Table, FieldID),
-				sql.To(CommandsInverseTable, FieldID),
-				sql.Edge(sql.O2M, false, CommandsTable, CommandsColumn),
+				sql.To(TimersInverseTable, FieldID),
+				sql.Edge(sql.O2M, false, TimersTable, TimersColumn),
 			)
 			sql.HasNeighborsWith(s, step, func(s *sql.Selector) {
 				for _, p := range preds {

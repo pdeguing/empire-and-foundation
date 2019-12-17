@@ -76,6 +76,6 @@ func (Planet) Edges() []ent.Edge {
 		edge.From("owner", User.Type).
 			Ref("planets").
 			Unique(),
-		edge.To("commands", CommandPlanet.Type),
+		edge.To("timers", Timer.Type),
 	}
 }

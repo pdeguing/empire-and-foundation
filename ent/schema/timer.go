@@ -7,15 +7,15 @@ import (
 	"github.com/facebookincubator/ent/schema/index"
 )
 
-// CommandPlanet holds the schema definition for the CommandPlanet entity.
-type CommandPlanet struct {
+// Timer holds the schema definition for the Timer entity.
+type Timer struct {
 	ent.Schema
 }
 
-// Fields of the CommandPlanet.
-func (CommandPlanet) Fields() []ent.Field {
+// Fields of the Timer.
+func (Timer) Fields() []ent.Field {
 	return []ent.Field{
-		field.Enum("typ").
+		field.Enum("action").
 			Values("upgrade_metal_mine").
 			Immutable(),
 		field.Enum("group").
@@ -26,21 +26,21 @@ func (CommandPlanet) Fields() []ent.Field {
 	}
 }
 
-// Edges of the CommandPlanet.
-func (CommandPlanet) Edges() []ent.Edge {
+// Edges of the Timer.
+func (Timer) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("planet", Planet.Type).
-			Ref("commands").
+			Ref("timers").
 			Unique(),
 	}
 }
 
-// Indexes of the CommandPlanet.
-func (CommandPlanet) Indexes() []ent.Index {
-    return []ent.Index{
+// Indexes of the Timer.
+func (Timer) Indexes() []ent.Index {
+	return []ent.Index{
 		// There can only be one active command for each group on a planet.
 		index.Edges("planet").
 			Fields("group").
-            Unique(),
-    }
+			Unique(),
+	}
 }

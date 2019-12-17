@@ -23,7 +23,7 @@
 					{{ csrf }}
 					<button class="card-footer-item">Upgrade</button>
 				</form>
-				{{ else if eq .Data.Timer.Typ "upgrade_metal_mine" }}
+				{{ else if eq .Data.Timer.Action "upgrade_metal_mine" }}
 				<div class="card-footer-item">
 					{{ duration .Data.Timer.Duration }}
 				</div>
