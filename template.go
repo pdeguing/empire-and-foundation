@@ -7,6 +7,8 @@ import (
 	"time"
 
 	"github.com/gorilla/csrf"
+	"github.com/pdeguing/empire-and-foundation/data"
+	"github.com/pdeguing/empire-and-foundation/ent/timer"
 )
 
 // templateFuncs returns a map of functions that can be used in the templates
@@ -19,6 +21,7 @@ func templateFuncs(r *http.Request) template.FuncMap {
 		"old":              tmplOld(r),
 		"quantity":         tmplQuantity,
 		"duration":         tmplDuration,
+		"byTimerGroup":     tmplByTimerGroup,
 	}
 }
 
@@ -82,4 +85,10 @@ func tmplDuration(d time.Duration) template.HTML {
 	atTime := time.Now().Add(d).Format("02-01-2006 15:04:05 MST")
 	dStr := fmt.Sprint(d.Round(time.Second))
 	return template.HTML(fmt.Sprintf("<span title=\"%s\" data-duration=\"%d\">%s</span>", atTime, dInt, dStr))
+}
+
+// tmplByTimerGroup returns the timer in group g from map m or nil if it
+// is does not exist in the map.
+func tmplByTimerGroup(m map[timer.Group]*data.Timer, g string) *data.Timer {
+	return m[timer.Group(g)]
 }

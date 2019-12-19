@@ -106,6 +106,26 @@ func GetTimer(ctx context.Context, p *ent.Planet, g timer.Group) (*Timer, error)
 	}, nil
 }
 
+// GetTimers returns a map with information about all active timers for the planet.
+func GetTimers(ctx context.Context, p *ent.Planet) (map[timer.Group]*Timer, error) {
+	timers, err := p.QueryTimers().
+		All(ctx)
+	if _, ok := err.(*ent.ErrNotFound); ok {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	tm := make(map[timer.Group]*Timer)
+	for _, t := range timers {
+		tm[t.Group] = &Timer{
+			Action:  t.Action,
+			EndTime: t.EndTime,
+		}
+	}
+	return tm, nil
+}
+
 // StartTimer starts a timer for the action a if all prerequisites are met.
 // After the duration defined by the action, the timer completes.
 func StartTimer(ctx context.Context, p *ent.Planet, action timer.Action) error {

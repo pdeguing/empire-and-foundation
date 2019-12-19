@@ -22,7 +22,8 @@
       </li>
     </ul>
 
-    <h2 class="subtitle dashboard-subtitle">Fleet</h2>
+    <!-- Reference HTML -->
+    <!-- <h2 class="subtitle dashboard-subtitle">Fleet</h2>
     <ul class="dashboard-info">
       <li>
         <a href="/planet/{{ .Data.Planet.ID }}/fleets"
@@ -36,7 +37,25 @@
           <span class="column is-narrow dashboard-item-value">1h13m</span>
         </a>
       </li>
+    </ul> -->
+
+    {{ if $timer := byTimerGroup .Data.Timers "building" }}
+    <h2 class="subtitle dashboard-subtitle">Construction</h2>
+    <ul class="dashboard-info">
+      <li>
+        <a href="/planet/{{ .Data.Planet.ID }}/constructions"
+          class="columns is-inline-flex is-gapless dashboard-item dashboard-item-link">
+          <span class="column is-half is-growing dashboard-item-name">
+            {{ if eq $timer.Action "upgrade_metal_mine" }}
+            Metal mine upgrade
+            {{ end }}
+          </span>
+          <span class="column is-narrow dashboard-item-value">{{ duration $timer.Duration }}</span>
+        </a>
+      </li>
     </ul>
+    {{ end }}
+
   </div>
 </article>
 

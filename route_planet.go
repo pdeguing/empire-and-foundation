@@ -47,7 +47,7 @@ func newPlanetViewData(w http.ResponseWriter, r *http.Request, g timer.Group) (*
 	if g != "" {
 		t, err = data.GetTimer(r.Context(), p, g)
 		if err != nil {
-			serveInternalServerError(w, r, err, "Cannot get the planet timers")
+			serveInternalServerError(w, r, err, "Cannot get timer in group for planet")
 			return nil, false
 		}
 	}
@@ -65,9 +65,25 @@ type planetViewData struct {
 // GET /planet/{id}
 // Show the dashboard page for a planet
 func servePlanet(w http.ResponseWriter, r *http.Request) {
-	if p, ok := newPlanetViewData(w, r, timer.GroupBuilding); ok {
-		generateHTML(w, r, "planet-dashboard", p, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "planet.overview")
+	p, ok := userPlanet(w, r)
+	if !ok {
+		return
 	}
+	t, err := data.GetTimers(r.Context(), p)
+	if err != nil {
+		serveInternalServerError(w, r, err, "Cannot get timers for planet")
+		return
+	}
+	pv := planetOverviewViewData{
+		Planet: p,
+		Timers: t,
+	}
+	generateHTML(w, r, "planet-dashboard", pv, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "planet.overview")
+}
+
+type planetOverviewViewData struct {
+	Planet *ent.Planet
+	Timers map[timer.Group]*data.Timer
 }
 
 // GET /planet/{id}/constructions
