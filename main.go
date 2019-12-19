@@ -42,7 +42,8 @@ func main() {
 	rPlanet.HandleFunc("/research", serveResearch)
 	rPlanet.HandleFunc("/fleets", serveFleets)
 	rPlanet.HandleFunc("/defenses", serveDefenses)
-	rPlanet.HandleFunc("/up_metal_mine", serveUpMetalMine).Methods("POST")
+	rPlanet.HandleFunc("/upgrade/metal-mine", serveUpgradeMetalMine).Methods("POST")
+	rPlanet.HandleFunc("/cancel/metal-mine", serveCancelMetalMine).Methods("POST")
 
 	// Middleware
 	csrfMiddleware := csrf.Protect(

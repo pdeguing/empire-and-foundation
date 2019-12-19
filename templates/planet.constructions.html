@@ -1,49 +1,122 @@
 {{ define "planetBody" }}
 
 <div class="columns">
-	<div class="column">
-		<div class="card">
+	<div class="column is-flex">
+		<div class="card card-growing">
 			<div class="card-image">
 				<figure class="image is-4by-3">
 					<img src="/static/images/freelancer.png" class="card-img-top" alt="...">
 				</figure>
 			</div>
-			<div class="card-content has-text-right">
-				<h1 class="title is-5">Metal mine</h1>
-				<h1 class="subtitle is-7">Level...{{ .Data.Planet.MetalProdLevel }}</h1>
+			<div class="card-content is-growing">
+				<div class="has-text-right Planet-card__header">
+					<h2 class="title is-5 is-marginless">Metal mine</h2>
+					<span class="subtitle is-7">Level...{{ .Data.Planet.MetalProdLevel }}</span>
+				</div>
 				<div class="content">
 					<p>
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec iaculis mauris.
+						Metal is a strong and adaptable construction material.
 					</p>
 				</div>
 			</div>
+
 			<footer class="card-footer">
 				{{ if not .Data.Timer }}
-				<form action="/planet/{{ .Data.Planet.ID }}/up_metal_mine" method="POST">
+				<form action="/planet/{{ .Data.Planet.ID }}/upgrade/metal-mine" method="POST"
+					class="Planet-card__form Planet-card__form--upgrade">
 					{{ csrf }}
-					<button class="card-footer-item">Upgrade</button>
+					<button class="is-paddingless Planet-card__button">
+						<span class="card-footer-item ">Upgrade</span>
+					</button>
 				</form>
 				{{ else if eq .Data.Timer.Action "upgrade_metal_mine" }}
-				<div class="card-footer-item">
+				<div class="card-footer-item has-text-white has-text-weight-semibold Planet-card__duration">
 					{{ duration .Data.Timer.Duration }}
 				</div>
+				<form action="/planet/{{ .Data.Planet.ID }}/cancel/metal-mine" method="POST"
+					class="Planet-card__form Planet-card__form--cancel">
+					{{ csrf }}
+					<button class="is-paddingless Planet-card__button">
+						<span class="Planet-card__button__text">Cancel</span>
+					</button>
+				</form>
 				{{ else }}
 				<button class="card-footer-item" disabled>Upgrade</button>
 				{{ end }}
+
+			</footer>
+			<footer class="card-footer">
 				<a href="#" class="card-footer-item">Details</a>
 			</footer>
 		</div>
 	</div>
-	<div class="column">
-		<div class="card">
+	<div class="column is-flex">
+		<div class="card card-growing">
 			<div class="card-image">
 				<figure class="image is-4by-3">
 					<img src="/static/images/freelancer.png" class="card-img-top" alt="...">
 				</figure>
 			</div>
-			<div class="card-content has-text-right">
-				<h1 class="title is-5">Hydrogen extractor</h1>
-				<h1 class="subtitle is-7">Level...{{ .Data.Planet.HydrogenProdLevel }}</h1>
+			<div class="card-content is-growing">
+				<div class="has-text-right Planet-card__header">
+					<h2 class="title is-5 is-marginless">Hydrogen extractor</h2>
+					<span class="subtitle is-7">Level...{{ .Data.Planet.HydrogenProdLevel }}</span>
+				</div>
+				<div class="content">
+					<p>
+						Hydrogen is the fundamental component in life. But in
+						other parts of space-travel it cannot be absent. In
+						derived forms it can be used as a provider for fusion,
+						for propelant, or anything in between.
+					</p>
+				</div>
+			</div>
+			<footer class="card-footer">
+				<a href="#" class="card-footer-item">Upgrade</a>
+			</footer>
+			<footer class="card-footer">
+				<a href="#" class="card-footer-item">Details</a>
+			</footer>
+		</div>
+	</div>
+	<div class="column is-flex">
+		<div class="card card-growing">
+			<div class="card-image">
+				<figure class="image is-4by-3">
+					<img src="/static/images/freelancer.png" class="card-img-top" alt="...">
+				</figure>
+			</div>
+			<div class="card-content is-growing">
+				<div class="has-text-right Planet-card__header">
+					<h2 class="title is-5 is-marginless">Silica quarry</h2>
+					<span class="subtitle is-7">Level...{{ .Data.Planet.SilicaProdLevel }}</span>
+				</div>
+				<div class="content">
+					<p>
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+					</p>
+				</div>
+			</div>
+			<footer class="card-footer">
+				<a href="#" class="card-footer-item">Upgrade</a>
+			</footer>
+			<footer class="card-footer">
+				<a href="#" class="card-footer-item">Details</a>
+			</footer>
+		</div>
+	</div>
+	<div class="column is-flex">
+		<div class="card card-growing">
+			<div class="card-image">
+				<figure class="image is-4by-3">
+					<img src="/static/images/freelancer.png" class="card-img-top" alt="...">
+				</figure>
+			</div>
+			<div class="card-content is-growing">
+				<div class="has-text-right Planet-card__header">
+					<h2 class="title is-5 is-marginless">Solar central</h2>
+					<span class="subtitle is-7">Level...{{ .Data.Planet.SolarProdLevel }}</span>
+				</div>
 				<div class="content">
 					<p>
 						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec iaculis mauris.
@@ -52,72 +125,34 @@
 			</div>
 			<footer class="card-footer">
 				<a href="#" class="card-footer-item">Upgrade</a>
+			</footer>
+			<footer class="card-footer">
 				<a href="#" class="card-footer-item">Details</a>
 			</footer>
 		</div>
 	</div>
-	<div class="column">
-		<div class="card">
+	<div class="column is-flex">
+		<div class="card card-growing">
 			<div class="card-image">
 				<figure class="image is-4by-3">
 					<img src="/static/images/freelancer.png" class="card-img-top" alt="...">
 				</figure>
 			</div>
-			<div class="card-content has-text-right">
-				<h1 class="title is-5">Silica quarry</h1>
-				<h1 class="subtitle is-7">Level...{{ .Data.Planet.SilicaProdLevel }}</h1>
+			<div class="card-content is-growing">
+				<div class="has-text-right Planet-card__header">
+					<h2 class="title is-5 is-marginless">Housing facilities</h2>
+					<span class="subtitle is-7">Level...{{ .Data.Planet.PopulationProdLevel }}</span>
+				</div>
 				<div class="content">
 					<p>
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec iaculis mauris.
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 					</p>
 				</div>
 			</div>
 			<footer class="card-footer">
 				<a href="#" class="card-footer-item">Upgrade</a>
-				<a href="#" class="card-footer-item">Details</a>
 			</footer>
-		</div>
-	</div>
-	<div class="column">
-		<div class="card">
-			<div class="card-image">
-				<figure class="image is-4by-3">
-					<img src="/static/images/freelancer.png" class="card-img-top" alt="...">
-				</figure>
-			</div>
-			<div class="card-content has-text-right">
-				<h1 class="title is-5">Solar central</h1>
-				<h1 class="subtitle is-7">Level...{{ .Data.Planet.SolarProdLevel }}</h1>
-				<div class="content">
-					<p>
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec iaculis mauris.
-					</p>
-				</div>
-			</div>
 			<footer class="card-footer">
-				<a href="#" class="card-footer-item">Upgrade</a>
-				<a href="#" class="card-footer-item">Details</a>
-			</footer>
-		</div>
-	</div>
-	<div class="column">
-		<div class="card">
-			<div class="card-image">
-				<figure class="image is-4by-3">
-					<img src="/static/images/freelancer.png" class="card-img-top" alt="...">
-				</figure>
-			</div>
-			<div class="card-content has-text-right">
-				<h1 class="title is-5">Housing facilities</h1>
-				<h1 class="subtitle is-7">Level...{{ .Data.Planet.PopulationProdLevel }}</h1>
-				<div class="content">
-					<p>
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec iaculis mauris.
-					</p>
-				</div>
-			</div>
-			<footer class="card-footer">
-				<a href="#" class="card-footer-item">Upgrade</a>
 				<a href="#" class="card-footer-item">Details</a>
 			</footer>
 		</div>

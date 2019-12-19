@@ -126,9 +126,9 @@ func serveDefenses(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// POST /planet/{id}/up_metal_mine
+// POST /planet/{id}/upgrade/metal-mine
 // Upgrade the metal mine to the next level
-func serveUpMetalMine(w http.ResponseWriter, r *http.Request) {
+func serveUpgradeMetalMine(w http.ResponseWriter, r *http.Request) {
 	p, ok := userPlanet(w, r)
 	if !ok {
 		return
@@ -145,7 +145,22 @@ func serveUpMetalMine(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if err != nil {
-		serveInternalServerError(w, r, err, "cannot start command")
+		serveInternalServerError(w, r, err, "cannot start timer")
+		return
+	}
+	http.Redirect(w, r, "/planet/"+strconv.Itoa(p.ID)+"/constructions", 302)
+}
+
+// POST /planet/{id}/cancel/metal-mine
+// Cancel the upgrade of the metal mine
+func serveCancelMetalMine(w http.ResponseWriter, r *http.Request) {
+	p, ok := userPlanet(w, r)
+	if !ok {
+		return
+	}
+	err := data.CancelTimer(r.Context(), p, timer.ActionUpgradeMetalMine)
+	if err != nil && err != data.ErrTimerNotRunning {
+		serveInternalServerError(w, r, err, "cannot cancel timer")
 		return
 	}
 	http.Redirect(w, r, "/planet/"+strconv.Itoa(p.ID)+"/constructions", 302)

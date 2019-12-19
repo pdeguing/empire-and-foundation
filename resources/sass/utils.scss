@@ -1,3 +1,8 @@
 .is-growing {
     flex-grow: 1 !important;
 }
+
+.card-growing {
+    display: flex;
+    flex-direction: column;
+}

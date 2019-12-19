@@ -19,6 +19,10 @@ var ErrActionPrerequisitesNotMet = errors.New("Cannot start the timer because th
 // running at a time.
 var ErrTimerBussy = errors.New("Another timer is already running for this planet and group")
 
+// ErrTimerNotRunning is returned when trying to cancel a timer that
+// is not currently running.
+var ErrTimerNotRunning = errors.New("The timer cannot be cancelled because it is not running")
+
 type action struct {
 	// Group specifies the group the action belongs to. For each planet
 	// there can only be one running action in each group at any given time.
@@ -170,15 +174,18 @@ func CancelTimer(ctx context.Context, p *ent.Planet, a timer.Action) error {
 		if err != nil {
 			return err
 		}
-		err = actions[a].Cancel(ctx, tx, pTx)
-		if err != nil {
-			return err
-		}
-		_, err = tx.Timer.
+		n, err := tx.Timer.
 			Delete().
 			Where(timer.HasPlanetWith(planet.IDEQ(pTx.ID))).
 			Where(timer.ActionEQ(a)).
 			Exec(ctx)
+		if err != nil {
+			return err
+		}
+		if n == 0 {
+			return ErrTimerNotRunning
+		}
+		err = actions[a].Cancel(ctx, tx, pTx)
 		return err
 	})
 }
