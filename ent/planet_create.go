@@ -46,6 +46,7 @@ type PlanetCreate struct {
 	suborbit_code            *int
 	position_code            *int
 	name                     *string
+	planet_type              *int
 	owner                    map[int]struct{}
 }
 
@@ -461,14 +462,6 @@ func (pc *PlanetCreate) SetPositionCode(i int) *PlanetCreate {
 	return pc
 }
 
-// SetNillablePositionCode sets the position_code field if the given value is not nil.
-func (pc *PlanetCreate) SetNillablePositionCode(i *int) *PlanetCreate {
-	if i != nil {
-		pc.SetPositionCode(*i)
-	}
-	return pc
-}
-
 // SetName sets the name field.
 func (pc *PlanetCreate) SetName(s string) *PlanetCreate {
 	pc.name = &s
@@ -479,6 +472,20 @@ func (pc *PlanetCreate) SetName(s string) *PlanetCreate {
 func (pc *PlanetCreate) SetNillableName(s *string) *PlanetCreate {
 	if s != nil {
 		pc.SetName(*s)
+	}
+	return pc
+}
+
+// SetPlanetType sets the planet_type field.
+func (pc *PlanetCreate) SetPlanetType(i int) *PlanetCreate {
+	pc.planet_type = &i
+	return pc
+}
+
+// SetNillablePlanetType sets the planet_type field if the given value is not nil.
+func (pc *PlanetCreate) SetNillablePlanetType(i *int) *PlanetCreate {
+	if i != nil {
+		pc.SetPlanetType(*i)
 	}
 	return pc
 }
@@ -681,8 +688,7 @@ func (pc *PlanetCreate) Save(ctx context.Context) (*Planet, error) {
 		return nil, fmt.Errorf("ent: validator failed for field \"suborbit_code\": %v", err)
 	}
 	if pc.position_code == nil {
-		v := planet.DefaultPositionCode
-		pc.position_code = &v
+		return nil, errors.New("ent: missing required field \"position_code\"")
 	}
 	if err := planet.PositionCodeValidator(*pc.position_code); err != nil {
 		return nil, fmt.Errorf("ent: validator failed for field \"position_code\": %v", err)
@@ -690,6 +696,10 @@ func (pc *PlanetCreate) Save(ctx context.Context) (*Planet, error) {
 	if pc.name == nil {
 		v := planet.DefaultName
 		pc.name = &v
+	}
+	if pc.planet_type == nil {
+		v := planet.DefaultPlanetType
+		pc.planet_type = &v
 	}
 	if len(pc.owner) > 1 {
 		return nil, errors.New("ent: multiple assignments on a unique edge \"owner\"")
@@ -840,6 +850,10 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 	if value := pc.name; value != nil {
 		insert.Set(planet.FieldName, *value)
 		pl.Name = *value
+	}
+	if value := pc.planet_type; value != nil {
+		insert.Set(planet.FieldPlanetType, *value)
+		pl.PlanetType = *value
 	}
 
 	id, err := insertLastID(ctx, tx, insert.Returning(planet.FieldID))

@@ -40,6 +40,7 @@ func init() {
 	if err := Client.Schema.Create(context.Background()); err != nil {
 		log.Fatalf("failed creating schema resources: %v", err)
 	}
+	generateRegion(0)
 	return
 }
 

@@ -42,8 +42,9 @@ var (
 		{Name: "system_code", Type: field.TypeInt, Default: planet.DefaultSystemCode},
 		{Name: "orbit_code", Type: field.TypeInt, Default: planet.DefaultOrbitCode},
 		{Name: "suborbit_code", Type: field.TypeInt, Default: planet.DefaultSuborbitCode},
-		{Name: "position_code", Type: field.TypeInt, Default: planet.DefaultPositionCode},
+		{Name: "position_code", Type: field.TypeInt, Unique: true},
 		{Name: "name", Type: field.TypeString, Default: planet.DefaultName},
+		{Name: "planet_type", Type: field.TypeInt, Default: planet.DefaultPlanetType},
 		{Name: "owner_id", Type: field.TypeInt, Nullable: true},
 	}
 	// PlanetsTable holds the schema information for the "planets" table.
@@ -54,7 +55,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:  "planets_users_planets",
-				Columns: []*schema.Column{PlanetsColumns[32]},
+				Columns: []*schema.Column{PlanetsColumns[33]},
 
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,

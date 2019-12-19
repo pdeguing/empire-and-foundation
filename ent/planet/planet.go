@@ -76,6 +76,8 @@ const (
 	FieldPositionCode = "position_code"
 	// FieldName holds the string denoting the name vertex property in the database.
 	FieldName = "name"
+	// FieldPlanetType holds the string denoting the planet_type vertex property in the database.
+	FieldPlanetType = "planet_type"
 
 	// Table holds the table name of the planet in the database.
 	Table = "planets"
@@ -122,6 +124,7 @@ var Columns = []string{
 	FieldSuborbitCode,
 	FieldPositionCode,
 	FieldName,
+	FieldPlanetType,
 }
 
 var (
@@ -324,8 +327,6 @@ var (
 
 	// descPositionCode is the schema descriptor for position_code field.
 	descPositionCode = mixinFields[6][4].Descriptor()
-	// DefaultPositionCode holds the default value on creation for the position_code field.
-	DefaultPositionCode = descPositionCode.Default.(int)
 	// PositionCodeValidator is a validator for the "position_code" field. It is called by the builders before save.
 	PositionCodeValidator = descPositionCode.Validators[0].(func(int) error)
 
@@ -333,4 +334,9 @@ var (
 	descName = fields[0].Descriptor()
 	// DefaultName holds the default value on creation for the name field.
 	DefaultName = descName.Default.(string)
+
+	// descPlanetType is the schema descriptor for planet_type field.
+	descPlanetType = fields[1].Descriptor()
+	// DefaultPlanetType holds the default value on creation for the planet_type field.
+	DefaultPlanetType = descPlanetType.Default.(int)
 )

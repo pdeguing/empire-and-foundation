@@ -63,6 +63,7 @@ func ExamplePlanet() {
 		SetSuborbitCode(1).
 		SetPositionCode(1).
 		SetName("string").
+		SetPlanetType(1).
 		SaveX(ctx)
 	log.Println("planet created:", pl)
 
@@ -141,6 +142,7 @@ func ExampleUser() {
 		SetSuborbitCode(1).
 		SetPositionCode(1).
 		SetName("string").
+		SetPlanetType(1).
 		SaveX(ctx)
 	log.Println("planet created:", pl0)
 

@@ -64,7 +64,7 @@ func (PositionMixin) Fields() []ent.Field {
 			Default(0),
 		field.Int("position_code").
 			NonNegative().
-			Default(0),
+			Unique(),
 	}
 }
 
@@ -90,6 +90,8 @@ func (Planet) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name").
 			Default("Unnamed"),
+		field.Int("planet_type").
+			Default(0),
 	}
 }
 
