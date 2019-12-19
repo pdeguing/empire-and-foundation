@@ -65,6 +65,16 @@ type Planet struct {
 	EnergyProd int64 `json:"energy_prod,omitempty"`
 	// SolarProdLevel holds the value of the "solar_prod_level" field.
 	SolarProdLevel int `json:"solar_prod_level,omitempty"`
+	// RegionCode holds the value of the "region_code" field.
+	RegionCode int `json:"region_code,omitempty"`
+	// SystemCode holds the value of the "system_code" field.
+	SystemCode int `json:"system_code,omitempty"`
+	// OrbitCode holds the value of the "orbit_code" field.
+	OrbitCode int `json:"orbit_code,omitempty"`
+	// SuborbitCode holds the value of the "suborbit_code" field.
+	SuborbitCode int `json:"suborbit_code,omitempty"`
+	// PositionCode holds the value of the "position_code" field.
+	PositionCode int `json:"position_code,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 }
@@ -98,6 +108,11 @@ func (pl *Planet) FromRows(rows *sql.Rows) error {
 		EnergyCons             sql.NullInt64
 		EnergyProd             sql.NullInt64
 		SolarProdLevel         sql.NullInt64
+		RegionCode             sql.NullInt64
+		SystemCode             sql.NullInt64
+		OrbitCode              sql.NullInt64
+		SuborbitCode           sql.NullInt64
+		PositionCode           sql.NullInt64
 		Name                   sql.NullString
 	}
 	// the order here should be the same as in the `planet.Columns`.
@@ -128,6 +143,11 @@ func (pl *Planet) FromRows(rows *sql.Rows) error {
 		&scanpl.EnergyCons,
 		&scanpl.EnergyProd,
 		&scanpl.SolarProdLevel,
+		&scanpl.RegionCode,
+		&scanpl.SystemCode,
+		&scanpl.OrbitCode,
+		&scanpl.SuborbitCode,
+		&scanpl.PositionCode,
 		&scanpl.Name,
 	); err != nil {
 		return err
@@ -158,6 +178,11 @@ func (pl *Planet) FromRows(rows *sql.Rows) error {
 	pl.EnergyCons = scanpl.EnergyCons.Int64
 	pl.EnergyProd = scanpl.EnergyProd.Int64
 	pl.SolarProdLevel = int(scanpl.SolarProdLevel.Int64)
+	pl.RegionCode = int(scanpl.RegionCode.Int64)
+	pl.SystemCode = int(scanpl.SystemCode.Int64)
+	pl.OrbitCode = int(scanpl.OrbitCode.Int64)
+	pl.SuborbitCode = int(scanpl.SuborbitCode.Int64)
+	pl.PositionCode = int(scanpl.PositionCode.Int64)
 	pl.Name = scanpl.Name.String
 	return nil
 }
@@ -240,6 +265,16 @@ func (pl *Planet) String() string {
 	builder.WriteString(fmt.Sprintf("%v", pl.EnergyProd))
 	builder.WriteString(", solar_prod_level=")
 	builder.WriteString(fmt.Sprintf("%v", pl.SolarProdLevel))
+	builder.WriteString(", region_code=")
+	builder.WriteString(fmt.Sprintf("%v", pl.RegionCode))
+	builder.WriteString(", system_code=")
+	builder.WriteString(fmt.Sprintf("%v", pl.SystemCode))
+	builder.WriteString(", orbit_code=")
+	builder.WriteString(fmt.Sprintf("%v", pl.OrbitCode))
+	builder.WriteString(", suborbit_code=")
+	builder.WriteString(fmt.Sprintf("%v", pl.SuborbitCode))
+	builder.WriteString(", position_code=")
+	builder.WriteString(fmt.Sprintf("%v", pl.PositionCode))
 	builder.WriteString(", name=")
 	builder.WriteString(pl.Name)
 	builder.WriteByte(')')

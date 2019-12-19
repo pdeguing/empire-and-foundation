@@ -64,6 +64,16 @@ const (
 	FieldEnergyProd = "energy_prod"
 	// FieldSolarProdLevel holds the string denoting the solar_prod_level vertex property in the database.
 	FieldSolarProdLevel = "solar_prod_level"
+	// FieldRegionCode holds the string denoting the region_code vertex property in the database.
+	FieldRegionCode = "region_code"
+	// FieldSystemCode holds the string denoting the system_code vertex property in the database.
+	FieldSystemCode = "system_code"
+	// FieldOrbitCode holds the string denoting the orbit_code vertex property in the database.
+	FieldOrbitCode = "orbit_code"
+	// FieldSuborbitCode holds the string denoting the suborbit_code vertex property in the database.
+	FieldSuborbitCode = "suborbit_code"
+	// FieldPositionCode holds the string denoting the position_code vertex property in the database.
+	FieldPositionCode = "position_code"
 	// FieldName holds the string denoting the name vertex property in the database.
 	FieldName = "name"
 
@@ -106,6 +116,11 @@ var Columns = []string{
 	FieldEnergyCons,
 	FieldEnergyProd,
 	FieldSolarProdLevel,
+	FieldRegionCode,
+	FieldSystemCode,
+	FieldOrbitCode,
+	FieldSuborbitCode,
+	FieldPositionCode,
 	FieldName,
 }
 
@@ -118,6 +133,7 @@ var (
 		mixin[3].Fields(),
 		mixin[4].Fields(),
 		mixin[5].Fields(),
+		mixin[6].Fields(),
 	}
 	fields = schema.Planet{}.Fields()
 
@@ -277,6 +293,41 @@ var (
 	DefaultSolarProdLevel = descSolarProdLevel.Default.(int)
 	// SolarProdLevelValidator is a validator for the "solar_prod_level" field. It is called by the builders before save.
 	SolarProdLevelValidator = descSolarProdLevel.Validators[0].(func(int) error)
+
+	// descRegionCode is the schema descriptor for region_code field.
+	descRegionCode = mixinFields[6][0].Descriptor()
+	// DefaultRegionCode holds the default value on creation for the region_code field.
+	DefaultRegionCode = descRegionCode.Default.(int)
+	// RegionCodeValidator is a validator for the "region_code" field. It is called by the builders before save.
+	RegionCodeValidator = descRegionCode.Validators[0].(func(int) error)
+
+	// descSystemCode is the schema descriptor for system_code field.
+	descSystemCode = mixinFields[6][1].Descriptor()
+	// DefaultSystemCode holds the default value on creation for the system_code field.
+	DefaultSystemCode = descSystemCode.Default.(int)
+	// SystemCodeValidator is a validator for the "system_code" field. It is called by the builders before save.
+	SystemCodeValidator = descSystemCode.Validators[0].(func(int) error)
+
+	// descOrbitCode is the schema descriptor for orbit_code field.
+	descOrbitCode = mixinFields[6][2].Descriptor()
+	// DefaultOrbitCode holds the default value on creation for the orbit_code field.
+	DefaultOrbitCode = descOrbitCode.Default.(int)
+	// OrbitCodeValidator is a validator for the "orbit_code" field. It is called by the builders before save.
+	OrbitCodeValidator = descOrbitCode.Validators[0].(func(int) error)
+
+	// descSuborbitCode is the schema descriptor for suborbit_code field.
+	descSuborbitCode = mixinFields[6][3].Descriptor()
+	// DefaultSuborbitCode holds the default value on creation for the suborbit_code field.
+	DefaultSuborbitCode = descSuborbitCode.Default.(int)
+	// SuborbitCodeValidator is a validator for the "suborbit_code" field. It is called by the builders before save.
+	SuborbitCodeValidator = descSuborbitCode.Validators[0].(func(int) error)
+
+	// descPositionCode is the schema descriptor for position_code field.
+	descPositionCode = mixinFields[6][4].Descriptor()
+	// DefaultPositionCode holds the default value on creation for the position_code field.
+	DefaultPositionCode = descPositionCode.Default.(int)
+	// PositionCodeValidator is a validator for the "position_code" field. It is called by the builders before save.
+	PositionCodeValidator = descPositionCode.Validators[0].(func(int) error)
 
 	// descName is the schema descriptor for name field.
 	descName = fields[0].Descriptor()

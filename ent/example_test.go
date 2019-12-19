@@ -57,6 +57,11 @@ func ExamplePlanet() {
 		SetEnergyCons(1).
 		SetEnergyProd(1).
 		SetSolarProdLevel(1).
+		SetRegionCode(1).
+		SetSystemCode(1).
+		SetOrbitCode(1).
+		SetSuborbitCode(1).
+		SetPositionCode(1).
 		SetName("string").
 		SaveX(ctx)
 	log.Println("planet created:", pl)
@@ -130,6 +135,11 @@ func ExampleUser() {
 		SetEnergyCons(1).
 		SetEnergyProd(1).
 		SetSolarProdLevel(1).
+		SetRegionCode(1).
+		SetSystemCode(1).
+		SetOrbitCode(1).
+		SetSuborbitCode(1).
+		SetPositionCode(1).
 		SetName("string").
 		SaveX(ctx)
 	log.Println("planet created:", pl0)

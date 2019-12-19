@@ -335,6 +335,51 @@ func SolarProdLevel(v int) predicate.Planet {
 	)
 }
 
+// RegionCode applies equality check predicate on the "region_code" field. It's identical to RegionCodeEQ.
+func RegionCode(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.EQ(s.C(FieldRegionCode), v))
+		},
+	)
+}
+
+// SystemCode applies equality check predicate on the "system_code" field. It's identical to SystemCodeEQ.
+func SystemCode(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.EQ(s.C(FieldSystemCode), v))
+		},
+	)
+}
+
+// OrbitCode applies equality check predicate on the "orbit_code" field. It's identical to OrbitCodeEQ.
+func OrbitCode(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.EQ(s.C(FieldOrbitCode), v))
+		},
+	)
+}
+
+// SuborbitCode applies equality check predicate on the "suborbit_code" field. It's identical to SuborbitCodeEQ.
+func SuborbitCode(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.EQ(s.C(FieldSuborbitCode), v))
+		},
+	)
+}
+
+// PositionCode applies equality check predicate on the "position_code" field. It's identical to PositionCodeEQ.
+func PositionCode(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.EQ(s.C(FieldPositionCode), v))
+		},
+	)
+}
+
 // Name applies equality check predicate on the "name" field. It's identical to NameEQ.
 func Name(v string) predicate.Planet {
 	return predicate.Planet(
@@ -2640,6 +2685,466 @@ func SolarProdLevelLTE(v int) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
 			s.Where(sql.LTE(s.C(FieldSolarProdLevel), v))
+		},
+	)
+}
+
+// RegionCodeEQ applies the EQ predicate on the "region_code" field.
+func RegionCodeEQ(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.EQ(s.C(FieldRegionCode), v))
+		},
+	)
+}
+
+// RegionCodeNEQ applies the NEQ predicate on the "region_code" field.
+func RegionCodeNEQ(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.NEQ(s.C(FieldRegionCode), v))
+		},
+	)
+}
+
+// RegionCodeIn applies the In predicate on the "region_code" field.
+func RegionCodeIn(vs ...int) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			// if not arguments were provided, append the FALSE constants,
+			// since we can't apply "IN ()". This will make this predicate falsy.
+			if len(vs) == 0 {
+				s.Where(sql.False())
+				return
+			}
+			s.Where(sql.In(s.C(FieldRegionCode), v...))
+		},
+	)
+}
+
+// RegionCodeNotIn applies the NotIn predicate on the "region_code" field.
+func RegionCodeNotIn(vs ...int) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			// if not arguments were provided, append the FALSE constants,
+			// since we can't apply "IN ()". This will make this predicate falsy.
+			if len(vs) == 0 {
+				s.Where(sql.False())
+				return
+			}
+			s.Where(sql.NotIn(s.C(FieldRegionCode), v...))
+		},
+	)
+}
+
+// RegionCodeGT applies the GT predicate on the "region_code" field.
+func RegionCodeGT(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.GT(s.C(FieldRegionCode), v))
+		},
+	)
+}
+
+// RegionCodeGTE applies the GTE predicate on the "region_code" field.
+func RegionCodeGTE(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.GTE(s.C(FieldRegionCode), v))
+		},
+	)
+}
+
+// RegionCodeLT applies the LT predicate on the "region_code" field.
+func RegionCodeLT(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.LT(s.C(FieldRegionCode), v))
+		},
+	)
+}
+
+// RegionCodeLTE applies the LTE predicate on the "region_code" field.
+func RegionCodeLTE(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.LTE(s.C(FieldRegionCode), v))
+		},
+	)
+}
+
+// SystemCodeEQ applies the EQ predicate on the "system_code" field.
+func SystemCodeEQ(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.EQ(s.C(FieldSystemCode), v))
+		},
+	)
+}
+
+// SystemCodeNEQ applies the NEQ predicate on the "system_code" field.
+func SystemCodeNEQ(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.NEQ(s.C(FieldSystemCode), v))
+		},
+	)
+}
+
+// SystemCodeIn applies the In predicate on the "system_code" field.
+func SystemCodeIn(vs ...int) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			// if not arguments were provided, append the FALSE constants,
+			// since we can't apply "IN ()". This will make this predicate falsy.
+			if len(vs) == 0 {
+				s.Where(sql.False())
+				return
+			}
+			s.Where(sql.In(s.C(FieldSystemCode), v...))
+		},
+	)
+}
+
+// SystemCodeNotIn applies the NotIn predicate on the "system_code" field.
+func SystemCodeNotIn(vs ...int) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			// if not arguments were provided, append the FALSE constants,
+			// since we can't apply "IN ()". This will make this predicate falsy.
+			if len(vs) == 0 {
+				s.Where(sql.False())
+				return
+			}
+			s.Where(sql.NotIn(s.C(FieldSystemCode), v...))
+		},
+	)
+}
+
+// SystemCodeGT applies the GT predicate on the "system_code" field.
+func SystemCodeGT(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.GT(s.C(FieldSystemCode), v))
+		},
+	)
+}
+
+// SystemCodeGTE applies the GTE predicate on the "system_code" field.
+func SystemCodeGTE(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.GTE(s.C(FieldSystemCode), v))
+		},
+	)
+}
+
+// SystemCodeLT applies the LT predicate on the "system_code" field.
+func SystemCodeLT(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.LT(s.C(FieldSystemCode), v))
+		},
+	)
+}
+
+// SystemCodeLTE applies the LTE predicate on the "system_code" field.
+func SystemCodeLTE(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.LTE(s.C(FieldSystemCode), v))
+		},
+	)
+}
+
+// OrbitCodeEQ applies the EQ predicate on the "orbit_code" field.
+func OrbitCodeEQ(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.EQ(s.C(FieldOrbitCode), v))
+		},
+	)
+}
+
+// OrbitCodeNEQ applies the NEQ predicate on the "orbit_code" field.
+func OrbitCodeNEQ(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.NEQ(s.C(FieldOrbitCode), v))
+		},
+	)
+}
+
+// OrbitCodeIn applies the In predicate on the "orbit_code" field.
+func OrbitCodeIn(vs ...int) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			// if not arguments were provided, append the FALSE constants,
+			// since we can't apply "IN ()". This will make this predicate falsy.
+			if len(vs) == 0 {
+				s.Where(sql.False())
+				return
+			}
+			s.Where(sql.In(s.C(FieldOrbitCode), v...))
+		},
+	)
+}
+
+// OrbitCodeNotIn applies the NotIn predicate on the "orbit_code" field.
+func OrbitCodeNotIn(vs ...int) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			// if not arguments were provided, append the FALSE constants,
+			// since we can't apply "IN ()". This will make this predicate falsy.
+			if len(vs) == 0 {
+				s.Where(sql.False())
+				return
+			}
+			s.Where(sql.NotIn(s.C(FieldOrbitCode), v...))
+		},
+	)
+}
+
+// OrbitCodeGT applies the GT predicate on the "orbit_code" field.
+func OrbitCodeGT(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.GT(s.C(FieldOrbitCode), v))
+		},
+	)
+}
+
+// OrbitCodeGTE applies the GTE predicate on the "orbit_code" field.
+func OrbitCodeGTE(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.GTE(s.C(FieldOrbitCode), v))
+		},
+	)
+}
+
+// OrbitCodeLT applies the LT predicate on the "orbit_code" field.
+func OrbitCodeLT(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.LT(s.C(FieldOrbitCode), v))
+		},
+	)
+}
+
+// OrbitCodeLTE applies the LTE predicate on the "orbit_code" field.
+func OrbitCodeLTE(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.LTE(s.C(FieldOrbitCode), v))
+		},
+	)
+}
+
+// SuborbitCodeEQ applies the EQ predicate on the "suborbit_code" field.
+func SuborbitCodeEQ(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.EQ(s.C(FieldSuborbitCode), v))
+		},
+	)
+}
+
+// SuborbitCodeNEQ applies the NEQ predicate on the "suborbit_code" field.
+func SuborbitCodeNEQ(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.NEQ(s.C(FieldSuborbitCode), v))
+		},
+	)
+}
+
+// SuborbitCodeIn applies the In predicate on the "suborbit_code" field.
+func SuborbitCodeIn(vs ...int) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			// if not arguments were provided, append the FALSE constants,
+			// since we can't apply "IN ()". This will make this predicate falsy.
+			if len(vs) == 0 {
+				s.Where(sql.False())
+				return
+			}
+			s.Where(sql.In(s.C(FieldSuborbitCode), v...))
+		},
+	)
+}
+
+// SuborbitCodeNotIn applies the NotIn predicate on the "suborbit_code" field.
+func SuborbitCodeNotIn(vs ...int) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			// if not arguments were provided, append the FALSE constants,
+			// since we can't apply "IN ()". This will make this predicate falsy.
+			if len(vs) == 0 {
+				s.Where(sql.False())
+				return
+			}
+			s.Where(sql.NotIn(s.C(FieldSuborbitCode), v...))
+		},
+	)
+}
+
+// SuborbitCodeGT applies the GT predicate on the "suborbit_code" field.
+func SuborbitCodeGT(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.GT(s.C(FieldSuborbitCode), v))
+		},
+	)
+}
+
+// SuborbitCodeGTE applies the GTE predicate on the "suborbit_code" field.
+func SuborbitCodeGTE(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.GTE(s.C(FieldSuborbitCode), v))
+		},
+	)
+}
+
+// SuborbitCodeLT applies the LT predicate on the "suborbit_code" field.
+func SuborbitCodeLT(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.LT(s.C(FieldSuborbitCode), v))
+		},
+	)
+}
+
+// SuborbitCodeLTE applies the LTE predicate on the "suborbit_code" field.
+func SuborbitCodeLTE(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.LTE(s.C(FieldSuborbitCode), v))
+		},
+	)
+}
+
+// PositionCodeEQ applies the EQ predicate on the "position_code" field.
+func PositionCodeEQ(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.EQ(s.C(FieldPositionCode), v))
+		},
+	)
+}
+
+// PositionCodeNEQ applies the NEQ predicate on the "position_code" field.
+func PositionCodeNEQ(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.NEQ(s.C(FieldPositionCode), v))
+		},
+	)
+}
+
+// PositionCodeIn applies the In predicate on the "position_code" field.
+func PositionCodeIn(vs ...int) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			// if not arguments were provided, append the FALSE constants,
+			// since we can't apply "IN ()". This will make this predicate falsy.
+			if len(vs) == 0 {
+				s.Where(sql.False())
+				return
+			}
+			s.Where(sql.In(s.C(FieldPositionCode), v...))
+		},
+	)
+}
+
+// PositionCodeNotIn applies the NotIn predicate on the "position_code" field.
+func PositionCodeNotIn(vs ...int) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			// if not arguments were provided, append the FALSE constants,
+			// since we can't apply "IN ()". This will make this predicate falsy.
+			if len(vs) == 0 {
+				s.Where(sql.False())
+				return
+			}
+			s.Where(sql.NotIn(s.C(FieldPositionCode), v...))
+		},
+	)
+}
+
+// PositionCodeGT applies the GT predicate on the "position_code" field.
+func PositionCodeGT(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.GT(s.C(FieldPositionCode), v))
+		},
+	)
+}
+
+// PositionCodeGTE applies the GTE predicate on the "position_code" field.
+func PositionCodeGTE(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.GTE(s.C(FieldPositionCode), v))
+		},
+	)
+}
+
+// PositionCodeLT applies the LT predicate on the "position_code" field.
+func PositionCodeLT(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.LT(s.C(FieldPositionCode), v))
+		},
+	)
+}
+
+// PositionCodeLTE applies the LTE predicate on the "position_code" field.
+func PositionCodeLTE(v int) predicate.Planet {
+	return predicate.Planet(
+		func(s *sql.Selector) {
+			s.Where(sql.LTE(s.C(FieldPositionCode), v))
 		},
 	)
 }
