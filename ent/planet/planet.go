@@ -3,6 +3,7 @@
 package planet
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/facebookincubator/ent"
@@ -334,9 +335,27 @@ var (
 	descName = fields[0].Descriptor()
 	// DefaultName holds the default value on creation for the name field.
 	DefaultName = descName.Default.(string)
-
-	// descPlanetType is the schema descriptor for planet_type field.
-	descPlanetType = fields[1].Descriptor()
-	// DefaultPlanetType holds the default value on creation for the planet_type field.
-	DefaultPlanetType = descPlanetType.Default.(int)
 )
+
+// PlanetType defines the type for the planet_type enum field.
+type PlanetType string
+
+const (
+	PlanetTypeHabitable PlanetType = "habitable"
+	PlanetTypeMineral   PlanetType = "mineral"
+	PlanetTypeGaseous   PlanetType = "gaseous"
+)
+
+func (s PlanetType) String() string {
+	return string(s)
+}
+
+// PlanetTypeValidator is a validator for the "planet_type" field enum values. It is called by the builders before save.
+func PlanetTypeValidator(planet_type PlanetType) error {
+	switch planet_type {
+	case PlanetTypeHabitable, PlanetTypeMineral, PlanetTypeGaseous:
+		return nil
+	default:
+		return fmt.Errorf("planet: invalid enum value for planet_type field: %q", planet_type)
+	}
+}

@@ -44,7 +44,7 @@ var (
 		{Name: "suborbit_code", Type: field.TypeInt, Default: planet.DefaultSuborbitCode},
 		{Name: "position_code", Type: field.TypeInt, Unique: true},
 		{Name: "name", Type: field.TypeString, Default: planet.DefaultName},
-		{Name: "planet_type", Type: field.TypeInt, Default: planet.DefaultPlanetType},
+		{Name: "planet_type", Type: field.TypeEnum, Enums: []string{"habitable", "mineral", "gaseous"}},
 		{Name: "owner_id", Type: field.TypeInt, Nullable: true},
 	}
 	// PlanetsTable holds the schema information for the "planets" table.

@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/facebookincubator/ent/dialect/sql"
+	"github.com/pdeguing/empire-and-foundation/ent/planet"
 )
 
 // Planet is the model entity for the Planet schema.
@@ -78,7 +79,7 @@ type Planet struct {
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// PlanetType holds the value of the "planet_type" field.
-	PlanetType int `json:"planet_type,omitempty"`
+	PlanetType planet.PlanetType `json:"planet_type,omitempty"`
 }
 
 // FromRows scans the sql response data into Planet.
@@ -116,7 +117,7 @@ func (pl *Planet) FromRows(rows *sql.Rows) error {
 		SuborbitCode           sql.NullInt64
 		PositionCode           sql.NullInt64
 		Name                   sql.NullString
-		PlanetType             sql.NullInt64
+		PlanetType             sql.NullString
 	}
 	// the order here should be the same as in the `planet.Columns`.
 	if err := rows.Scan(
@@ -188,7 +189,7 @@ func (pl *Planet) FromRows(rows *sql.Rows) error {
 	pl.SuborbitCode = int(scanpl.SuborbitCode.Int64)
 	pl.PositionCode = int(scanpl.PositionCode.Int64)
 	pl.Name = scanpl.Name.String
-	pl.PlanetType = int(scanpl.PlanetType.Int64)
+	pl.PlanetType = planet.PlanetType(scanpl.PlanetType.String)
 	return nil
 }
 

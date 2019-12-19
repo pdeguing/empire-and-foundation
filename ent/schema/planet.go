@@ -90,8 +90,8 @@ func (Planet) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name").
 			Default("Unnamed"),
-		field.Int("planet_type").
-			Default(0),
+		field.Enum("planet_type").
+			Values("habitable", "mineral", "gaseous"),
 	}
 }
 

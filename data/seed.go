@@ -4,17 +4,19 @@ import (
 	"log"
 	"math/rand"
 	"context"
+
+	"github.com/pdeguing/empire-and-foundation/ent/planet"
 )
 
-func randomPlanetType(r *rand.Rand) int {
+func randomPlanetType(r *rand.Rand) planet.PlanetType {
 	n := r.Intn(9)
 
 	if n < 2 {
-		return 0
+		return planet.PlanetTypeHabitable
 	} else if n > 6 {
-		return 1
+		return planet.PlanetTypeGaseous
 	} else {
-		return 2
+		return planet.PlanetTypeMineral
 	}
 }
 
@@ -23,7 +25,7 @@ func getPositionCode(r int, s int, o int, su int) int {
 
 }
 
-func generateEntity(region int, system int, orbit int, suborbit int, planetType int) {
+func generateEntity(region int, system int, orbit int, suborbit int, planetType planet.PlanetType) {
 	positionCode := getPositionCode(region, system, orbit, suborbit)
 
 	_ = Client.Planet.

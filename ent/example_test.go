@@ -8,6 +8,8 @@ import (
 	"time"
 
 	"github.com/facebookincubator/ent/dialect/sql"
+
+	"github.com/pdeguing/empire-and-foundation/ent/planet"
 )
 
 // dsn for the database. In order to run the tests locally, run the following command:
@@ -63,7 +65,7 @@ func ExamplePlanet() {
 		SetSuborbitCode(1).
 		SetPositionCode(1).
 		SetName("string").
-		SetPlanetType(1).
+		SetPlanetType(planet.PlanetTypeHabitable).
 		SaveX(ctx)
 	log.Println("planet created:", pl)
 
@@ -142,7 +144,7 @@ func ExampleUser() {
 		SetSuborbitCode(1).
 		SetPositionCode(1).
 		SetName("string").
-		SetPlanetType(1).
+		SetPlanetType(planet.PlanetTypeHabitable).
 		SaveX(ctx)
 	log.Println("planet created:", pl0)
 

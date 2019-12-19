@@ -389,15 +389,6 @@ func Name(v string) predicate.Planet {
 	)
 }
 
-// PlanetType applies equality check predicate on the "planet_type" field. It's identical to PlanetTypeEQ.
-func PlanetType(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldPlanetType), v))
-		},
-	)
-}
-
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.Planet {
 	return predicate.Planet(
@@ -3296,7 +3287,7 @@ func NameContainsFold(v string) predicate.Planet {
 }
 
 // PlanetTypeEQ applies the EQ predicate on the "planet_type" field.
-func PlanetTypeEQ(v int) predicate.Planet {
+func PlanetTypeEQ(v PlanetType) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
 			s.Where(sql.EQ(s.C(FieldPlanetType), v))
@@ -3305,7 +3296,7 @@ func PlanetTypeEQ(v int) predicate.Planet {
 }
 
 // PlanetTypeNEQ applies the NEQ predicate on the "planet_type" field.
-func PlanetTypeNEQ(v int) predicate.Planet {
+func PlanetTypeNEQ(v PlanetType) predicate.Planet {
 	return predicate.Planet(
 		func(s *sql.Selector) {
 			s.Where(sql.NEQ(s.C(FieldPlanetType), v))
@@ -3314,7 +3305,7 @@ func PlanetTypeNEQ(v int) predicate.Planet {
 }
 
 // PlanetTypeIn applies the In predicate on the "planet_type" field.
-func PlanetTypeIn(vs ...int) predicate.Planet {
+func PlanetTypeIn(vs ...PlanetType) predicate.Planet {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -3333,7 +3324,7 @@ func PlanetTypeIn(vs ...int) predicate.Planet {
 }
 
 // PlanetTypeNotIn applies the NotIn predicate on the "planet_type" field.
-func PlanetTypeNotIn(vs ...int) predicate.Planet {
+func PlanetTypeNotIn(vs ...PlanetType) predicate.Planet {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -3347,42 +3338,6 @@ func PlanetTypeNotIn(vs ...int) predicate.Planet {
 				return
 			}
 			s.Where(sql.NotIn(s.C(FieldPlanetType), v...))
-		},
-	)
-}
-
-// PlanetTypeGT applies the GT predicate on the "planet_type" field.
-func PlanetTypeGT(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.GT(s.C(FieldPlanetType), v))
-		},
-	)
-}
-
-// PlanetTypeGTE applies the GTE predicate on the "planet_type" field.
-func PlanetTypeGTE(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.GTE(s.C(FieldPlanetType), v))
-		},
-	)
-}
-
-// PlanetTypeLT applies the LT predicate on the "planet_type" field.
-func PlanetTypeLT(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.LT(s.C(FieldPlanetType), v))
-		},
-	)
-}
-
-// PlanetTypeLTE applies the LTE predicate on the "planet_type" field.
-func PlanetTypeLTE(v int) predicate.Planet {
-	return predicate.Planet(
-		func(s *sql.Selector) {
-			s.Where(sql.LTE(s.C(FieldPlanetType), v))
 		},
 	)
 }

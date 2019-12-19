@@ -72,8 +72,7 @@ type PlanetUpdate struct {
 	position_code               *int
 	addposition_code            *int
 	name                        *string
-	planet_type                 *int
-	addplanet_type              *int
+	planet_type                 *planet.PlanetType
 	owner                       map[int]struct{}
 	clearedOwner                bool
 	predicates                  []predicate.Planet
@@ -754,27 +753,8 @@ func (pu *PlanetUpdate) SetNillableName(s *string) *PlanetUpdate {
 }
 
 // SetPlanetType sets the planet_type field.
-func (pu *PlanetUpdate) SetPlanetType(i int) *PlanetUpdate {
-	pu.planet_type = &i
-	pu.addplanet_type = nil
-	return pu
-}
-
-// SetNillablePlanetType sets the planet_type field if the given value is not nil.
-func (pu *PlanetUpdate) SetNillablePlanetType(i *int) *PlanetUpdate {
-	if i != nil {
-		pu.SetPlanetType(*i)
-	}
-	return pu
-}
-
-// AddPlanetType adds i to planet_type.
-func (pu *PlanetUpdate) AddPlanetType(i int) *PlanetUpdate {
-	if pu.addplanet_type == nil {
-		pu.addplanet_type = &i
-	} else {
-		*pu.addplanet_type += i
-	}
+func (pu *PlanetUpdate) SetPlanetType(pt planet.PlanetType) *PlanetUpdate {
+	pu.planet_type = &pt
 	return pu
 }
 
@@ -910,6 +890,11 @@ func (pu *PlanetUpdate) Save(ctx context.Context) (int, error) {
 	if pu.position_code != nil {
 		if err := planet.PositionCodeValidator(*pu.position_code); err != nil {
 			return 0, fmt.Errorf("ent: validator failed for field \"position_code\": %v", err)
+		}
+	}
+	if pu.planet_type != nil {
+		if err := planet.PlanetTypeValidator(*pu.planet_type); err != nil {
+			return 0, fmt.Errorf("ent: validator failed for field \"planet_type\": %v", err)
 		}
 	}
 	if len(pu.owner) > 1 {
@@ -1141,9 +1126,6 @@ func (pu *PlanetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value := pu.planet_type; value != nil {
 		updater.Set(planet.FieldPlanetType, *value)
 	}
-	if value := pu.addplanet_type; value != nil {
-		updater.Add(planet.FieldPlanetType, *value)
-	}
 	if !updater.Empty() {
 		query, args := updater.Query()
 		if err := tx.Exec(ctx, query, args, &res); err != nil {
@@ -1235,8 +1217,7 @@ type PlanetUpdateOne struct {
 	position_code               *int
 	addposition_code            *int
 	name                        *string
-	planet_type                 *int
-	addplanet_type              *int
+	planet_type                 *planet.PlanetType
 	owner                       map[int]struct{}
 	clearedOwner                bool
 }
@@ -1910,27 +1891,8 @@ func (puo *PlanetUpdateOne) SetNillableName(s *string) *PlanetUpdateOne {
 }
 
 // SetPlanetType sets the planet_type field.
-func (puo *PlanetUpdateOne) SetPlanetType(i int) *PlanetUpdateOne {
-	puo.planet_type = &i
-	puo.addplanet_type = nil
-	return puo
-}
-
-// SetNillablePlanetType sets the planet_type field if the given value is not nil.
-func (puo *PlanetUpdateOne) SetNillablePlanetType(i *int) *PlanetUpdateOne {
-	if i != nil {
-		puo.SetPlanetType(*i)
-	}
-	return puo
-}
-
-// AddPlanetType adds i to planet_type.
-func (puo *PlanetUpdateOne) AddPlanetType(i int) *PlanetUpdateOne {
-	if puo.addplanet_type == nil {
-		puo.addplanet_type = &i
-	} else {
-		*puo.addplanet_type += i
-	}
+func (puo *PlanetUpdateOne) SetPlanetType(pt planet.PlanetType) *PlanetUpdateOne {
+	puo.planet_type = &pt
 	return puo
 }
 
@@ -2066,6 +2028,11 @@ func (puo *PlanetUpdateOne) Save(ctx context.Context) (*Planet, error) {
 	if puo.position_code != nil {
 		if err := planet.PositionCodeValidator(*puo.position_code); err != nil {
 			return nil, fmt.Errorf("ent: validator failed for field \"position_code\": %v", err)
+		}
+	}
+	if puo.planet_type != nil {
+		if err := planet.PlanetTypeValidator(*puo.planet_type); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"planet_type\": %v", err)
 		}
 	}
 	if len(puo.owner) > 1 {
@@ -2354,10 +2321,6 @@ func (puo *PlanetUpdateOne) sqlSave(ctx context.Context) (pl *Planet, err error)
 	if value := puo.planet_type; value != nil {
 		updater.Set(planet.FieldPlanetType, *value)
 		pl.PlanetType = *value
-	}
-	if value := puo.addplanet_type; value != nil {
-		updater.Add(planet.FieldPlanetType, *value)
-		pl.PlanetType += *value
 	}
 	if !updater.Empty() {
 		query, args := updater.Query()

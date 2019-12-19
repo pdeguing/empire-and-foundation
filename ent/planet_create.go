@@ -46,7 +46,7 @@ type PlanetCreate struct {
 	suborbit_code            *int
 	position_code            *int
 	name                     *string
-	planet_type              *int
+	planet_type              *planet.PlanetType
 	owner                    map[int]struct{}
 }
 
@@ -477,16 +477,8 @@ func (pc *PlanetCreate) SetNillableName(s *string) *PlanetCreate {
 }
 
 // SetPlanetType sets the planet_type field.
-func (pc *PlanetCreate) SetPlanetType(i int) *PlanetCreate {
-	pc.planet_type = &i
-	return pc
-}
-
-// SetNillablePlanetType sets the planet_type field if the given value is not nil.
-func (pc *PlanetCreate) SetNillablePlanetType(i *int) *PlanetCreate {
-	if i != nil {
-		pc.SetPlanetType(*i)
-	}
+func (pc *PlanetCreate) SetPlanetType(pt planet.PlanetType) *PlanetCreate {
+	pc.planet_type = &pt
 	return pc
 }
 
@@ -698,8 +690,10 @@ func (pc *PlanetCreate) Save(ctx context.Context) (*Planet, error) {
 		pc.name = &v
 	}
 	if pc.planet_type == nil {
-		v := planet.DefaultPlanetType
-		pc.planet_type = &v
+		return nil, errors.New("ent: missing required field \"planet_type\"")
+	}
+	if err := planet.PlanetTypeValidator(*pc.planet_type); err != nil {
+		return nil, fmt.Errorf("ent: validator failed for field \"planet_type\": %v", err)
 	}
 	if len(pc.owner) > 1 {
 		return nil, errors.New("ent: multiple assignments on a unique edge \"owner\"")
