@@ -66,6 +66,7 @@ func ExamplePlanet() {
 		SetPositionCode(1).
 		SetName("string").
 		SetPlanetType(planet.PlanetTypeHabitable).
+		SetPlanetSkin("string").
 		SaveX(ctx)
 	log.Println("planet created:", pl)
 
@@ -145,6 +146,7 @@ func ExampleUser() {
 		SetPositionCode(1).
 		SetName("string").
 		SetPlanetType(planet.PlanetTypeHabitable).
+		SetPlanetSkin("string").
 		SaveX(ctx)
 	log.Println("planet created:", pl0)
 

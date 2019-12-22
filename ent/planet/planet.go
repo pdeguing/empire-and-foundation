@@ -79,6 +79,8 @@ const (
 	FieldName = "name"
 	// FieldPlanetType holds the string denoting the planet_type vertex property in the database.
 	FieldPlanetType = "planet_type"
+	// FieldPlanetSkin holds the string denoting the planet_skin vertex property in the database.
+	FieldPlanetSkin = "planet_skin"
 
 	// Table holds the table name of the planet in the database.
 	Table = "planets"
@@ -126,6 +128,7 @@ var Columns = []string{
 	FieldPositionCode,
 	FieldName,
 	FieldPlanetType,
+	FieldPlanetSkin,
 }
 
 var (

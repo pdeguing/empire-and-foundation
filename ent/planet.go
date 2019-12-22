@@ -80,6 +80,8 @@ type Planet struct {
 	Name string `json:"name,omitempty"`
 	// PlanetType holds the value of the "planet_type" field.
 	PlanetType planet.PlanetType `json:"planet_type,omitempty"`
+	// PlanetSkin holds the value of the "planet_skin" field.
+	PlanetSkin string `json:"planet_skin,omitempty"`
 }
 
 // FromRows scans the sql response data into Planet.
@@ -118,6 +120,7 @@ func (pl *Planet) FromRows(rows *sql.Rows) error {
 		PositionCode           sql.NullInt64
 		Name                   sql.NullString
 		PlanetType             sql.NullString
+		PlanetSkin             sql.NullString
 	}
 	// the order here should be the same as in the `planet.Columns`.
 	if err := rows.Scan(
@@ -154,6 +157,7 @@ func (pl *Planet) FromRows(rows *sql.Rows) error {
 		&scanpl.PositionCode,
 		&scanpl.Name,
 		&scanpl.PlanetType,
+		&scanpl.PlanetSkin,
 	); err != nil {
 		return err
 	}
@@ -190,6 +194,7 @@ func (pl *Planet) FromRows(rows *sql.Rows) error {
 	pl.PositionCode = int(scanpl.PositionCode.Int64)
 	pl.Name = scanpl.Name.String
 	pl.PlanetType = planet.PlanetType(scanpl.PlanetType.String)
+	pl.PlanetSkin = scanpl.PlanetSkin.String
 	return nil
 }
 
@@ -285,6 +290,8 @@ func (pl *Planet) String() string {
 	builder.WriteString(pl.Name)
 	builder.WriteString(", planet_type=")
 	builder.WriteString(fmt.Sprintf("%v", pl.PlanetType))
+	builder.WriteString(", planet_skin=")
+	builder.WriteString(pl.PlanetSkin)
 	builder.WriteByte(')')
 	return builder.String()
 }

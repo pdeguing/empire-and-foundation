@@ -73,6 +73,7 @@ type PlanetUpdate struct {
 	addposition_code            *int
 	name                        *string
 	planet_type                 *planet.PlanetType
+	planet_skin                 *string
 	owner                       map[int]struct{}
 	clearedOwner                bool
 	predicates                  []predicate.Planet
@@ -758,6 +759,12 @@ func (pu *PlanetUpdate) SetPlanetType(pt planet.PlanetType) *PlanetUpdate {
 	return pu
 }
 
+// SetPlanetSkin sets the planet_skin field.
+func (pu *PlanetUpdate) SetPlanetSkin(s string) *PlanetUpdate {
+	pu.planet_skin = &s
+	return pu
+}
+
 // SetOwnerID sets the owner edge to User by id.
 func (pu *PlanetUpdate) SetOwnerID(id int) *PlanetUpdate {
 	if pu.owner == nil {
@@ -1126,6 +1133,9 @@ func (pu *PlanetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value := pu.planet_type; value != nil {
 		updater.Set(planet.FieldPlanetType, *value)
 	}
+	if value := pu.planet_skin; value != nil {
+		updater.Set(planet.FieldPlanetSkin, *value)
+	}
 	if !updater.Empty() {
 		query, args := updater.Query()
 		if err := tx.Exec(ctx, query, args, &res); err != nil {
@@ -1218,6 +1228,7 @@ type PlanetUpdateOne struct {
 	addposition_code            *int
 	name                        *string
 	planet_type                 *planet.PlanetType
+	planet_skin                 *string
 	owner                       map[int]struct{}
 	clearedOwner                bool
 }
@@ -1896,6 +1907,12 @@ func (puo *PlanetUpdateOne) SetPlanetType(pt planet.PlanetType) *PlanetUpdateOne
 	return puo
 }
 
+// SetPlanetSkin sets the planet_skin field.
+func (puo *PlanetUpdateOne) SetPlanetSkin(s string) *PlanetUpdateOne {
+	puo.planet_skin = &s
+	return puo
+}
+
 // SetOwnerID sets the owner edge to User by id.
 func (puo *PlanetUpdateOne) SetOwnerID(id int) *PlanetUpdateOne {
 	if puo.owner == nil {
@@ -2321,6 +2338,10 @@ func (puo *PlanetUpdateOne) sqlSave(ctx context.Context) (pl *Planet, err error)
 	if value := puo.planet_type; value != nil {
 		updater.Set(planet.FieldPlanetType, *value)
 		pl.PlanetType = *value
+	}
+	if value := puo.planet_skin; value != nil {
+		updater.Set(planet.FieldPlanetSkin, *value)
+		pl.PlanetSkin = *value
 	}
 	if !updater.Empty() {
 		query, args := updater.Query()

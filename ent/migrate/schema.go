@@ -45,6 +45,7 @@ var (
 		{Name: "position_code", Type: field.TypeInt, Unique: true},
 		{Name: "name", Type: field.TypeString, Default: planet.DefaultName},
 		{Name: "planet_type", Type: field.TypeEnum, Enums: []string{"habitable", "mineral", "gaseous"}},
+		{Name: "planet_skin", Type: field.TypeString},
 		{Name: "owner_id", Type: field.TypeInt, Nullable: true},
 	}
 	// PlanetsTable holds the schema information for the "planets" table.
@@ -55,7 +56,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:  "planets_users_planets",
-				Columns: []*schema.Column{PlanetsColumns[33]},
+				Columns: []*schema.Column{PlanetsColumns[34]},
 
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,

@@ -92,6 +92,7 @@ func (Planet) Fields() []ent.Field {
 			Default("Unnamed"),
 		field.Enum("planet_type").
 			Values("habitable", "mineral", "gaseous"),
+		field.String("planet_skin"),
 	}
 }
 

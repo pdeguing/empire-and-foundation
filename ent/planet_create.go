@@ -47,6 +47,7 @@ type PlanetCreate struct {
 	position_code            *int
 	name                     *string
 	planet_type              *planet.PlanetType
+	planet_skin              *string
 	owner                    map[int]struct{}
 }
 
@@ -482,6 +483,12 @@ func (pc *PlanetCreate) SetPlanetType(pt planet.PlanetType) *PlanetCreate {
 	return pc
 }
 
+// SetPlanetSkin sets the planet_skin field.
+func (pc *PlanetCreate) SetPlanetSkin(s string) *PlanetCreate {
+	pc.planet_skin = &s
+	return pc
+}
+
 // SetOwnerID sets the owner edge to User by id.
 func (pc *PlanetCreate) SetOwnerID(id int) *PlanetCreate {
 	if pc.owner == nil {
@@ -695,6 +702,9 @@ func (pc *PlanetCreate) Save(ctx context.Context) (*Planet, error) {
 	if err := planet.PlanetTypeValidator(*pc.planet_type); err != nil {
 		return nil, fmt.Errorf("ent: validator failed for field \"planet_type\": %v", err)
 	}
+	if pc.planet_skin == nil {
+		return nil, errors.New("ent: missing required field \"planet_skin\"")
+	}
 	if len(pc.owner) > 1 {
 		return nil, errors.New("ent: multiple assignments on a unique edge \"owner\"")
 	}
@@ -848,6 +858,10 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 	if value := pc.planet_type; value != nil {
 		insert.Set(planet.FieldPlanetType, *value)
 		pl.PlanetType = *value
+	}
+	if value := pc.planet_skin; value != nil {
+		insert.Set(planet.FieldPlanetSkin, *value)
+		pl.PlanetSkin = *value
 	}
 
 	id, err := insertLastID(ctx, tx, insert.Returning(planet.FieldID))
