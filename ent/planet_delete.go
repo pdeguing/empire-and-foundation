@@ -6,6 +6,8 @@ import (
 	"context"
 
 	"github.com/facebookincubator/ent/dialect/sql"
+	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
+	"github.com/facebookincubator/ent/schema/field"
 	"github.com/pdeguing/empire-and-foundation/ent/planet"
 	"github.com/pdeguing/empire-and-foundation/ent/predicate"
 )
@@ -37,23 +39,23 @@ func (pd *PlanetDelete) ExecX(ctx context.Context) int {
 }
 
 func (pd *PlanetDelete) sqlExec(ctx context.Context) (int, error) {
-	var (
-		res     sql.Result
-		builder = sql.Dialect(pd.driver.Dialect())
-	)
-	selector := builder.Select().From(sql.Table(planet.Table))
-	for _, p := range pd.predicates {
-		p(selector)
+	spec := &sqlgraph.DeleteSpec{
+		Node: &sqlgraph.NodeSpec{
+			Table: planet.Table,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeInt,
+				Column: planet.FieldID,
+			},
+		},
 	}
-	query, args := builder.Delete(planet.Table).FromSelect(selector).Query()
-	if err := pd.driver.Exec(ctx, query, args, &res); err != nil {
-		return 0, err
+	if ps := pd.predicates; len(ps) > 0 {
+		spec.Predicate = func(selector *sql.Selector) {
+			for i := range ps {
+				ps[i](selector)
+			}
+		}
 	}
-	affected, err := res.RowsAffected()
-	if err != nil {
-		return 0, err
-	}
-	return int(affected), nil
+	return sqlgraph.DeleteNodes(ctx, pd.driver, spec)
 }
 
 // PlanetDeleteOne is the builder for deleting a single Planet entity.
