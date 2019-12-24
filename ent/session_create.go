@@ -7,7 +7,8 @@ import (
 	"errors"
 	"time"
 
-	"github.com/facebookincubator/ent/dialect/sql"
+	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
+	"github.com/facebookincubator/ent/schema/field"
 	"github.com/pdeguing/empire-and-foundation/ent/session"
 )
 
@@ -62,34 +63,46 @@ func (sc *SessionCreate) SaveX(ctx context.Context) *Session {
 
 func (sc *SessionCreate) sqlSave(ctx context.Context) (*Session, error) {
 	var (
-		builder = sql.Dialect(sc.driver.Dialect())
-		s       = &Session{config: sc.config}
+		s    = &Session{config: sc.config}
+		spec = &sqlgraph.CreateSpec{
+			Table: session.Table,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeInt,
+				Column: session.FieldID,
+			},
+		}
 	)
-	tx, err := sc.driver.Tx(ctx)
-	if err != nil {
-		return nil, err
-	}
-	insert := builder.Insert(session.Table).Default()
 	if value := sc.token; value != nil {
-		insert.Set(session.FieldToken, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  *value,
+			Column: session.FieldToken,
+		})
 		s.Token = *value
 	}
 	if value := sc.data; value != nil {
-		insert.Set(session.FieldData, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeBytes,
+			Value:  *value,
+			Column: session.FieldData,
+		})
 		s.Data = *value
 	}
 	if value := sc.expiry; value != nil {
-		insert.Set(session.FieldExpiry, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  *value,
+			Column: session.FieldExpiry,
+		})
 		s.Expiry = *value
 	}
-
-	id, err := insertLastID(ctx, tx, insert.Returning(session.FieldID))
-	if err != nil {
-		return nil, rollback(tx, err)
-	}
-	s.ID = int(id)
-	if err := tx.Commit(); err != nil {
+	if err := sqlgraph.CreateNode(ctx, sc.driver, spec); err != nil {
+		if cerr, ok := isSQLConstraintError(err); ok {
+			err = cerr
+		}
 		return nil, err
 	}
+	id := spec.ID.Value.(int64)
+	s.ID = int(id)
 	return s, nil
 }

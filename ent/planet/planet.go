@@ -303,29 +303,21 @@ var (
 
 	// descRegionCode is the schema descriptor for region_code field.
 	descRegionCode = mixinFields[6][0].Descriptor()
-	// DefaultRegionCode holds the default value on creation for the region_code field.
-	DefaultRegionCode = descRegionCode.Default.(int)
 	// RegionCodeValidator is a validator for the "region_code" field. It is called by the builders before save.
 	RegionCodeValidator = descRegionCode.Validators[0].(func(int) error)
 
 	// descSystemCode is the schema descriptor for system_code field.
 	descSystemCode = mixinFields[6][1].Descriptor()
-	// DefaultSystemCode holds the default value on creation for the system_code field.
-	DefaultSystemCode = descSystemCode.Default.(int)
 	// SystemCodeValidator is a validator for the "system_code" field. It is called by the builders before save.
 	SystemCodeValidator = descSystemCode.Validators[0].(func(int) error)
 
 	// descOrbitCode is the schema descriptor for orbit_code field.
 	descOrbitCode = mixinFields[6][2].Descriptor()
-	// DefaultOrbitCode holds the default value on creation for the orbit_code field.
-	DefaultOrbitCode = descOrbitCode.Default.(int)
 	// OrbitCodeValidator is a validator for the "orbit_code" field. It is called by the builders before save.
 	OrbitCodeValidator = descOrbitCode.Validators[0].(func(int) error)
 
 	// descSuborbitCode is the schema descriptor for suborbit_code field.
 	descSuborbitCode = mixinFields[6][3].Descriptor()
-	// DefaultSuborbitCode holds the default value on creation for the suborbit_code field.
-	DefaultSuborbitCode = descSuborbitCode.Default.(int)
 	// SuborbitCodeValidator is a validator for the "suborbit_code" field. It is called by the builders before save.
 	SuborbitCodeValidator = descSuborbitCode.Validators[0].(func(int) error)
 
@@ -346,7 +338,8 @@ type PlanetType string
 const (
 	PlanetTypeHabitable PlanetType = "habitable"
 	PlanetTypeMineral   PlanetType = "mineral"
-	PlanetTypeGaseous   PlanetType = "gaseous"
+	PlanetTypeGasGiant  PlanetType = "gas_giant"
+	PlanetTypeIceGiant  PlanetType = "ice_giant"
 )
 
 func (s PlanetType) String() string {
@@ -356,7 +349,7 @@ func (s PlanetType) String() string {
 // PlanetTypeValidator is a validator for the "planet_type" field enum values. It is called by the builders before save.
 func PlanetTypeValidator(planet_type PlanetType) error {
 	switch planet_type {
-	case PlanetTypeHabitable, PlanetTypeMineral, PlanetTypeGaseous:
+	case PlanetTypeHabitable, PlanetTypeMineral, PlanetTypeGasGiant, PlanetTypeIceGiant:
 		return nil
 	default:
 		return fmt.Errorf("planet: invalid enum value for planet_type field: %q", planet_type)

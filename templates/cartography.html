@@ -15,18 +15,22 @@
 		</tr>
 	</thead>
 	<tbody>
-		<tr>
-			<th scope="row">
-				<figure class="image is-32x32">
-					<img src="/static/images/blue-star.jpg" class="is-rounded" alt="planet image">
-				</figure>
-			</th>
-			<td>00:00:0:0</td>
-			<td></td>
-			<td></td>
-			<td>@drakker</td>
-			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
-		</tr>
+		{{ range .Data }}
+			<tr>
+				<th scope="row">
+					<figure class="image is-32x32">
+						<img src="/static/images/planet-icons/{{ .PlanetSkin }}.png" class="is-rounded" alt="planet image">
+					</figure>
+				</th>
+				<td>
+					[{{ .RegionCode }}:{{ .SystemCode }}:{{ .OrbitCode }}:{{ .SuborbitCode }}]
+				</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
+			</tr>
+		{{ end }}
 		<tr>
 			<th scope="row">
 				<figure class="image is-32x32">

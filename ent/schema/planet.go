@@ -52,18 +52,19 @@ func (PositionMixin) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int("region_code").
 			NonNegative().
-			Default(0),
+			Immutable(),
 		field.Int("system_code").
 			NonNegative().
-			Default(0),
+			Immutable(),
 		field.Int("orbit_code").
 			NonNegative().
-			Default(0),
+			Immutable(),
 		field.Int("suborbit_code").
 			NonNegative().
-			Default(0),
+			Immutable(),
 		field.Int("position_code").
 			NonNegative().
+			Immutable().
 			Unique(),
 	}
 }
@@ -91,7 +92,8 @@ func (Planet) Fields() []ent.Field {
 		field.String("name").
 			Default("Unnamed"),
 		field.Enum("planet_type").
-			Values("habitable", "mineral", "gaseous"),
+			Values("habitable", "mineral", "gas giant", "ice giant").
+			Immutable(),
 		field.String("planet_skin"),
 	}
 }

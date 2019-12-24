@@ -21,7 +21,7 @@ type SessionQuery struct {
 	order      []Order
 	unique     []string
 	predicates []predicate.Session
-	// intermediate queries.
+	// intermediate query.
 	sql *sql.Selector
 }
 
@@ -213,7 +213,7 @@ func (sq *SessionQuery) Clone() *SessionQuery {
 		order:      append([]Order{}, sq.order...),
 		unique:     append([]string{}, sq.unique...),
 		predicates: append([]predicate.Session{}, sq.predicates...),
-		// clone intermediate queries.
+		// clone intermediate query.
 		sql: sq.sql.Clone(),
 	}
 }
@@ -339,7 +339,7 @@ type SessionGroupBy struct {
 	config
 	fields []string
 	fns    []Aggregate
-	// intermediate queries.
+	// intermediate query.
 	sql *sql.Selector
 }
 
@@ -460,7 +460,7 @@ func (sgb *SessionGroupBy) sqlQuery() *sql.Selector {
 	columns := make([]string, 0, len(sgb.fields)+len(sgb.fns))
 	columns = append(columns, sgb.fields...)
 	for _, fn := range sgb.fns {
-		columns = append(columns, fn.SQL(selector))
+		columns = append(columns, fn(selector))
 	}
 	return selector.Select(columns...).GroupBy(sgb.fields...)
 }
