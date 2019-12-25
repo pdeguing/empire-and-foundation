@@ -43,6 +43,11 @@ type PlanetCreate struct {
 	energy_cons              *int64
 	energy_prod              *int64
 	solar_prod_level         *int
+	region_code              *int
+	system_code              *int
+	orbit_code               *int
+	suborbit_code            *int
+	position_code            *int
 	name                     *string
 	owner                    map[int]struct{}
 	timers                   map[int]struct{}
@@ -398,6 +403,76 @@ func (pc *PlanetCreate) SetNillableSolarProdLevel(i *int) *PlanetCreate {
 	return pc
 }
 
+// SetRegionCode sets the region_code field.
+func (pc *PlanetCreate) SetRegionCode(i int) *PlanetCreate {
+	pc.region_code = &i
+	return pc
+}
+
+// SetNillableRegionCode sets the region_code field if the given value is not nil.
+func (pc *PlanetCreate) SetNillableRegionCode(i *int) *PlanetCreate {
+	if i != nil {
+		pc.SetRegionCode(*i)
+	}
+	return pc
+}
+
+// SetSystemCode sets the system_code field.
+func (pc *PlanetCreate) SetSystemCode(i int) *PlanetCreate {
+	pc.system_code = &i
+	return pc
+}
+
+// SetNillableSystemCode sets the system_code field if the given value is not nil.
+func (pc *PlanetCreate) SetNillableSystemCode(i *int) *PlanetCreate {
+	if i != nil {
+		pc.SetSystemCode(*i)
+	}
+	return pc
+}
+
+// SetOrbitCode sets the orbit_code field.
+func (pc *PlanetCreate) SetOrbitCode(i int) *PlanetCreate {
+	pc.orbit_code = &i
+	return pc
+}
+
+// SetNillableOrbitCode sets the orbit_code field if the given value is not nil.
+func (pc *PlanetCreate) SetNillableOrbitCode(i *int) *PlanetCreate {
+	if i != nil {
+		pc.SetOrbitCode(*i)
+	}
+	return pc
+}
+
+// SetSuborbitCode sets the suborbit_code field.
+func (pc *PlanetCreate) SetSuborbitCode(i int) *PlanetCreate {
+	pc.suborbit_code = &i
+	return pc
+}
+
+// SetNillableSuborbitCode sets the suborbit_code field if the given value is not nil.
+func (pc *PlanetCreate) SetNillableSuborbitCode(i *int) *PlanetCreate {
+	if i != nil {
+		pc.SetSuborbitCode(*i)
+	}
+	return pc
+}
+
+// SetPositionCode sets the position_code field.
+func (pc *PlanetCreate) SetPositionCode(i int) *PlanetCreate {
+	pc.position_code = &i
+	return pc
+}
+
+// SetNillablePositionCode sets the position_code field if the given value is not nil.
+func (pc *PlanetCreate) SetNillablePositionCode(i *int) *PlanetCreate {
+	if i != nil {
+		pc.SetPositionCode(*i)
+	}
+	return pc
+}
+
 // SetName sets the name field.
 func (pc *PlanetCreate) SetName(s string) *PlanetCreate {
 	pc.name = &s
@@ -600,6 +675,41 @@ func (pc *PlanetCreate) Save(ctx context.Context) (*Planet, error) {
 	}
 	if err := planet.SolarProdLevelValidator(*pc.solar_prod_level); err != nil {
 		return nil, fmt.Errorf("ent: validator failed for field \"solar_prod_level\": %v", err)
+	}
+	if pc.region_code == nil {
+		v := planet.DefaultRegionCode
+		pc.region_code = &v
+	}
+	if err := planet.RegionCodeValidator(*pc.region_code); err != nil {
+		return nil, fmt.Errorf("ent: validator failed for field \"region_code\": %v", err)
+	}
+	if pc.system_code == nil {
+		v := planet.DefaultSystemCode
+		pc.system_code = &v
+	}
+	if err := planet.SystemCodeValidator(*pc.system_code); err != nil {
+		return nil, fmt.Errorf("ent: validator failed for field \"system_code\": %v", err)
+	}
+	if pc.orbit_code == nil {
+		v := planet.DefaultOrbitCode
+		pc.orbit_code = &v
+	}
+	if err := planet.OrbitCodeValidator(*pc.orbit_code); err != nil {
+		return nil, fmt.Errorf("ent: validator failed for field \"orbit_code\": %v", err)
+	}
+	if pc.suborbit_code == nil {
+		v := planet.DefaultSuborbitCode
+		pc.suborbit_code = &v
+	}
+	if err := planet.SuborbitCodeValidator(*pc.suborbit_code); err != nil {
+		return nil, fmt.Errorf("ent: validator failed for field \"suborbit_code\": %v", err)
+	}
+	if pc.position_code == nil {
+		v := planet.DefaultPositionCode
+		pc.position_code = &v
+	}
+	if err := planet.PositionCodeValidator(*pc.position_code); err != nil {
+		return nil, fmt.Errorf("ent: validator failed for field \"position_code\": %v", err)
 	}
 	if pc.name == nil {
 		v := planet.DefaultName
@@ -830,6 +940,46 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 			Column: planet.FieldSolarProdLevel,
 		})
 		pl.SolarProdLevel = *value
+	}
+	if value := pc.region_code; value != nil {
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldRegionCode,
+		})
+		pl.RegionCode = *value
+	}
+	if value := pc.system_code; value != nil {
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldSystemCode,
+		})
+		pl.SystemCode = *value
+	}
+	if value := pc.orbit_code; value != nil {
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldOrbitCode,
+		})
+		pl.OrbitCode = *value
+	}
+	if value := pc.suborbit_code; value != nil {
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldSuborbitCode,
+		})
+		pl.SuborbitCode = *value
+	}
+	if value := pc.position_code; value != nil {
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldPositionCode,
+		})
+		pl.PositionCode = *value
 	}
 	if value := pc.name; value != nil {
 		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{

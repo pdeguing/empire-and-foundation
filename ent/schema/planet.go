@@ -46,6 +46,28 @@ func (EnergyMixin) Fields() []ent.Field {
 	}
 }
 
+type PositionMixin struct{}
+
+func (PositionMixin) Fields() []ent.Field {
+	return []ent.Field{
+		field.Int("region_code").
+			NonNegative().
+			Default(0),
+		field.Int("system_code").
+			NonNegative().
+			Default(0),
+		field.Int("orbit_code").
+			NonNegative().
+			Default(0),
+		field.Int("suborbit_code").
+			NonNegative().
+			Default(0),
+		field.Int("position_code").
+			NonNegative().
+			Default(0),
+	}
+}
+
 // Planet holds the schema definition for the Planet entity.
 type Planet struct {
 	ent.Schema
@@ -59,6 +81,7 @@ func (Planet) Mixin() []ent.Mixin {
 	ResourceMixin{Type: "silica"},
 	ResourceMixin{Type: "population"},
 	EnergyMixin{},
+	PositionMixin{},
     }
 }
 

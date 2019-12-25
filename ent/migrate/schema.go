@@ -38,6 +38,11 @@ var (
 		{Name: "energy_cons", Type: field.TypeInt64, Default: planet.DefaultEnergyCons},
 		{Name: "energy_prod", Type: field.TypeInt64, Default: planet.DefaultEnergyProd},
 		{Name: "solar_prod_level", Type: field.TypeInt, Default: planet.DefaultSolarProdLevel},
+		{Name: "region_code", Type: field.TypeInt, Default: planet.DefaultRegionCode},
+		{Name: "system_code", Type: field.TypeInt, Default: planet.DefaultSystemCode},
+		{Name: "orbit_code", Type: field.TypeInt, Default: planet.DefaultOrbitCode},
+		{Name: "suborbit_code", Type: field.TypeInt, Default: planet.DefaultSuborbitCode},
+		{Name: "position_code", Type: field.TypeInt, Default: planet.DefaultPositionCode},
 		{Name: "name", Type: field.TypeString, Default: planet.DefaultName},
 		{Name: "owner_id", Type: field.TypeInt, Nullable: true},
 	}
@@ -49,7 +54,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:  "planets_users_planets",
-				Columns: []*schema.Column{PlanetsColumns[27]},
+				Columns: []*schema.Column{PlanetsColumns[32]},
 
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,

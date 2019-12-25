@@ -62,6 +62,16 @@ type PlanetUpdate struct {
 	addenergy_prod              *int64
 	solar_prod_level            *int
 	addsolar_prod_level         *int
+	region_code                 *int
+	addregion_code              *int
+	system_code                 *int
+	addsystem_code              *int
+	orbit_code                  *int
+	addorbit_code               *int
+	suborbit_code               *int
+	addsuborbit_code            *int
+	position_code               *int
+	addposition_code            *int
 	name                        *string
 	owner                       map[int]struct{}
 	timers                      map[int]struct{}
@@ -613,6 +623,131 @@ func (pu *PlanetUpdate) AddSolarProdLevel(i int) *PlanetUpdate {
 	return pu
 }
 
+// SetRegionCode sets the region_code field.
+func (pu *PlanetUpdate) SetRegionCode(i int) *PlanetUpdate {
+	pu.region_code = &i
+	pu.addregion_code = nil
+	return pu
+}
+
+// SetNillableRegionCode sets the region_code field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableRegionCode(i *int) *PlanetUpdate {
+	if i != nil {
+		pu.SetRegionCode(*i)
+	}
+	return pu
+}
+
+// AddRegionCode adds i to region_code.
+func (pu *PlanetUpdate) AddRegionCode(i int) *PlanetUpdate {
+	if pu.addregion_code == nil {
+		pu.addregion_code = &i
+	} else {
+		*pu.addregion_code += i
+	}
+	return pu
+}
+
+// SetSystemCode sets the system_code field.
+func (pu *PlanetUpdate) SetSystemCode(i int) *PlanetUpdate {
+	pu.system_code = &i
+	pu.addsystem_code = nil
+	return pu
+}
+
+// SetNillableSystemCode sets the system_code field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableSystemCode(i *int) *PlanetUpdate {
+	if i != nil {
+		pu.SetSystemCode(*i)
+	}
+	return pu
+}
+
+// AddSystemCode adds i to system_code.
+func (pu *PlanetUpdate) AddSystemCode(i int) *PlanetUpdate {
+	if pu.addsystem_code == nil {
+		pu.addsystem_code = &i
+	} else {
+		*pu.addsystem_code += i
+	}
+	return pu
+}
+
+// SetOrbitCode sets the orbit_code field.
+func (pu *PlanetUpdate) SetOrbitCode(i int) *PlanetUpdate {
+	pu.orbit_code = &i
+	pu.addorbit_code = nil
+	return pu
+}
+
+// SetNillableOrbitCode sets the orbit_code field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableOrbitCode(i *int) *PlanetUpdate {
+	if i != nil {
+		pu.SetOrbitCode(*i)
+	}
+	return pu
+}
+
+// AddOrbitCode adds i to orbit_code.
+func (pu *PlanetUpdate) AddOrbitCode(i int) *PlanetUpdate {
+	if pu.addorbit_code == nil {
+		pu.addorbit_code = &i
+	} else {
+		*pu.addorbit_code += i
+	}
+	return pu
+}
+
+// SetSuborbitCode sets the suborbit_code field.
+func (pu *PlanetUpdate) SetSuborbitCode(i int) *PlanetUpdate {
+	pu.suborbit_code = &i
+	pu.addsuborbit_code = nil
+	return pu
+}
+
+// SetNillableSuborbitCode sets the suborbit_code field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableSuborbitCode(i *int) *PlanetUpdate {
+	if i != nil {
+		pu.SetSuborbitCode(*i)
+	}
+	return pu
+}
+
+// AddSuborbitCode adds i to suborbit_code.
+func (pu *PlanetUpdate) AddSuborbitCode(i int) *PlanetUpdate {
+	if pu.addsuborbit_code == nil {
+		pu.addsuborbit_code = &i
+	} else {
+		*pu.addsuborbit_code += i
+	}
+	return pu
+}
+
+// SetPositionCode sets the position_code field.
+func (pu *PlanetUpdate) SetPositionCode(i int) *PlanetUpdate {
+	pu.position_code = &i
+	pu.addposition_code = nil
+	return pu
+}
+
+// SetNillablePositionCode sets the position_code field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillablePositionCode(i *int) *PlanetUpdate {
+	if i != nil {
+		pu.SetPositionCode(*i)
+	}
+	return pu
+}
+
+// AddPositionCode adds i to position_code.
+func (pu *PlanetUpdate) AddPositionCode(i int) *PlanetUpdate {
+	if pu.addposition_code == nil {
+		pu.addposition_code = &i
+	} else {
+		*pu.addposition_code += i
+	}
+	return pu
+}
+
 // SetName sets the name field.
 func (pu *PlanetUpdate) SetName(s string) *PlanetUpdate {
 	pu.name = &s
@@ -774,6 +909,31 @@ func (pu *PlanetUpdate) Save(ctx context.Context) (int, error) {
 	if pu.solar_prod_level != nil {
 		if err := planet.SolarProdLevelValidator(*pu.solar_prod_level); err != nil {
 			return 0, fmt.Errorf("ent: validator failed for field \"solar_prod_level\": %v", err)
+		}
+	}
+	if pu.region_code != nil {
+		if err := planet.RegionCodeValidator(*pu.region_code); err != nil {
+			return 0, fmt.Errorf("ent: validator failed for field \"region_code\": %v", err)
+		}
+	}
+	if pu.system_code != nil {
+		if err := planet.SystemCodeValidator(*pu.system_code); err != nil {
+			return 0, fmt.Errorf("ent: validator failed for field \"system_code\": %v", err)
+		}
+	}
+	if pu.orbit_code != nil {
+		if err := planet.OrbitCodeValidator(*pu.orbit_code); err != nil {
+			return 0, fmt.Errorf("ent: validator failed for field \"orbit_code\": %v", err)
+		}
+	}
+	if pu.suborbit_code != nil {
+		if err := planet.SuborbitCodeValidator(*pu.suborbit_code); err != nil {
+			return 0, fmt.Errorf("ent: validator failed for field \"suborbit_code\": %v", err)
+		}
+	}
+	if pu.position_code != nil {
+		if err := planet.PositionCodeValidator(*pu.position_code); err != nil {
+			return 0, fmt.Errorf("ent: validator failed for field \"position_code\": %v", err)
 		}
 	}
 	if len(pu.owner) > 1 {
@@ -969,6 +1129,36 @@ func (pu *PlanetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value := pu.addsolar_prod_level; value != nil {
 		updater.Add(planet.FieldSolarProdLevel, *value)
 	}
+	if value := pu.region_code; value != nil {
+		updater.Set(planet.FieldRegionCode, *value)
+	}
+	if value := pu.addregion_code; value != nil {
+		updater.Add(planet.FieldRegionCode, *value)
+	}
+	if value := pu.system_code; value != nil {
+		updater.Set(planet.FieldSystemCode, *value)
+	}
+	if value := pu.addsystem_code; value != nil {
+		updater.Add(planet.FieldSystemCode, *value)
+	}
+	if value := pu.orbit_code; value != nil {
+		updater.Set(planet.FieldOrbitCode, *value)
+	}
+	if value := pu.addorbit_code; value != nil {
+		updater.Add(planet.FieldOrbitCode, *value)
+	}
+	if value := pu.suborbit_code; value != nil {
+		updater.Set(planet.FieldSuborbitCode, *value)
+	}
+	if value := pu.addsuborbit_code; value != nil {
+		updater.Add(planet.FieldSuborbitCode, *value)
+	}
+	if value := pu.position_code; value != nil {
+		updater.Set(planet.FieldPositionCode, *value)
+	}
+	if value := pu.addposition_code; value != nil {
+		updater.Add(planet.FieldPositionCode, *value)
+	}
 	if value := pu.name; value != nil {
 		updater.Set(planet.FieldName, *value)
 	}
@@ -1088,6 +1278,16 @@ type PlanetUpdateOne struct {
 	addenergy_prod              *int64
 	solar_prod_level            *int
 	addsolar_prod_level         *int
+	region_code                 *int
+	addregion_code              *int
+	system_code                 *int
+	addsystem_code              *int
+	orbit_code                  *int
+	addorbit_code               *int
+	suborbit_code               *int
+	addsuborbit_code            *int
+	position_code               *int
+	addposition_code            *int
 	name                        *string
 	owner                       map[int]struct{}
 	timers                      map[int]struct{}
@@ -1632,6 +1832,131 @@ func (puo *PlanetUpdateOne) AddSolarProdLevel(i int) *PlanetUpdateOne {
 	return puo
 }
 
+// SetRegionCode sets the region_code field.
+func (puo *PlanetUpdateOne) SetRegionCode(i int) *PlanetUpdateOne {
+	puo.region_code = &i
+	puo.addregion_code = nil
+	return puo
+}
+
+// SetNillableRegionCode sets the region_code field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableRegionCode(i *int) *PlanetUpdateOne {
+	if i != nil {
+		puo.SetRegionCode(*i)
+	}
+	return puo
+}
+
+// AddRegionCode adds i to region_code.
+func (puo *PlanetUpdateOne) AddRegionCode(i int) *PlanetUpdateOne {
+	if puo.addregion_code == nil {
+		puo.addregion_code = &i
+	} else {
+		*puo.addregion_code += i
+	}
+	return puo
+}
+
+// SetSystemCode sets the system_code field.
+func (puo *PlanetUpdateOne) SetSystemCode(i int) *PlanetUpdateOne {
+	puo.system_code = &i
+	puo.addsystem_code = nil
+	return puo
+}
+
+// SetNillableSystemCode sets the system_code field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableSystemCode(i *int) *PlanetUpdateOne {
+	if i != nil {
+		puo.SetSystemCode(*i)
+	}
+	return puo
+}
+
+// AddSystemCode adds i to system_code.
+func (puo *PlanetUpdateOne) AddSystemCode(i int) *PlanetUpdateOne {
+	if puo.addsystem_code == nil {
+		puo.addsystem_code = &i
+	} else {
+		*puo.addsystem_code += i
+	}
+	return puo
+}
+
+// SetOrbitCode sets the orbit_code field.
+func (puo *PlanetUpdateOne) SetOrbitCode(i int) *PlanetUpdateOne {
+	puo.orbit_code = &i
+	puo.addorbit_code = nil
+	return puo
+}
+
+// SetNillableOrbitCode sets the orbit_code field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableOrbitCode(i *int) *PlanetUpdateOne {
+	if i != nil {
+		puo.SetOrbitCode(*i)
+	}
+	return puo
+}
+
+// AddOrbitCode adds i to orbit_code.
+func (puo *PlanetUpdateOne) AddOrbitCode(i int) *PlanetUpdateOne {
+	if puo.addorbit_code == nil {
+		puo.addorbit_code = &i
+	} else {
+		*puo.addorbit_code += i
+	}
+	return puo
+}
+
+// SetSuborbitCode sets the suborbit_code field.
+func (puo *PlanetUpdateOne) SetSuborbitCode(i int) *PlanetUpdateOne {
+	puo.suborbit_code = &i
+	puo.addsuborbit_code = nil
+	return puo
+}
+
+// SetNillableSuborbitCode sets the suborbit_code field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableSuborbitCode(i *int) *PlanetUpdateOne {
+	if i != nil {
+		puo.SetSuborbitCode(*i)
+	}
+	return puo
+}
+
+// AddSuborbitCode adds i to suborbit_code.
+func (puo *PlanetUpdateOne) AddSuborbitCode(i int) *PlanetUpdateOne {
+	if puo.addsuborbit_code == nil {
+		puo.addsuborbit_code = &i
+	} else {
+		*puo.addsuborbit_code += i
+	}
+	return puo
+}
+
+// SetPositionCode sets the position_code field.
+func (puo *PlanetUpdateOne) SetPositionCode(i int) *PlanetUpdateOne {
+	puo.position_code = &i
+	puo.addposition_code = nil
+	return puo
+}
+
+// SetNillablePositionCode sets the position_code field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillablePositionCode(i *int) *PlanetUpdateOne {
+	if i != nil {
+		puo.SetPositionCode(*i)
+	}
+	return puo
+}
+
+// AddPositionCode adds i to position_code.
+func (puo *PlanetUpdateOne) AddPositionCode(i int) *PlanetUpdateOne {
+	if puo.addposition_code == nil {
+		puo.addposition_code = &i
+	} else {
+		*puo.addposition_code += i
+	}
+	return puo
+}
+
 // SetName sets the name field.
 func (puo *PlanetUpdateOne) SetName(s string) *PlanetUpdateOne {
 	puo.name = &s
@@ -1793,6 +2118,31 @@ func (puo *PlanetUpdateOne) Save(ctx context.Context) (*Planet, error) {
 	if puo.solar_prod_level != nil {
 		if err := planet.SolarProdLevelValidator(*puo.solar_prod_level); err != nil {
 			return nil, fmt.Errorf("ent: validator failed for field \"solar_prod_level\": %v", err)
+		}
+	}
+	if puo.region_code != nil {
+		if err := planet.RegionCodeValidator(*puo.region_code); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"region_code\": %v", err)
+		}
+	}
+	if puo.system_code != nil {
+		if err := planet.SystemCodeValidator(*puo.system_code); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"system_code\": %v", err)
+		}
+	}
+	if puo.orbit_code != nil {
+		if err := planet.OrbitCodeValidator(*puo.orbit_code); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"orbit_code\": %v", err)
+		}
+	}
+	if puo.suborbit_code != nil {
+		if err := planet.SuborbitCodeValidator(*puo.suborbit_code); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"suborbit_code\": %v", err)
+		}
+	}
+	if puo.position_code != nil {
+		if err := planet.PositionCodeValidator(*puo.position_code); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"position_code\": %v", err)
 		}
 	}
 	if len(puo.owner) > 1 {
@@ -2033,6 +2383,46 @@ func (puo *PlanetUpdateOne) sqlSave(ctx context.Context) (pl *Planet, err error)
 	if value := puo.addsolar_prod_level; value != nil {
 		updater.Add(planet.FieldSolarProdLevel, *value)
 		pl.SolarProdLevel += *value
+	}
+	if value := puo.region_code; value != nil {
+		updater.Set(planet.FieldRegionCode, *value)
+		pl.RegionCode = *value
+	}
+	if value := puo.addregion_code; value != nil {
+		updater.Add(planet.FieldRegionCode, *value)
+		pl.RegionCode += *value
+	}
+	if value := puo.system_code; value != nil {
+		updater.Set(planet.FieldSystemCode, *value)
+		pl.SystemCode = *value
+	}
+	if value := puo.addsystem_code; value != nil {
+		updater.Add(planet.FieldSystemCode, *value)
+		pl.SystemCode += *value
+	}
+	if value := puo.orbit_code; value != nil {
+		updater.Set(planet.FieldOrbitCode, *value)
+		pl.OrbitCode = *value
+	}
+	if value := puo.addorbit_code; value != nil {
+		updater.Add(planet.FieldOrbitCode, *value)
+		pl.OrbitCode += *value
+	}
+	if value := puo.suborbit_code; value != nil {
+		updater.Set(planet.FieldSuborbitCode, *value)
+		pl.SuborbitCode = *value
+	}
+	if value := puo.addsuborbit_code; value != nil {
+		updater.Add(planet.FieldSuborbitCode, *value)
+		pl.SuborbitCode += *value
+	}
+	if value := puo.position_code; value != nil {
+		updater.Set(planet.FieldPositionCode, *value)
+		pl.PositionCode = *value
+	}
+	if value := puo.addposition_code; value != nil {
+		updater.Add(planet.FieldPositionCode, *value)
+		pl.PositionCode += *value
 	}
 	if value := puo.name; value != nil {
 		updater.Set(planet.FieldName, *value)

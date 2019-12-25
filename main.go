@@ -16,7 +16,7 @@ func main() {
 	files := http.FileServer(http.Dir("public"))
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", files))
 
-	r.HandleFunc("/", index)
+	r.HandleFunc("/", serveIndex)
 
 	r.HandleFunc("/login", serveLogin)
 	r.HandleFunc("/logout", serveLogout)
