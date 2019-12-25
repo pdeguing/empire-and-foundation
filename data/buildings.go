@@ -22,6 +22,12 @@ func hasResources(p *ent.Planet, s Amounts) bool {
 }
 
 func addStock(ctx context.Context, p *ent.Planet, s Amounts) error {
+	// Note that the last update time doesn't necessarily have to be
+	// updated to the current time as long as the rate doesn't change.
+	// The amount produced in the time between the last update and now
+	// is the same regardless so it doesn't matter if that amount is added
+	// first and then the stock is added or that it happens in a different
+	// order. The only difference is how it is stored in the database.
 	p.Metal += s.Metal
 	p.Hydrogen += s.Hydrogen
 	p.Silica += s.Silica
@@ -34,6 +40,13 @@ func addStock(ctx context.Context, p *ent.Planet, s Amounts) error {
 }
 
 func subStock(ctx context.Context, p *ent.Planet, s Amounts) error {
+	// Note that the last update time doesn't necessarily have to be
+	// updated to the current time as long as the rate doesn't change.
+	// The amount produced in the time between the last update and now
+	// is the same regardless so it doesn't matter if that amount is added
+	// first and then the stock is substracted or that it happens in a
+	// different order. The only difference is how it is stored in the
+	// database.
 	p.Metal -= s.Metal
 	p.Hydrogen -= s.Hydrogen
 	p.Silica -= s.Silica

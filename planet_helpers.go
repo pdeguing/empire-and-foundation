@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"math"
 	"net/http"
 	"strconv"
 	"time"
@@ -15,51 +14,6 @@ import (
 	"github.com/pdeguing/empire-and-foundation/ent/timer"
 	"github.com/pdeguing/empire-and-foundation/ent/user"
 )
-
-// getMaxStorage calculates the storage capacity for a resource with given storage level
-func getMaxStorage(storageLevel int) int64 {
-	maxStorage := 100000 * int64(storageLevel) * int64(math.Pow(1.1, float64(storageLevel)))
-	return maxStorage
-}
-
-// getStock calculates the current value in stock for a resource based on value and duration since last update
-func getStock(val int64, last time.Time, rate int, storageLevel int) int64 {
-	duration := int64(time.Since(last) / time.Second)
-	maxStorage := getMaxStorage(storageLevel)
-	current := val + duration*int64(rate)
-	if current >= maxStorage {
-		return maxStorage
-	}
-	return current
-}
-
-// updatePlanetState updates the current planet struct to get up-to-date state
-func updatePlanetState(p *ent.Planet) {
-	p.Metal = getStock(
-		p.Metal,
-		p.MetalLastUpdate,
-		p.MetalRate,
-		p.MetalStorageLevel,
-	)
-	p.Hydrogen = getStock(
-		p.Hydrogen,
-		p.HydrogenLastUpdate,
-		p.HydrogenRate,
-		p.HydrogenStorageLevel,
-	)
-	p.Silica = getStock(
-		p.Silica,
-		p.SilicaLastUpdate,
-		p.SilicaRate,
-		p.SilicaStorageLevel,
-	)
-	p.Population = getStock(
-		p.Population,
-		p.PopulationLastUpdate,
-		p.PopulationRate,
-		p.PopulationStorageLevel,
-	)
-}
 
 // userPlanet retrieves the planet requested for the logged in user
 func userPlanet(r *http.Request, tx *ent.Tx) (*ent.Planet, error) {
@@ -80,11 +34,14 @@ func userPlanet(r *http.Request, tx *ent.Tx) (*ent.Planet, error) {
 	if err != nil {
 		return nil, newInternalServerError(fmt.Errorf("unable to retrieve planet for user: %v", err))
 	}
-	updatePlanetState(p)
+	// UpdateTimers uses the old state of the planet to calculate the timer
+	// durations. Therefore, this function must be called before the state is
+	// updated.
 	err = data.UpdateTimers(r.Context(), tx, p)
 	if err != nil {
 		return nil, newInternalServerError(fmt.Errorf("unable to update planet timers: %v", err))
 	}
+	data.UpdatePlanetState(p, time.Now())
 	return p, nil
 }
 

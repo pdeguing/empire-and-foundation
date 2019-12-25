@@ -79,8 +79,11 @@ var actions = map[timer.Action]action{
 		},
 		Complete: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
 			p.MetalProdLevel++
+			p.MetalRate = getNewMetalRate(p)
 			_, err := p.Update().
 				SetMetalProdLevel(p.MetalProdLevel).
+				SetMetalRate(p.MetalRate).
+				SetMetalLastUpdate(p.MetalLastUpdate).
 				Save(ctx)
 			return err
 		},
@@ -104,8 +107,11 @@ var actions = map[timer.Action]action{
 		},
 		Complete: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
 			p.HydrogenProdLevel++
+			p.HydrogenRate = getNewHydrogenRate(p)
 			_, err := p.Update().
 				SetHydrogenProdLevel(p.HydrogenProdLevel).
+				SetHydrogenRate(p.HydrogenRate).
+				SetHydrogenLastUpdate(p.HydrogenLastUpdate).
 				Save(ctx)
 			return err
 		},
@@ -129,8 +135,11 @@ var actions = map[timer.Action]action{
 		},
 		Complete: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
 			p.SilicaProdLevel++
+			p.SilicaRate = getNewSilicaRate(p)
 			_, err := p.Update().
 				SetSilicaProdLevel(p.SilicaProdLevel).
+				SetSilicaRate(p.SilicaRate).
+				SetSilicaLastUpdate(p.SilicaLastUpdate).
 				Save(ctx)
 			return err
 		},
@@ -241,6 +250,7 @@ func GetTimers(ctx context.Context, p *ent.Planet) (map[timer.Group]*Timer, erro
 
 // StartTimer starts a timer for the action a if all prerequisites are met.
 // After the duration defined by the action, the timer completes.
+// StartTimer expects the planet state to be up-to-date.
 func StartTimer(ctx context.Context, tx *ent.Tx, p *ent.Planet, action timer.Action) error {
 	a, ok := actions[action]
 	if !ok {
@@ -278,6 +288,7 @@ func StartTimer(ctx context.Context, tx *ent.Tx, p *ent.Planet, action timer.Act
 }
 
 // CancelTimer aborts the timer and triggers the action's Cancel function immediately.
+// CancelTimer expects the planet state to be up-to-date.
 func CancelTimer(ctx context.Context, tx *ent.Tx, p *ent.Planet, a timer.Action) error {
 	n, err := tx.Timer.
 		Delete().
@@ -297,6 +308,9 @@ func CancelTimer(ctx context.Context, tx *ent.Tx, p *ent.Planet, a timer.Action)
 // UpdateTimers checks if timers have completed, and if so, triggers the action's
 // Complete function and cleans up the timers. This function must be called before
 // any information manipulated by the timers/actions is queried.
+// In contrast to StartTimer and CancelTimer, UpdateTimers expects the planet
+// state *NOT* to be updated. UpdateTimers makes use of the old state of the
+// planet to calculate durations and update the state in steps.
 func UpdateTimers(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
 	timers, err := p.QueryTimers().
 		Where(timer.EndTimeLTE(time.Now())).
@@ -309,6 +323,7 @@ func UpdateTimers(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
 		return nil // Fast path
 	}
 	for _, t := range timers {
+		UpdatePlanetState(p, t.EndTime)
 		err = actions[t.Action].Complete(ctx, tx, p)
 		if err != nil {
 			return fmt.Errorf("error while calling \"Complete\" function for action %q: %v", t.Action, err)
