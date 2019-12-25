@@ -98,7 +98,7 @@ func servePlanet(w http.ResponseWriter, r *http.Request) {
 		Planet: p,
 		Timers: t,
 	}
-	generateHTML(w, r, "planet-dashboard", pv, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "planet.overview")
+	generateHTML(w, r, "planet-dashboard", pv, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "flash", "planet.overview")
 }
 
 type planetOverviewViewData struct {
@@ -114,7 +114,7 @@ func serveConstructions(w http.ResponseWriter, r *http.Request) {
 		serveError(w, r, err)
 		return
 	}
-	generateHTML(w, r, "planet-constructions", p, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "planet.constructions")
+	generateHTML(w, r, "planet-constructions", p, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "flash", "planet.constructions")
 }
 
 // GET /planet/{id}/factories
@@ -125,7 +125,7 @@ func serveFactories(w http.ResponseWriter, r *http.Request) {
 		serveError(w, r, err)
 		return
 	}
-	generateHTML(w, r, "planet-factories", p, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "planet.factories")
+	generateHTML(w, r, "planet-factories", p, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "flash", "planet.factories")
 }
 
 // GET /planet/{id}/research
@@ -136,7 +136,7 @@ func serveResearch(w http.ResponseWriter, r *http.Request) {
 		serveError(w, r, err)
 		return
 	}
-	generateHTML(w, r, "planet-research", p, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "planet.research")
+	generateHTML(w, r, "planet-research", p, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "flash", "planet.research")
 }
 
 // GET /planet/{id}/fleets
@@ -147,7 +147,7 @@ func serveFleets(w http.ResponseWriter, r *http.Request) {
 		serveError(w, r, err)
 		return
 	}
-	generateHTML(w, r, "planet-fleets", p, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "planet.fleets")
+	generateHTML(w, r, "planet-fleets", p, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "flash", "planet.fleets")
 }
 
 // GET /planet/{id}/defenses
@@ -158,7 +158,7 @@ func serveDefenses(w http.ResponseWriter, r *http.Request) {
 		serveError(w, r, err)
 		return
 	}
-	generateHTML(w, r, "planet-defenses", p, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "planet.defenses")
+	generateHTML(w, r, "planet-defenses", p, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "flash", "planet.defenses")
 }
 
 func serveUpgradeBuilding(w http.ResponseWriter, r *http.Request, a timer.Action) {
@@ -177,12 +177,12 @@ func serveUpgradeBuilding(w http.ResponseWriter, r *http.Request, a timer.Action
 	})
 	if err != nil {
 		if errors.Is(err, data.ErrActionPrerequisitesNotMet) {
-			// TODO: Flash message
+			flash(r, flashDanger, "There are not enough resources on this planet.")
 			http.Redirect(w, r, "/planet/"+strconv.Itoa(p.ID)+"/constructions", 302)
 			return
 		}
 		if errors.Is(err, data.ErrTimerBussy) {
-			// TODO: Flash message
+			flash(r, flashWarning, "Something is already being upgraded.")
 			http.Redirect(w, r, "/planet/"+strconv.Itoa(p.ID)+"/constructions", 302)
 			return
 		}
