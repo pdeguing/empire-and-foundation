@@ -33,8 +33,7 @@ function applyCountdown(element) {
         const timeLeft = end - (new Date()).getTime();
         if (timeLeft < 0) {
             element.innerText = 'Done';
-            // TODO: Re-enable all disabled buttons.
-            // TODO: Disable cancel button.
+            document.getElementsByClassName('Planet-card__button--cancel')[0].disabled = true;
             clearInterval(interval);
             return;
         }
