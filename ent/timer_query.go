@@ -9,6 +9,7 @@ import (
 	"math"
 
 	"github.com/facebookincubator/ent/dialect/sql"
+	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/pdeguing/empire-and-foundation/ent/planet"
 	"github.com/pdeguing/empire-and-foundation/ent/predicate"
 	"github.com/pdeguing/empire-and-foundation/ent/timer"
@@ -22,7 +23,7 @@ type TimerQuery struct {
 	order      []Order
 	unique     []string
 	predicates []predicate.Timer
-	// intermediate queries.
+	// intermediate query.
 	sql *sql.Selector
 }
 
@@ -53,12 +54,12 @@ func (tq *TimerQuery) Order(o ...Order) *TimerQuery {
 // QueryPlanet chains the current query on the planet edge.
 func (tq *TimerQuery) QueryPlanet() *PlanetQuery {
 	query := &PlanetQuery{config: tq.config}
-	step := sql.NewStep(
-		sql.From(timer.Table, timer.FieldID, tq.sqlQuery()),
-		sql.To(planet.Table, planet.FieldID),
-		sql.Edge(sql.M2O, true, timer.PlanetTable, timer.PlanetColumn),
+	step := sqlgraph.NewStep(
+		sqlgraph.From(timer.Table, timer.FieldID, tq.sqlQuery()),
+		sqlgraph.To(planet.Table, planet.FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, timer.PlanetTable, timer.PlanetColumn),
 	)
-	query.sql = sql.SetNeighbors(tq.driver.Dialect(), step)
+	query.sql = sqlgraph.SetNeighbors(tq.driver.Dialect(), step)
 	return query
 }
 
@@ -226,7 +227,7 @@ func (tq *TimerQuery) Clone() *TimerQuery {
 		order:      append([]Order{}, tq.order...),
 		unique:     append([]string{}, tq.unique...),
 		predicates: append([]predicate.Timer{}, tq.predicates...),
-		// clone intermediate queries.
+		// clone intermediate query.
 		sql: tq.sql.Clone(),
 	}
 }
@@ -352,7 +353,7 @@ type TimerGroupBy struct {
 	config
 	fields []string
 	fns    []Aggregate
-	// intermediate queries.
+	// intermediate query.
 	sql *sql.Selector
 }
 
@@ -473,7 +474,7 @@ func (tgb *TimerGroupBy) sqlQuery() *sql.Selector {
 	columns := make([]string, 0, len(tgb.fields)+len(tgb.fns))
 	columns = append(columns, tgb.fields...)
 	for _, fn := range tgb.fns {
-		columns = append(columns, fn.SQL(selector))
+		columns = append(columns, fn(selector))
 	}
 	return selector.Select(columns...).GroupBy(tgb.fields...)
 }

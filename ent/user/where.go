@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/facebookincubator/ent/dialect/sql"
+	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/pdeguing/empire-and-foundation/ent/predicate"
 )
 
@@ -20,156 +21,141 @@ func ID(id int) predicate.User {
 
 // IDEQ applies the EQ predicate on the ID field.
 func IDEQ(id int) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldID), id))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldID), id))
+	},
 	)
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
 func IDNEQ(id int) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.NEQ(s.C(FieldID), id))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldID), id))
+	},
 	)
 }
 
 // IDIn applies the In predicate on the ID field.
 func IDIn(ids ...int) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(ids) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			v := make([]interface{}, len(ids))
-			for i := range v {
-				v[i] = ids[i]
-			}
-			s.Where(sql.In(s.C(FieldID), v...))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(ids) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		v := make([]interface{}, len(ids))
+		for i := range v {
+			v[i] = ids[i]
+		}
+		s.Where(sql.In(s.C(FieldID), v...))
+	},
 	)
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
 func IDNotIn(ids ...int) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(ids) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			v := make([]interface{}, len(ids))
-			for i := range v {
-				v[i] = ids[i]
-			}
-			s.Where(sql.NotIn(s.C(FieldID), v...))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(ids) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		v := make([]interface{}, len(ids))
+		for i := range v {
+			v[i] = ids[i]
+		}
+		s.Where(sql.NotIn(s.C(FieldID), v...))
+	},
 	)
 }
 
 // IDGT applies the GT predicate on the ID field.
 func IDGT(id int) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.GT(s.C(FieldID), id))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldID), id))
+	},
 	)
 }
 
 // IDGTE applies the GTE predicate on the ID field.
 func IDGTE(id int) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.GTE(s.C(FieldID), id))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldID), id))
+	},
 	)
 }
 
 // IDLT applies the LT predicate on the ID field.
 func IDLT(id int) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.LT(s.C(FieldID), id))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldID), id))
+	},
 	)
 }
 
 // IDLTE applies the LTE predicate on the ID field.
 func IDLTE(id int) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.LTE(s.C(FieldID), id))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldID), id))
+	},
 	)
 }
 
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldCreatedAt), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldCreatedAt), v))
+	},
 	)
 }
 
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
 func UpdatedAt(v time.Time) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldUpdatedAt), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldUpdatedAt), v))
+	},
 	)
 }
 
 // Username applies equality check predicate on the "username" field. It's identical to UsernameEQ.
 func Username(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldUsername), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldUsername), v))
+	},
 	)
 }
 
 // Email applies equality check predicate on the "email" field. It's identical to EmailEQ.
 func Email(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldEmail), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldEmail), v))
+	},
 	)
 }
 
 // Password applies equality check predicate on the "password" field. It's identical to PasswordEQ.
 func Password(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldPassword), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldPassword), v))
+	},
 	)
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldCreatedAt), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldCreatedAt), v))
+	},
 	)
 }
 
 // CreatedAtNEQ applies the NEQ predicate on the "created_at" field.
 func CreatedAtNEQ(v time.Time) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.NEQ(s.C(FieldCreatedAt), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldCreatedAt), v))
+	},
 	)
 }
 
@@ -179,16 +165,15 @@ func CreatedAtIn(vs ...time.Time) predicate.User {
 	for i := range v {
 		v[i] = vs[i]
 	}
-	return predicate.User(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.In(s.C(FieldCreatedAt), v...))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldCreatedAt), v...))
+	},
 	)
 }
 
@@ -198,70 +183,63 @@ func CreatedAtNotIn(vs ...time.Time) predicate.User {
 	for i := range v {
 		v[i] = vs[i]
 	}
-	return predicate.User(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.NotIn(s.C(FieldCreatedAt), v...))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldCreatedAt), v...))
+	},
 	)
 }
 
 // CreatedAtGT applies the GT predicate on the "created_at" field.
 func CreatedAtGT(v time.Time) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.GT(s.C(FieldCreatedAt), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldCreatedAt), v))
+	},
 	)
 }
 
 // CreatedAtGTE applies the GTE predicate on the "created_at" field.
 func CreatedAtGTE(v time.Time) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.GTE(s.C(FieldCreatedAt), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldCreatedAt), v))
+	},
 	)
 }
 
 // CreatedAtLT applies the LT predicate on the "created_at" field.
 func CreatedAtLT(v time.Time) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.LT(s.C(FieldCreatedAt), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldCreatedAt), v))
+	},
 	)
 }
 
 // CreatedAtLTE applies the LTE predicate on the "created_at" field.
 func CreatedAtLTE(v time.Time) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.LTE(s.C(FieldCreatedAt), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldCreatedAt), v))
+	},
 	)
 }
 
 // UpdatedAtEQ applies the EQ predicate on the "updated_at" field.
 func UpdatedAtEQ(v time.Time) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldUpdatedAt), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldUpdatedAt), v))
+	},
 	)
 }
 
 // UpdatedAtNEQ applies the NEQ predicate on the "updated_at" field.
 func UpdatedAtNEQ(v time.Time) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.NEQ(s.C(FieldUpdatedAt), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldUpdatedAt), v))
+	},
 	)
 }
 
@@ -271,16 +249,15 @@ func UpdatedAtIn(vs ...time.Time) predicate.User {
 	for i := range v {
 		v[i] = vs[i]
 	}
-	return predicate.User(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.In(s.C(FieldUpdatedAt), v...))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldUpdatedAt), v...))
+	},
 	)
 }
 
@@ -290,70 +267,63 @@ func UpdatedAtNotIn(vs ...time.Time) predicate.User {
 	for i := range v {
 		v[i] = vs[i]
 	}
-	return predicate.User(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.NotIn(s.C(FieldUpdatedAt), v...))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldUpdatedAt), v...))
+	},
 	)
 }
 
 // UpdatedAtGT applies the GT predicate on the "updated_at" field.
 func UpdatedAtGT(v time.Time) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.GT(s.C(FieldUpdatedAt), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldUpdatedAt), v))
+	},
 	)
 }
 
 // UpdatedAtGTE applies the GTE predicate on the "updated_at" field.
 func UpdatedAtGTE(v time.Time) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.GTE(s.C(FieldUpdatedAt), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldUpdatedAt), v))
+	},
 	)
 }
 
 // UpdatedAtLT applies the LT predicate on the "updated_at" field.
 func UpdatedAtLT(v time.Time) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.LT(s.C(FieldUpdatedAt), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldUpdatedAt), v))
+	},
 	)
 }
 
 // UpdatedAtLTE applies the LTE predicate on the "updated_at" field.
 func UpdatedAtLTE(v time.Time) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.LTE(s.C(FieldUpdatedAt), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldUpdatedAt), v))
+	},
 	)
 }
 
 // UsernameEQ applies the EQ predicate on the "username" field.
 func UsernameEQ(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldUsername), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldUsername), v))
+	},
 	)
 }
 
 // UsernameNEQ applies the NEQ predicate on the "username" field.
 func UsernameNEQ(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.NEQ(s.C(FieldUsername), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldUsername), v))
+	},
 	)
 }
 
@@ -363,16 +333,15 @@ func UsernameIn(vs ...string) predicate.User {
 	for i := range v {
 		v[i] = vs[i]
 	}
-	return predicate.User(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.In(s.C(FieldUsername), v...))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldUsername), v...))
+	},
 	)
 }
 
@@ -382,115 +351,103 @@ func UsernameNotIn(vs ...string) predicate.User {
 	for i := range v {
 		v[i] = vs[i]
 	}
-	return predicate.User(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.NotIn(s.C(FieldUsername), v...))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldUsername), v...))
+	},
 	)
 }
 
 // UsernameGT applies the GT predicate on the "username" field.
 func UsernameGT(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.GT(s.C(FieldUsername), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldUsername), v))
+	},
 	)
 }
 
 // UsernameGTE applies the GTE predicate on the "username" field.
 func UsernameGTE(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.GTE(s.C(FieldUsername), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldUsername), v))
+	},
 	)
 }
 
 // UsernameLT applies the LT predicate on the "username" field.
 func UsernameLT(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.LT(s.C(FieldUsername), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldUsername), v))
+	},
 	)
 }
 
 // UsernameLTE applies the LTE predicate on the "username" field.
 func UsernameLTE(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.LTE(s.C(FieldUsername), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldUsername), v))
+	},
 	)
 }
 
 // UsernameContains applies the Contains predicate on the "username" field.
 func UsernameContains(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.Contains(s.C(FieldUsername), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldUsername), v))
+	},
 	)
 }
 
 // UsernameHasPrefix applies the HasPrefix predicate on the "username" field.
 func UsernameHasPrefix(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.HasPrefix(s.C(FieldUsername), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldUsername), v))
+	},
 	)
 }
 
 // UsernameHasSuffix applies the HasSuffix predicate on the "username" field.
 func UsernameHasSuffix(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.HasSuffix(s.C(FieldUsername), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldUsername), v))
+	},
 	)
 }
 
 // UsernameEqualFold applies the EqualFold predicate on the "username" field.
 func UsernameEqualFold(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.EqualFold(s.C(FieldUsername), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldUsername), v))
+	},
 	)
 }
 
 // UsernameContainsFold applies the ContainsFold predicate on the "username" field.
 func UsernameContainsFold(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.ContainsFold(s.C(FieldUsername), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldUsername), v))
+	},
 	)
 }
 
 // EmailEQ applies the EQ predicate on the "email" field.
 func EmailEQ(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldEmail), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldEmail), v))
+	},
 	)
 }
 
 // EmailNEQ applies the NEQ predicate on the "email" field.
 func EmailNEQ(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.NEQ(s.C(FieldEmail), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldEmail), v))
+	},
 	)
 }
 
@@ -500,16 +457,15 @@ func EmailIn(vs ...string) predicate.User {
 	for i := range v {
 		v[i] = vs[i]
 	}
-	return predicate.User(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.In(s.C(FieldEmail), v...))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldEmail), v...))
+	},
 	)
 }
 
@@ -519,115 +475,103 @@ func EmailNotIn(vs ...string) predicate.User {
 	for i := range v {
 		v[i] = vs[i]
 	}
-	return predicate.User(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.NotIn(s.C(FieldEmail), v...))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldEmail), v...))
+	},
 	)
 }
 
 // EmailGT applies the GT predicate on the "email" field.
 func EmailGT(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.GT(s.C(FieldEmail), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldEmail), v))
+	},
 	)
 }
 
 // EmailGTE applies the GTE predicate on the "email" field.
 func EmailGTE(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.GTE(s.C(FieldEmail), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldEmail), v))
+	},
 	)
 }
 
 // EmailLT applies the LT predicate on the "email" field.
 func EmailLT(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.LT(s.C(FieldEmail), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldEmail), v))
+	},
 	)
 }
 
 // EmailLTE applies the LTE predicate on the "email" field.
 func EmailLTE(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.LTE(s.C(FieldEmail), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldEmail), v))
+	},
 	)
 }
 
 // EmailContains applies the Contains predicate on the "email" field.
 func EmailContains(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.Contains(s.C(FieldEmail), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldEmail), v))
+	},
 	)
 }
 
 // EmailHasPrefix applies the HasPrefix predicate on the "email" field.
 func EmailHasPrefix(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.HasPrefix(s.C(FieldEmail), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldEmail), v))
+	},
 	)
 }
 
 // EmailHasSuffix applies the HasSuffix predicate on the "email" field.
 func EmailHasSuffix(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.HasSuffix(s.C(FieldEmail), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldEmail), v))
+	},
 	)
 }
 
 // EmailEqualFold applies the EqualFold predicate on the "email" field.
 func EmailEqualFold(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.EqualFold(s.C(FieldEmail), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldEmail), v))
+	},
 	)
 }
 
 // EmailContainsFold applies the ContainsFold predicate on the "email" field.
 func EmailContainsFold(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.ContainsFold(s.C(FieldEmail), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldEmail), v))
+	},
 	)
 }
 
 // PasswordEQ applies the EQ predicate on the "password" field.
 func PasswordEQ(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldPassword), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldPassword), v))
+	},
 	)
 }
 
 // PasswordNEQ applies the NEQ predicate on the "password" field.
 func PasswordNEQ(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.NEQ(s.C(FieldPassword), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldPassword), v))
+	},
 	)
 }
 
@@ -637,16 +581,15 @@ func PasswordIn(vs ...string) predicate.User {
 	for i := range v {
 		v[i] = vs[i]
 	}
-	return predicate.User(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.In(s.C(FieldPassword), v...))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldPassword), v...))
+	},
 	)
 }
 
@@ -656,129 +599,117 @@ func PasswordNotIn(vs ...string) predicate.User {
 	for i := range v {
 		v[i] = vs[i]
 	}
-	return predicate.User(
-		func(s *sql.Selector) {
-			// if not arguments were provided, append the FALSE constants,
-			// since we can't apply "IN ()". This will make this predicate falsy.
-			if len(vs) == 0 {
-				s.Where(sql.False())
-				return
-			}
-			s.Where(sql.NotIn(s.C(FieldPassword), v...))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldPassword), v...))
+	},
 	)
 }
 
 // PasswordGT applies the GT predicate on the "password" field.
 func PasswordGT(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.GT(s.C(FieldPassword), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldPassword), v))
+	},
 	)
 }
 
 // PasswordGTE applies the GTE predicate on the "password" field.
 func PasswordGTE(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.GTE(s.C(FieldPassword), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldPassword), v))
+	},
 	)
 }
 
 // PasswordLT applies the LT predicate on the "password" field.
 func PasswordLT(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.LT(s.C(FieldPassword), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldPassword), v))
+	},
 	)
 }
 
 // PasswordLTE applies the LTE predicate on the "password" field.
 func PasswordLTE(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.LTE(s.C(FieldPassword), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldPassword), v))
+	},
 	)
 }
 
 // PasswordContains applies the Contains predicate on the "password" field.
 func PasswordContains(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.Contains(s.C(FieldPassword), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldPassword), v))
+	},
 	)
 }
 
 // PasswordHasPrefix applies the HasPrefix predicate on the "password" field.
 func PasswordHasPrefix(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.HasPrefix(s.C(FieldPassword), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldPassword), v))
+	},
 	)
 }
 
 // PasswordHasSuffix applies the HasSuffix predicate on the "password" field.
 func PasswordHasSuffix(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.HasSuffix(s.C(FieldPassword), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldPassword), v))
+	},
 	)
 }
 
 // PasswordEqualFold applies the EqualFold predicate on the "password" field.
 func PasswordEqualFold(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.EqualFold(s.C(FieldPassword), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldPassword), v))
+	},
 	)
 }
 
 // PasswordContainsFold applies the ContainsFold predicate on the "password" field.
 func PasswordContainsFold(v string) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			s.Where(sql.ContainsFold(s.C(FieldPassword), v))
-		},
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldPassword), v))
+	},
 	)
 }
 
 // HasPlanets applies the HasEdge predicate on the "planets" edge.
 func HasPlanets() predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			step := sql.NewStep(
-				sql.From(Table, FieldID),
-				sql.To(PlanetsTable, FieldID),
-				sql.Edge(sql.O2M, false, PlanetsTable, PlanetsColumn),
-			)
-			sql.HasNeighbors(s, step)
-		},
+	return predicate.User(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(PlanetsTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, PlanetsTable, PlanetsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	},
 	)
 }
 
 // HasPlanetsWith applies the HasEdge predicate on the "planets" edge with a given conditions (other predicates).
 func HasPlanetsWith(preds ...predicate.Planet) predicate.User {
-	return predicate.User(
-		func(s *sql.Selector) {
-			step := sql.NewStep(
-				sql.From(Table, FieldID),
-				sql.To(PlanetsInverseTable, FieldID),
-				sql.Edge(sql.O2M, false, PlanetsTable, PlanetsColumn),
-			)
-			sql.HasNeighborsWith(s, step, func(s *sql.Selector) {
-				for _, p := range preds {
-					p(s)
-				}
-			})
-		},
+	return predicate.User(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(PlanetsInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, PlanetsTable, PlanetsColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	},
 	)
 }
 

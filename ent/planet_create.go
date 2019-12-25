@@ -8,9 +8,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/facebookincubator/ent/dialect/sql"
+	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
+	"github.com/facebookincubator/ent/schema/field"
 	"github.com/pdeguing/empire-and-foundation/ent/planet"
 	"github.com/pdeguing/empire-and-foundation/ent/timer"
+	"github.com/pdeguing/empire-and-foundation/ent/user"
 )
 
 // PlanetCreate is the builder for creating a Planet entity.
@@ -620,158 +622,268 @@ func (pc *PlanetCreate) SaveX(ctx context.Context) *Planet {
 
 func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 	var (
-		res     sql.Result
-		builder = sql.Dialect(pc.driver.Dialect())
-		pl      = &Planet{config: pc.config}
+		pl   = &Planet{config: pc.config}
+		spec = &sqlgraph.CreateSpec{
+			Table: planet.Table,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeInt,
+				Column: planet.FieldID,
+			},
+		}
 	)
-	tx, err := pc.driver.Tx(ctx)
-	if err != nil {
-		return nil, err
-	}
-	insert := builder.Insert(planet.Table).Default()
 	if value := pc.created_at; value != nil {
-		insert.Set(planet.FieldCreatedAt, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  *value,
+			Column: planet.FieldCreatedAt,
+		})
 		pl.CreatedAt = *value
 	}
 	if value := pc.updated_at; value != nil {
-		insert.Set(planet.FieldUpdatedAt, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  *value,
+			Column: planet.FieldUpdatedAt,
+		})
 		pl.UpdatedAt = *value
 	}
 	if value := pc.metal; value != nil {
-		insert.Set(planet.FieldMetal, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  *value,
+			Column: planet.FieldMetal,
+		})
 		pl.Metal = *value
 	}
 	if value := pc.metal_last_update; value != nil {
-		insert.Set(planet.FieldMetalLastUpdate, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  *value,
+			Column: planet.FieldMetalLastUpdate,
+		})
 		pl.MetalLastUpdate = *value
 	}
 	if value := pc.metal_rate; value != nil {
-		insert.Set(planet.FieldMetalRate, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldMetalRate,
+		})
 		pl.MetalRate = *value
 	}
 	if value := pc.metal_prod_level; value != nil {
-		insert.Set(planet.FieldMetalProdLevel, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldMetalProdLevel,
+		})
 		pl.MetalProdLevel = *value
 	}
 	if value := pc.metal_storage_level; value != nil {
-		insert.Set(planet.FieldMetalStorageLevel, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldMetalStorageLevel,
+		})
 		pl.MetalStorageLevel = *value
 	}
 	if value := pc.hydrogen; value != nil {
-		insert.Set(planet.FieldHydrogen, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  *value,
+			Column: planet.FieldHydrogen,
+		})
 		pl.Hydrogen = *value
 	}
 	if value := pc.hydrogen_last_update; value != nil {
-		insert.Set(planet.FieldHydrogenLastUpdate, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  *value,
+			Column: planet.FieldHydrogenLastUpdate,
+		})
 		pl.HydrogenLastUpdate = *value
 	}
 	if value := pc.hydrogen_rate; value != nil {
-		insert.Set(planet.FieldHydrogenRate, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldHydrogenRate,
+		})
 		pl.HydrogenRate = *value
 	}
 	if value := pc.hydrogen_prod_level; value != nil {
-		insert.Set(planet.FieldHydrogenProdLevel, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldHydrogenProdLevel,
+		})
 		pl.HydrogenProdLevel = *value
 	}
 	if value := pc.hydrogen_storage_level; value != nil {
-		insert.Set(planet.FieldHydrogenStorageLevel, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldHydrogenStorageLevel,
+		})
 		pl.HydrogenStorageLevel = *value
 	}
 	if value := pc.silica; value != nil {
-		insert.Set(planet.FieldSilica, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  *value,
+			Column: planet.FieldSilica,
+		})
 		pl.Silica = *value
 	}
 	if value := pc.silica_last_update; value != nil {
-		insert.Set(planet.FieldSilicaLastUpdate, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  *value,
+			Column: planet.FieldSilicaLastUpdate,
+		})
 		pl.SilicaLastUpdate = *value
 	}
 	if value := pc.silica_rate; value != nil {
-		insert.Set(planet.FieldSilicaRate, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldSilicaRate,
+		})
 		pl.SilicaRate = *value
 	}
 	if value := pc.silica_prod_level; value != nil {
-		insert.Set(planet.FieldSilicaProdLevel, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldSilicaProdLevel,
+		})
 		pl.SilicaProdLevel = *value
 	}
 	if value := pc.silica_storage_level; value != nil {
-		insert.Set(planet.FieldSilicaStorageLevel, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldSilicaStorageLevel,
+		})
 		pl.SilicaStorageLevel = *value
 	}
 	if value := pc.population; value != nil {
-		insert.Set(planet.FieldPopulation, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  *value,
+			Column: planet.FieldPopulation,
+		})
 		pl.Population = *value
 	}
 	if value := pc.population_last_update; value != nil {
-		insert.Set(planet.FieldPopulationLastUpdate, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  *value,
+			Column: planet.FieldPopulationLastUpdate,
+		})
 		pl.PopulationLastUpdate = *value
 	}
 	if value := pc.population_rate; value != nil {
-		insert.Set(planet.FieldPopulationRate, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldPopulationRate,
+		})
 		pl.PopulationRate = *value
 	}
 	if value := pc.population_prod_level; value != nil {
-		insert.Set(planet.FieldPopulationProdLevel, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldPopulationProdLevel,
+		})
 		pl.PopulationProdLevel = *value
 	}
 	if value := pc.population_storage_level; value != nil {
-		insert.Set(planet.FieldPopulationStorageLevel, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldPopulationStorageLevel,
+		})
 		pl.PopulationStorageLevel = *value
 	}
 	if value := pc.energy_cons; value != nil {
-		insert.Set(planet.FieldEnergyCons, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  *value,
+			Column: planet.FieldEnergyCons,
+		})
 		pl.EnergyCons = *value
 	}
 	if value := pc.energy_prod; value != nil {
-		insert.Set(planet.FieldEnergyProd, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  *value,
+			Column: planet.FieldEnergyProd,
+		})
 		pl.EnergyProd = *value
 	}
 	if value := pc.solar_prod_level; value != nil {
-		insert.Set(planet.FieldSolarProdLevel, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldSolarProdLevel,
+		})
 		pl.SolarProdLevel = *value
 	}
 	if value := pc.name; value != nil {
-		insert.Set(planet.FieldName, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  *value,
+			Column: planet.FieldName,
+		})
 		pl.Name = *value
 	}
-
-	id, err := insertLastID(ctx, tx, insert.Returning(planet.FieldID))
-	if err != nil {
-		return nil, rollback(tx, err)
+	if nodes := pc.owner; len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   planet.OwnerTable,
+			Columns: []string{planet.OwnerColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: user.FieldID,
+				},
+			},
+		}
+		for k, _ := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		spec.Edges = append(spec.Edges, edge)
 	}
-	pl.ID = int(id)
-	if len(pc.owner) > 0 {
-		for eid := range pc.owner {
-			query, args := builder.Update(planet.OwnerTable).
-				Set(planet.OwnerColumn, eid).
-				Where(sql.EQ(planet.FieldID, id)).
-				Query()
-			if err := tx.Exec(ctx, query, args, &res); err != nil {
-				return nil, rollback(tx, err)
-			}
+	if nodes := pc.timers; len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   planet.TimersTable,
+			Columns: []string{planet.TimersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: timer.FieldID,
+				},
+			},
 		}
+		for k, _ := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		spec.Edges = append(spec.Edges, edge)
 	}
-	if len(pc.timers) > 0 {
-		p := sql.P()
-		for eid := range pc.timers {
-			p.Or().EQ(timer.FieldID, eid)
+	if err := sqlgraph.CreateNode(ctx, pc.driver, spec); err != nil {
+		if cerr, ok := isSQLConstraintError(err); ok {
+			err = cerr
 		}
-		query, args := builder.Update(planet.TimersTable).
-			Set(planet.TimersColumn, id).
-			Where(sql.And(p, sql.IsNull(planet.TimersColumn))).
-			Query()
-		if err := tx.Exec(ctx, query, args, &res); err != nil {
-			return nil, rollback(tx, err)
-		}
-		affected, err := res.RowsAffected()
-		if err != nil {
-			return nil, rollback(tx, err)
-		}
-		if int(affected) < len(pc.timers) {
-			return nil, rollback(tx, &ErrConstraintFailed{msg: fmt.Sprintf("one of \"timers\" %v already connected to a different \"Planet\"", keys(pc.timers))})
-		}
-	}
-	if err := tx.Commit(); err != nil {
 		return nil, err
 	}
+	id := spec.ID.Value.(int64)
+	pl.ID = int(id)
 	return pl, nil
 }

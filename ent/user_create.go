@@ -5,10 +5,10 @@ package ent
 import (
 	"context"
 	"errors"
-	"fmt"
 	"time"
 
-	"github.com/facebookincubator/ent/dialect/sql"
+	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
+	"github.com/facebookincubator/ent/schema/field"
 	"github.com/pdeguing/empire-and-foundation/ent/planet"
 	"github.com/pdeguing/empire-and-foundation/ent/user"
 )
@@ -123,63 +123,81 @@ func (uc *UserCreate) SaveX(ctx context.Context) *User {
 
 func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
 	var (
-		res     sql.Result
-		builder = sql.Dialect(uc.driver.Dialect())
-		u       = &User{config: uc.config}
+		u    = &User{config: uc.config}
+		spec = &sqlgraph.CreateSpec{
+			Table: user.Table,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeInt,
+				Column: user.FieldID,
+			},
+		}
 	)
-	tx, err := uc.driver.Tx(ctx)
-	if err != nil {
-		return nil, err
-	}
-	insert := builder.Insert(user.Table).Default()
 	if value := uc.created_at; value != nil {
-		insert.Set(user.FieldCreatedAt, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  *value,
+			Column: user.FieldCreatedAt,
+		})
 		u.CreatedAt = *value
 	}
 	if value := uc.updated_at; value != nil {
-		insert.Set(user.FieldUpdatedAt, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  *value,
+			Column: user.FieldUpdatedAt,
+		})
 		u.UpdatedAt = *value
 	}
 	if value := uc.username; value != nil {
-		insert.Set(user.FieldUsername, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  *value,
+			Column: user.FieldUsername,
+		})
 		u.Username = *value
 	}
 	if value := uc.email; value != nil {
-		insert.Set(user.FieldEmail, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  *value,
+			Column: user.FieldEmail,
+		})
 		u.Email = *value
 	}
 	if value := uc.password; value != nil {
-		insert.Set(user.FieldPassword, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  *value,
+			Column: user.FieldPassword,
+		})
 		u.Password = *value
 	}
-
-	id, err := insertLastID(ctx, tx, insert.Returning(user.FieldID))
-	if err != nil {
-		return nil, rollback(tx, err)
+	if nodes := uc.planets; len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PlanetsTable,
+			Columns: []string{user.PlanetsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: planet.FieldID,
+				},
+			},
+		}
+		for k, _ := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		spec.Edges = append(spec.Edges, edge)
 	}
-	u.ID = int(id)
-	if len(uc.planets) > 0 {
-		p := sql.P()
-		for eid := range uc.planets {
-			p.Or().EQ(planet.FieldID, eid)
+	if err := sqlgraph.CreateNode(ctx, uc.driver, spec); err != nil {
+		if cerr, ok := isSQLConstraintError(err); ok {
+			err = cerr
 		}
-		query, args := builder.Update(user.PlanetsTable).
-			Set(user.PlanetsColumn, id).
-			Where(sql.And(p, sql.IsNull(user.PlanetsColumn))).
-			Query()
-		if err := tx.Exec(ctx, query, args, &res); err != nil {
-			return nil, rollback(tx, err)
-		}
-		affected, err := res.RowsAffected()
-		if err != nil {
-			return nil, rollback(tx, err)
-		}
-		if int(affected) < len(uc.planets) {
-			return nil, rollback(tx, &ErrConstraintFailed{msg: fmt.Sprintf("one of \"planets\" %v already connected to a different \"User\"", keys(uc.planets))})
-		}
-	}
-	if err := tx.Commit(); err != nil {
 		return nil, err
 	}
+	id := spec.ID.Value.(int64)
+	u.ID = int(id)
 	return u, nil
 }

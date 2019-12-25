@@ -8,7 +8,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/facebookincubator/ent/dialect/sql"
+	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
+	"github.com/facebookincubator/ent/schema/field"
+	"github.com/pdeguing/empire-and-foundation/ent/planet"
 	"github.com/pdeguing/empire-and-foundation/ent/timer"
 )
 
@@ -95,46 +97,65 @@ func (tc *TimerCreate) SaveX(ctx context.Context) *Timer {
 
 func (tc *TimerCreate) sqlSave(ctx context.Context) (*Timer, error) {
 	var (
-		res     sql.Result
-		builder = sql.Dialect(tc.driver.Dialect())
-		t       = &Timer{config: tc.config}
+		t    = &Timer{config: tc.config}
+		spec = &sqlgraph.CreateSpec{
+			Table: timer.Table,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeInt,
+				Column: timer.FieldID,
+			},
+		}
 	)
-	tx, err := tc.driver.Tx(ctx)
-	if err != nil {
-		return nil, err
-	}
-	insert := builder.Insert(timer.Table).Default()
 	if value := tc.action; value != nil {
-		insert.Set(timer.FieldAction, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeEnum,
+			Value:  *value,
+			Column: timer.FieldAction,
+		})
 		t.Action = *value
 	}
 	if value := tc.group; value != nil {
-		insert.Set(timer.FieldGroup, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeEnum,
+			Value:  *value,
+			Column: timer.FieldGroup,
+		})
 		t.Group = *value
 	}
 	if value := tc.end_time; value != nil {
-		insert.Set(timer.FieldEndTime, *value)
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  *value,
+			Column: timer.FieldEndTime,
+		})
 		t.EndTime = *value
 	}
-
-	id, err := insertLastID(ctx, tx, insert.Returning(timer.FieldID))
-	if err != nil {
-		return nil, rollback(tx, err)
-	}
-	t.ID = int(id)
-	if len(tc.planet) > 0 {
-		for eid := range tc.planet {
-			query, args := builder.Update(timer.PlanetTable).
-				Set(timer.PlanetColumn, eid).
-				Where(sql.EQ(timer.FieldID, id)).
-				Query()
-			if err := tx.Exec(ctx, query, args, &res); err != nil {
-				return nil, rollback(tx, err)
-			}
+	if nodes := tc.planet; len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   timer.PlanetTable,
+			Columns: []string{timer.PlanetColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: planet.FieldID,
+				},
+			},
 		}
+		for k, _ := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		spec.Edges = append(spec.Edges, edge)
 	}
-	if err := tx.Commit(); err != nil {
+	if err := sqlgraph.CreateNode(ctx, tc.driver, spec); err != nil {
+		if cerr, ok := isSQLConstraintError(err); ok {
+			err = cerr
+		}
 		return nil, err
 	}
+	id := spec.ID.Value.(int64)
+	t.ID = int(id)
 	return t, nil
 }

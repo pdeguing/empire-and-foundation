@@ -73,7 +73,7 @@ var (
 	// TimersColumns holds the columns for the "timers" table.
 	TimersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "action", Type: field.TypeEnum, Enums: []string{"upgrade_metal_mine"}},
+		{Name: "action", Type: field.TypeEnum, Enums: []string{"upgrade_metal_mine", "upgrade_hydrogen_extractor", "upgrade_silica_quarry", "upgrade_solar_plant", "upgrade_housing_facilities"}},
 		{Name: "group", Type: field.TypeEnum, Enums: []string{"building"}},
 		{Name: "end_time", Type: field.TypeTime},
 		{Name: "planet_id", Type: field.TypeInt, Nullable: true},

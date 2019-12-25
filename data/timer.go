@@ -3,6 +3,7 @@ package data
 import (
 	"context"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/pdeguing/empire-and-foundation/ent"
@@ -37,7 +38,10 @@ type action struct {
 	// Start is triggered when the action is scheduled using a timer.
 	Start func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error
 
-	// Complete is triggered when the timer is done.
+	// Complete is triggered when the timer is done. Make sure that any update
+	// to the planet is also updated in the passed in model and not only in
+	// the database. If not, the update won't be visible in the view until
+	// after a reload.
 	Complete func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error
 
 	// Cancel is triggered when the timer is canceled before
@@ -74,8 +78,9 @@ var actions = map[timer.Action]action{
 			return subStock(ctx, p, c)
 		},
 		Complete: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+			p.MetalProdLevel++
 			_, err := p.Update().
-				SetMetalProdLevel(p.MetalProdLevel + 1).
+				SetMetalProdLevel(p.MetalProdLevel).
 				Save(ctx)
 			return err
 		},
@@ -84,13 +89,117 @@ var actions = map[timer.Action]action{
 			return addStock(ctx, p, c)
 		},
 	},
+	timer.ActionUpgradeHydrogenExtractor: action{
+		Group: timer.GroupBuilding,
+		Duration: func(p *ent.Planet) time.Duration {
+			return getHydrogenExtractorUpgradeDuration(p.HydrogenProdLevel + 1)
+		},
+		Valid: func(p *ent.Planet) bool {
+			c := getHydrogenExtractorUpgradeCost(p.HydrogenProdLevel + 1)
+			return hasResources(p, c)
+		},
+		Start: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+			c := getHydrogenExtractorUpgradeCost(p.HydrogenProdLevel + 1)
+			return subStock(ctx, p, c)
+		},
+		Complete: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+			p.HydrogenProdLevel++
+			_, err := p.Update().
+				SetHydrogenProdLevel(p.HydrogenProdLevel).
+				Save(ctx)
+			return err
+		},
+		Cancel: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+			c := getHydrogenExtractorUpgradeCost(p.HydrogenProdLevel + 1)
+			return addStock(ctx, p, c)
+		},
+	},
+	timer.ActionUpgradeSilicaQuarry: action{
+		Group: timer.GroupBuilding,
+		Duration: func(p *ent.Planet) time.Duration {
+			return getSilicaQuarryUpgradeDuration(p.SilicaProdLevel + 1)
+		},
+		Valid: func(p *ent.Planet) bool {
+			c := getSilicaQuarryUpgradeCost(p.SilicaProdLevel + 1)
+			return hasResources(p, c)
+		},
+		Start: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+			c := getSilicaQuarryUpgradeCost(p.SilicaProdLevel + 1)
+			return subStock(ctx, p, c)
+		},
+		Complete: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+			p.SilicaProdLevel++
+			_, err := p.Update().
+				SetSilicaProdLevel(p.SilicaProdLevel).
+				Save(ctx)
+			return err
+		},
+		Cancel: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+			c := getSilicaQuarryUpgradeCost(p.SilicaProdLevel + 1)
+			return addStock(ctx, p, c)
+		},
+	},
+	timer.ActionUpgradeSolarPlant: action{
+		Group: timer.GroupBuilding,
+		Duration: func(p *ent.Planet) time.Duration {
+			return getSolarPlantUpgradeDuration(p.SolarProdLevel + 1)
+		},
+		Valid: func(p *ent.Planet) bool {
+			c := getSolarPlantUpgradeCost(p.SolarProdLevel + 1)
+			return hasResources(p, c)
+		},
+		Start: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+			c := getSolarPlantUpgradeCost(p.SolarProdLevel + 1)
+			return subStock(ctx, p, c)
+		},
+		Complete: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+			p.SolarProdLevel++
+			_, err := p.Update().
+				SetSolarProdLevel(p.SolarProdLevel).
+				Save(ctx)
+			return err
+		},
+		Cancel: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+			c := getSolarPlantUpgradeCost(p.SolarProdLevel + 1)
+			return addStock(ctx, p, c)
+		},
+	},
+	timer.ActionUpgradeHousingFacilities: action{
+		Group: timer.GroupBuilding,
+		Duration: func(p *ent.Planet) time.Duration {
+			return getHousingFacilitiesUpgradeDuration(p.PopulationStorageLevel + 1)
+		},
+		Valid: func(p *ent.Planet) bool {
+			c := getHousingFacilitiesUpgradeCost(p.PopulationStorageLevel + 1)
+			return hasResources(p, c)
+		},
+		Start: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+			c := getHousingFacilitiesUpgradeCost(p.PopulationStorageLevel + 1)
+			return subStock(ctx, p, c)
+		},
+		Complete: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+			p.PopulationStorageLevel++
+			_, err := p.Update().
+				SetPopulationStorageLevel(p.PopulationStorageLevel).
+				Save(ctx)
+			return err
+		},
+		Cancel: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+			c := getHousingFacilitiesUpgradeCost(p.PopulationStorageLevel + 1)
+			return addStock(ctx, p, c)
+		},
+	},
 }
 
 // IsBussy checks if there is currently a timer in progress for the group.
 func IsBussy(ctx context.Context, p *ent.Planet, g timer.Group) (bool, error) {
-	return p.QueryTimers().
+	b, err := p.QueryTimers().
 		Where(timer.GroupEQ(g)).
 		Exist(ctx)
+	if err != nil {
+		return true, fmt.Errorf("unable to query existence of running timer: %v", err)
+	}
+	return b, nil
 }
 
 // GetTimer returns information about the in progress timer in the group.
@@ -102,7 +211,7 @@ func GetTimer(ctx context.Context, p *ent.Planet, g timer.Group) (*Timer, error)
 		return nil, nil
 	}
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("unable to retrieve timer in group %q for planet: %v", g, err)
 	}
 	return &Timer{
 		Action:  t.Action,
@@ -118,7 +227,7 @@ func GetTimers(ctx context.Context, p *ent.Planet) (map[timer.Group]*Timer, erro
 		return nil, nil
 	}
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("unable to retrieve timers for planet: %v", err)
 	}
 	tm := make(map[timer.Group]*Timer)
 	for _, t := range timers {
@@ -132,92 +241,86 @@ func GetTimers(ctx context.Context, p *ent.Planet) (map[timer.Group]*Timer, erro
 
 // StartTimer starts a timer for the action a if all prerequisites are met.
 // After the duration defined by the action, the timer completes.
-func StartTimer(ctx context.Context, p *ent.Planet, action timer.Action) error {
-	return WithTx(ctx, Client, func(tx *ent.Tx) error {
-		// Retrieve the planet *again*, but from within the transaction.
-		pTx, err := tx.Planet.Get(ctx, p.ID)
-		if err != nil {
-			return err
-		}
-		a := actions[action]
-		bussy, err := IsBussy(ctx, pTx, a.Group)
-		if err != nil {
-			return err
-		}
-		if bussy {
-			return ErrTimerBussy
-		}
-		if !a.Valid(pTx) {
-			return ErrActionPrerequisitesNotMet
-		}
-		d := a.Duration(pTx)
-		err = a.Start(ctx, tx, pTx)
-		if err != nil {
-			return err
-		}
-		_, err = tx.Timer.
-			Create().
-			SetPlanet(pTx).
-			SetAction(action).
-			SetGroup(a.Group).
-			SetEndTime(time.Now().Add(d)).
-			Save(ctx)
+func StartTimer(ctx context.Context, tx *ent.Tx, p *ent.Planet, action timer.Action) error {
+	a, ok := actions[action]
+	if !ok {
+		// A test exists to check that all actions defined in the schema
+		// are also defined in the action map. This error should never
+		// occur in production if the test is used.
+		return fmt.Errorf("action %q for timer is not yet defined", action)
+	}
+	bussy, err := IsBussy(ctx, p, a.Group)
+	if err != nil {
 		return err
-	})
+	}
+	if bussy {
+		return ErrTimerBussy
+	}
+	if !a.Valid(p) {
+		return ErrActionPrerequisitesNotMet
+	}
+	d := a.Duration(p)
+	err = a.Start(ctx, tx, p)
+	if err != nil {
+		return fmt.Errorf("error while calling \"Start\" function for action %q: %v", action, err)
+	}
+	_, err = tx.Timer.
+		Create().
+		SetPlanet(p).
+		SetAction(action).
+		SetGroup(a.Group).
+		SetEndTime(time.Now().Add(d)).
+		Save(ctx)
+	if err != nil {
+		return fmt.Errorf("unable to create timer entry: %v", err)
+	}
+	return nil
 }
 
 // CancelTimer aborts the timer and triggers the action's Cancel function immediately.
-func CancelTimer(ctx context.Context, p *ent.Planet, a timer.Action) error {
-	return WithTx(ctx, Client, func(tx *ent.Tx) error {
-		// Retrieve the planet *again*, but from within the transaction.
-		pTx, err := tx.Planet.Get(ctx, p.ID)
-		if err != nil {
-			return err
-		}
-		n, err := tx.Timer.
-			Delete().
-			Where(timer.HasPlanetWith(planet.IDEQ(pTx.ID))).
-			Where(timer.ActionEQ(a)).
-			Exec(ctx)
-		if err != nil {
-			return err
-		}
-		if n == 0 {
-			return ErrTimerNotRunning
-		}
-		err = actions[a].Cancel(ctx, tx, pTx)
-		return err
-	})
+func CancelTimer(ctx context.Context, tx *ent.Tx, p *ent.Planet, a timer.Action) error {
+	n, err := tx.Timer.
+		Delete().
+		Where(timer.HasPlanetWith(planet.IDEQ(p.ID))).
+		Where(timer.ActionEQ(a)).
+		Exec(ctx)
+	if err != nil {
+		return fmt.Errorf("unable to delete timer to cancel it: %v", err)
+	}
+	if n == 0 {
+		return ErrTimerNotRunning
+	}
+	err = actions[a].Cancel(ctx, tx, p)
+	return err
 }
 
 // UpdateTimers checks if timers have completed, and if so, triggers the action's
 // Complete function and cleans up the timers. This function must be called before
 // any information manipulated by the timers/actions is queried.
-func UpdateTimers(ctx context.Context, p *ent.Planet) error {
-	return WithTx(ctx, Client, func(tx *ent.Tx) error {
-		// Retrieve the planet *again*, but from within the transaction.
-		pTx, err := tx.Planet.Get(ctx, p.ID)
+func UpdateTimers(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+	timers, err := p.QueryTimers().
+		Where(timer.EndTimeLTE(time.Now())).
+		Order(ent.Asc(timer.FieldEndTime)).
+		All(ctx)
+	if err != nil {
+		return fmt.Errorf("unable to retrieve running timers: %v", err)
+	}
+	if len(timers) == 0 {
+		return nil // Fast path
+	}
+	for _, t := range timers {
+		err = actions[t.Action].Complete(ctx, tx, p)
 		if err != nil {
-			return err
+			return fmt.Errorf("error while calling \"Complete\" function for action %q: %v", t.Action, err)
 		}
-		timers, err := pTx.QueryTimers().
-			Where(timer.EndTimeLTE(time.Now())).
-			Order(ent.Asc(timer.FieldEndTime)).
-			All(ctx)
-		if err != nil {
-			return err
-		}
-		for _, t := range timers {
-			err = actions[t.Action].Complete(ctx, tx, pTx)
-			if err != nil {
-				return err
-			}
-		}
-		_, err = tx.Timer.
-			Delete().
-			Where(timer.EndTimeLTE(time.Now())).
-			Where(timer.HasPlanetWith(planet.IDEQ(pTx.ID))).
-			Exec(ctx)
-		return err
-	})
+	}
+	_, err = tx.Timer.
+		Delete().
+		Where(timer.EndTimeLTE(time.Now())).
+		Where(timer.HasPlanetWith(planet.IDEQ(p.ID))).
+		Exec(ctx)
+	if err != nil {
+		return fmt.Errorf("unable to delete finished timers: %v", err)
+	}
+	return nil
 }

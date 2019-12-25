@@ -9,6 +9,7 @@ import (
 	"math"
 
 	"github.com/facebookincubator/ent/dialect/sql"
+	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/pdeguing/empire-and-foundation/ent/planet"
 	"github.com/pdeguing/empire-and-foundation/ent/predicate"
 	"github.com/pdeguing/empire-and-foundation/ent/timer"
@@ -23,7 +24,7 @@ type PlanetQuery struct {
 	order      []Order
 	unique     []string
 	predicates []predicate.Planet
-	// intermediate queries.
+	// intermediate query.
 	sql *sql.Selector
 }
 
@@ -54,24 +55,24 @@ func (pq *PlanetQuery) Order(o ...Order) *PlanetQuery {
 // QueryOwner chains the current query on the owner edge.
 func (pq *PlanetQuery) QueryOwner() *UserQuery {
 	query := &UserQuery{config: pq.config}
-	step := sql.NewStep(
-		sql.From(planet.Table, planet.FieldID, pq.sqlQuery()),
-		sql.To(user.Table, user.FieldID),
-		sql.Edge(sql.M2O, true, planet.OwnerTable, planet.OwnerColumn),
+	step := sqlgraph.NewStep(
+		sqlgraph.From(planet.Table, planet.FieldID, pq.sqlQuery()),
+		sqlgraph.To(user.Table, user.FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, planet.OwnerTable, planet.OwnerColumn),
 	)
-	query.sql = sql.SetNeighbors(pq.driver.Dialect(), step)
+	query.sql = sqlgraph.SetNeighbors(pq.driver.Dialect(), step)
 	return query
 }
 
 // QueryTimers chains the current query on the timers edge.
 func (pq *PlanetQuery) QueryTimers() *TimerQuery {
 	query := &TimerQuery{config: pq.config}
-	step := sql.NewStep(
-		sql.From(planet.Table, planet.FieldID, pq.sqlQuery()),
-		sql.To(timer.Table, timer.FieldID),
-		sql.Edge(sql.O2M, false, planet.TimersTable, planet.TimersColumn),
+	step := sqlgraph.NewStep(
+		sqlgraph.From(planet.Table, planet.FieldID, pq.sqlQuery()),
+		sqlgraph.To(timer.Table, timer.FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, planet.TimersTable, planet.TimersColumn),
 	)
-	query.sql = sql.SetNeighbors(pq.driver.Dialect(), step)
+	query.sql = sqlgraph.SetNeighbors(pq.driver.Dialect(), step)
 	return query
 }
 
@@ -239,7 +240,7 @@ func (pq *PlanetQuery) Clone() *PlanetQuery {
 		order:      append([]Order{}, pq.order...),
 		unique:     append([]string{}, pq.unique...),
 		predicates: append([]predicate.Planet{}, pq.predicates...),
-		// clone intermediate queries.
+		// clone intermediate query.
 		sql: pq.sql.Clone(),
 	}
 }
@@ -365,7 +366,7 @@ type PlanetGroupBy struct {
 	config
 	fields []string
 	fns    []Aggregate
-	// intermediate queries.
+	// intermediate query.
 	sql *sql.Selector
 }
 
@@ -486,7 +487,7 @@ func (pgb *PlanetGroupBy) sqlQuery() *sql.Selector {
 	columns := make([]string, 0, len(pgb.fields)+len(pgb.fns))
 	columns = append(columns, pgb.fields...)
 	for _, fn := range pgb.fns {
-		columns = append(columns, fn.SQL(selector))
+		columns = append(columns, fn(selector))
 	}
 	return selector.Select(columns...).GroupBy(pgb.fields...)
 }

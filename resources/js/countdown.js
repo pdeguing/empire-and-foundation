@@ -34,6 +34,7 @@ function applyCountdown(element) {
         if (timeLeft < 0) {
             element.innerText = 'Done';
             // TODO: Re-enable all disabled buttons.
+            // TODO: Disable cancel button.
             clearInterval(interval);
             return;
         }

@@ -1030,7 +1030,7 @@ func (pu *PlanetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				return 0, rollback(tx, err)
 			}
 			if int(affected) < len(pu.timers) {
-				return 0, rollback(tx, &ErrConstraintFailed{msg: fmt.Sprintf("one of \"timers\" %v already connected to a different \"Planet\"", keys(pu.timers))})
+				return 0, rollback(tx, &ConstraintError{msg: fmt.Sprintf("one of \"timers\" %v already connected to a different \"Planet\"", keys(pu.timers))})
 			}
 		}
 	}
@@ -2096,7 +2096,7 @@ func (puo *PlanetUpdateOne) sqlSave(ctx context.Context) (pl *Planet, err error)
 				return nil, rollback(tx, err)
 			}
 			if int(affected) < len(puo.timers) {
-				return nil, rollback(tx, &ErrConstraintFailed{msg: fmt.Sprintf("one of \"timers\" %v already connected to a different \"Planet\"", keys(puo.timers))})
+				return nil, rollback(tx, &ConstraintError{msg: fmt.Sprintf("one of \"timers\" %v already connected to a different \"Planet\"", keys(puo.timers))})
 			}
 		}
 	}

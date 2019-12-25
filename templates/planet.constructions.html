@@ -1,6 +1,7 @@
 {{ define "planetBody" }}
 
 <div class="columns">
+
 	<div class="column is-flex">
 		<div class="card card-growing">
 			<div class="card-image">
@@ -22,7 +23,7 @@
 
 			<footer class="card-footer">
 				{{ if not .Data.Timer }}
-				<form action="/planet/{{ .Data.Planet.ID }}/upgrade/metal-mine" method="POST"
+				<form action="/planet/{{ .Data.Planet.ID }}/metal-mine/upgrade" method="POST"
 					class="Planet-card__form Planet-card__form--upgrade">
 					{{ csrf }}
 					<button class="is-paddingless Planet-card__button">
@@ -33,7 +34,7 @@
 				<div class="card-footer-item has-text-white has-text-weight-semibold Planet-card__duration">
 					{{ duration .Data.Timer.Duration }}
 				</div>
-				<form action="/planet/{{ .Data.Planet.ID }}/cancel/metal-mine" method="POST"
+				<form action="/planet/{{ .Data.Planet.ID }}/metal-mine/cancel" method="POST"
 					class="Planet-card__form Planet-card__form--cancel">
 					{{ csrf }}
 					<button class="is-paddingless Planet-card__button">
@@ -41,15 +42,15 @@
 					</button>
 				</form>
 				{{ else }}
-				<button class="card-footer-item" disabled>Upgrade</button>
+				<button class="card-footer-item Planet-card__button" disabled>Upgrade</button>
 				{{ end }}
-
 			</footer>
 			<footer class="card-footer">
 				<a href="#" class="card-footer-item">Details</a>
 			</footer>
 		</div>
 	</div>
+
 	<div class="column is-flex">
 		<div class="card card-growing">
 			<div class="card-image">
@@ -72,13 +73,35 @@
 				</div>
 			</div>
 			<footer class="card-footer">
-				<a href="#" class="card-footer-item">Upgrade</a>
+				{{ if not .Data.Timer }}
+				<form action="/planet/{{ .Data.Planet.ID }}/hydrogen-extractor/upgrade" method="POST"
+					class="Planet-card__form Planet-card__form--upgrade">
+					{{ csrf }}
+					<button class="is-paddingless Planet-card__button">
+						<span class="card-footer-item ">Upgrade</span>
+					</button>
+				</form>
+				{{ else if eq .Data.Timer.Action "upgrade_hydrogen_extractor" }}
+				<div class="card-footer-item has-text-white has-text-weight-semibold Planet-card__duration">
+					{{ duration .Data.Timer.Duration }}
+				</div>
+				<form action="/planet/{{ .Data.Planet.ID }}/hydrogen-extractor/cancel" method="POST"
+					class="Planet-card__form Planet-card__form--cancel">
+					{{ csrf }}
+					<button class="is-paddingless Planet-card__button">
+						<span class="Planet-card__button__text">Cancel</span>
+					</button>
+				</form>
+				{{ else }}
+				<button class="card-footer-item Planet-card__button" disabled>Upgrade</button>
+				{{ end }}
 			</footer>
 			<footer class="card-footer">
 				<a href="#" class="card-footer-item">Details</a>
 			</footer>
 		</div>
 	</div>
+
 	<div class="column is-flex">
 		<div class="card card-growing">
 			<div class="card-image">
@@ -98,13 +121,35 @@
 				</div>
 			</div>
 			<footer class="card-footer">
-				<a href="#" class="card-footer-item">Upgrade</a>
+				{{ if not .Data.Timer }}
+				<form action="/planet/{{ .Data.Planet.ID }}/silica-quarry/upgrade" method="POST"
+					class="Planet-card__form Planet-card__form--upgrade">
+					{{ csrf }}
+					<button class="is-paddingless Planet-card__button">
+						<span class="card-footer-item ">Upgrade</span>
+					</button>
+				</form>
+				{{ else if eq .Data.Timer.Action "upgrade_silica_quarry" }}
+				<div class="card-footer-item has-text-white has-text-weight-semibold Planet-card__duration">
+					{{ duration .Data.Timer.Duration }}
+				</div>
+				<form action="/planet/{{ .Data.Planet.ID }}/silica-quarry/cancel" method="POST"
+					class="Planet-card__form Planet-card__form--cancel">
+					{{ csrf }}
+					<button class="is-paddingless Planet-card__button">
+						<span class="Planet-card__button__text">Cancel</span>
+					</button>
+				</form>
+				{{ else }}
+				<button class="card-footer-item Planet-card__button" disabled>Upgrade</button>
+				{{ end }}
 			</footer>
 			<footer class="card-footer">
 				<a href="#" class="card-footer-item">Details</a>
 			</footer>
 		</div>
 	</div>
+
 	<div class="column is-flex">
 		<div class="card card-growing">
 			<div class="card-image">
@@ -114,7 +159,7 @@
 			</div>
 			<div class="card-content is-growing">
 				<div class="has-text-right Planet-card__header">
-					<h2 class="title is-5 is-marginless">Solar central</h2>
+					<h2 class="title is-5 is-marginless">Solar plant</h2>
 					<span class="subtitle is-7">Level...{{ .Data.Planet.SolarProdLevel }}</span>
 				</div>
 				<div class="content">
@@ -124,13 +169,35 @@
 				</div>
 			</div>
 			<footer class="card-footer">
-				<a href="#" class="card-footer-item">Upgrade</a>
+				{{ if not .Data.Timer }}
+				<form action="/planet/{{ .Data.Planet.ID }}/solar-plant/upgrade" method="POST"
+					class="Planet-card__form Planet-card__form--upgrade">
+					{{ csrf }}
+					<button class="is-paddingless Planet-card__button">
+						<span class="card-footer-item ">Upgrade</span>
+					</button>
+				</form>
+				{{ else if eq .Data.Timer.Action "upgrade_solar_plant" }}
+				<div class="card-footer-item has-text-white has-text-weight-semibold Planet-card__duration">
+					{{ duration .Data.Timer.Duration }}
+				</div>
+				<form action="/planet/{{ .Data.Planet.ID }}/solar-plant/cancel" method="POST"
+					class="Planet-card__form Planet-card__form--cancel">
+					{{ csrf }}
+					<button class="is-paddingless Planet-card__button">
+						<span class="Planet-card__button__text">Cancel</span>
+					</button>
+				</form>
+				{{ else }}
+				<button class="card-footer-item Planet-card__button" disabled>Upgrade</button>
+				{{ end }}
 			</footer>
 			<footer class="card-footer">
 				<a href="#" class="card-footer-item">Details</a>
 			</footer>
 		</div>
 	</div>
+
 	<div class="column is-flex">
 		<div class="card card-growing">
 			<div class="card-image">
@@ -141,7 +208,7 @@
 			<div class="card-content is-growing">
 				<div class="has-text-right Planet-card__header">
 					<h2 class="title is-5 is-marginless">Housing facilities</h2>
-					<span class="subtitle is-7">Level...{{ .Data.Planet.PopulationProdLevel }}</span>
+					<span class="subtitle is-7">Level...{{ .Data.Planet.PopulationStorageLevel }}</span>
 				</div>
 				<div class="content">
 					<p>
@@ -150,7 +217,28 @@
 				</div>
 			</div>
 			<footer class="card-footer">
-				<a href="#" class="card-footer-item">Upgrade</a>
+				{{ if not .Data.Timer }}
+				<form action="/planet/{{ .Data.Planet.ID }}/housing-facilities/upgrade" method="POST"
+					class="Planet-card__form Planet-card__form--upgrade">
+					{{ csrf }}
+					<button class="is-paddingless Planet-card__button">
+						<span class="card-footer-item ">Upgrade</span>
+					</button>
+				</form>
+				{{ else if eq .Data.Timer.Action "upgrade_housing_facilities" }}
+				<div class="card-footer-item has-text-white has-text-weight-semibold Planet-card__duration">
+					{{ duration .Data.Timer.Duration }}
+				</div>
+				<form action="/planet/{{ .Data.Planet.ID }}/housing-facilities/cancel" method="POST"
+					class="Planet-card__form Planet-card__form--cancel">
+					{{ csrf }}
+					<button class="is-paddingless Planet-card__button">
+						<span class="Planet-card__button__text">Cancel</span>
+					</button>
+				</form>
+				{{ else }}
+				<button class="card-footer-item Planet-card__button" disabled>Upgrade</button>
+				{{ end }}
 			</footer>
 			<footer class="card-footer">
 				<a href="#" class="card-footer-item">Details</a>

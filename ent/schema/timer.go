@@ -16,7 +16,13 @@ type Timer struct {
 func (Timer) Fields() []ent.Field {
 	return []ent.Field{
 		field.Enum("action").
-			Values("upgrade_metal_mine").
+			Values(
+				"upgrade_metal_mine",
+				"upgrade_hydrogen_extractor",
+				"upgrade_silica_quarry",
+				"upgrade_solar_plant",
+				"upgrade_housing_facilities",
+			).
 			Immutable(),
 		field.Enum("group").
 			Values("building").
