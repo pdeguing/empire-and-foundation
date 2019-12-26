@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -75,10 +76,15 @@ func serveAuthenticate(w http.ResponseWriter, r *http.Request) {
 		Query().
 		Where(user.Email(r.PostFormValue("email"))).
 		Only(r.Context())
-	if err != nil {
-		flash(r, flashDanger, "The username you have entered is invalid.")
+	var nferr *ent.ErrNotFound
+	if errors.As(err, &nferr) {
+		flash(r, flashDanger, "The username or password you have entered is invalid.")
 		rememberForm(r)
 		http.Redirect(w, r, "/login", 302)
+		return
+	}
+	if err != nil {
+		serveError(w, r, newInternalServerError(fmt.Errorf("unable to check if user exists in database: %v", err)))
 		return
 	}
 	ok, err := data.CheckPassword(u.Password, r.PostFormValue("password"))

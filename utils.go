@@ -30,17 +30,17 @@ func init() {
 
 func info(args ...interface{}) {
 	logger.SetPrefix("INFO ")
-	logger.Println(args...)
+	logger.Output(2, fmt.Sprintln(args...))
 }
 
 func danger(args ...interface{}) {
 	logger.SetPrefix("ERROR ")
-	logger.Println(args...)
+	logger.Output(2, fmt.Sprintln(args...))
 }
 
 func warning(args ...interface{}) {
 	logger.SetPrefix("WARNING ")
-	logger.Println(args...)
+	logger.Output(2, fmt.Sprintln(args...))
 }
 
 //
