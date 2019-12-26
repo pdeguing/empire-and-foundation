@@ -103,7 +103,7 @@ func serveUpgradeBuilding(w http.ResponseWriter, r *http.Request, a timer.Action
 			http.Redirect(w, r, "/planet/"+strconv.Itoa(p.ID)+"/constructions", 302)
 			return
 		}
-		if errors.Is(err, data.ErrTimerBussy) {
+		if errors.Is(err, data.ErrTimerBusy) {
 			flash(r, flashWarning, "Something is already being upgraded.")
 			http.Redirect(w, r, "/planet/"+strconv.Itoa(p.ID)+"/constructions", 302)
 			return

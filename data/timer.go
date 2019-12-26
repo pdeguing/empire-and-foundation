@@ -15,10 +15,10 @@ import (
 // method returns false. The timer for the action cannot be started.
 var ErrActionPrerequisitesNotMet = errors.New("Cannot start the timer because the action's prerequisites (`! t.Valid()`) were not met")
 
-// ErrTimerBussy is returned when another timer for the same planet
+// ErrTimerBusy is returned when another timer for the same planet
 // and in the same group is already running. Only one timer can be
 // running at a time.
-var ErrTimerBussy = errors.New("Another timer is already running for this planet and group")
+var ErrTimerBusy = errors.New("Another timer is already running for this planet and group")
 
 // ErrTimerNotRunning is returned when trying to cancel a timer that
 // is not currently running.
@@ -60,7 +60,7 @@ func (t *Timer) Duration() time.Duration {
 	return time.Until(t.EndTime)
 }
 
-// actions contains a map of acctions that can be executed using a timer.
+// actions contains a map of actions that can be executed using a timer.
 // All types should be defined using the enum fields in the Timer ent schema
 // and, vice versa, all enum values should exist in this map.
 var actions = map[timer.Action]action{
@@ -200,8 +200,8 @@ var actions = map[timer.Action]action{
 	},
 }
 
-// IsBussy checks if there is currently a timer in progress for the group.
-func IsBussy(ctx context.Context, p *ent.Planet, g timer.Group) (bool, error) {
+// IsBusy checks if there is currently a timer in progress for the group.
+func IsBusy(ctx context.Context, p *ent.Planet, g timer.Group) (bool, error) {
 	b, err := p.QueryTimers().
 		Where(timer.GroupEQ(g)).
 		Exist(ctx)
@@ -259,12 +259,12 @@ func StartTimer(ctx context.Context, tx *ent.Tx, p *ent.Planet, action timer.Act
 		// occur in production if the test is used.
 		return fmt.Errorf("action %q for timer is not yet defined", action)
 	}
-	bussy, err := IsBussy(ctx, p, a.Group)
+	busy, err := IsBusy(ctx, p, a.Group)
 	if err != nil {
 		return err
 	}
-	if bussy {
-		return ErrTimerBussy
+	if busy {
+		return ErrTimerBusy
 	}
 	if !a.Valid(p) {
 		return ErrActionPrerequisitesNotMet

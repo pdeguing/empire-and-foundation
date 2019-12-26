@@ -14,19 +14,19 @@ func getMaxStorage(storageLevel int) int64 {
 	return maxStorage
 }
 
-// getNewMetalRate calculates the metal production and consumpion per hour.
+// getNewMetalRate calculates the metal production and consumption per hour.
 func getNewMetalRate(p *ent.Planet) int {
 	return int(60 * 12 * float64(p.MetalProdLevel) * math.Pow(1.1, float64(p.MetalProdLevel)))
 }
 
-// getNewHydrogenRate calculates the metal production and consumpion per hour.
+// getNewHydrogenRate calculates the metal production and consumption per hour.
 func getNewHydrogenRate(p *ent.Planet) int {
-	return int(60 * 12 * float64(p.MetalProdLevel) * math.Pow(1.1, float64(p.MetalProdLevel)))
+	return int(60 * 12 * float64(p.HydrogenProdLevel) * math.Pow(1.1, float64(p.HydrogenProdLevel)))
 }
 
-// getNewSilicaRate calculates the metal production and consumpion per hour.
+// getNewSilicaRate calculates the metal production and consumption per hour.
 func getNewSilicaRate(p *ent.Planet) int {
-	return int(60 * 12 * float64(p.MetalProdLevel) * math.Pow(1.1, float64(p.MetalProdLevel)))
+	return int(60 * 12 * float64(p.SilicaProdLevel) * math.Pow(1.1, float64(p.SilicaProdLevel)))
 }
 
 // getNewStock calculates the current value in stock for a resource based on value and duration since last update.
