@@ -11,6 +11,7 @@ npm-debug.log
 
 public/css
 public/js
+.env
 
 .idea/
 .sass-cache

@@ -8,8 +8,9 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/alexedwards/scs"
+	"github.com/alexedwards/scs/mysqlstore"
 	"github.com/alexedwards/scs/postgresstore"
+	"github.com/alexedwards/scs/v2"
 	"github.com/pdeguing/empire-and-foundation/data"
 	"github.com/pdeguing/empire-and-foundation/ent"
 	"github.com/pdeguing/empire-and-foundation/ent/user"
@@ -22,12 +23,27 @@ func init() {
 	gob.Register(&url.Values{}) // Form fields
 }
 
-var sessionManager = func() *scs.SessionManager {
-	mngr := scs.New()
-	mngr.Lifetime = 24 * time.Hour
-	mngr.Store = postgresstore.New(data.DB)
-	return mngr
-}()
+var sessionManager *scs.SessionManager
+
+// initSessionManager creates a session manager that uses driver as
+// its storage medium.
+func initSessionManager(driver string) {
+	var store scs.Store
+	switch driver {
+	case "mysql":
+		store = mysqlstore.New(data.DB)
+	case "postgres":
+		store = postgresstore.New(data.DB)
+	default:
+		panic(fmt.Sprintf("driver %q not supported for managing the session. (but possibly with an import)"))
+	}
+	sessionManager = func() *scs.SessionManager {
+		mngr := scs.New()
+		mngr.Lifetime = 24 * time.Hour
+		mngr.Store = store
+		return mngr
+	}()
+}
 
 // key is an unexported type for keys defined in this package.
 // This prevents collisions with keys defined in other packages.
