@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"html/template"
 	"io"
@@ -46,27 +47,64 @@ func warning(args ...interface{}) {
 // For HTTP error responses
 //
 
-func serveNotFoundError(w http.ResponseWriter, r *http.Request) {
-	serveError(w, r, "Not Found", http.StatusNotFound)
+// RenderableError wraps an error and adds information that can be
+// rendered in a template to show the user.
+type RenderableError struct {
+	status  int
+	userMsg string
+	err     error
 }
 
-func serveInternalServerError(w http.ResponseWriter, r *http.Request, err error, internalError string) {
-	danger(err, internalError)
-	serveError(w, r, "Something went wrong on our end.", http.StatusInternalServerError)
+// Error returns the error as a readable string.
+func (r *RenderableError) Error() string {
+	return r.err.Error()
+}
+
+// Unwrap returns the error wrapped by RenderableError.
+func (r *RenderableError) Unwrap() error {
+	return r.err
+}
+
+func newNotFoundError(err error) error {
+	return &RenderableError{
+		status:  http.StatusNotFound,
+		userMsg: "Not Found",
+		err:     err,
+	}
+}
+
+func newInternalServerError(err error) error {
+	return &RenderableError{
+		status:  http.StatusInternalServerError,
+		userMsg: "Something went wrong",
+		err:     err,
+	}
 }
 
 func serveInvalidCsrfToken(w http.ResponseWriter, r *http.Request) {
-	serveError(w, r, "It's not possible to do this right now. Please go back, reload, and try again.", 403)
+	serveError(w, r, &RenderableError{
+		status:  http.StatusForbidden,
+		userMsg: "It's not possible to do this right now. Please go back, reload, and try again.",
+		err:     errors.New("the user made a request with an invalid csrf token"),
+	})
 }
 
-// serveError will render a templated error page. userMsg will
-// be shown as a message to the user.
-func serveError(w http.ResponseWriter, r *http.Request, userMsg string, code int) {
-	w.WriteHeader(code)
+// serveError will render a templated error page. If the error is a RenderableError
+// the userMsg stored in it will be displayed to the user.
+func serveError(w http.ResponseWriter, r *http.Request, err error) {
+	var rerr *RenderableError
+	if !errors.As(err, &rerr) {
+		serveError(w, r, newInternalServerError(fmt.Errorf("an unrenderable error ocurred: %v", err)))
+		return
+	}
+	if rerr.status >= 500 && rerr.status < 600 {
+		danger(rerr)
+	}
+	w.WriteHeader(rerr.status)
 	if isAuthenticated(r) {
-		generateHTML(w, r, "error", userMsg, "layout", "private.navbar", "error")
+		generateHTML(w, r, "error", rerr.userMsg, "layout", "private.navbar", "error")
 	} else {
-		generateHTML(w, r, "error", userMsg, "layout", "public.navbar", "error")
+		generateHTML(w, r, "error", rerr.userMsg, "layout", "public.navbar", "error")
 	}
 }
 

@@ -16,6 +16,8 @@ type Tx struct {
 	Planet *PlanetClient
 	// Session is the client for interacting with the Session builders.
 	Session *SessionClient
+	// Timer is the client for interacting with the Timer builders.
+	Timer *TimerClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 }
@@ -37,6 +39,7 @@ func (tx *Tx) Client() *Client {
 		Schema:  migrate.NewSchema(tx.driver),
 		Planet:  NewPlanetClient(tx.config),
 		Session: NewSessionClient(tx.config),
+		Timer:   NewTimerClient(tx.config),
 		User:    NewUserClient(tx.config),
 	}
 }

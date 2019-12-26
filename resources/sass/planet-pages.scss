@@ -1,0 +1,28 @@
+.Planet-card__header {
+    margin-bottom: 1.5rem;
+}
+
+.Planet-card__button {
+    width: 100%;
+    height: 100%;
+
+    // Make button look like a link
+    @extend a !optional;
+    border: none;
+    background-color: transparent;
+    font-weight: normal;
+    cursor: pointer;
+
+    &--cancel {
+        width: 50%;
+    }
+
+    &[disabled] {
+        color: #4a4a4a;
+        cursor: not-allowed;
+    }
+}
+
+.Planet-card__duration {
+    letter-spacing: 0.5px;
+}

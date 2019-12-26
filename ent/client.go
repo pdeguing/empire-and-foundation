@@ -11,6 +11,7 @@ import (
 
 	"github.com/pdeguing/empire-and-foundation/ent/planet"
 	"github.com/pdeguing/empire-and-foundation/ent/session"
+	"github.com/pdeguing/empire-and-foundation/ent/timer"
 	"github.com/pdeguing/empire-and-foundation/ent/user"
 
 	"github.com/facebookincubator/ent/dialect"
@@ -27,6 +28,8 @@ type Client struct {
 	Planet *PlanetClient
 	// Session is the client for interacting with the Session builders.
 	Session *SessionClient
+	// Timer is the client for interacting with the Timer builders.
+	Timer *TimerClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 }
@@ -40,6 +43,7 @@ func NewClient(opts ...Option) *Client {
 		Schema:  migrate.NewSchema(c.driver),
 		Planet:  NewPlanetClient(c),
 		Session: NewSessionClient(c),
+		Timer:   NewTimerClient(c),
 		User:    NewUserClient(c),
 	}
 }
@@ -74,6 +78,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		config:  cfg,
 		Planet:  NewPlanetClient(cfg),
 		Session: NewSessionClient(cfg),
+		Timer:   NewTimerClient(cfg),
 		User:    NewUserClient(cfg),
 	}, nil
 }
@@ -95,6 +100,7 @@ func (c *Client) Debug() *Client {
 		Schema:  migrate.NewSchema(cfg.driver),
 		Planet:  NewPlanetClient(cfg),
 		Session: NewSessionClient(cfg),
+		Timer:   NewTimerClient(cfg),
 		User:    NewUserClient(cfg),
 	}
 }
@@ -182,6 +188,20 @@ func (c *PlanetClient) QueryOwner(pl *Planet) *UserQuery {
 	return query
 }
 
+// QueryTimers queries the timers edge of a Planet.
+func (c *PlanetClient) QueryTimers(pl *Planet) *TimerQuery {
+	query := &TimerQuery{config: c.config}
+	id := pl.ID
+	step := sqlgraph.NewStep(
+		sqlgraph.From(planet.Table, planet.FieldID, id),
+		sqlgraph.To(timer.Table, timer.FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, planet.TimersTable, planet.TimersColumn),
+	)
+	query.sql = sqlgraph.Neighbors(pl.driver.Dialect(), step)
+
+	return query
+}
+
 // SessionClient is a client for the Session schema.
 type SessionClient struct {
 	config
@@ -244,6 +264,84 @@ func (c *SessionClient) GetX(ctx context.Context, id int) *Session {
 		panic(err)
 	}
 	return s
+}
+
+// TimerClient is a client for the Timer schema.
+type TimerClient struct {
+	config
+}
+
+// NewTimerClient returns a client for the Timer from the given config.
+func NewTimerClient(c config) *TimerClient {
+	return &TimerClient{config: c}
+}
+
+// Create returns a create builder for Timer.
+func (c *TimerClient) Create() *TimerCreate {
+	return &TimerCreate{config: c.config}
+}
+
+// Update returns an update builder for Timer.
+func (c *TimerClient) Update() *TimerUpdate {
+	return &TimerUpdate{config: c.config}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *TimerClient) UpdateOne(t *Timer) *TimerUpdateOne {
+	return c.UpdateOneID(t.ID)
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *TimerClient) UpdateOneID(id int) *TimerUpdateOne {
+	return &TimerUpdateOne{config: c.config, id: id}
+}
+
+// Delete returns a delete builder for Timer.
+func (c *TimerClient) Delete() *TimerDelete {
+	return &TimerDelete{config: c.config}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *TimerClient) DeleteOne(t *Timer) *TimerDeleteOne {
+	return c.DeleteOneID(t.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *TimerClient) DeleteOneID(id int) *TimerDeleteOne {
+	return &TimerDeleteOne{c.Delete().Where(timer.ID(id))}
+}
+
+// Create returns a query builder for Timer.
+func (c *TimerClient) Query() *TimerQuery {
+	return &TimerQuery{config: c.config}
+}
+
+// Get returns a Timer entity by its id.
+func (c *TimerClient) Get(ctx context.Context, id int) (*Timer, error) {
+	return c.Query().Where(timer.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *TimerClient) GetX(ctx context.Context, id int) *Timer {
+	t, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return t
+}
+
+// QueryPlanet queries the planet edge of a Timer.
+func (c *TimerClient) QueryPlanet(t *Timer) *PlanetQuery {
+	query := &PlanetQuery{config: c.config}
+	id := t.ID
+	step := sqlgraph.NewStep(
+		sqlgraph.From(timer.Table, timer.FieldID, id),
+		sqlgraph.To(planet.Table, planet.FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, timer.PlanetTable, timer.PlanetColumn),
+	)
+	query.sql = sqlgraph.Neighbors(t.driver.Dialect(), step)
+
+	return query
 }
 
 // UserClient is a client for the User schema.

@@ -14,7 +14,7 @@
 		<div>
 			<p>
 				<span class="is-size-7">Metal</span>
-				<span class="title is-6">{{ quantity .Data.Metal }}</span>
+				<span class="title is-6">{{ quantity .Data.Planet.Metal }}</span>
 			</p>
 		</div>
 	</div>
@@ -22,7 +22,7 @@
 		<div>
 			<p>
 				<span class="is-size-7">Hydrogen</span>
-				<span class="title is-6">{{ quantity .Data.Hydrogen }}</span>
+				<span class="title is-6">{{ quantity .Data.Planet.Hydrogen }}</span>
 			</p>
 		</div>
 	</div>
@@ -30,7 +30,7 @@
 		<div>
 			<p>
 				<span class="is-size-7">Silica</span>
-				<span class="title is-6">{{ quantity .Data.Silica }}</span>
+				<span class="title is-6">{{ quantity .Data.Planet.Silica }}</span>
 			</p>
 		</div>
 	</div>
@@ -38,7 +38,7 @@
 		<div>
 			<p>
 				<span class="is-size-7">Population</span>
-				<span class="title is-6">{{ quantity .Data.Population }}</span>
+				<span class="title is-6">{{ quantity .Data.Planet.Population }}</span>
 			</p>
 		</div>
 	</div>
@@ -46,7 +46,9 @@
 		<div>
 			<p>
 				<span class="is-size-7">Energy</span>
-				<span class="title is-6">{{ quantity .Data.EnergyCons }}/{{ quantity .Data.EnergyProd }}</span>
+				<span class="title is-6">
+					{{ quantity .Data.Planet.EnergyCons }}/{{ quantity .Data.Planet.EnergyProd }}
+				</span>
 			</p>
 		</div>
 	</div>
@@ -56,24 +58,27 @@
 <div class="tabs">
 	<ul>
 		<li {{ if eq .PageName "planet-dashboard" }} class="is-active" {{end}}>
-			<a href="/dashboard/planet/{{ .Data.ID }}/">Overview</a>
+			<a href="/planet/{{ .Data.Planet.ID }}/">Overview</a>
 		</li>
 		<li {{ if eq .PageName "planet-constructions" }} class="is-active" {{end}}>
-			<a href="/dashboard/planet/{{ .Data.ID }}/constructions">Constructions</a>
+			<a href="/planet/{{ .Data.Planet.ID }}/constructions">Constructions</a>
 		</li>
 		<li {{ if eq .PageName "planet-factories" }} class="is-active" {{end}}>
-			<a href="/dashboard/planet/{{ .Data.ID }}/factories">Factories</a>
+			<a href="/planet/{{ .Data.Planet.ID }}/factories">Factories</a>
 		</li>
 		<li {{ if eq .PageName "planet-research" }} class="is-active" {{end}}>
-			<a href="/dashboard/planet/{{ .Data.ID }}/research">Research</a>
+			<a href="/planet/{{ .Data.Planet.ID }}/research">Research</a>
 		</li>
 		<li {{ if eq .PageName "planet-fleets" }} class="is-active" {{end}}>
-			<a href="/dashboard/planet/{{ .Data.ID }}/fleets">Fleets</a>
+			<a href="/planet/{{ .Data.Planet.ID }}/fleets">Fleets</a>
 		</li>
 		<li {{ if eq .PageName "planet-defenses" }} class="is-active" {{end}}>
-			<a href="/dashboard/planet/{{ .Data.ID }}/defenses">Defenses</a>
+			<a href="/planet/{{ .Data.Planet.ID }}/defenses">Defenses</a>
 		</li>
 	</ul>
 </div>
+
+{{/* TODO: Style the different kinds of flash messages */}}
+{{ template "flash" }}
 
 {{ end }}

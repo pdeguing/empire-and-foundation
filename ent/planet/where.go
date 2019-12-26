@@ -3025,6 +3025,36 @@ func HasOwnerWith(preds ...predicate.User) predicate.Planet {
 	)
 }
 
+// HasTimers applies the HasEdge predicate on the "timers" edge.
+func HasTimers() predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(TimersTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, TimersTable, TimersColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	},
+	)
+}
+
+// HasTimersWith applies the HasEdge predicate on the "timers" edge with a given conditions (other predicates).
+func HasTimersWith(preds ...predicate.Timer) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(TimersInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, TimersTable, TimersColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	},
+	)
+}
+
 // And groups list of predicates with the AND operator between them.
 func And(predicates ...predicate.Planet) predicate.Planet {
 	return predicate.Planet(

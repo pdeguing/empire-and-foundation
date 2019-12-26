@@ -35,15 +35,23 @@ func main() {
 	rAuth.HandleFunc("/dashboard/wiki", serveWiki)
 	rAuth.HandleFunc("/dashboard/news", serveNews)
 
-	rPlanet := rAuth.PathPrefix("/dashboard/planet/{planetNumber:[0-9]+}").Subrouter()
+	rPlanet := rAuth.PathPrefix("/planet/{planetNumber:[0-9]+}").Subrouter()
 	rPlanet.HandleFunc("/", servePlanet)
 	rPlanet.HandleFunc("/constructions", serveConstructions)
 	rPlanet.HandleFunc("/factories", serveFactories)
 	rPlanet.HandleFunc("/research", serveResearch)
 	rPlanet.HandleFunc("/fleets", serveFleets)
 	rPlanet.HandleFunc("/defenses", serveDefenses)
-
-	rAuth.HandleFunc("/planet/up_metal_mine", serveUpMetalMine)
+	rPlanet.HandleFunc("/metal-mine/upgrade", serveUpgradeMetalMine).Methods("POST")
+	rPlanet.HandleFunc("/metal-mine/cancel", serveCancelMetalMine).Methods("POST")
+	rPlanet.HandleFunc("/hydrogen-extractor/upgrade", serveUpgradeHydrogenExtractor).Methods("POST")
+	rPlanet.HandleFunc("/hydrogen-extractor/cancel", serveCancelHydrogenExtractor).Methods("POST")
+	rPlanet.HandleFunc("/silica-quarry/upgrade", serveUpgradeSilicaQuarry).Methods("POST")
+	rPlanet.HandleFunc("/silica-quarry/cancel", serveCancelSilicaQuarry).Methods("POST")
+	rPlanet.HandleFunc("/solar-plant/upgrade", serveUpgradeSolarPlant).Methods("POST")
+	rPlanet.HandleFunc("/solar-plant/cancel", serveCancelSolarPlant).Methods("POST")
+	rPlanet.HandleFunc("/housing-facilities/upgrade", serveUpgradeHousingFacilities).Methods("POST")
+	rPlanet.HandleFunc("/housing-facilities/cancel", serveCancelHousingFacilities).Methods("POST")
 
 	// Middleware
 	csrfMiddleware := csrf.Protect(
