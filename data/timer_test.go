@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/facebookincubator/ent/dialect/sql"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/stretchr/testify/assert"
 
@@ -21,19 +20,18 @@ var testDatabaseFileCounter int
 
 // WithTestDatabase sets the global Db and Client to a temporary in-memory database.
 func WithTestDatabase() {
-	DB.Close()
+	if DB != nil {
+		DB.Close()
+	}
 
 	// TODO: Does this leak memory or does the DB.Close() take care of it?
 	testDatabaseFileCounter++
-	drv, err := sql.Open("sqlite3", "file:file_"+strconv.Itoa(testDatabaseFileCounter)+".db?cache=shared&mode=memory&_foreign_keys=1")
+	err := InitDatabaseConnection("sqlite3", "file:file_"+strconv.Itoa(testDatabaseFileCounter)+".db?cache=shared&mode=memory&_foreign_keys=1", false)
 	if err != nil {
 		panic(err)
 	}
-	// Get the underlying sql.DB object of the driver.
-	DB = drv.DB()
-	Client = ent.NewClient(ent.Driver(drv))
 
-	err = Migrate(context.Background(), Client)
+	err = Migrate(context.Background(), Client, false, false)
 	if err != nil {
 		panic(err)
 	}

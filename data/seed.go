@@ -82,7 +82,7 @@ func generatePlanet(r *rand.Rand, planetSkins []os.FileInfo, region int, system 
 	return false
 }
 
-func generateRegion(region int) {
+func GenerateRegion(region int) {
 	r := rand.New(rand.NewSource(42))
 
 	planetSkins, err := ioutil.ReadDir("public/images/planet-dashboards")

@@ -2,69 +2,56 @@ package data
 
 import (
 	"context"
-	"crypto/rand"
-	dbsql "database/sql"
+	"database/sql"
 	"fmt"
-	"log"
 	"time"
 
-	"github.com/facebookincubator/ent/dialect/sql"
+	entsql "github.com/facebookincubator/ent/dialect/sql"
 	"github.com/pdeguing/empire-and-foundation/ent"
+	"github.com/pdeguing/empire-and-foundation/ent/migrate"
 	"github.com/pkg/errors"
-
-	_ "github.com/lib/pq"
 )
 
+// Client is an ent ORM client with which database queries can be made.
 var Client *ent.Client
-var DB *dbsql.DB
 
-func open() (*ent.Client, error) {
-	drv, err := sql.Open("postgres", "dbname=empire_and_foundation sslmode=disable")
+// DB is the raw SQL DB handle to the database. It is recommended to use
+// Client, but in some cases the raw handle is needed. For instance, in
+// use of external libraries.
+var DB *sql.DB
+
+// InitDatabaseConnection makes a connection to the database and
+// sets Client and DB so they can be used by the rest of the application.
+func InitDatabaseConnection(driver, source string, debug bool) error {
+	drv, err := entsql.Open(driver, source)
 	if err != nil {
-		return nil, err
+		return fmt.Errorf("failed opening database connection: %w", err)
 	}
+
 	// Get the underlying sql.DB object of the driver.
 	DB = drv.DB()
 	DB.SetMaxIdleConns(10)
 	DB.SetMaxOpenConns(100)
 	DB.SetConnMaxLifetime(time.Hour)
-	return ent.NewClient(ent.Driver(drv)), nil
-}
 
-func init() {
-	var err error
-	Client, err = open()
-	if err != nil {
-		log.Fatalf("failed opening connection to postgres: %v", err)
+	Client = ent.NewClient(ent.Driver(drv))
+	if debug {
+		Client = Client.Debug()
 	}
-	err = Migrate(context.Background(), Client)
-	if err != nil {
-		log.Fatalf("failed creating schema resources: %v", err)
-	}
-	generateRegion(0)
-	return
+	return nil
 }
 
 // Migrate runs the database schema migrations.
-func Migrate(ctx context.Context, client *ent.Client) error {
-	return client.Schema.Create(ctx)
-}
-
-// create a random UUID from RFC 4122
-func createUUID() (uuid string) {
-	u := new([16]byte)
-	_, err := rand.Read(u[:])
+func Migrate(ctx context.Context, client *ent.Client, dropIndex, dropColumn bool) error {
+	err := client.Schema.Create(
+		ctx,
+		migrate.WithDropIndex(dropIndex),
+		migrate.WithDropColumn(dropColumn),
+	)
 	if err != nil {
-		log.Fatalln("Cannot generate UUID", err)
+		return fmt.Errorf("unable to migrate database: %w", err)
 	}
-
-	// 0x40 is reserved variant from RFC 4122
-	u[8] = (u[8] | 0x40) & 0x7F
-	// Set the four most significant bits (bits 12 through 15) of the
-	// time_hi_and_version field to the 4-bit version number.
-	u[6] = (u[6] & 0xF) | (0x4 << 4)
-	uuid = fmt.Sprintf("%x-%x-%x-%x-%x", u[0:4], u[4:6], u[6:8], u[8:10], u[10:])
-	return
+	return nil
 }
 
 // WithTx wraps fn in a transaction that automatically rolls back

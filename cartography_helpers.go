@@ -9,7 +9,7 @@ import (
 	"github.com/pdeguing/empire-and-foundation/ent/planet"
 )
 
-func regionPlanets(w http.ResponseWriter, r *http.Request) ([]*ent.Planet, err) {
+func regionPlanets(w http.ResponseWriter, r *http.Request) ([]*ent.Planet, error) {
 	p, err := data.Client.Planet.Query().
 		Order(ent.Asc(planet.FieldPositionCode)).
 		All(r.Context())

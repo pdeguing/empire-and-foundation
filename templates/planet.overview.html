@@ -8,7 +8,7 @@
 
 <article class="planet-info columns">
   <div class="column is-one-quarter">
-    <h1 class="title dashboard-title">Avalon</h1>
+	  <h1 class="title dashboard-title">{{ .Data.Planet.Name }}</h1>
     <ul class="dashboard-info">
       <li>
         <div class="columns is-inline-flex is-gapless dashboard-item">
@@ -17,7 +17,7 @@
         </div>
         <div class="columns is-inline-flex is-gapless dashboard-item">
           <span class="column is-half is-growing dashboard-item-name">Planet type</span>
-		  <span class="column is-narrow dashboard-item-value">{{ .Data.PlanetType }}</span>
+		  <span class="column is-narrow dashboard-item-value">{{ .Data.Planet.PlanetType }}</span>
         </div>
       </li>
     </ul>

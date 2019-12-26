@@ -2,12 +2,35 @@ package main
 
 import (
 	"net/http"
+
+	"github.com/pdeguing/empire-and-foundation/data"
+	"github.com/pdeguing/empire-and-foundation/ent"
 )
+
+type dashboardOverviewData struct {
+	Planets	[]*ent.Planet
+}
 
 // GET /dashboard
 // Show player main dashboard page
 func serveDashboard(w http.ResponseWriter, r *http.Request) {
-	generateHTML(w, r, "dashboard", nil, "layout", "private.navbar", "dashboard", "leftbar", "empire")
+	var p []*ent.Planet
+	err := data.WithTx(r.Context(), data.Client, func(tx *ent.Tx) error {
+		var err error
+		p, err = userPlanets(r, tx)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		serveError(w, r, err)
+		return
+	}
+	d := dashboardOverviewData{
+		Planets: p,
+	}
+	generateHTML(w, r, "dashboard", d, "layout", "private.navbar", "dashboard", "leftbar", "empire")
 }
 
 // GET /dashboard/cartography
@@ -15,7 +38,7 @@ func serveDashboard(w http.ResponseWriter, r *http.Request) {
 func serveCartography(w http.ResponseWriter, r *http.Request) {
 	p, err := regionPlanets(w, r)
 	if err != nil {
-		serverError(w, r, err)
+		serveError(w, r, err)
 	}
 	generateHTML(w, r, "cartography", p, "layout", "private.navbar", "dashboard", "leftbar", "cartography")
 }

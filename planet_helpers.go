@@ -25,8 +25,12 @@ func userPlanet(r *http.Request, tx *ent.Tx) (*ent.Planet, error) {
 
 	p, err := tx.Planet.
 		Query().
-		Where(planet.HasOwnerWith(user.IDEQ(u.ID))).
-		Offset(n - 1).
+		Where(
+			planet.And(
+				planet.HasOwnerWith(user.IDEQ(u.ID)),
+				planet.ID(n),
+			),
+		).
 		First(r.Context())
 	if _, ok := err.(*ent.ErrNotFound); ok {
 		return nil, newNotFoundError(fmt.Errorf("unable to query planet #%d for user %d; it does not exist", n, u.ID))
@@ -45,13 +49,42 @@ func userPlanet(r *http.Request, tx *ent.Tx) (*ent.Planet, error) {
 	return p, nil
 }
 
+// userPlanets retrieves all planets for the logged in user
+func userPlanets(r *http.Request, tx *ent.Tx) ([]*ent.Planet, error) {
+	u := loggedInUser(r)
+
+	p, err := tx.Planet.Query().
+			Where(planet.HasOwnerWith(user.IDEQ(u.ID))).
+			All(r.Context())
+	if _, ok := err.(*ent.ErrNotFound); ok {
+		return nil, newNotFoundError(fmt.Errorf("unable to query planets for user %d; it does not exist", u.ID))
+	}
+	if err != nil {
+		return nil, newInternalServerError(fmt.Errorf("unable to retrieve planets for user: %v", err))
+	}
+	return p, nil
+}
+
+// planetViewData contains the information for a page with upgradable
+// items like constructions or research.
+type planetViewData struct {
+	Planets []*ent.Planet
+	Planet *ent.Planet
+	Timer  *data.Timer
+}
+
 // newPlanetViewData collects the data for the planet's construction, research and other
 // views with upgrade mechanisms.
 func newPlanetViewData(r *http.Request, g timer.Group) (*planetViewData, error) {
+	var plist []*ent.Planet
 	var p *ent.Planet
 	var t *data.Timer
 	err := data.WithTx(r.Context(), data.Client, func(tx *ent.Tx) error {
 		var err error
+		plist, err = userPlanets(r, tx)
+		if err != nil {
+			return err
+		}
 		p, err = userPlanet(r, tx)
 		if err != nil {
 			return err
@@ -70,16 +103,10 @@ func newPlanetViewData(r *http.Request, g timer.Group) (*planetViewData, error) 
 		return nil, err
 	}
 	return &planetViewData{
+		Planets: plist,
 		Planet: p,
 		Timer:  t,
 	}, nil
-}
-
-// planetViewData contains the information for a page with upgradable
-// items like constructions or research.
-type planetViewData struct {
-	Planet *ent.Planet
-	Timer  *data.Timer
 }
 
 // serveUpgradeBuilding progresses the request to start an upgrade timer.
