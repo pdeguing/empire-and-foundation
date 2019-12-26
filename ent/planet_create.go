@@ -11,6 +11,7 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
 	"github.com/pdeguing/empire-and-foundation/ent/planet"
+	"github.com/pdeguing/empire-and-foundation/ent/timer"
 	"github.com/pdeguing/empire-and-foundation/ent/user"
 )
 
@@ -51,6 +52,7 @@ type PlanetCreate struct {
 	planet_type              *planet.PlanetType
 	planet_skin              *string
 	owner                    map[int]struct{}
+	timers                   map[int]struct{}
 }
 
 // SetCreatedAt sets the created_at field.
@@ -479,6 +481,26 @@ func (pc *PlanetCreate) SetNillableOwnerID(id *int) *PlanetCreate {
 // SetOwner sets the owner edge to User.
 func (pc *PlanetCreate) SetOwner(u *User) *PlanetCreate {
 	return pc.SetOwnerID(u.ID)
+}
+
+// AddTimerIDs adds the timers edge to Timer by ids.
+func (pc *PlanetCreate) AddTimerIDs(ids ...int) *PlanetCreate {
+	if pc.timers == nil {
+		pc.timers = make(map[int]struct{})
+	}
+	for i := range ids {
+		pc.timers[ids[i]] = struct{}{}
+	}
+	return pc
+}
+
+// AddTimers adds the timers edges to Timer.
+func (pc *PlanetCreate) AddTimers(t ...*Timer) *PlanetCreate {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return pc.AddTimerIDs(ids...)
 }
 
 // Save creates the Planet in the database.
@@ -972,6 +994,25 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: user.FieldID,
+				},
+			},
+		}
+		for k, _ := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		spec.Edges = append(spec.Edges, edge)
+	}
+	if nodes := pc.timers; len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   planet.TimersTable,
+			Columns: []string{planet.TimersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: timer.FieldID,
 				},
 			},
 		}

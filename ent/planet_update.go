@@ -11,6 +11,7 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/pdeguing/empire-and-foundation/ent/planet"
 	"github.com/pdeguing/empire-and-foundation/ent/predicate"
+	"github.com/pdeguing/empire-and-foundation/ent/timer"
 	"github.com/pdeguing/empire-and-foundation/ent/user"
 )
 
@@ -64,10 +65,12 @@ type PlanetUpdate struct {
 
 	name *string
 
-	planet_skin  *string
-	owner        map[int]struct{}
-	clearedOwner bool
-	predicates   []predicate.Planet
+	planet_skin   *string
+	owner         map[int]struct{}
+	timers        map[int]struct{}
+	clearedOwner  bool
+	removedTimers map[int]struct{}
+	predicates    []predicate.Planet
 }
 
 // Where adds a new predicate for the builder.
@@ -655,10 +658,50 @@ func (pu *PlanetUpdate) SetOwner(u *User) *PlanetUpdate {
 	return pu.SetOwnerID(u.ID)
 }
 
+// AddTimerIDs adds the timers edge to Timer by ids.
+func (pu *PlanetUpdate) AddTimerIDs(ids ...int) *PlanetUpdate {
+	if pu.timers == nil {
+		pu.timers = make(map[int]struct{})
+	}
+	for i := range ids {
+		pu.timers[ids[i]] = struct{}{}
+	}
+	return pu
+}
+
+// AddTimers adds the timers edges to Timer.
+func (pu *PlanetUpdate) AddTimers(t ...*Timer) *PlanetUpdate {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return pu.AddTimerIDs(ids...)
+}
+
 // ClearOwner clears the owner edge to User.
 func (pu *PlanetUpdate) ClearOwner() *PlanetUpdate {
 	pu.clearedOwner = true
 	return pu
+}
+
+// RemoveTimerIDs removes the timers edge to Timer by ids.
+func (pu *PlanetUpdate) RemoveTimerIDs(ids ...int) *PlanetUpdate {
+	if pu.removedTimers == nil {
+		pu.removedTimers = make(map[int]struct{})
+	}
+	for i := range ids {
+		pu.removedTimers[ids[i]] = struct{}{}
+	}
+	return pu
+}
+
+// RemoveTimers removes timers edges to Timer.
+func (pu *PlanetUpdate) RemoveTimers(t ...*Timer) *PlanetUpdate {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return pu.RemoveTimerIDs(ids...)
 }
 
 // Save executes the query and returns the number of rows/vertices matched by this operation.
@@ -967,6 +1010,42 @@ func (pu *PlanetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
+	if len(pu.removedTimers) > 0 {
+		eids := make([]int, len(pu.removedTimers))
+		for eid := range pu.removedTimers {
+			eids = append(eids, eid)
+		}
+		query, args := builder.Update(planet.TimersTable).
+			SetNull(planet.TimersColumn).
+			Where(sql.InInts(planet.TimersColumn, ids...)).
+			Where(sql.InInts(timer.FieldID, eids...)).
+			Query()
+		if err := tx.Exec(ctx, query, args, &res); err != nil {
+			return 0, rollback(tx, err)
+		}
+	}
+	if len(pu.timers) > 0 {
+		for _, id := range ids {
+			p := sql.P()
+			for eid := range pu.timers {
+				p.Or().EQ(timer.FieldID, eid)
+			}
+			query, args := builder.Update(planet.TimersTable).
+				Set(planet.TimersColumn, id).
+				Where(sql.And(p, sql.IsNull(planet.TimersColumn))).
+				Query()
+			if err := tx.Exec(ctx, query, args, &res); err != nil {
+				return 0, rollback(tx, err)
+			}
+			affected, err := res.RowsAffected()
+			if err != nil {
+				return 0, rollback(tx, err)
+			}
+			if int(affected) < len(pu.timers) {
+				return 0, rollback(tx, &ConstraintError{msg: fmt.Sprintf("one of \"timers\" %v already connected to a different \"Planet\"", keys(pu.timers))})
+			}
+		}
+	}
 	if err = tx.Commit(); err != nil {
 		return 0, err
 	}
@@ -1024,9 +1103,11 @@ type PlanetUpdateOne struct {
 
 	name *string
 
-	planet_skin  *string
-	owner        map[int]struct{}
-	clearedOwner bool
+	planet_skin   *string
+	owner         map[int]struct{}
+	timers        map[int]struct{}
+	clearedOwner  bool
+	removedTimers map[int]struct{}
 }
 
 // SetUpdatedAt sets the updated_at field.
@@ -1608,10 +1689,50 @@ func (puo *PlanetUpdateOne) SetOwner(u *User) *PlanetUpdateOne {
 	return puo.SetOwnerID(u.ID)
 }
 
+// AddTimerIDs adds the timers edge to Timer by ids.
+func (puo *PlanetUpdateOne) AddTimerIDs(ids ...int) *PlanetUpdateOne {
+	if puo.timers == nil {
+		puo.timers = make(map[int]struct{})
+	}
+	for i := range ids {
+		puo.timers[ids[i]] = struct{}{}
+	}
+	return puo
+}
+
+// AddTimers adds the timers edges to Timer.
+func (puo *PlanetUpdateOne) AddTimers(t ...*Timer) *PlanetUpdateOne {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return puo.AddTimerIDs(ids...)
+}
+
 // ClearOwner clears the owner edge to User.
 func (puo *PlanetUpdateOne) ClearOwner() *PlanetUpdateOne {
 	puo.clearedOwner = true
 	return puo
+}
+
+// RemoveTimerIDs removes the timers edge to Timer by ids.
+func (puo *PlanetUpdateOne) RemoveTimerIDs(ids ...int) *PlanetUpdateOne {
+	if puo.removedTimers == nil {
+		puo.removedTimers = make(map[int]struct{})
+	}
+	for i := range ids {
+		puo.removedTimers[ids[i]] = struct{}{}
+	}
+	return puo
+}
+
+// RemoveTimers removes timers edges to Timer.
+func (puo *PlanetUpdateOne) RemoveTimers(t ...*Timer) *PlanetUpdateOne {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return puo.RemoveTimerIDs(ids...)
 }
 
 // Save executes the query and returns the updated entity.
@@ -1965,6 +2086,42 @@ func (puo *PlanetUpdateOne) sqlSave(ctx context.Context) (pl *Planet, err error)
 				Query()
 			if err := tx.Exec(ctx, query, args, &res); err != nil {
 				return nil, rollback(tx, err)
+			}
+		}
+	}
+	if len(puo.removedTimers) > 0 {
+		eids := make([]int, len(puo.removedTimers))
+		for eid := range puo.removedTimers {
+			eids = append(eids, eid)
+		}
+		query, args := builder.Update(planet.TimersTable).
+			SetNull(planet.TimersColumn).
+			Where(sql.InInts(planet.TimersColumn, ids...)).
+			Where(sql.InInts(timer.FieldID, eids...)).
+			Query()
+		if err := tx.Exec(ctx, query, args, &res); err != nil {
+			return nil, rollback(tx, err)
+		}
+	}
+	if len(puo.timers) > 0 {
+		for _, id := range ids {
+			p := sql.P()
+			for eid := range puo.timers {
+				p.Or().EQ(timer.FieldID, eid)
+			}
+			query, args := builder.Update(planet.TimersTable).
+				Set(planet.TimersColumn, id).
+				Where(sql.And(p, sql.IsNull(planet.TimersColumn))).
+				Query()
+			if err := tx.Exec(ctx, query, args, &res); err != nil {
+				return nil, rollback(tx, err)
+			}
+			affected, err := res.RowsAffected()
+			if err != nil {
+				return nil, rollback(tx, err)
+			}
+			if int(affected) < len(puo.timers) {
+				return nil, rollback(tx, &ConstraintError{msg: fmt.Sprintf("one of \"timers\" %v already connected to a different \"Planet\"", keys(puo.timers))})
 			}
 		}
 	}

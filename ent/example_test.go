@@ -10,6 +10,7 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql"
 
 	"github.com/pdeguing/empire-and-foundation/ent/planet"
+	"github.com/pdeguing/empire-and-foundation/ent/timer"
 )
 
 // dsn for the database. In order to run the tests locally, run the following command:
@@ -30,6 +31,13 @@ func ExamplePlanet() {
 	defer drv.Close()
 	client := NewClient(Driver(drv))
 	// creating vertices for the planet's edges.
+	t1 := client.Timer.
+		Create().
+		SetAction(timer.ActionUpgradeMetalMine).
+		SetGroup(timer.GroupBuilding).
+		SetEndTime(time.Now()).
+		SaveX(ctx)
+	log.Println("timer created:", t1)
 
 	// create planet vertex with its edges.
 	pl := client.Planet.
@@ -67,10 +75,17 @@ func ExamplePlanet() {
 		SetName("string").
 		SetPlanetType(planet.PlanetTypeHabitable).
 		SetPlanetSkin("string").
+		AddTimers(t1).
 		SaveX(ctx)
 	log.Println("planet created:", pl)
 
 	// query edges.
+
+	t1, err = pl.QueryTimers().First(ctx)
+	if err != nil {
+		log.Fatalf("failed querying timers: %v", err)
+	}
+	log.Println("timers found:", t1)
 
 	// Output:
 }
@@ -95,6 +110,32 @@ func ExampleSession() {
 		SetExpiry(time.Now()).
 		SaveX(ctx)
 	log.Println("session created:", s)
+
+	// query edges.
+
+	// Output:
+}
+func ExampleTimer() {
+	if dsn == "" {
+		return
+	}
+	ctx := context.Background()
+	drv, err := sql.Open("mysql", dsn)
+	if err != nil {
+		log.Fatalf("failed creating database client: %v", err)
+	}
+	defer drv.Close()
+	client := NewClient(Driver(drv))
+	// creating vertices for the timer's edges.
+
+	// create timer vertex with its edges.
+	t := client.Timer.
+		Create().
+		SetAction(timer.ActionUpgradeMetalMine).
+		SetGroup(timer.GroupBuilding).
+		SetEndTime(time.Now()).
+		SaveX(ctx)
+	log.Println("timer created:", t)
 
 	// query edges.
 

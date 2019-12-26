@@ -77,6 +77,36 @@ var (
 		PrimaryKey:  []*schema.Column{SessionsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{},
 	}
+	// TimersColumns holds the columns for the "timers" table.
+	TimersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "action", Type: field.TypeEnum, Enums: []string{"upgrade_metal_mine", "upgrade_hydrogen_extractor", "upgrade_silica_quarry", "upgrade_solar_plant", "upgrade_housing_facilities"}},
+		{Name: "group", Type: field.TypeEnum, Enums: []string{"building"}},
+		{Name: "end_time", Type: field.TypeTime},
+		{Name: "planet_id", Type: field.TypeInt, Nullable: true},
+	}
+	// TimersTable holds the schema information for the "timers" table.
+	TimersTable = &schema.Table{
+		Name:       "timers",
+		Columns:    TimersColumns,
+		PrimaryKey: []*schema.Column{TimersColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:  "timers_planets_timers",
+				Columns: []*schema.Column{TimersColumns[4]},
+
+				RefColumns: []*schema.Column{PlanetsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "timer_group_planet_id",
+				Unique:  true,
+				Columns: []*schema.Column{TimersColumns[2], TimersColumns[4]},
+			},
+		},
+	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -97,10 +127,12 @@ var (
 	Tables = []*schema.Table{
 		PlanetsTable,
 		SessionsTable,
+		TimersTable,
 		UsersTable,
 	}
 )
 
 func init() {
 	PlanetsTable.ForeignKeys[0].RefTable = UsersTable
+	TimersTable.ForeignKeys[0].RefTable = PlanetsTable
 }

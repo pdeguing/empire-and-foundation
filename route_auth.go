@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"math/rand"
 
@@ -30,12 +31,12 @@ func serveSignup(w http.ResponseWriter, r *http.Request) {
 func serveSignupAccount(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
-		serveInternalServerError(w, r, err, "Cannot parse form")
+		serveError(w, r, newInternalServerError(fmt.Errorf("unable to parse form: %v", err)))
 		return
 	}
 	password, err := bcrypt.GenerateFromPassword([]byte(r.PostFormValue("password")), 14)
 	if err != nil {
-		serveInternalServerError(w, r, err, "Cannot encrypt password")
+		serveError(w, r, newInternalServerError(fmt.Errorf("unable to encrypt password: %v", err)))
 		return
 	}
 
@@ -77,7 +78,7 @@ func serveSignupAccount(w http.ResponseWriter, r *http.Request) {
 		return err
 	})
 	if err != nil {
-		serveInternalServerError(w, r, err, "Cannot create user or planet")
+		serveError(w, r, newInternalServerError(fmt.Errorf("unable to create a user account: %v", err)))
 		return
 	}
 
@@ -101,7 +102,7 @@ func serveAuthenticate(w http.ResponseWriter, r *http.Request) {
 	}
 	ok, err := data.CheckPassword(u.Password, r.PostFormValue("password"))
 	if err != nil {
-		serveInternalServerError(w, r, err, "Cannot check user's password")
+		serveError(w, r, newInternalServerError(fmt.Errorf("unable to validate the users password: %v", err)))
 		return
 	}
 	if !ok {

@@ -91,6 +91,13 @@ const (
 	OwnerInverseTable = "users"
 	// OwnerColumn is the table column denoting the owner relation/edge.
 	OwnerColumn = "owner_id"
+	// TimersTable is the table the holds the timers relation/edge.
+	TimersTable = "timers"
+	// TimersInverseTable is the table name for the Timer entity.
+	// It exists in this package in order to avoid circular dependency with the "timer" package.
+	TimersInverseTable = "timers"
+	// TimersColumn is the table column denoting the timers relation/edge.
+	TimersColumn = "planet_id"
 )
 
 // Columns holds all SQL columns are planet fields.

@@ -92,7 +92,7 @@ func (Planet) Fields() []ent.Field {
 		field.String("name").
 			Default("Unnamed"),
 		field.Enum("planet_type").
-			Values("habitable", "mineral", "gas giant", "ice giant").
+			Values("habitable", "mineral", "gas_giant", "ice_giant").
 			Immutable(),
 		field.String("planet_skin"),
 	}
@@ -102,7 +102,8 @@ func (Planet) Fields() []ent.Field {
 func (Planet) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("owner", User.Type).
-		Ref("planets").
-		Unique(),
+			Ref("planets").
+			Unique(),
+		edge.To("timers", Timer.Type),
 	}
 }

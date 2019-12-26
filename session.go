@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/gob"
+	"fmt"
 	"net/http"
 	"net/url"
 	"time"
@@ -60,7 +61,7 @@ func loadUserMiddleware(next http.Handler) http.Handler {
 			Where(user.ID(id)).
 			Only(r.Context())
 		if err != nil {
-			serveInternalServerError(w, r, err, "Could not load logged in user from database")
+			serveError(w, r, newInternalServerError(fmt.Errorf("unable to query logged in user in database: %v", err)))
 			return
 		}
 

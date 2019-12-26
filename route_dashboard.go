@@ -13,9 +13,11 @@ func serveDashboard(w http.ResponseWriter, r *http.Request) {
 // GET /dashboard/cartography
 // Show map page
 func serveCartography(w http.ResponseWriter, r *http.Request) {
-	if p, ok := regionPlanets(w, r); ok {
-		generateHTML(w, r, "cartography", p, "layout", "private.navbar", "dashboard", "leftbar", "cartography")
+	p, err := regionPlanets(w, r)
+	if err != nil {
+		serverError(w, r, err)
 	}
+	generateHTML(w, r, "cartography", p, "layout", "private.navbar", "dashboard", "leftbar", "cartography")
 }
 
 // GET /dashboard/fleetcontrol

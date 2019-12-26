@@ -37,11 +37,17 @@ func init() {
 	if err != nil {
 		log.Fatalf("failed opening connection to postgres: %v", err)
 	}
-	if err := Client.Schema.Create(context.Background()); err != nil {
+	err = Migrate(context.Background(), Client)
+	if err != nil {
 		log.Fatalf("failed creating schema resources: %v", err)
 	}
 	generateRegion(0)
 	return
+}
+
+// Migrate runs the database schema migrations.
+func Migrate(ctx context.Context, client *ent.Client) error {
+	return client.Schema.Create(ctx)
 }
 
 // create a random UUID from RFC 4122

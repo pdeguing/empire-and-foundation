@@ -12,6 +12,7 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/pdeguing/empire-and-foundation/ent/planet"
 	"github.com/pdeguing/empire-and-foundation/ent/predicate"
+	"github.com/pdeguing/empire-and-foundation/ent/timer"
 	"github.com/pdeguing/empire-and-foundation/ent/user"
 )
 
@@ -58,6 +59,18 @@ func (pq *PlanetQuery) QueryOwner() *UserQuery {
 		sqlgraph.From(planet.Table, planet.FieldID, pq.sqlQuery()),
 		sqlgraph.To(user.Table, user.FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, true, planet.OwnerTable, planet.OwnerColumn),
+	)
+	query.sql = sqlgraph.SetNeighbors(pq.driver.Dialect(), step)
+	return query
+}
+
+// QueryTimers chains the current query on the timers edge.
+func (pq *PlanetQuery) QueryTimers() *TimerQuery {
+	query := &TimerQuery{config: pq.config}
+	step := sqlgraph.NewStep(
+		sqlgraph.From(planet.Table, planet.FieldID, pq.sqlQuery()),
+		sqlgraph.To(timer.Table, timer.FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, planet.TimersTable, planet.TimersColumn),
 	)
 	query.sql = sqlgraph.SetNeighbors(pq.driver.Dialect(), step)
 	return query

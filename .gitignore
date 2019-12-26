@@ -10,6 +10,7 @@ npm-debug.log
 # Folders
 
 public/css
+public/js
 
 .idea/
 .sass-cache
