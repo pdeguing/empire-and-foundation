@@ -8,21 +8,21 @@ $size-5: 1rem;
 $size-6: 0.80rem;
 $size-7: 0.60rem;
 
-$black: #121212;
-$black-bis: #171717;
-$black-ter: #1e1e1e;
+$black: #020202;
+$black-bis: #070707;
+$black-ter: #0e0e0e;
 $grey-04: #222222;
-$grey-04: #242424;
-$grey-04: #272727;
-$grey-04: #2c2c2c;
-$grey-04: #2e2e2e;
-$grey-04: #323232;
-$grey-04: #353535;
-$grey-04: #383838;
+$grey-05: #242424;
+$grey-06: #272727;
+$grey-07: #2c2c2c;
+$grey-08: #2e2e2e;
+$grey-09: #323232;
+$grey-10: #353535;
+$grey-11: #383838;
 
-$white: rgba(255,255,255,0.87);
+$white: rgba(255,255,255,0.85);
 $white-bis: rgba(255,255,255,0.60);
-$white-ter: rgba(255,255,255,0.38);
+$white-ter: rgba(255,255,255,0.45);
 
 @import "../../node_modules/bulma/sass/utilities/_all.sass";
 
