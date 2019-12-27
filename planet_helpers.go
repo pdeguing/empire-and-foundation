@@ -65,6 +65,23 @@ func userPlanets(r *http.Request, tx *ent.Tx) ([]*ent.Planet, error) {
 	return p, nil
 }
 
+// regionPlanets retrieves all planets
+func regionPlanets(w http.ResponseWriter, r *http.Request) ([]*ent.Planet, error) {
+	p, err := data.Client.Planet.Query().
+		Order(ent.Asc(planet.FieldPositionCode)).
+		All(r.Context())
+
+	if _, ok := err.(*ent.ErrNotFound); ok {
+		return nil, newNotFoundError(err)
+	}
+
+	if err != nil {
+		return nil, newInternalServerError(fmt.Errorf("could not retrieve user's planet from database: %v", err))
+	}
+
+	return p, err
+}
+
 // planetViewData contains the information for a page with upgradable
 // items like constructions or research.
 type planetViewData struct {
