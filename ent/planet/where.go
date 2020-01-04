@@ -351,6 +351,14 @@ func Name(v string) predicate.Planet {
 	)
 }
 
+// PlanetSkin applies equality check predicate on the "planet_skin" field. It's identical to PlanetSkinEQ.
+func PlanetSkin(v string) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldPlanetSkin), v))
+	},
+	)
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.Planet {
 	return predicate.Planet(func(s *sql.Selector) {
@@ -2991,6 +2999,182 @@ func NameEqualFold(v string) predicate.Planet {
 func NameContainsFold(v string) predicate.Planet {
 	return predicate.Planet(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldName), v))
+	},
+	)
+}
+
+// PlanetTypeEQ applies the EQ predicate on the "planet_type" field.
+func PlanetTypeEQ(v PlanetType) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldPlanetType), v))
+	},
+	)
+}
+
+// PlanetTypeNEQ applies the NEQ predicate on the "planet_type" field.
+func PlanetTypeNEQ(v PlanetType) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldPlanetType), v))
+	},
+	)
+}
+
+// PlanetTypeIn applies the In predicate on the "planet_type" field.
+func PlanetTypeIn(vs ...PlanetType) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldPlanetType), v...))
+	},
+	)
+}
+
+// PlanetTypeNotIn applies the NotIn predicate on the "planet_type" field.
+func PlanetTypeNotIn(vs ...PlanetType) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldPlanetType), v...))
+	},
+	)
+}
+
+// PlanetSkinEQ applies the EQ predicate on the "planet_skin" field.
+func PlanetSkinEQ(v string) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldPlanetSkin), v))
+	},
+	)
+}
+
+// PlanetSkinNEQ applies the NEQ predicate on the "planet_skin" field.
+func PlanetSkinNEQ(v string) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldPlanetSkin), v))
+	},
+	)
+}
+
+// PlanetSkinIn applies the In predicate on the "planet_skin" field.
+func PlanetSkinIn(vs ...string) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldPlanetSkin), v...))
+	},
+	)
+}
+
+// PlanetSkinNotIn applies the NotIn predicate on the "planet_skin" field.
+func PlanetSkinNotIn(vs ...string) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldPlanetSkin), v...))
+	},
+	)
+}
+
+// PlanetSkinGT applies the GT predicate on the "planet_skin" field.
+func PlanetSkinGT(v string) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldPlanetSkin), v))
+	},
+	)
+}
+
+// PlanetSkinGTE applies the GTE predicate on the "planet_skin" field.
+func PlanetSkinGTE(v string) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldPlanetSkin), v))
+	},
+	)
+}
+
+// PlanetSkinLT applies the LT predicate on the "planet_skin" field.
+func PlanetSkinLT(v string) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldPlanetSkin), v))
+	},
+	)
+}
+
+// PlanetSkinLTE applies the LTE predicate on the "planet_skin" field.
+func PlanetSkinLTE(v string) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldPlanetSkin), v))
+	},
+	)
+}
+
+// PlanetSkinContains applies the Contains predicate on the "planet_skin" field.
+func PlanetSkinContains(v string) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldPlanetSkin), v))
+	},
+	)
+}
+
+// PlanetSkinHasPrefix applies the HasPrefix predicate on the "planet_skin" field.
+func PlanetSkinHasPrefix(v string) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldPlanetSkin), v))
+	},
+	)
+}
+
+// PlanetSkinHasSuffix applies the HasSuffix predicate on the "planet_skin" field.
+func PlanetSkinHasSuffix(v string) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldPlanetSkin), v))
+	},
+	)
+}
+
+// PlanetSkinEqualFold applies the EqualFold predicate on the "planet_skin" field.
+func PlanetSkinEqualFold(v string) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldPlanetSkin), v))
+	},
+	)
+}
+
+// PlanetSkinContainsFold applies the ContainsFold predicate on the "planet_skin" field.
+func PlanetSkinContainsFold(v string) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldPlanetSkin), v))
 	},
 	)
 }

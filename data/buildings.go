@@ -59,6 +59,13 @@ func subStock(ctx context.Context, p *ent.Planet, s Amounts) error {
 }
 
 func getMetalMineUpgradeCost(newLevel int) Amounts {
+	if newLevel == 1 {
+		return Amounts{
+			Metal:	0,
+			Hydrogen: 0,
+			Silica: 0,
+		}
+	}
 	return Amounts{
 		Metal:    60,
 		Hydrogen: 1,
@@ -71,6 +78,13 @@ func getMetalMineUpgradeDuration(newLevel int) time.Duration {
 }
 
 func getHydrogenExtractorUpgradeCost(newLevel int) Amounts {
+	if newLevel == 1 {
+		return Amounts{
+			Metal:	0,
+			Hydrogen: 0,
+			Silica: 0,
+		}
+	}
 	return Amounts{
 		Metal:    11,
 		Hydrogen: 0,
@@ -83,6 +97,13 @@ func getHydrogenExtractorUpgradeDuration(newLevel int) time.Duration {
 }
 
 func getSilicaQuarryUpgradeCost(newLevel int) Amounts {
+	if newLevel == 1 {
+		return Amounts{
+			Metal:	0,
+			Hydrogen: 0,
+			Silica: 0,
+		}
+	}
 	return Amounts{
 		Metal:    60,
 		Hydrogen: 0,
@@ -95,6 +116,13 @@ func getSilicaQuarryUpgradeDuration(newLevel int) time.Duration {
 }
 
 func getSolarPlantUpgradeCost(newLevel int) Amounts {
+	if newLevel == 1 {
+		return Amounts{
+			Metal:	0,
+			Hydrogen: 0,
+			Silica: 0,
+		}
+	}
 	return Amounts{
 		Metal:    45,
 		Hydrogen: 0,
@@ -107,6 +135,13 @@ func getSolarPlantUpgradeDuration(newLevel int) time.Duration {
 }
 
 func getHousingFacilitiesUpgradeCost(newLevel int) Amounts {
+	if newLevel == 1 {
+		return Amounts{
+			Metal:	0,
+			Hydrogen: 0,
+			Silica: 0,
+		}
+	}
 	return Amounts{
 		Metal:    1,
 		Hydrogen: 0,

@@ -4,10 +4,12 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"math/rand"
 
 	"github.com/pdeguing/empire-and-foundation/data"
 	"github.com/pdeguing/empire-and-foundation/ent"
 	"github.com/pdeguing/empire-and-foundation/ent/user"
+	"github.com/pdeguing/empire-and-foundation/ent/planet"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -53,10 +55,27 @@ func serveSignupAccount(w http.ResponseWriter, r *http.Request) {
 			return err
 		}
 
-		_, err = tx.Planet.
-			Create().
+		c, err := tx.Planet.Query().
+				Where(planet.Not(planet.HasOwner())).
+				Count(r.Context())
+
+		if err != nil {
+			return err
+		}
+
+		ra := rand.New(rand.NewSource(42))
+
+		n := ra.Intn(c)
+
+		p, err := tx.Planet.Query().
+				Where(planet.Not(planet.HasOwner())).
+				Offset(n).
+				First(r.Context())
+
+		_, err = p.Update().
 			SetOwner(u).
 			Save(r.Context())
+
 		return err
 	})
 	if err != nil {

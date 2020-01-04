@@ -141,7 +141,7 @@ func main() {
 				Category: "migrations",
 				Usage:    "seed the database with a generated world",
 				Action: func(c *cli.Context) error {
-					fmt.Println("TODO")
+					data.GenerateRegion(0)
 					return nil
 				},
 			},

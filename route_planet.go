@@ -9,6 +9,7 @@ import (
 )
 
 type planetOverviewViewData struct {
+	UserPlanets	[]*ent.Planet
 	Planet *ent.Planet
 	Timers map[timer.Group]*data.Timer
 }
@@ -16,10 +17,15 @@ type planetOverviewViewData struct {
 // GET /planet/{id}
 // Show the dashboard page for a planet
 func servePlanet(w http.ResponseWriter, r *http.Request) {
+	var plist []*ent.Planet
 	var p *ent.Planet
 	var t map[timer.Group]*data.Timer
 	err := data.WithTx(r.Context(), data.Client, func(tx *ent.Tx) error {
 		var err error
+		plist, err = userPlanets(r, tx)
+		if err != nil {
+			return err
+		}
 		p, err = userPlanet(r, tx)
 		if err != nil {
 			return err
@@ -35,6 +41,7 @@ func servePlanet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	pv := planetOverviewViewData{
+		UserPlanets: plist,
 		Planet: p,
 		Timers: t,
 	}

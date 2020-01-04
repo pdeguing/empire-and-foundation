@@ -1,55 +1,21 @@
 {{ define "leftbar" }}
 <nav class="panel is-shadowless">
-	<a class="panel-block is-active" href="/planet/1/">
-		<figure class="image is-48x48 Planet-menu__icon">
-			<img src="/static/images/planet-icons/ako.png" class="is-rounded" alt="planet image" width="48px"
-				height="48px">
-		</figure>
-		<div>
-			<div>Ako</div>
-			<div>[0:30:2:0]</div>
-		</div>
-	</a>
-	<a class="panel-block" href="/planet/2/">
-		<figure class="image is-48x48 Planet-menu__icon">
-			<img src="/static/images/planet-icons/avalon.png" class="is-rounded" alt="planet image" width="48px"
-				height="48px">
-		</figure>
-		<div>
-			<div>Avalon</div>
-			<div>[0:30:3:0]</div>
-		</div>
-	</a>
-	<a class="panel-block" href="/planet/3/">
-		<figure class="image is-48x48 Planet-menu__icon">
-			<img src="/static/images/planet-icons/circus.png" class="is-rounded" alt="planet image" width="48px"
-				height="48px">
-		</figure>
-		<div>
-			<div>Circus</div>
-			<div>[0:30:4:0]</div>
-		</div>
-	</a>
-	<a class="panel-block" href="/planet/4/">
-		<figure class="image is-48x48 Planet-menu__icon">
-			<img src="/static/images/planet-icons/earth.png" class="is-rounded" alt="planet image" width="48px"
-				height="48px">
-		</figure>
-		<div>
-			<div>Earth</div>
-			<div>[0:30:6:0]</div>
-		</div>
-	</a>
-	<a class="panel-block" href="/planet/5/">
-		<figure class="image is-48x48 Planet-menu__icon">
-			<img src="/static/images/planet-icons/farma.png" class="is-rounded" alt="planet image" width="48px"
-				height="48px">
-		</figure>
-		<div>
-			<div>Farma</div>
-			<div>[0:30:7:0]</div>
-		</div>
-	</a>
+	{{ range .Data.UserPlanets}}
+
+	<a class="panel-block is-active" href="/planet/{{ .ID }}/">
+			<figure class="image is-48x48 Planet-menu__icon">
+				<img src="/static/images/planet-icons/{{ .PlanetSkin }}.png" class="is-rounded" alt="planet image" width="48px"
+					height="48px">
+			</figure>
+			<div>
+				<div>{{ .Name }}</div>
+				<div>
+				[{{ .RegionCode }}:{{ .SystemCode }}:{{ .OrbitCode }}:{{ .SuborbitCode }}]
+				</div>
+			</div>
+		</a>
+
+	{{ end }}
 </nav>
 
 {{ end }}

@@ -8,6 +8,7 @@ require (
 	github.com/alexedwards/scs/v2 v2.3.0
 	github.com/facebookincubator/ent v0.0.0-20191225092410-b6cfa43af6ea
 	github.com/go-sql-driver/mysql v1.4.1
+	github.com/goombaio/namegenerator v0.0.0-20181006234301-989e774b106e
 	github.com/gorilla/csrf v1.6.2
 	github.com/gorilla/mux v1.7.3
 	github.com/gorilla/securecookie v1.1.1

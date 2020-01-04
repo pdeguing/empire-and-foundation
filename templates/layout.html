@@ -15,7 +15,7 @@
 	<title>Empire and Foundation</title>
 </head>
 
-<body class="is-size-6 page-{{ .PageName }}" style="height: 100%;">
+<body class="is-size-6 page-{{ .PageName }}" style="height: 100%; {{ if eq .PageName "planet-dashboard" }} background-image: url('/static/images/planet-dashboards/{{ .Data.Planet.PlanetSkin }}.png'); {{end}}">
 
 	{{ template "navbar" . }}
 

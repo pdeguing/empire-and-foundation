@@ -9,6 +9,7 @@ import (
 
 	"github.com/facebookincubator/ent/dialect/sql"
 
+	"github.com/pdeguing/empire-and-foundation/ent/planet"
 	"github.com/pdeguing/empire-and-foundation/ent/timer"
 )
 
@@ -72,6 +73,8 @@ func ExamplePlanet() {
 		SetSuborbitCode(1).
 		SetPositionCode(1).
 		SetName("string").
+		SetPlanetType(planet.PlanetTypeHabitable).
+		SetPlanetSkin("string").
 		AddTimers(t1).
 		SaveX(ctx)
 	log.Println("planet created:", pl)
@@ -183,6 +186,8 @@ func ExampleUser() {
 		SetSuborbitCode(1).
 		SetPositionCode(1).
 		SetName("string").
+		SetPlanetType(planet.PlanetTypeHabitable).
+		SetPlanetSkin("string").
 		SaveX(ctx)
 	log.Println("planet created:", pl0)
 
