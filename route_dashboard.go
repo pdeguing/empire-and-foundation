@@ -75,10 +75,8 @@ func serveFleetControl(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	d := struct {
-		RegionPlanets	[]*ent.Planet
 		UserPlanets	[]*ent.Planet
 	}{
-		nil,
 		userPlanets,
 	}
 	generateHTML(w, r, "fleet", d, "layout", "private.navbar", "dashboard", "leftbar", "fleetcontrol")
