@@ -71,11 +71,6 @@ func regionPlanets(w http.ResponseWriter, r *http.Request) ([]*ent.Planet, error
 		Order(ent.Asc(planet.FieldPositionCode)).
 		All(r.Context())
 
-	if _, ok := err.(*ent.ErrNotFound); ok {
-		p := make([]*ent.Planet, 0)
-		return p, newNotFoundError(err)
-	}
-
 	if err != nil {
 		return nil, newInternalServerError(fmt.Errorf("could not retrieve user's planet from database: %v", err))
 	}
