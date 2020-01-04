@@ -7,8 +7,8 @@ import (
 	"github.com/pdeguing/empire-and-foundation/ent"
 )
 
-type dashboardOverviewData struct {
-	Planets	[]*ent.Planet
+type dashboardViewData struct {
+	UserPlanets	[]*ent.Planet
 }
 
 // GET /dashboard
@@ -27,8 +27,8 @@ func serveDashboard(w http.ResponseWriter, r *http.Request) {
 		serveError(w, r, err)
 		return
 	}
-	d := dashboardOverviewData{
-		Planets: p,
+	d := dashboardViewData{
+		UserPlanets: p,
 	}
 	generateHTML(w, r, "dashboard", d, "layout", "private.navbar", "dashboard", "leftbar", "empire")
 }

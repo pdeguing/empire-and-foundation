@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"strings"
 	"os"
-	"time"
 
 	"github.com/pdeguing/empire-and-foundation/ent/planet"
 	"github.com/goombaio/namegenerator"
@@ -27,14 +26,13 @@ func randomPlanetType(r *rand.Rand) planet.PlanetType {
 	}
 }
 
-func getPositionCode(r int, s int, o int, su int) int {
-	return su + o << 4 + s << 8 + r << 12
+func getPositionCode(region, system, orbit, suborbit int) int {
+	return suborbit + orbit << 4 + system << 8 + region << 12
 
 }
 
-func randomPlanetName() string {
-	seed := time.Now().UTC().UnixNano()
-	nameGenerator := namegenerator.NewNameGenerator(seed)
+func randomPlanetName(r *rand.Rand) string {
+	nameGenerator := namegenerator.NewNameGenerator(int64(r.Intn(9)))
 
 	name := nameGenerator.Generate()
 
@@ -50,9 +48,8 @@ func randomPlanetSkin(r *rand.Rand, planetSkins []os.FileInfo) string {
 	return planetSkin
 }
 
-func generateEntity(region int, system int, orbit int, suborbit int, planetType planet.PlanetType, planetSkin string) {
+func generateEntity(region, system, orbit, suborbit int, planetType planet.PlanetType, planetSkin, planetName string) {
 	positionCode := getPositionCode(region, system, orbit, suborbit)
-	planetName := randomPlanetName()
 
 	log.Println("create planet:", planetName, planetType, positionCode, planetSkin, "(with:", region, system, orbit, suborbit, ")")
 
@@ -76,7 +73,8 @@ func generatePlanet(r *rand.Rand, planetSkins []os.FileInfo, region int, system 
 	if n < 4 {
 		planetType := randomPlanetType(r)
 		planetSkin := randomPlanetSkin(r, planetSkins)
-		generateEntity(region, system, orbit, suborbit, planetType, planetSkin)
+		planetName := randomPlanetName(r)
+		generateEntity(region, system, orbit, suborbit, planetType, planetSkin, planetName)
 		return true
 	}
 	return false

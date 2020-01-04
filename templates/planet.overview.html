@@ -17,7 +17,15 @@
         </div>
         <div class="columns is-inline-flex is-gapless dashboard-item">
           <span class="column is-half is-growing dashboard-item-name">Planet type</span>
-		  <span class="column is-narrow dashboard-item-value">{{ .Data.Planet.PlanetType }}</span>
+		  <span class="column is-narrow dashboard-item-value">
+			  {{ if eq .Data.Planet.PlanetType "gas_giant" }}
+			  gas giant
+			  {{ else if eq .Data.Planet.PlanetType "ice_giant" }}
+			  ice giant
+			  {{ else }}
+			  {{ .Data.Planet.PlanetType }}
+			  {{ end }}
+		  </span>
         </div>
       </li>
     </ul>

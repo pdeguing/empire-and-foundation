@@ -72,7 +72,8 @@ func regionPlanets(w http.ResponseWriter, r *http.Request) ([]*ent.Planet, error
 		All(r.Context())
 
 	if _, ok := err.(*ent.ErrNotFound); ok {
-		return nil, newNotFoundError(err)
+		p := make([]*ent.Planet, 0)
+		return p, newNotFoundError(err)
 	}
 
 	if err != nil {
