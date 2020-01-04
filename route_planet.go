@@ -9,7 +9,7 @@ import (
 )
 
 type planetOverviewViewData struct {
-	Planets	[]*ent.Planet
+	UserPlanets	[]*ent.Planet
 	Planet *ent.Planet
 	Timers map[timer.Group]*data.Timer
 }
@@ -41,7 +41,7 @@ func servePlanet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	pv := planetOverviewViewData{
-		Planets: plist,
+		UserPlanets: plist,
 		Planet: p,
 		Timers: t,
 	}

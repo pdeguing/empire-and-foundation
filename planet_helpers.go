@@ -81,7 +81,7 @@ func regionPlanets(w http.ResponseWriter, r *http.Request) ([]*ent.Planet, error
 // planetViewData contains the information for a page with upgradable
 // items like constructions or research.
 type planetViewData struct {
-	Planets []*ent.Planet
+	UserPlanets []*ent.Planet
 	Planet *ent.Planet
 	Timer  *data.Timer
 }
@@ -116,7 +116,7 @@ func newPlanetViewData(r *http.Request, g timer.Group) (*planetViewData, error) 
 		return nil, err
 	}
 	return &planetViewData{
-		Planets: plist,
+		UserPlanets: plist,
 		Planet: p,
 		Timer:  t,
 	}, nil
