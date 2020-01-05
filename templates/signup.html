@@ -1,17 +1,57 @@
 {{ define "content" }}
 
-<form class="form-signin" role="form" action="/signup_account" method="post">
-  {{ csrf }}
+<section class="hero">
+	<div class="hero-body">
+		<div class="container">
+			<h1 class="title is-1">Empire and Foundation</h1>
+		</div>
+	</div>
+</section>
 
-  <h2 class="form-signin-heading">Empire and Foundation</h2>
+<section class="section">
+	<div class="container">
+		<div class="columns">
+			<div class="column is-3">
+
+<form role="form" action="/signup_account" method="post">
+  {{ csrf }}
 
   {{ template "flash" }}
 
-  <div class="lead">Sign up for an account below</div>
-  <input id="name" type="text" name="name" class="form-control" placeholder="Name" required autofocus>
-  <input type="email" name="email" class="form-control" placeholder="Email address" required>
-  <input type="password" name="password" class="form-control" placeholder="Password" required>
-  <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
+	<div class="field">
+		<label class="label">Username</label>
+		<div class="control">
+			<input id="name" type="text" name="name" class="input" placeholder="Username" required autofocus>
+		</div>
+	</div>
+
+	<div class="field">
+		<label class="label">Email</label>
+		<div class="control">
+			<input type="email" name="email" class="input" placeholder="Email address" required>
+		</div>
+	</div>
+
+	<div class="field">
+		<label class="label">Password</label>
+		<div class="control">
+			<input type="password" name="password" class="input" placeholder="Password" required>
+		</div>
+	</div>
+
+	<div class="field is-grouped">
+		<div class="control">
+			<button class="button is-white is-outlined" type="submit">Sign up</button>
+		</div>
+		<div class="control">
+			<a class="button is-text">Forgotten password</a>
+		</div>
+	</div>
 </form>
+
+			</div>
+		</div>
+	</div>
+</section>
 
 {{ end }}
