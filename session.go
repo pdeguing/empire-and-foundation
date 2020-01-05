@@ -95,7 +95,7 @@ func loadUserMiddleware(next http.Handler) http.Handler {
 func authMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if !isAuthenticated(r) {
-			http.Redirect(w, r, "/login", 302)
+			http.Redirect(w, r, "/", 302)
 			return
 		}
 

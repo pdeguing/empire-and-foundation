@@ -163,7 +163,6 @@ func routes() http.Handler {
 
 	r.HandleFunc("/", serveIndex)
 
-	r.HandleFunc("/login", serveLogin)
 	r.HandleFunc("/logout", serveLogout)
 	r.HandleFunc("/signup", serveSignup)
 	r.HandleFunc("/signup_account", serveSignupAccount).Methods("POST")

@@ -13,13 +13,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// GET /login
-// Show the login page
-func serveLogin(w http.ResponseWriter, r *http.Request) {
-	generateHTML(w, r, "login", nil, "login.layout", "public.navbar", "flash", "login")
-	forgetForm(r)
-}
-
 // GET /signup
 // Show the signup page
 func serveSignup(w http.ResponseWriter, r *http.Request) {
@@ -84,7 +77,7 @@ func serveSignupAccount(w http.ResponseWriter, r *http.Request) {
 	}
 
 	flash(r, flashSuccess, "Your account has been created. You can log in now.")
-	http.Redirect(w, r, "/login", 302)
+	http.Redirect(w, r, "/", 302)
 }
 
 // POST /authenticate
@@ -99,7 +92,7 @@ func serveAuthenticate(w http.ResponseWriter, r *http.Request) {
 	if errors.As(err, &nferr) {
 		flash(r, flashDanger, "The username or password you have entered is invalid.")
 		rememberForm(r)
-		http.Redirect(w, r, "/login", 302)
+		http.Redirect(w, r, "/", 302)
 		return
 	}
 	if err != nil {
@@ -114,7 +107,7 @@ func serveAuthenticate(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		flash(r, flashDanger, "The username or password you have entered is invalid.")
 		rememberForm(r)
-		http.Redirect(w, r, "/login", 302)
+		http.Redirect(w, r, "/", 302)
 		return
 	}
 
