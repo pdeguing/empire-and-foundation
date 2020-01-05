@@ -152,3 +152,60 @@ func getHousingFacilitiesUpgradeCost(newLevel int) Amounts {
 func getHousingFacilitiesUpgradeDuration(newLevel int) time.Duration {
 	return time.Second * time.Duration(42*math.Pow(1.5, float64(newLevel)))
 }
+
+func getMetalStorageUpgradeCost(newLevel int) Amounts {
+	if newLevel == 1 {
+		return Amounts{
+			Metal:	0,
+			Hydrogen: 0,
+			Silica: 0,
+		}
+	}
+	return Amounts{
+		Metal:    10,
+		Hydrogen: 0,
+		Silica:   5,
+	}
+}
+
+func getMetalStorageUpgradeDuration(newLevel int) time.Duration {
+	return time.Second * time.Duration(42*math.Pow(1.5, float64(newLevel)))
+}
+
+func getHydrogenStorageUpgradeCost(newLevel int) Amounts {
+	if newLevel == 1 {
+		return Amounts{
+			Metal:	0,
+			Hydrogen: 0,
+			Silica: 0,
+		}
+	}
+	return Amounts{
+		Metal:    10,
+		Hydrogen: 2,
+		Silica:   3,
+	}
+}
+
+func getHydrogenStorageUpgradeDuration(newLevel int) time.Duration {
+	return time.Second * time.Duration(42*math.Pow(1.5, float64(newLevel)))
+}
+
+func getSilicaStorageUpgradeCost(newLevel int) Amounts {
+	if newLevel == 1 {
+		return Amounts{
+			Metal:	0,
+			Hydrogen: 0,
+			Silica: 0,
+		}
+	}
+	return Amounts{
+		Metal:    8,
+		Hydrogen: 0,
+		Silica:   10,
+	}
+}
+
+func getSilicaStorageUpgradeDuration(newLevel int) time.Duration {
+	return time.Second * time.Duration(42*math.Pow(1.5, float64(newLevel)))
+}

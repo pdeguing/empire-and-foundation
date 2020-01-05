@@ -220,7 +220,7 @@
 				<div class="card-content is-growing">
 					<div class="has-text-right Planet-card__header">
 						<h2 class="title is-5 is-marginless">Metal Storage</h2>
-						<span class="subtitle is-7">Level...{{ .Data.Planet.PopulationStorageLevel }}</span>
+						<span class="subtitle is-7">Level...{{ .Data.Planet.MetalStorageLevel }}</span>
 					</div>
 					<div class="content">
 						<p>
@@ -229,16 +229,16 @@
 					</div>
 				</div>
 				<footer class="card-footer">
-					{{ if eq $action "upgrade_housing_facilities"}}
+					{{ if eq $action "upgrade_metal_storage"}}
 					<div class="card-footer-item has-text-white has-text-weight-semibold Planet-card__duration">
 						{{ duration .Data.Timer.Duration }}
 					</div>
-					<button formaction="/planet/{{ .Data.Planet.ID }}/housing-facilities/cancel"
+					<button formaction="/planet/{{ .Data.Planet.ID }}/metal-storage/cancel"
 						class="is-paddingless Planet-card__button Planet-card__button--cancel">
 						<span class="card-footer-item">Cancel</span>
 					</button>
 					{{ else }}
-					<button formaction="/planet/{{ .Data.Planet.ID }}/housing-facilities/upgrade"
+					<button formaction="/planet/{{ .Data.Planet.ID }}/metal-storage/upgrade"
 						class="is-paddingless Planet-card__button" {{ if .Data.Timer }}disabled{{ end }}>
 						<span class="card-footer-item">Upgrade</span>
 					</button>
@@ -260,7 +260,7 @@
 				<div class="card-content is-growing">
 					<div class="has-text-right Planet-card__header">
 						<h2 class="title is-5 is-marginless">Hydrogen Storage</h2>
-						<span class="subtitle is-7">Level...{{ .Data.Planet.PopulationStorageLevel }}</span>
+						<span class="subtitle is-7">Level...{{ .Data.Planet.HydrogenStorageLevel }}</span>
 					</div>
 					<div class="content">
 						<p>
@@ -269,16 +269,16 @@
 					</div>
 				</div>
 				<footer class="card-footer">
-					{{ if eq $action "upgrade_housing_facilities"}}
+					{{ if eq $action "upgrade_hydrogen_storage"}}
 					<div class="card-footer-item has-text-white has-text-weight-semibold Planet-card__duration">
 						{{ duration .Data.Timer.Duration }}
 					</div>
-					<button formaction="/planet/{{ .Data.Planet.ID }}/housing-facilities/cancel"
+					<button formaction="/planet/{{ .Data.Planet.ID }}/hydrogen-storage/cancel"
 						class="is-paddingless Planet-card__button Planet-card__button--cancel">
 						<span class="card-footer-item">Cancel</span>
 					</button>
 					{{ else }}
-					<button formaction="/planet/{{ .Data.Planet.ID }}/housing-facilities/upgrade"
+					<button formaction="/planet/{{ .Data.Planet.ID }}/hydrogen-storage/upgrade"
 						class="is-paddingless Planet-card__button" {{ if .Data.Timer }}disabled{{ end }}>
 						<span class="card-footer-item">Upgrade</span>
 					</button>
@@ -300,7 +300,7 @@
 				<div class="card-content is-growing">
 					<div class="has-text-right Planet-card__header">
 						<h2 class="title is-5 is-marginless">Silica Storage</h2>
-						<span class="subtitle is-7">Level...{{ .Data.Planet.PopulationStorageLevel }}</span>
+						<span class="subtitle is-7">Level...{{ .Data.Planet.SilicaStorageLevel }}</span>
 					</div>
 					<div class="content">
 						<p>
@@ -309,16 +309,16 @@
 					</div>
 				</div>
 				<footer class="card-footer">
-					{{ if eq $action "upgrade_housing_facilities"}}
+					{{ if eq $action "upgrade_silica_storage"}}
 					<div class="card-footer-item has-text-white has-text-weight-semibold Planet-card__duration">
 						{{ duration .Data.Timer.Duration }}
 					</div>
-					<button formaction="/planet/{{ .Data.Planet.ID }}/housing-facilities/cancel"
+					<button formaction="/planet/{{ .Data.Planet.ID }}/silica-storage/cancel"
 						class="is-paddingless Planet-card__button Planet-card__button--cancel">
 						<span class="card-footer-item">Cancel</span>
 					</button>
 					{{ else }}
-					<button formaction="/planet/{{ .Data.Planet.ID }}/housing-facilities/upgrade"
+					<button formaction="/planet/{{ .Data.Planet.ID }}/silica-storage/upgrade"
 						class="is-paddingless Planet-card__button" {{ if .Data.Timer }}disabled{{ end }}>
 						<span class="card-footer-item">Upgrade</span>
 					</button>

@@ -22,6 +22,9 @@ func (Timer) Fields() []ent.Field {
 				"upgrade_silica_quarry",
 				"upgrade_solar_plant",
 				"upgrade_housing_facilities",
+				"upgrade_metal_storage",
+				"upgrade_hydrogen_storage",
+				"upgrade_silica_storage",
 			).
 			Immutable(),
 		field.Enum("group").

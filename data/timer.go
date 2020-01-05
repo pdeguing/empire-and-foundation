@@ -198,6 +198,81 @@ var actions = map[timer.Action]action{
 			return addStock(ctx, p, c)
 		},
 	},
+	timer.ActionUpgradeMetalStorage: action{
+		Group: timer.GroupBuilding,
+		Duration: func(p *ent.Planet) time.Duration {
+			return getMetalStorageUpgradeDuration(p.MetalStorageLevel + 1)
+		},
+		Valid: func(p *ent.Planet) bool {
+			c := getMetalStorageUpgradeCost(p.MetalStorageLevel + 1)
+			return hasResources(p, c)
+		},
+		Start: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+			c := getMetalStorageUpgradeCost(p.MetalStorageLevel + 1)
+			return subStock(ctx, p, c)
+		},
+		Complete: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+			p.MetalStorageLevel++
+			_, err := p.Update().
+				SetMetalStorageLevel(p.MetalStorageLevel).
+				Save(ctx)
+			return err
+		},
+		Cancel: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+			c := getMetalStorageUpgradeCost(p.MetalStorageLevel + 1)
+			return addStock(ctx, p, c)
+		},
+	},
+	timer.ActionUpgradeHydrogenStorage: action{
+		Group: timer.GroupBuilding,
+		Duration: func(p *ent.Planet) time.Duration {
+			return getHydrogenStorageUpgradeDuration(p.HydrogenStorageLevel + 1)
+		},
+		Valid: func(p *ent.Planet) bool {
+			c := getHydrogenStorageUpgradeCost(p.HydrogenStorageLevel + 1)
+			return hasResources(p, c)
+		},
+		Start: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+			c := getHydrogenStorageUpgradeCost(p.HydrogenStorageLevel + 1)
+			return subStock(ctx, p, c)
+		},
+		Complete: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+			p.HydrogenStorageLevel++
+			_, err := p.Update().
+				SetHydrogenStorageLevel(p.HydrogenStorageLevel).
+				Save(ctx)
+			return err
+		},
+		Cancel: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+			c := getHydrogenStorageUpgradeCost(p.HydrogenStorageLevel + 1)
+			return addStock(ctx, p, c)
+		},
+	},
+	timer.ActionUpgradeSilicaStorage: action{
+		Group: timer.GroupBuilding,
+		Duration: func(p *ent.Planet) time.Duration {
+			return getSilicaStorageUpgradeDuration(p.SilicaStorageLevel + 1)
+		},
+		Valid: func(p *ent.Planet) bool {
+			c := getSilicaStorageUpgradeCost(p.SilicaStorageLevel + 1)
+			return hasResources(p, c)
+		},
+		Start: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+			c := getSilicaStorageUpgradeCost(p.SilicaStorageLevel + 1)
+			return subStock(ctx, p, c)
+		},
+		Complete: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+			p.SilicaStorageLevel++
+			_, err := p.Update().
+				SetSilicaStorageLevel(p.SilicaStorageLevel).
+				Save(ctx)
+			return err
+		},
+		Cancel: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+			c := getSilicaStorageUpgradeCost(p.SilicaStorageLevel + 1)
+			return addStock(ctx, p, c)
+		},
+	},
 }
 
 // IsBusy checks if there is currently a timer in progress for the group.

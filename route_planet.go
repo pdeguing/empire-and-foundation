@@ -162,3 +162,39 @@ func serveUpgradeHousingFacilities(w http.ResponseWriter, r *http.Request) {
 func serveCancelHousingFacilities(w http.ResponseWriter, r *http.Request) {
 	serveCancelBuilding(w, r, timer.ActionUpgradeHousingFacilities)
 }
+
+// POST /planet/{id}/metal-storage/upgrade
+// Upgrade the metal storage to the next level
+func serveUpgradeMetalStorage(w http.ResponseWriter, r *http.Request) {
+	serveUpgradeBuilding(w, r, timer.ActionUpgradeMetalStorage)
+}
+
+// POST /planet/{id}/metal-storage/cancel
+// Cancel the upgrade of the metal storage 
+func serveCancelMetalStorage(w http.ResponseWriter, r *http.Request) {
+	serveCancelBuilding(w, r, timer.ActionUpgradeMetalStorage)
+}
+
+// POST /planet/{id}/hydrogen-storage/upgrade
+// Upgrade the hydrogen storage to the next level
+func serveUpgradeHydrogenStorage(w http.ResponseWriter, r *http.Request) {
+	serveUpgradeBuilding(w, r, timer.ActionUpgradeHydrogenStorage)
+}
+
+// POST /planet/{id}/hydrogen-storage/cancel
+// Cancel the upgrade of the hydrogen storage 
+func serveCancelHydrogenStorage(w http.ResponseWriter, r *http.Request) {
+	serveCancelBuilding(w, r, timer.ActionUpgradeHydrogenStorage)
+}
+
+// POST /planet/{id}/silica-storage/upgrade
+// Upgrade the silica storage to the next level
+func serveUpgradeSilicaStorage(w http.ResponseWriter, r *http.Request) {
+	serveUpgradeBuilding(w, r, timer.ActionUpgradeSilicaStorage)
+}
+
+// POST /planet/{id}/silica-storage/cancel
+// Cancel the upgrade of the silica storage 
+func serveCancelSilicaStorage(w http.ResponseWriter, r *http.Request) {
+	serveCancelBuilding(w, r, timer.ActionUpgradeSilicaStorage)
+}

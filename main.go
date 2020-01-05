@@ -196,6 +196,12 @@ func routes() http.Handler {
 	rPlanet.HandleFunc("/solar-plant/cancel", serveCancelSolarPlant).Methods("POST")
 	rPlanet.HandleFunc("/housing-facilities/upgrade", serveUpgradeHousingFacilities).Methods("POST")
 	rPlanet.HandleFunc("/housing-facilities/cancel", serveCancelHousingFacilities).Methods("POST")
+	rPlanet.HandleFunc("/metal-storage/upgrade", serveUpgradeMetalStorage).Methods("POST")
+	rPlanet.HandleFunc("/metal-storage/cancel", serveCancelMetalStorage).Methods("POST")
+	rPlanet.HandleFunc("/hydrogen-storage/upgrade", serveUpgradeHydrogenStorage).Methods("POST")
+	rPlanet.HandleFunc("/hydrogen-storage/cancel", serveCancelHydrogenStorage).Methods("POST")
+	rPlanet.HandleFunc("/silica-storage/upgrade", serveUpgradeSilicaStorage).Methods("POST")
+	rPlanet.HandleFunc("/silica-storage/cancel", serveCancelSilicaStorage).Methods("POST")
 
 	// Middleware
 	csrfMiddleware := csrf.Protect(
