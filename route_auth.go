@@ -23,7 +23,7 @@ func serveLogin(w http.ResponseWriter, r *http.Request) {
 // GET /signup
 // Show the signup page
 func serveSignup(w http.ResponseWriter, r *http.Request) {
-	generateHTML(w, r, "signup", nil, "login.layout", "public.navbar", "flash", "signup")
+	generateHTML(w, r, "signup", nil, "layout", "public.navbar", "flash", "signup")
 	forgetForm(r)
 }
 
