@@ -48,6 +48,35 @@ func servePlanet(w http.ResponseWriter, r *http.Request) {
 	generateHTML(w, r, "planet-dashboard", pv, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "flash", "planet.overview")
 }
 
+type buildingsUpgradeCost struct {
+	MetalProdUpgradeCost	data.Amounts
+	HydrogenProdUpgradeCost	data.Amounts
+	SilicaProdUpgradeCost	data.Amounts
+	SolarProdUpgradeCost	data.Amounts
+	UrbanismUpgradeCost	data.Amounts
+	MetalStorageUpgradeCost	data.Amounts
+	HydrogenStorageUpgradeCost	data.Amounts
+	SilicaStorageUpgradeCost	data.Amounts
+}
+
+type constructionsViewData struct {
+	planetViewData
+	buildingsUpgradeCost
+}
+
+func getBuildingsUpgradeCost(planet *ent.Planet) buildingsUpgradeCost {
+	return buildingsUpgradeCost{
+		MetalProdUpgradeCost: data.GetMetalProdUpgradeCost(planet.MetalProdLevel + 1),
+		HydrogenProdUpgradeCost: data.GetHydrogenProdUpgradeCost(planet.HydrogenProdLevel + 1),
+		SilicaProdUpgradeCost: data.GetSilicaProdUpgradeCost(planet.SilicaProdLevel + 1),
+		SolarProdUpgradeCost: data.GetSolarProdUpgradeCost(planet.SolarProdLevel + 1),
+		UrbanismUpgradeCost: data.GetUrbanismUpgradeCost(planet.PopulationProdLevel + 1),
+		MetalStorageUpgradeCost: data.GetMetalStorageUpgradeCost(planet.MetalStorageLevel + 1),
+		HydrogenStorageUpgradeCost: data.GetHydrogenStorageUpgradeCost(planet.HydrogenStorageLevel + 1),
+		SilicaStorageUpgradeCost: data.GetSilicaStorageUpgradeCost(planet.SilicaStorageLevel + 1),
+	}
+}
+
 // GET /planet/{id}/constructions
 // Show the constructions page for a planet
 func serveConstructions(w http.ResponseWriter, r *http.Request) {
@@ -56,7 +85,12 @@ func serveConstructions(w http.ResponseWriter, r *http.Request) {
 		serveError(w, r, err)
 		return
 	}
-	generateHTML(w, r, "planet-constructions", p, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "flash", "planet.constructions")
+	b := getBuildingsUpgradeCost(p.Planet)
+	data := constructionsViewData{
+		*p,
+		b,
+	}
+	generateHTML(w, r, "planet-constructions", data, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "flash", "planet.constructions")
 }
 
 // GET /planet/{id}/factories
@@ -106,61 +140,61 @@ func serveDefenses(w http.ResponseWriter, r *http.Request) {
 // POST /planet/{id}/metal-mine/upgrade
 // Upgrade the metal mine to the next level
 func serveUpgradeMetalMine(w http.ResponseWriter, r *http.Request) {
-	serveUpgradeBuilding(w, r, timer.ActionUpgradeMetalMine)
+	serveUpgradeBuilding(w, r, timer.ActionUpgradeMetalProd)
 }
 
 // POST /planet/{id}/metal-mine/cancel
 // Cancel the upgrade of the metal mine
 func serveCancelMetalMine(w http.ResponseWriter, r *http.Request) {
-	serveCancelBuilding(w, r, timer.ActionUpgradeMetalMine)
+	serveCancelBuilding(w, r, timer.ActionUpgradeMetalProd)
 }
 
 // POST /planet/{id}/hydrogen-extractor/upgrade
 // Upgrade the hydrogen extractor to the next level
 func serveUpgradeHydrogenExtractor(w http.ResponseWriter, r *http.Request) {
-	serveUpgradeBuilding(w, r, timer.ActionUpgradeHydrogenExtractor)
+	serveUpgradeBuilding(w, r, timer.ActionUpgradeHydrogenProd)
 }
 
 // POST /planet/{id}/hydrogen-extractor/cancel
 // Cancel the upgrade of the hydrogen extractor
 func serveCancelHydrogenExtractor(w http.ResponseWriter, r *http.Request) {
-	serveCancelBuilding(w, r, timer.ActionUpgradeHydrogenExtractor)
+	serveCancelBuilding(w, r, timer.ActionUpgradeHydrogenProd)
 }
 
 // POST /planet/{id}/silica-quarry/upgrade
 // Upgrade the silica quarry to the next level
 func serveUpgradeSilicaQuarry(w http.ResponseWriter, r *http.Request) {
-	serveUpgradeBuilding(w, r, timer.ActionUpgradeSilicaQuarry)
+	serveUpgradeBuilding(w, r, timer.ActionUpgradeSilicaProd)
 }
 
 // POST /planet/{id}/silica-quarry/cancel
 // Cancel the upgrade of the silica quarry
 func serveCancelSilicaQuarry(w http.ResponseWriter, r *http.Request) {
-	serveCancelBuilding(w, r, timer.ActionUpgradeSilicaQuarry)
+	serveCancelBuilding(w, r, timer.ActionUpgradeSilicaProd)
 }
 
 // POST /planet/{id}/solar-plant/upgrade
 // Upgrade the solar plant to the next level
 func serveUpgradeSolarPlant(w http.ResponseWriter, r *http.Request) {
-	serveUpgradeBuilding(w, r, timer.ActionUpgradeSolarPlant)
+	serveUpgradeBuilding(w, r, timer.ActionUpgradeSolarProd)
 }
 
 // POST /planet/{id}/solar-plant/cancel
 // Cancel the upgrade of the solar plant
 func serveCancelSolarPlant(w http.ResponseWriter, r *http.Request) {
-	serveCancelBuilding(w, r, timer.ActionUpgradeSolarPlant)
+	serveCancelBuilding(w, r, timer.ActionUpgradeSolarProd)
 }
 
 // POST /planet/{id}/housing-facilities/upgrade
 // Upgrade the housing facilities to the next level
-func serveUpgradeHousingFacilities(w http.ResponseWriter, r *http.Request) {
-	serveUpgradeBuilding(w, r, timer.ActionUpgradeHousingFacilities)
+func serveUpgradeUrbanism(w http.ResponseWriter, r *http.Request) {
+	serveUpgradeBuilding(w, r, timer.ActionUpgradeUrbanism)
 }
 
 // POST /planet/{id}/housing-facilities/cancel
 // Cancel the upgrade of the housing facilities
-func serveCancelHousingFacilities(w http.ResponseWriter, r *http.Request) {
-	serveCancelBuilding(w, r, timer.ActionUpgradeHousingFacilities)
+func serveCancelUrbanism(w http.ResponseWriter, r *http.Request) {
+	serveCancelBuilding(w, r, timer.ActionUpgradeUrbanism)
 }
 
 // POST /planet/{id}/metal-storage/upgrade

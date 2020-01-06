@@ -17,11 +17,11 @@ func (Timer) Fields() []ent.Field {
 	return []ent.Field{
 		field.Enum("action").
 			Values(
-				"upgrade_metal_mine",
-				"upgrade_hydrogen_extractor",
-				"upgrade_silica_quarry",
-				"upgrade_solar_plant",
-				"upgrade_housing_facilities",
+				"upgrade_metal_prod",
+				"upgrade_hydrogen_prod",
+				"upgrade_silica_prod",
+				"upgrade_solar_prod",
+				"upgrade_urbanism",
 				"upgrade_metal_storage",
 				"upgrade_hydrogen_storage",
 				"upgrade_silica_storage",

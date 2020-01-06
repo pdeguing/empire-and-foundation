@@ -58,7 +58,7 @@ func subStock(ctx context.Context, p *ent.Planet, s Amounts) error {
 	return err
 }
 
-func getMetalMineUpgradeCost(newLevel int) Amounts {
+func GetMetalProdUpgradeCost(newLevel int) Amounts {
 	if newLevel == 1 {
 		return Amounts{
 			Metal:	0,
@@ -73,11 +73,11 @@ func getMetalMineUpgradeCost(newLevel int) Amounts {
 	}
 }
 
-func getMetalMineUpgradeDuration(newLevel int) time.Duration {
+func getMetalProdUpgradeDuration(newLevel int) time.Duration {
 	return time.Second * time.Duration(42*math.Pow(1.5, float64(newLevel)))
 }
 
-func getHydrogenExtractorUpgradeCost(newLevel int) Amounts {
+func GetHydrogenProdUpgradeCost(newLevel int) Amounts {
 	if newLevel == 1 {
 		return Amounts{
 			Metal:	0,
@@ -92,11 +92,11 @@ func getHydrogenExtractorUpgradeCost(newLevel int) Amounts {
 	}
 }
 
-func getHydrogenExtractorUpgradeDuration(newLevel int) time.Duration {
+func getHydrogenProdUpgradeDuration(newLevel int) time.Duration {
 	return time.Second * time.Duration(42*math.Pow(1.5, float64(newLevel)))
 }
 
-func getSilicaQuarryUpgradeCost(newLevel int) Amounts {
+func GetSilicaProdUpgradeCost(newLevel int) Amounts {
 	if newLevel == 1 {
 		return Amounts{
 			Metal:	0,
@@ -111,11 +111,11 @@ func getSilicaQuarryUpgradeCost(newLevel int) Amounts {
 	}
 }
 
-func getSilicaQuarryUpgradeDuration(newLevel int) time.Duration {
+func getSilicaProdUpgradeDuration(newLevel int) time.Duration {
 	return time.Second * time.Duration(42*math.Pow(1.5, float64(newLevel)))
 }
 
-func getSolarPlantUpgradeCost(newLevel int) Amounts {
+func GetSolarProdUpgradeCost(newLevel int) Amounts {
 	if newLevel == 1 {
 		return Amounts{
 			Metal:	0,
@@ -130,11 +130,11 @@ func getSolarPlantUpgradeCost(newLevel int) Amounts {
 	}
 }
 
-func getSolarPlantUpgradeDuration(newLevel int) time.Duration {
+func getSolarProdUpgradeDuration(newLevel int) time.Duration {
 	return time.Second * time.Duration(42*math.Pow(1.5, float64(newLevel)))
 }
 
-func getHousingFacilitiesUpgradeCost(newLevel int) Amounts {
+func GetUrbanismUpgradeCost(newLevel int) Amounts {
 	if newLevel == 1 {
 		return Amounts{
 			Metal:	0,
@@ -149,11 +149,11 @@ func getHousingFacilitiesUpgradeCost(newLevel int) Amounts {
 	}
 }
 
-func getHousingFacilitiesUpgradeDuration(newLevel int) time.Duration {
+func getUrbanismUpgradeDuration(newLevel int) time.Duration {
 	return time.Second * time.Duration(42*math.Pow(1.5, float64(newLevel)))
 }
 
-func getMetalStorageUpgradeCost(newLevel int) Amounts {
+func GetMetalStorageUpgradeCost(newLevel int) Amounts {
 	if newLevel == 1 {
 		return Amounts{
 			Metal:	0,
@@ -172,7 +172,7 @@ func getMetalStorageUpgradeDuration(newLevel int) time.Duration {
 	return time.Second * time.Duration(42*math.Pow(1.5, float64(newLevel)))
 }
 
-func getHydrogenStorageUpgradeCost(newLevel int) Amounts {
+func GetHydrogenStorageUpgradeCost(newLevel int) Amounts {
 	if newLevel == 1 {
 		return Amounts{
 			Metal:	0,
@@ -191,7 +191,7 @@ func getHydrogenStorageUpgradeDuration(newLevel int) time.Duration {
 	return time.Second * time.Duration(42*math.Pow(1.5, float64(newLevel)))
 }
 
-func getSilicaStorageUpgradeCost(newLevel int) Amounts {
+func GetSilicaStorageUpgradeCost(newLevel int) Amounts {
 	if newLevel == 1 {
 		return Amounts{
 			Metal:	0,

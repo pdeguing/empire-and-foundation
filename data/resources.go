@@ -29,6 +29,10 @@ func getNewSilicaRate(p *ent.Planet) int {
 	return int(60 * 12 * float64(p.SilicaProdLevel) * math.Pow(1.1, float64(p.SilicaProdLevel)))
 }
 
+func getEnergyProd(solarProdLevel int) int64 {
+	return int64(1000 * int64(solarProdLevel) * int64(math.Pow(1.1, float64(solarProdLevel))))
+}
+
 // getNewStock calculates the current value in stock for a resource based on value and duration since last update.
 func getNewStock(val int64, last time.Time, rate int, storageLevel int, now time.Time) int64 {
 	duration := int64(now.Sub(last) / time.Second)
@@ -75,4 +79,5 @@ func UpdatePlanetState(p *ent.Planet, now time.Time) {
 		now,
 	)
 	p.PopulationLastUpdate = now
+	p.EnergyProd = getEnergyProd(p.SolarProdLevel)
 }
