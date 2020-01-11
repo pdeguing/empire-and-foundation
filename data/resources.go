@@ -14,24 +14,31 @@ func getMaxStorage(storageLevel int) int64 {
 	return maxStorage
 }
 
+func getEnergyPenalty(p *ent.Planet) float64 {
+	if p.EnergyCons != 0 {
+		return float64(p.EnergyProd / p.EnergyCons)
+	}
+	return 1
+}
+
 // getNewMetalRate calculates the metal production and consumption per hour.
 func getNewMetalRate(p *ent.Planet) int {
-	return int(60 * 12 * float64(p.MetalProdLevel) * math.Pow(1.1, float64(p.MetalProdLevel)) * float64(p.EnergyProd / p.EnergyCons))
+	return int(60 * 12 * float64(p.MetalProdLevel) * math.Pow(1.1, float64(p.MetalProdLevel)) * getEnergyPenalty(p))
 }
 
 // getNewHydrogenRate calculates the hydrogen production and consumption per hour.
 func getNewHydrogenRate(p *ent.Planet) int {
-	return int(60 * 12 * float64(p.HydrogenProdLevel) * math.Pow(1.1, float64(p.HydrogenProdLevel)) * float64(p.EnergyProd / p.EnergyCons))
+	return int(60 * 12 * float64(p.HydrogenProdLevel) * math.Pow(1.1, float64(p.HydrogenProdLevel)) * getEnergyPenalty(p))
 }
 
 // getNewSilicaRate calculates the silica production and consumption per hour.
 func getNewSilicaRate(p *ent.Planet) int {
-	return int(60 * 12 * float64(p.SilicaProdLevel) * math.Pow(1.1, float64(p.SilicaProdLevel)) * float64(p.EnergyProd / p.EnergyCons))
+	return int(60 * 12 * float64(p.SilicaProdLevel) * math.Pow(1.1, float64(p.SilicaProdLevel)) * getEnergyPenalty(p))
 }
 
 // getNewPopulationRate calculates the population production and consumption per hour.
 func getNewPopulationRate(p *ent.Planet) int {
-	return int(60 * 12 * float64(p.SilicaProdLevel) * math.Pow(1.1, float64(p.SilicaProdLevel)) * float64(p.EnergyProd / p.EnergyCons))
+	return int(60 * 12 * float64(p.PopulationProdLevel) * math.Pow(1.1, float64(p.PopulationProdLevel)) * getEnergyPenalty(p))
 }
 
 // getEnergyCons calculates the current energy consumption

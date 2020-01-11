@@ -188,8 +188,13 @@ var actions = map[timer.Action]action{
 		},
 		Complete: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
 			p.PopulationStorageLevel++
+			p.PopulationProdLevel = p.PopulationStorageLevel
+			p.PopulationRate = getNewPopulationRate(p)
 			_, err := p.Update().
 				SetPopulationStorageLevel(p.PopulationStorageLevel).
+				SetPopulationProdLevel(p.PopulationProdLevel).
+				SetPopulationRate(p.PopulationRate).
+				SetPopulationLastUpdate(p.PopulationLastUpdate).
 				Save(ctx)
 			return err
 		},
