@@ -13,6 +13,7 @@ type Amounts struct {
 	Metal    int64
 	Hydrogen int64
 	Silica   int64
+	Population	int64
 }
 
 func hasResources(p *ent.Planet, s Amounts) bool {
@@ -31,10 +32,12 @@ func addStock(ctx context.Context, p *ent.Planet, s Amounts) error {
 	p.Metal += s.Metal
 	p.Hydrogen += s.Hydrogen
 	p.Silica += s.Silica
+	p.Population += s.Population
 	_, err := p.Update().
 		SetMetal(p.Metal).
 		SetHydrogen(p.Hydrogen).
 		SetSilica(p.Silica).
+		SetPopulation(p.Population).
 		Save(ctx)
 	return err
 }
@@ -50,10 +53,12 @@ func subStock(ctx context.Context, p *ent.Planet, s Amounts) error {
 	p.Metal -= s.Metal
 	p.Hydrogen -= s.Hydrogen
 	p.Silica -= s.Silica
+	p.Population -= s.Population
 	_, err := p.Update().
 		SetMetal(p.Metal).
 		SetHydrogen(p.Hydrogen).
 		SetSilica(p.Silica).
+		SetPopulation(p.Population).
 		Save(ctx)
 	return err
 }
