@@ -14,19 +14,45 @@ func getMaxStorage(storageLevel int) int64 {
 	return maxStorage
 }
 
+func getEnergyPenalty(p *ent.Planet) float64 {
+	if p.EnergyCons != 0 {
+		return float64(p.EnergyProd / p.EnergyCons)
+	}
+	return 1
+}
+
 // getNewMetalRate calculates the metal production and consumption per hour.
 func getNewMetalRate(p *ent.Planet) int {
-	return int(60 * 12 * float64(p.MetalProdLevel) * math.Pow(1.1, float64(p.MetalProdLevel)))
+	return int(60 * 12 * float64(p.MetalProdLevel) * math.Pow(1.1, float64(p.MetalProdLevel)) * getEnergyPenalty(p))
 }
 
-// getNewHydrogenRate calculates the metal production and consumption per hour.
+// getNewHydrogenRate calculates the hydrogen production and consumption per hour.
 func getNewHydrogenRate(p *ent.Planet) int {
-	return int(60 * 12 * float64(p.HydrogenProdLevel) * math.Pow(1.1, float64(p.HydrogenProdLevel)))
+	return int(60 * 12 * float64(p.HydrogenProdLevel) * math.Pow(1.1, float64(p.HydrogenProdLevel)) * getEnergyPenalty(p))
 }
 
-// getNewSilicaRate calculates the metal production and consumption per hour.
+// getNewSilicaRate calculates the silica production and consumption per hour.
 func getNewSilicaRate(p *ent.Planet) int {
-	return int(60 * 12 * float64(p.SilicaProdLevel) * math.Pow(1.1, float64(p.SilicaProdLevel)))
+	return int(60 * 12 * float64(p.SilicaProdLevel) * math.Pow(1.1, float64(p.SilicaProdLevel)) * getEnergyPenalty(p))
+}
+
+// getNewPopulationRate calculates the population production and consumption per hour.
+func getNewPopulationRate(p *ent.Planet) int {
+	return int(60 * 12 * float64(p.PopulationProdLevel) * math.Pow(1.1, float64(p.PopulationProdLevel)) * getEnergyPenalty(p))
+}
+
+// getEnergyCons calculates the current energy consumption
+func getEnergyCons(p *ent.Planet) int64 {
+	consumption := int64(500 * int64(p.MetalProdLevel) + int64(math.Pow(1.1, float64(p.MetalProdLevel))))
+	consumption += int64(1000 * int64(p.HydrogenProdLevel) + int64(math.Pow(1.1, float64(p.HydrogenProdLevel))))
+	consumption += int64(500 * int64(p.SilicaProdLevel) + int64(math.Pow(1.1, float64(p.SilicaProdLevel))))
+	consumption += int64(250 * int64(p.PopulationProdLevel) + int64(math.Pow(1.1, float64(p.PopulationProdLevel))))
+	return consumption
+}
+
+// getEnergyProd calculates the current energy production
+func getEnergyProd(solarProdLevel int) int64 {
+	return int64(1500 * int64(solarProdLevel) * int64(math.Pow(1.1, float64(solarProdLevel))))
 }
 
 // getNewStock calculates the current value in stock for a resource based on value and duration since last update.
@@ -75,4 +101,6 @@ func UpdatePlanetState(p *ent.Planet, now time.Time) {
 		now,
 	)
 	p.PopulationLastUpdate = now
+	p.EnergyCons = getEnergyCons(p)
+	p.EnergyProd = getEnergyProd(p.SolarProdLevel)
 }

@@ -33,7 +33,7 @@ func ExamplePlanet() {
 	// creating vertices for the planet's edges.
 	t1 := client.Timer.
 		Create().
-		SetAction(timer.ActionUpgradeMetalMine).
+		SetAction(timer.ActionUpgradeMetalProd).
 		SetGroup(timer.GroupBuilding).
 		SetEndTime(time.Now()).
 		SaveX(ctx)
@@ -131,7 +131,7 @@ func ExampleTimer() {
 	// create timer vertex with its edges.
 	t := client.Timer.
 		Create().
-		SetAction(timer.ActionUpgradeMetalMine).
+		SetAction(timer.ActionUpgradeMetalProd).
 		SetGroup(timer.GroupBuilding).
 		SetEndTime(time.Now()).
 		SaveX(ctx)
