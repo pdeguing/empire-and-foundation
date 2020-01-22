@@ -4,12 +4,14 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"errors"
 	"fmt"
 	"math"
 
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
+	"github.com/facebookincubator/ent/schema/field"
 	"github.com/pdeguing/empire-and-foundation/ent/planet"
 	"github.com/pdeguing/empire-and-foundation/ent/predicate"
 	"github.com/pdeguing/empire-and-foundation/ent/timer"
@@ -24,6 +26,10 @@ type PlanetQuery struct {
 	order      []Order
 	unique     []string
 	predicates []predicate.Planet
+	// eager-loading edges.
+	withOwner  *UserQuery
+	withTimers *TimerQuery
+	withFKs    bool
 	// intermediate query.
 	sql *sql.Selector
 }
@@ -245,6 +251,28 @@ func (pq *PlanetQuery) Clone() *PlanetQuery {
 	}
 }
 
+//  WithOwner tells the query-builder to eager-loads the nodes that are connected to
+// the "owner" edge. The optional arguments used to configure the query builder of the edge.
+func (pq *PlanetQuery) WithOwner(opts ...func(*UserQuery)) *PlanetQuery {
+	query := &UserQuery{config: pq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	pq.withOwner = query
+	return pq
+}
+
+//  WithTimers tells the query-builder to eager-loads the nodes that are connected to
+// the "timers" edge. The optional arguments used to configure the query builder of the edge.
+func (pq *PlanetQuery) WithTimers(opts ...func(*TimerQuery)) *PlanetQuery {
+	query := &TimerQuery{config: pq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	pq.withTimers = query
+	return pq
+}
+
 // GroupBy used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
 //
@@ -287,45 +315,100 @@ func (pq *PlanetQuery) Select(field string, fields ...string) *PlanetSelect {
 }
 
 func (pq *PlanetQuery) sqlAll(ctx context.Context) ([]*Planet, error) {
-	rows := &sql.Rows{}
-	selector := pq.sqlQuery()
-	if unique := pq.unique; len(unique) == 0 {
-		selector.Distinct()
+	var (
+		nodes   []*Planet
+		withFKs = pq.withFKs
+		_spec   = pq.querySpec()
+	)
+	if pq.withOwner != nil {
+		withFKs = true
 	}
-	query, args := selector.Query()
-	if err := pq.driver.Query(ctx, query, args, rows); err != nil {
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, planet.ForeignKeys...)
+	}
+	_spec.ScanValues = func() []interface{} {
+		node := &Planet{config: pq.config}
+		nodes = append(nodes, node)
+		values := node.scanValues()
+		if withFKs {
+			values = append(values, node.fkValues()...)
+		}
+		return values
+	}
+	_spec.Assign = func(values ...interface{}) error {
+		if len(nodes) == 0 {
+			return fmt.Errorf("ent: Assign called without calling ScanValues")
+		}
+		node := nodes[len(nodes)-1]
+		return node.assignValues(values...)
+	}
+	if err := sqlgraph.QueryNodes(ctx, pq.driver, _spec); err != nil {
 		return nil, err
 	}
-	defer rows.Close()
-	var pls Planets
-	if err := pls.FromRows(rows); err != nil {
-		return nil, err
+
+	if len(nodes) == 0 {
+		return nodes, nil
 	}
-	pls.config(pq.config)
-	return pls, nil
+
+	if query := pq.withOwner; query != nil {
+		ids := make([]int, 0, len(nodes))
+		nodeids := make(map[int][]*Planet)
+		for i := range nodes {
+			if fk := nodes[i].owner_id; fk != nil {
+				ids = append(ids, *fk)
+				nodeids[*fk] = append(nodeids[*fk], nodes[i])
+			}
+		}
+		query.Where(user.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "owner_id" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Owner = n
+			}
+		}
+	}
+
+	if query := pq.withTimers; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[int]*Planet)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+		}
+		query.withFKs = true
+		query.Where(predicate.Timer(func(s *sql.Selector) {
+			s.Where(sql.InValues(planet.TimersColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.planet_id
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "planet_id" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "planet_id" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.Timers = append(node.Edges.Timers, n)
+		}
+	}
+
+	return nodes, nil
 }
 
 func (pq *PlanetQuery) sqlCount(ctx context.Context) (int, error) {
-	rows := &sql.Rows{}
-	selector := pq.sqlQuery()
-	unique := []string{planet.FieldID}
-	if len(pq.unique) > 0 {
-		unique = pq.unique
-	}
-	selector.Count(sql.Distinct(selector.Columns(unique...)...))
-	query, args := selector.Query()
-	if err := pq.driver.Query(ctx, query, args, rows); err != nil {
-		return 0, err
-	}
-	defer rows.Close()
-	if !rows.Next() {
-		return 0, errors.New("ent: no rows found")
-	}
-	var n int
-	if err := rows.Scan(&n); err != nil {
-		return 0, fmt.Errorf("ent: failed reading count: %v", err)
-	}
-	return n, nil
+	_spec := pq.querySpec()
+	return sqlgraph.CountNodes(ctx, pq.driver, _spec)
 }
 
 func (pq *PlanetQuery) sqlExist(ctx context.Context) (bool, error) {
@@ -334,6 +417,42 @@ func (pq *PlanetQuery) sqlExist(ctx context.Context) (bool, error) {
 		return false, fmt.Errorf("ent: check existence: %v", err)
 	}
 	return n > 0, nil
+}
+
+func (pq *PlanetQuery) querySpec() *sqlgraph.QuerySpec {
+	_spec := &sqlgraph.QuerySpec{
+		Node: &sqlgraph.NodeSpec{
+			Table:   planet.Table,
+			Columns: planet.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeInt,
+				Column: planet.FieldID,
+			},
+		},
+		From:   pq.sql,
+		Unique: true,
+	}
+	if ps := pq.predicates; len(ps) > 0 {
+		_spec.Predicate = func(selector *sql.Selector) {
+			for i := range ps {
+				ps[i](selector)
+			}
+		}
+	}
+	if limit := pq.limit; limit != nil {
+		_spec.Limit = *limit
+	}
+	if offset := pq.offset; offset != nil {
+		_spec.Offset = *offset
+	}
+	if ps := pq.order; len(ps) > 0 {
+		_spec.Order = func(selector *sql.Selector) {
+			for i := range ps {
+				ps[i](selector)
+			}
+		}
+	}
+	return _spec
 }
 
 func (pq *PlanetQuery) sqlQuery() *sql.Selector {
@@ -607,7 +726,7 @@ func (ps *PlanetSelect) sqlScan(ctx context.Context, v interface{}) error {
 }
 
 func (ps *PlanetSelect) sqlQuery() sql.Querier {
-	view := "planet_view"
-	return sql.Dialect(ps.driver.Dialect()).
-		Select(ps.fields...).From(ps.sql.As(view))
+	selector := ps.sql
+	selector.Select(selector.Columns(ps.fields...)...)
+	return selector
 }

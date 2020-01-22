@@ -97,8 +97,8 @@ func (tc *TimerCreate) SaveX(ctx context.Context) *Timer {
 
 func (tc *TimerCreate) sqlSave(ctx context.Context) (*Timer, error) {
 	var (
-		t    = &Timer{config: tc.config}
-		spec = &sqlgraph.CreateSpec{
+		t     = &Timer{config: tc.config}
+		_spec = &sqlgraph.CreateSpec{
 			Table: timer.Table,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeInt,
@@ -107,7 +107,7 @@ func (tc *TimerCreate) sqlSave(ctx context.Context) (*Timer, error) {
 		}
 	)
 	if value := tc.action; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeEnum,
 			Value:  *value,
 			Column: timer.FieldAction,
@@ -115,7 +115,7 @@ func (tc *TimerCreate) sqlSave(ctx context.Context) (*Timer, error) {
 		t.Action = *value
 	}
 	if value := tc.group; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeEnum,
 			Value:  *value,
 			Column: timer.FieldGroup,
@@ -123,7 +123,7 @@ func (tc *TimerCreate) sqlSave(ctx context.Context) (*Timer, error) {
 		t.Group = *value
 	}
 	if value := tc.end_time; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Value:  *value,
 			Column: timer.FieldEndTime,
@@ -147,15 +147,15 @@ func (tc *TimerCreate) sqlSave(ctx context.Context) (*Timer, error) {
 		for k, _ := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		spec.Edges = append(spec.Edges, edge)
+		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if err := sqlgraph.CreateNode(ctx, tc.driver, spec); err != nil {
+	if err := sqlgraph.CreateNode(ctx, tc.driver, _spec); err != nil {
 		if cerr, ok := isSQLConstraintError(err); ok {
 			err = cerr
 		}
 		return nil, err
 	}
-	id := spec.ID.Value.(int64)
+	id := _spec.ID.Value.(int64)
 	t.ID = int(id)
 	return t, nil
 }

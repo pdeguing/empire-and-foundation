@@ -65,9 +65,12 @@ func userPlanets(r *http.Request, tx *ent.Tx) ([]*ent.Planet, error) {
 	return p, nil
 }
 
-// regionPlanets retrieves all planets
+// regionPlanets create slice of positions and planets in a system 
 func regionPlanets(w http.ResponseWriter, r *http.Request) ([]*ent.Planet, error) {
-	p, err := data.Client.Planet.Query().
+	p, err := data.Client.Planet.
+		Query().
+		Where(planet.SystemCode(0)).
+		WithOwner().
 		Order(ent.Asc(planet.FieldPositionCode)).
 		All(r.Context())
 

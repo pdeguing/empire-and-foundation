@@ -710,8 +710,8 @@ func (pc *PlanetCreate) SaveX(ctx context.Context) *Planet {
 
 func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 	var (
-		pl   = &Planet{config: pc.config}
-		spec = &sqlgraph.CreateSpec{
+		pl    = &Planet{config: pc.config}
+		_spec = &sqlgraph.CreateSpec{
 			Table: planet.Table,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeInt,
@@ -720,7 +720,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		}
 	)
 	if value := pc.created_at; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Value:  *value,
 			Column: planet.FieldCreatedAt,
@@ -728,7 +728,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.CreatedAt = *value
 	}
 	if value := pc.updated_at; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Value:  *value,
 			Column: planet.FieldUpdatedAt,
@@ -736,7 +736,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.UpdatedAt = *value
 	}
 	if value := pc.metal; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
 			Value:  *value,
 			Column: planet.FieldMetal,
@@ -744,7 +744,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.Metal = *value
 	}
 	if value := pc.metal_last_update; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Value:  *value,
 			Column: planet.FieldMetalLastUpdate,
@@ -752,7 +752,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.MetalLastUpdate = *value
 	}
 	if value := pc.metal_rate; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldMetalRate,
@@ -760,7 +760,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.MetalRate = *value
 	}
 	if value := pc.metal_prod_level; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldMetalProdLevel,
@@ -768,7 +768,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.MetalProdLevel = *value
 	}
 	if value := pc.metal_storage_level; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldMetalStorageLevel,
@@ -776,7 +776,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.MetalStorageLevel = *value
 	}
 	if value := pc.hydrogen; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
 			Value:  *value,
 			Column: planet.FieldHydrogen,
@@ -784,7 +784,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.Hydrogen = *value
 	}
 	if value := pc.hydrogen_last_update; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Value:  *value,
 			Column: planet.FieldHydrogenLastUpdate,
@@ -792,7 +792,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.HydrogenLastUpdate = *value
 	}
 	if value := pc.hydrogen_rate; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldHydrogenRate,
@@ -800,7 +800,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.HydrogenRate = *value
 	}
 	if value := pc.hydrogen_prod_level; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldHydrogenProdLevel,
@@ -808,7 +808,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.HydrogenProdLevel = *value
 	}
 	if value := pc.hydrogen_storage_level; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldHydrogenStorageLevel,
@@ -816,7 +816,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.HydrogenStorageLevel = *value
 	}
 	if value := pc.silica; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
 			Value:  *value,
 			Column: planet.FieldSilica,
@@ -824,7 +824,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.Silica = *value
 	}
 	if value := pc.silica_last_update; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Value:  *value,
 			Column: planet.FieldSilicaLastUpdate,
@@ -832,7 +832,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.SilicaLastUpdate = *value
 	}
 	if value := pc.silica_rate; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldSilicaRate,
@@ -840,7 +840,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.SilicaRate = *value
 	}
 	if value := pc.silica_prod_level; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldSilicaProdLevel,
@@ -848,7 +848,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.SilicaProdLevel = *value
 	}
 	if value := pc.silica_storage_level; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldSilicaStorageLevel,
@@ -856,7 +856,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.SilicaStorageLevel = *value
 	}
 	if value := pc.population; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
 			Value:  *value,
 			Column: planet.FieldPopulation,
@@ -864,7 +864,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.Population = *value
 	}
 	if value := pc.population_last_update; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Value:  *value,
 			Column: planet.FieldPopulationLastUpdate,
@@ -872,7 +872,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.PopulationLastUpdate = *value
 	}
 	if value := pc.population_rate; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldPopulationRate,
@@ -880,7 +880,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.PopulationRate = *value
 	}
 	if value := pc.population_prod_level; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldPopulationProdLevel,
@@ -888,7 +888,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.PopulationProdLevel = *value
 	}
 	if value := pc.population_storage_level; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldPopulationStorageLevel,
@@ -896,7 +896,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.PopulationStorageLevel = *value
 	}
 	if value := pc.energy_cons; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
 			Value:  *value,
 			Column: planet.FieldEnergyCons,
@@ -904,7 +904,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.EnergyCons = *value
 	}
 	if value := pc.energy_prod; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
 			Value:  *value,
 			Column: planet.FieldEnergyProd,
@@ -912,7 +912,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.EnergyProd = *value
 	}
 	if value := pc.solar_prod_level; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldSolarProdLevel,
@@ -920,7 +920,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.SolarProdLevel = *value
 	}
 	if value := pc.region_code; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldRegionCode,
@@ -928,7 +928,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.RegionCode = *value
 	}
 	if value := pc.system_code; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldSystemCode,
@@ -936,7 +936,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.SystemCode = *value
 	}
 	if value := pc.orbit_code; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldOrbitCode,
@@ -944,7 +944,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.OrbitCode = *value
 	}
 	if value := pc.suborbit_code; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldSuborbitCode,
@@ -952,7 +952,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.SuborbitCode = *value
 	}
 	if value := pc.position_code; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldPositionCode,
@@ -960,7 +960,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.PositionCode = *value
 	}
 	if value := pc.name; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  *value,
 			Column: planet.FieldName,
@@ -968,7 +968,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.Name = *value
 	}
 	if value := pc.planet_type; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeEnum,
 			Value:  *value,
 			Column: planet.FieldPlanetType,
@@ -976,7 +976,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.PlanetType = *value
 	}
 	if value := pc.planet_skin; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  *value,
 			Column: planet.FieldPlanetSkin,
@@ -1000,7 +1000,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		for k, _ := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		spec.Edges = append(spec.Edges, edge)
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := pc.timers; len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -1019,15 +1019,15 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		for k, _ := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		spec.Edges = append(spec.Edges, edge)
+		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if err := sqlgraph.CreateNode(ctx, pc.driver, spec); err != nil {
+	if err := sqlgraph.CreateNode(ctx, pc.driver, _spec); err != nil {
 		if cerr, ok := isSQLConstraintError(err); ok {
 			err = cerr
 		}
 		return nil, err
 	}
-	id := spec.ID.Value.(int64)
+	id := _spec.ID.Value.(int64)
 	pl.ID = int(id)
 	return pl, nil
 }

@@ -36,7 +36,7 @@ const (
 	PlanetsColumn = "owner_id"
 )
 
-// Columns holds all SQL columns are user fields.
+// Columns holds all SQL columns for user fields.
 var Columns = []string{
 	FieldID,
 	FieldCreatedAt,

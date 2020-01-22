@@ -100,7 +100,7 @@ const (
 	TimersColumn = "planet_id"
 )
 
-// Columns holds all SQL columns are planet fields.
+// Columns holds all SQL columns for planet fields.
 var Columns = []string{
 	FieldID,
 	FieldCreatedAt,
@@ -136,6 +136,11 @@ var Columns = []string{
 	FieldName,
 	FieldPlanetType,
 	FieldPlanetSkin,
+}
+
+// ForeignKeys holds the SQL foreign-keys that are owned by the Planet type.
+var ForeignKeys = []string{
+	"owner_id",
 }
 
 var (
@@ -342,6 +347,7 @@ var (
 // PlanetType defines the type for the planet_type enum field.
 type PlanetType string
 
+// PlanetType values.
 const (
 	PlanetTypeHabitable PlanetType = "habitable"
 	PlanetTypeMineral   PlanetType = "mineral"
@@ -353,12 +359,12 @@ func (s PlanetType) String() string {
 	return string(s)
 }
 
-// PlanetTypeValidator is a validator for the "planet_type" field enum values. It is called by the builders before save.
-func PlanetTypeValidator(planet_type PlanetType) error {
-	switch planet_type {
+// PlanetTypeValidator is a validator for the "pt" field enum values. It is called by the builders before save.
+func PlanetTypeValidator(pt PlanetType) error {
+	switch pt {
 	case PlanetTypeHabitable, PlanetTypeMineral, PlanetTypeGasGiant, PlanetTypeIceGiant:
 		return nil
 	default:
-		return fmt.Errorf("planet: invalid enum value for planet_type field: %q", planet_type)
+		return fmt.Errorf("planet: invalid enum value for planet_type field: %q", pt)
 	}
 }

@@ -29,7 +29,7 @@ const (
 	PlanetColumn = "planet_id"
 )
 
-// Columns holds all SQL columns are timer fields.
+// Columns holds all SQL columns for timer fields.
 var Columns = []string{
 	FieldID,
 	FieldAction,
@@ -37,9 +37,15 @@ var Columns = []string{
 	FieldEndTime,
 }
 
+// ForeignKeys holds the SQL foreign-keys that are owned by the Timer type.
+var ForeignKeys = []string{
+	"planet_id",
+}
+
 // Action defines the type for the action enum field.
 type Action string
 
+// Action values.
 const (
 	ActionUpgradeMetalProd       Action = "upgrade_metal_prod"
 	ActionUpgradeHydrogenProd    Action = "upgrade_hydrogen_prod"
@@ -55,19 +61,20 @@ func (s Action) String() string {
 	return string(s)
 }
 
-// ActionValidator is a validator for the "action" field enum values. It is called by the builders before save.
-func ActionValidator(action Action) error {
-	switch action {
+// ActionValidator is a validator for the "a" field enum values. It is called by the builders before save.
+func ActionValidator(a Action) error {
+	switch a {
 	case ActionUpgradeMetalProd, ActionUpgradeHydrogenProd, ActionUpgradeSilicaProd, ActionUpgradeSolarProd, ActionUpgradeUrbanism, ActionUpgradeMetalStorage, ActionUpgradeHydrogenStorage, ActionUpgradeSilicaStorage:
 		return nil
 	default:
-		return fmt.Errorf("timer: invalid enum value for action field: %q", action)
+		return fmt.Errorf("timer: invalid enum value for action field: %q", a)
 	}
 }
 
 // Group defines the type for the group enum field.
 type Group string
 
+// Group values.
 const (
 	GroupBuilding Group = "building"
 )
@@ -76,12 +83,12 @@ func (s Group) String() string {
 	return string(s)
 }
 
-// GroupValidator is a validator for the "group" field enum values. It is called by the builders before save.
-func GroupValidator(group Group) error {
-	switch group {
+// GroupValidator is a validator for the "gr" field enum values. It is called by the builders before save.
+func GroupValidator(gr Group) error {
+	switch gr {
 	case GroupBuilding:
 		return nil
 	default:
-		return fmt.Errorf("timer: invalid enum value for group field: %q", group)
+		return fmt.Errorf("timer: invalid enum value for group field: %q", gr)
 	}
 }

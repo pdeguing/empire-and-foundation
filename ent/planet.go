@@ -82,119 +82,250 @@ type Planet struct {
 	PlanetType planet.PlanetType `json:"planet_type,omitempty"`
 	// PlanetSkin holds the value of the "planet_skin" field.
 	PlanetSkin string `json:"planet_skin,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the PlanetQuery when eager-loading is set.
+	Edges struct {
+		// Owner holds the value of the owner edge.
+		Owner *User
+		// Timers holds the value of the timers edge.
+		Timers []*Timer
+	} `json:"edges"`
+	owner_id *int
 }
 
-// FromRows scans the sql response data into Planet.
-func (pl *Planet) FromRows(rows *sql.Rows) error {
-	var scanpl struct {
-		ID                     int
-		CreatedAt              sql.NullTime
-		UpdatedAt              sql.NullTime
-		Metal                  sql.NullInt64
-		MetalLastUpdate        sql.NullTime
-		MetalRate              sql.NullInt64
-		MetalProdLevel         sql.NullInt64
-		MetalStorageLevel      sql.NullInt64
-		Hydrogen               sql.NullInt64
-		HydrogenLastUpdate     sql.NullTime
-		HydrogenRate           sql.NullInt64
-		HydrogenProdLevel      sql.NullInt64
-		HydrogenStorageLevel   sql.NullInt64
-		Silica                 sql.NullInt64
-		SilicaLastUpdate       sql.NullTime
-		SilicaRate             sql.NullInt64
-		SilicaProdLevel        sql.NullInt64
-		SilicaStorageLevel     sql.NullInt64
-		Population             sql.NullInt64
-		PopulationLastUpdate   sql.NullTime
-		PopulationRate         sql.NullInt64
-		PopulationProdLevel    sql.NullInt64
-		PopulationStorageLevel sql.NullInt64
-		EnergyCons             sql.NullInt64
-		EnergyProd             sql.NullInt64
-		SolarProdLevel         sql.NullInt64
-		RegionCode             sql.NullInt64
-		SystemCode             sql.NullInt64
-		OrbitCode              sql.NullInt64
-		SuborbitCode           sql.NullInt64
-		PositionCode           sql.NullInt64
-		Name                   sql.NullString
-		PlanetType             sql.NullString
-		PlanetSkin             sql.NullString
+// scanValues returns the types for scanning values from sql.Rows.
+func (*Planet) scanValues() []interface{} {
+	return []interface{}{
+		&sql.NullInt64{},  // id
+		&sql.NullTime{},   // created_at
+		&sql.NullTime{},   // updated_at
+		&sql.NullInt64{},  // metal
+		&sql.NullTime{},   // metal_last_update
+		&sql.NullInt64{},  // metal_rate
+		&sql.NullInt64{},  // metal_prod_level
+		&sql.NullInt64{},  // metal_storage_level
+		&sql.NullInt64{},  // hydrogen
+		&sql.NullTime{},   // hydrogen_last_update
+		&sql.NullInt64{},  // hydrogen_rate
+		&sql.NullInt64{},  // hydrogen_prod_level
+		&sql.NullInt64{},  // hydrogen_storage_level
+		&sql.NullInt64{},  // silica
+		&sql.NullTime{},   // silica_last_update
+		&sql.NullInt64{},  // silica_rate
+		&sql.NullInt64{},  // silica_prod_level
+		&sql.NullInt64{},  // silica_storage_level
+		&sql.NullInt64{},  // population
+		&sql.NullTime{},   // population_last_update
+		&sql.NullInt64{},  // population_rate
+		&sql.NullInt64{},  // population_prod_level
+		&sql.NullInt64{},  // population_storage_level
+		&sql.NullInt64{},  // energy_cons
+		&sql.NullInt64{},  // energy_prod
+		&sql.NullInt64{},  // solar_prod_level
+		&sql.NullInt64{},  // region_code
+		&sql.NullInt64{},  // system_code
+		&sql.NullInt64{},  // orbit_code
+		&sql.NullInt64{},  // suborbit_code
+		&sql.NullInt64{},  // position_code
+		&sql.NullString{}, // name
+		&sql.NullString{}, // planet_type
+		&sql.NullString{}, // planet_skin
 	}
-	// the order here should be the same as in the `planet.Columns`.
-	if err := rows.Scan(
-		&scanpl.ID,
-		&scanpl.CreatedAt,
-		&scanpl.UpdatedAt,
-		&scanpl.Metal,
-		&scanpl.MetalLastUpdate,
-		&scanpl.MetalRate,
-		&scanpl.MetalProdLevel,
-		&scanpl.MetalStorageLevel,
-		&scanpl.Hydrogen,
-		&scanpl.HydrogenLastUpdate,
-		&scanpl.HydrogenRate,
-		&scanpl.HydrogenProdLevel,
-		&scanpl.HydrogenStorageLevel,
-		&scanpl.Silica,
-		&scanpl.SilicaLastUpdate,
-		&scanpl.SilicaRate,
-		&scanpl.SilicaProdLevel,
-		&scanpl.SilicaStorageLevel,
-		&scanpl.Population,
-		&scanpl.PopulationLastUpdate,
-		&scanpl.PopulationRate,
-		&scanpl.PopulationProdLevel,
-		&scanpl.PopulationStorageLevel,
-		&scanpl.EnergyCons,
-		&scanpl.EnergyProd,
-		&scanpl.SolarProdLevel,
-		&scanpl.RegionCode,
-		&scanpl.SystemCode,
-		&scanpl.OrbitCode,
-		&scanpl.SuborbitCode,
-		&scanpl.PositionCode,
-		&scanpl.Name,
-		&scanpl.PlanetType,
-		&scanpl.PlanetSkin,
-	); err != nil {
-		return err
+}
+
+// fkValues returns the types for scanning foreign-keys values from sql.Rows.
+func (*Planet) fkValues() []interface{} {
+	return []interface{}{
+		&sql.NullInt64{}, // owner_id
 	}
-	pl.ID = scanpl.ID
-	pl.CreatedAt = scanpl.CreatedAt.Time
-	pl.UpdatedAt = scanpl.UpdatedAt.Time
-	pl.Metal = scanpl.Metal.Int64
-	pl.MetalLastUpdate = scanpl.MetalLastUpdate.Time
-	pl.MetalRate = int(scanpl.MetalRate.Int64)
-	pl.MetalProdLevel = int(scanpl.MetalProdLevel.Int64)
-	pl.MetalStorageLevel = int(scanpl.MetalStorageLevel.Int64)
-	pl.Hydrogen = scanpl.Hydrogen.Int64
-	pl.HydrogenLastUpdate = scanpl.HydrogenLastUpdate.Time
-	pl.HydrogenRate = int(scanpl.HydrogenRate.Int64)
-	pl.HydrogenProdLevel = int(scanpl.HydrogenProdLevel.Int64)
-	pl.HydrogenStorageLevel = int(scanpl.HydrogenStorageLevel.Int64)
-	pl.Silica = scanpl.Silica.Int64
-	pl.SilicaLastUpdate = scanpl.SilicaLastUpdate.Time
-	pl.SilicaRate = int(scanpl.SilicaRate.Int64)
-	pl.SilicaProdLevel = int(scanpl.SilicaProdLevel.Int64)
-	pl.SilicaStorageLevel = int(scanpl.SilicaStorageLevel.Int64)
-	pl.Population = scanpl.Population.Int64
-	pl.PopulationLastUpdate = scanpl.PopulationLastUpdate.Time
-	pl.PopulationRate = int(scanpl.PopulationRate.Int64)
-	pl.PopulationProdLevel = int(scanpl.PopulationProdLevel.Int64)
-	pl.PopulationStorageLevel = int(scanpl.PopulationStorageLevel.Int64)
-	pl.EnergyCons = scanpl.EnergyCons.Int64
-	pl.EnergyProd = scanpl.EnergyProd.Int64
-	pl.SolarProdLevel = int(scanpl.SolarProdLevel.Int64)
-	pl.RegionCode = int(scanpl.RegionCode.Int64)
-	pl.SystemCode = int(scanpl.SystemCode.Int64)
-	pl.OrbitCode = int(scanpl.OrbitCode.Int64)
-	pl.SuborbitCode = int(scanpl.SuborbitCode.Int64)
-	pl.PositionCode = int(scanpl.PositionCode.Int64)
-	pl.Name = scanpl.Name.String
-	pl.PlanetType = planet.PlanetType(scanpl.PlanetType.String)
-	pl.PlanetSkin = scanpl.PlanetSkin.String
+}
+
+// assignValues assigns the values that were returned from sql.Rows (after scanning)
+// to the Planet fields.
+func (pl *Planet) assignValues(values ...interface{}) error {
+	if m, n := len(values), len(planet.Columns); m < n {
+		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
+	}
+	value, ok := values[0].(*sql.NullInt64)
+	if !ok {
+		return fmt.Errorf("unexpected type %T for field id", value)
+	}
+	pl.ID = int(value.Int64)
+	values = values[1:]
+	if value, ok := values[0].(*sql.NullTime); !ok {
+		return fmt.Errorf("unexpected type %T for field created_at", values[0])
+	} else if value.Valid {
+		pl.CreatedAt = value.Time
+	}
+	if value, ok := values[1].(*sql.NullTime); !ok {
+		return fmt.Errorf("unexpected type %T for field updated_at", values[1])
+	} else if value.Valid {
+		pl.UpdatedAt = value.Time
+	}
+	if value, ok := values[2].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field metal", values[2])
+	} else if value.Valid {
+		pl.Metal = value.Int64
+	}
+	if value, ok := values[3].(*sql.NullTime); !ok {
+		return fmt.Errorf("unexpected type %T for field metal_last_update", values[3])
+	} else if value.Valid {
+		pl.MetalLastUpdate = value.Time
+	}
+	if value, ok := values[4].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field metal_rate", values[4])
+	} else if value.Valid {
+		pl.MetalRate = int(value.Int64)
+	}
+	if value, ok := values[5].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field metal_prod_level", values[5])
+	} else if value.Valid {
+		pl.MetalProdLevel = int(value.Int64)
+	}
+	if value, ok := values[6].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field metal_storage_level", values[6])
+	} else if value.Valid {
+		pl.MetalStorageLevel = int(value.Int64)
+	}
+	if value, ok := values[7].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field hydrogen", values[7])
+	} else if value.Valid {
+		pl.Hydrogen = value.Int64
+	}
+	if value, ok := values[8].(*sql.NullTime); !ok {
+		return fmt.Errorf("unexpected type %T for field hydrogen_last_update", values[8])
+	} else if value.Valid {
+		pl.HydrogenLastUpdate = value.Time
+	}
+	if value, ok := values[9].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field hydrogen_rate", values[9])
+	} else if value.Valid {
+		pl.HydrogenRate = int(value.Int64)
+	}
+	if value, ok := values[10].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field hydrogen_prod_level", values[10])
+	} else if value.Valid {
+		pl.HydrogenProdLevel = int(value.Int64)
+	}
+	if value, ok := values[11].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field hydrogen_storage_level", values[11])
+	} else if value.Valid {
+		pl.HydrogenStorageLevel = int(value.Int64)
+	}
+	if value, ok := values[12].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field silica", values[12])
+	} else if value.Valid {
+		pl.Silica = value.Int64
+	}
+	if value, ok := values[13].(*sql.NullTime); !ok {
+		return fmt.Errorf("unexpected type %T for field silica_last_update", values[13])
+	} else if value.Valid {
+		pl.SilicaLastUpdate = value.Time
+	}
+	if value, ok := values[14].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field silica_rate", values[14])
+	} else if value.Valid {
+		pl.SilicaRate = int(value.Int64)
+	}
+	if value, ok := values[15].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field silica_prod_level", values[15])
+	} else if value.Valid {
+		pl.SilicaProdLevel = int(value.Int64)
+	}
+	if value, ok := values[16].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field silica_storage_level", values[16])
+	} else if value.Valid {
+		pl.SilicaStorageLevel = int(value.Int64)
+	}
+	if value, ok := values[17].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field population", values[17])
+	} else if value.Valid {
+		pl.Population = value.Int64
+	}
+	if value, ok := values[18].(*sql.NullTime); !ok {
+		return fmt.Errorf("unexpected type %T for field population_last_update", values[18])
+	} else if value.Valid {
+		pl.PopulationLastUpdate = value.Time
+	}
+	if value, ok := values[19].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field population_rate", values[19])
+	} else if value.Valid {
+		pl.PopulationRate = int(value.Int64)
+	}
+	if value, ok := values[20].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field population_prod_level", values[20])
+	} else if value.Valid {
+		pl.PopulationProdLevel = int(value.Int64)
+	}
+	if value, ok := values[21].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field population_storage_level", values[21])
+	} else if value.Valid {
+		pl.PopulationStorageLevel = int(value.Int64)
+	}
+	if value, ok := values[22].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field energy_cons", values[22])
+	} else if value.Valid {
+		pl.EnergyCons = value.Int64
+	}
+	if value, ok := values[23].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field energy_prod", values[23])
+	} else if value.Valid {
+		pl.EnergyProd = value.Int64
+	}
+	if value, ok := values[24].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field solar_prod_level", values[24])
+	} else if value.Valid {
+		pl.SolarProdLevel = int(value.Int64)
+	}
+	if value, ok := values[25].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field region_code", values[25])
+	} else if value.Valid {
+		pl.RegionCode = int(value.Int64)
+	}
+	if value, ok := values[26].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field system_code", values[26])
+	} else if value.Valid {
+		pl.SystemCode = int(value.Int64)
+	}
+	if value, ok := values[27].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field orbit_code", values[27])
+	} else if value.Valid {
+		pl.OrbitCode = int(value.Int64)
+	}
+	if value, ok := values[28].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field suborbit_code", values[28])
+	} else if value.Valid {
+		pl.SuborbitCode = int(value.Int64)
+	}
+	if value, ok := values[29].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field position_code", values[29])
+	} else if value.Valid {
+		pl.PositionCode = int(value.Int64)
+	}
+	if value, ok := values[30].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field name", values[30])
+	} else if value.Valid {
+		pl.Name = value.String
+	}
+	if value, ok := values[31].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field planet_type", values[31])
+	} else if value.Valid {
+		pl.PlanetType = planet.PlanetType(value.String)
+	}
+	if value, ok := values[32].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field planet_skin", values[32])
+	} else if value.Valid {
+		pl.PlanetSkin = value.String
+	}
+	values = values[33:]
+	if len(values) == len(planet.ForeignKeys) {
+		if value, ok := values[0].(*sql.NullInt64); !ok {
+			return fmt.Errorf("unexpected type %T for edge-field owner_id", value)
+		} else if value.Valid {
+			pl.owner_id = new(int)
+			*pl.owner_id = int(value.Int64)
+		}
+	}
 	return nil
 }
 
@@ -303,18 +434,6 @@ func (pl *Planet) String() string {
 
 // Planets is a parsable slice of Planet.
 type Planets []*Planet
-
-// FromRows scans the sql response data into Planets.
-func (pl *Planets) FromRows(rows *sql.Rows) error {
-	for rows.Next() {
-		scanpl := &Planet{}
-		if err := scanpl.FromRows(rows); err != nil {
-			return err
-		}
-		*pl = append(*pl, scanpl)
-	}
-	return nil
-}
 
 func (pl Planets) config(cfg config) {
 	for _i := range pl {

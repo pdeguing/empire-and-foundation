@@ -7,11 +7,10 @@
 	<thead>
 		<tr>
 			<th scope="col">#</th>
-			<th scope="col">Code</th>
-			<th scope="col">Moons</th>
-			<th scope="col">Orbit</th>
+			<th scope="col">Position</th>
+			<th scope="col">Name</th>
+			<th scope="col">Type</th>
 			<th scope="col">Player</th>
-			<th scope="col">Actions</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -23,139 +22,13 @@
 					</figure>
 				</th>
 				<td>
-					[{{ .RegionCode }}:{{ .SystemCode }}:{{ .OrbitCode }}:{{ .SuborbitCode }}]
+					{{ .RegionCode }}:{{ .SystemCode }}:{{ .OrbitCode }}:{{ .SuborbitCode }}
 				</td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
+				<td>{{ .Name }}</td>
+				<td>{{ .PlanetType }}</td>
+				<td>{{ if .Edges.Owner }} {{ .Edges.Owner.Username }} {{ else }} {{ end }}</td>
 			</tr>
 		{{ end }}
-		<tr>
-			<th scope="row">
-				<figure class="image is-32x32">
-				</figure>
-			</th>
-			<td>[0:0:1:0]</td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
-		</tr>
-		<tr>
-			<th scope="row">
-				<figure class="image is-32x32">
-				</figure>
-			</th>
-			<td>[0:0:2:0]</td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
-		</tr>
-		<tr>
-			<th scope="row">
-				<figure class="image is-32x32">
-					<img src="/static/images/planet.jpg" class="is-rounded" alt="planet image">
-				</figure>
-			</th>
-			<td>[0:0:3:0]</td>
-			<td></td>
-			<td></td>
-			<td>@drakker</td>
-			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
-		</tr>
-		<tr>
-			<th scope="row">
-				<figure class="image is-32x32">
-				</figure>
-			</th>
-			<td>[0:0:4:0]</td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
-		</tr>
-		<tr>
-			<th scope="row">
-				<figure class="image is-32x32">
-				</figure>
-			</th>
-			<td>[0:0:5:0]</td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
-		</tr>
-		<tr>
-			<th scope="row">
-				<figure class="image is-32x32">
-					<img src="/static/images/planet.jpg" class="is-rounded" alt="planet image">
-				</figure>
-			</th>
-			<td>[0:0:6:0]</td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
-		</tr>
-		<tr>
-			<th scope="row">
-				<figure class="image is-32x32">
-				</figure>
-			</th>
-			<td>[0:0:7:0]</td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
-		</tr>
-		<tr>
-			<th scope="row">
-					<figure class="image is-32x32">
-					</figure>
-			</th>
-			<td>[0:0:8:0]</td>
-			<td></td>
-			<td></td>
-			<td>@drakker</td>
-			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
-		</tr>
-		<tr>
-			<th scope="row">
-				<figure class="image is-32x32">
-					<img src="/static/images/planet.jpg" class="is-rounded" alt="planet image">
-				</figure>
-			</th>
-			<td>[0:0:9:0]</td>
-			<td></td>
-			<td></td>
-			<td>@louise</td>
-			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
-		</tr>
-		<tr>
-		<th scope="row">
-				<figure class="image is-32x32">
-				</figure>
-		</th>
-		<td>[0:0:10:0]</td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
-		</tr>
-		<tr>
-			<th scope="row">
-				<figure class="image is-32x32">
-					<img src="/static/images/planet.jpg" class="is-rounded" alt="planet image">
-				</figure>
-			</th>
-			<td>0000b0</td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
-		</tr>
 	</tbody>
 </table>
 
