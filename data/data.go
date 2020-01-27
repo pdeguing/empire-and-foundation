@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"strconv"
 	"time"
 
 	entsql "github.com/facebookincubator/ent/dialect/sql"
@@ -39,6 +40,30 @@ func InitDatabaseConnection(driver, source string, debug bool) error {
 		Client = Client.Debug()
 	}
 	return nil
+}
+
+var testDatabaseFileCounter int
+
+// WithTestDatabase sets the global Db and Client to a temporary in-memory database.
+func WithTestDatabase() {
+	if DB != nil {
+		err := DB.Close()
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	// TODO: Does this leak memory or does the DB.Close() take care of it?
+	testDatabaseFileCounter++
+	err := InitDatabaseConnection("sqlite3", "file:file_"+strconv.Itoa(testDatabaseFileCounter)+".db?cache=shared&mode=memory&_foreign_keys=1", false)
+	if err != nil {
+		panic(err)
+	}
+
+	err = Migrate(context.Background(), Client, false, false)
+	if err != nil {
+		panic(err)
+	}
 }
 
 // Migrate runs the database schema migrations.

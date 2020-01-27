@@ -10,6 +10,7 @@ import (
 
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
+	"github.com/facebookincubator/ent/schema/field"
 	"github.com/pdeguing/empire-and-foundation/ent/planet"
 	"github.com/pdeguing/empire-and-foundation/ent/predicate"
 	"github.com/pdeguing/empire-and-foundation/ent/timer"
@@ -23,6 +24,9 @@ type TimerQuery struct {
 	order      []Order
 	unique     []string
 	predicates []predicate.Timer
+	// eager-loading edges.
+	withPlanet *PlanetQuery
+	withFKs    bool
 	// intermediate query.
 	sql *sql.Selector
 }
@@ -232,6 +236,17 @@ func (tq *TimerQuery) Clone() *TimerQuery {
 	}
 }
 
+//  WithPlanet tells the query-builder to eager-loads the nodes that are connected to
+// the "planet" edge. The optional arguments used to configure the query builder of the edge.
+func (tq *TimerQuery) WithPlanet(opts ...func(*PlanetQuery)) *TimerQuery {
+	query := &PlanetQuery{config: tq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	tq.withPlanet = query
+	return tq
+}
+
 // GroupBy used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
 //
@@ -274,45 +289,72 @@ func (tq *TimerQuery) Select(field string, fields ...string) *TimerSelect {
 }
 
 func (tq *TimerQuery) sqlAll(ctx context.Context) ([]*Timer, error) {
-	rows := &sql.Rows{}
-	selector := tq.sqlQuery()
-	if unique := tq.unique; len(unique) == 0 {
-		selector.Distinct()
+	var (
+		nodes   []*Timer
+		withFKs = tq.withFKs
+		_spec   = tq.querySpec()
+	)
+	if tq.withPlanet != nil {
+		withFKs = true
 	}
-	query, args := selector.Query()
-	if err := tq.driver.Query(ctx, query, args, rows); err != nil {
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, timer.ForeignKeys...)
+	}
+	_spec.ScanValues = func() []interface{} {
+		node := &Timer{config: tq.config}
+		nodes = append(nodes, node)
+		values := node.scanValues()
+		if withFKs {
+			values = append(values, node.fkValues()...)
+		}
+		return values
+	}
+	_spec.Assign = func(values ...interface{}) error {
+		if len(nodes) == 0 {
+			return fmt.Errorf("ent: Assign called without calling ScanValues")
+		}
+		node := nodes[len(nodes)-1]
+		return node.assignValues(values...)
+	}
+	if err := sqlgraph.QueryNodes(ctx, tq.driver, _spec); err != nil {
 		return nil, err
 	}
-	defer rows.Close()
-	var ts Timers
-	if err := ts.FromRows(rows); err != nil {
-		return nil, err
+
+	if len(nodes) == 0 {
+		return nodes, nil
 	}
-	ts.config(tq.config)
-	return ts, nil
+
+	if query := tq.withPlanet; query != nil {
+		ids := make([]int, 0, len(nodes))
+		nodeids := make(map[int][]*Timer)
+		for i := range nodes {
+			if fk := nodes[i].planet_id; fk != nil {
+				ids = append(ids, *fk)
+				nodeids[*fk] = append(nodeids[*fk], nodes[i])
+			}
+		}
+		query.Where(planet.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "planet_id" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Planet = n
+			}
+		}
+	}
+
+	return nodes, nil
 }
 
 func (tq *TimerQuery) sqlCount(ctx context.Context) (int, error) {
-	rows := &sql.Rows{}
-	selector := tq.sqlQuery()
-	unique := []string{timer.FieldID}
-	if len(tq.unique) > 0 {
-		unique = tq.unique
-	}
-	selector.Count(sql.Distinct(selector.Columns(unique...)...))
-	query, args := selector.Query()
-	if err := tq.driver.Query(ctx, query, args, rows); err != nil {
-		return 0, err
-	}
-	defer rows.Close()
-	if !rows.Next() {
-		return 0, errors.New("ent: no rows found")
-	}
-	var n int
-	if err := rows.Scan(&n); err != nil {
-		return 0, fmt.Errorf("ent: failed reading count: %v", err)
-	}
-	return n, nil
+	_spec := tq.querySpec()
+	return sqlgraph.CountNodes(ctx, tq.driver, _spec)
 }
 
 func (tq *TimerQuery) sqlExist(ctx context.Context) (bool, error) {
@@ -321,6 +363,42 @@ func (tq *TimerQuery) sqlExist(ctx context.Context) (bool, error) {
 		return false, fmt.Errorf("ent: check existence: %v", err)
 	}
 	return n > 0, nil
+}
+
+func (tq *TimerQuery) querySpec() *sqlgraph.QuerySpec {
+	_spec := &sqlgraph.QuerySpec{
+		Node: &sqlgraph.NodeSpec{
+			Table:   timer.Table,
+			Columns: timer.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeInt,
+				Column: timer.FieldID,
+			},
+		},
+		From:   tq.sql,
+		Unique: true,
+	}
+	if ps := tq.predicates; len(ps) > 0 {
+		_spec.Predicate = func(selector *sql.Selector) {
+			for i := range ps {
+				ps[i](selector)
+			}
+		}
+	}
+	if limit := tq.limit; limit != nil {
+		_spec.Limit = *limit
+	}
+	if offset := tq.offset; offset != nil {
+		_spec.Offset = *offset
+	}
+	if ps := tq.order; len(ps) > 0 {
+		_spec.Order = func(selector *sql.Selector) {
+			for i := range ps {
+				ps[i](selector)
+			}
+		}
+	}
+	return _spec
 }
 
 func (tq *TimerQuery) sqlQuery() *sql.Selector {
@@ -594,7 +672,7 @@ func (ts *TimerSelect) sqlScan(ctx context.Context, v interface{}) error {
 }
 
 func (ts *TimerSelect) sqlQuery() sql.Querier {
-	view := "timer_view"
-	return sql.Dialect(ts.driver.Dialect()).
-		Select(ts.fields...).From(ts.sql.As(view))
+	selector := ts.sql
+	selector.Select(selector.Columns(ts.fields...)...)
+	return selector
 }

@@ -10,6 +10,7 @@ import (
 
 	"github.com/alexedwards/scs/mysqlstore"
 	"github.com/alexedwards/scs/postgresstore"
+	"github.com/alexedwards/scs/sqlite3store"
 	"github.com/alexedwards/scs/v2"
 	"github.com/pdeguing/empire-and-foundation/data"
 	"github.com/pdeguing/empire-and-foundation/ent"
@@ -34,8 +35,10 @@ func initSessionManager(driver string) {
 		store = mysqlstore.New(data.DB)
 	case "postgres":
 		store = postgresstore.New(data.DB)
+	case "sqlite3":
+		store = sqlite3store.New(data.DB)
 	default:
-		panic(fmt.Sprintf("driver %q not supported for managing the session. (but possibly with an import)"))
+		panic(fmt.Sprintf("driver %q not supported for managing the session. (but possibly with an import)", driver))
 	}
 	sessionManager = func() *scs.SessionManager {
 		mngr := scs.New()

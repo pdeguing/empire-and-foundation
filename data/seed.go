@@ -1,15 +1,15 @@
 package data
 
 import (
-	"log"
-	"math/rand"
 	"context"
 	"io/ioutil"
-	"strings"
+	"log"
+	"math/rand"
 	"os"
+	"strings"
 
-	"github.com/pdeguing/empire-and-foundation/ent/planet"
 	"github.com/goombaio/namegenerator"
+	"github.com/pdeguing/empire-and-foundation/ent/planet"
 )
 
 func randomPlanetType(r *rand.Rand) planet.PlanetType {
@@ -27,8 +27,7 @@ func randomPlanetType(r *rand.Rand) planet.PlanetType {
 }
 
 func getPositionCode(region, system, orbit, suborbit int) int {
-	return suborbit + orbit << 4 + system << 8 + region << 12
-
+	return suborbit + orbit<<4 + system<<8 + region<<12
 }
 
 func randomPlanetName(r *rand.Rand) string {
@@ -94,9 +93,9 @@ func GenerateRegion(region int) {
 		for orbit := 1; orbit < 16; orbit++ {
 			if generatePlanet(r, planetSkins, region, system, orbit, 0) {
 				generated++
-//				for suborbit := 1; suborbit < 16; suborbit++ {
-//					generatePlanet(r, planetSkins, region, system, orbit, suborbit)
-//				}
+				//for suborbit := 1; suborbit < 16; suborbit++ {
+				//	generatePlanet(r, planetSkins, region, system, orbit, suborbit)
+				//}
 			}
 		}
 	}

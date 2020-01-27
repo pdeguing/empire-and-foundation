@@ -21,27 +21,17 @@ type PlanetCreate struct {
 	created_at               *time.Time
 	updated_at               *time.Time
 	metal                    *int64
-	metal_last_update        *time.Time
-	metal_rate               *int
 	metal_prod_level         *int
 	metal_storage_level      *int
 	hydrogen                 *int64
-	hydrogen_last_update     *time.Time
-	hydrogen_rate            *int
 	hydrogen_prod_level      *int
 	hydrogen_storage_level   *int
 	silica                   *int64
-	silica_last_update       *time.Time
-	silica_rate              *int
 	silica_prod_level        *int
 	silica_storage_level     *int
 	population               *int64
-	population_last_update   *time.Time
-	population_rate          *int
 	population_prod_level    *int
 	population_storage_level *int
-	energy_cons              *int64
-	energy_prod              *int64
 	solar_prod_level         *int
 	region_code              *int
 	system_code              *int
@@ -51,6 +41,7 @@ type PlanetCreate struct {
 	name                     *string
 	planet_type              *planet.PlanetType
 	planet_skin              *string
+	last_resource_update     *time.Time
 	owner                    map[int]struct{}
 	timers                   map[int]struct{}
 }
@@ -97,34 +88,6 @@ func (pc *PlanetCreate) SetNillableMetal(i *int64) *PlanetCreate {
 	return pc
 }
 
-// SetMetalLastUpdate sets the metal_last_update field.
-func (pc *PlanetCreate) SetMetalLastUpdate(t time.Time) *PlanetCreate {
-	pc.metal_last_update = &t
-	return pc
-}
-
-// SetNillableMetalLastUpdate sets the metal_last_update field if the given value is not nil.
-func (pc *PlanetCreate) SetNillableMetalLastUpdate(t *time.Time) *PlanetCreate {
-	if t != nil {
-		pc.SetMetalLastUpdate(*t)
-	}
-	return pc
-}
-
-// SetMetalRate sets the metal_rate field.
-func (pc *PlanetCreate) SetMetalRate(i int) *PlanetCreate {
-	pc.metal_rate = &i
-	return pc
-}
-
-// SetNillableMetalRate sets the metal_rate field if the given value is not nil.
-func (pc *PlanetCreate) SetNillableMetalRate(i *int) *PlanetCreate {
-	if i != nil {
-		pc.SetMetalRate(*i)
-	}
-	return pc
-}
-
 // SetMetalProdLevel sets the metal_prod_level field.
 func (pc *PlanetCreate) SetMetalProdLevel(i int) *PlanetCreate {
 	pc.metal_prod_level = &i
@@ -163,34 +126,6 @@ func (pc *PlanetCreate) SetHydrogen(i int64) *PlanetCreate {
 func (pc *PlanetCreate) SetNillableHydrogen(i *int64) *PlanetCreate {
 	if i != nil {
 		pc.SetHydrogen(*i)
-	}
-	return pc
-}
-
-// SetHydrogenLastUpdate sets the hydrogen_last_update field.
-func (pc *PlanetCreate) SetHydrogenLastUpdate(t time.Time) *PlanetCreate {
-	pc.hydrogen_last_update = &t
-	return pc
-}
-
-// SetNillableHydrogenLastUpdate sets the hydrogen_last_update field if the given value is not nil.
-func (pc *PlanetCreate) SetNillableHydrogenLastUpdate(t *time.Time) *PlanetCreate {
-	if t != nil {
-		pc.SetHydrogenLastUpdate(*t)
-	}
-	return pc
-}
-
-// SetHydrogenRate sets the hydrogen_rate field.
-func (pc *PlanetCreate) SetHydrogenRate(i int) *PlanetCreate {
-	pc.hydrogen_rate = &i
-	return pc
-}
-
-// SetNillableHydrogenRate sets the hydrogen_rate field if the given value is not nil.
-func (pc *PlanetCreate) SetNillableHydrogenRate(i *int) *PlanetCreate {
-	if i != nil {
-		pc.SetHydrogenRate(*i)
 	}
 	return pc
 }
@@ -237,34 +172,6 @@ func (pc *PlanetCreate) SetNillableSilica(i *int64) *PlanetCreate {
 	return pc
 }
 
-// SetSilicaLastUpdate sets the silica_last_update field.
-func (pc *PlanetCreate) SetSilicaLastUpdate(t time.Time) *PlanetCreate {
-	pc.silica_last_update = &t
-	return pc
-}
-
-// SetNillableSilicaLastUpdate sets the silica_last_update field if the given value is not nil.
-func (pc *PlanetCreate) SetNillableSilicaLastUpdate(t *time.Time) *PlanetCreate {
-	if t != nil {
-		pc.SetSilicaLastUpdate(*t)
-	}
-	return pc
-}
-
-// SetSilicaRate sets the silica_rate field.
-func (pc *PlanetCreate) SetSilicaRate(i int) *PlanetCreate {
-	pc.silica_rate = &i
-	return pc
-}
-
-// SetNillableSilicaRate sets the silica_rate field if the given value is not nil.
-func (pc *PlanetCreate) SetNillableSilicaRate(i *int) *PlanetCreate {
-	if i != nil {
-		pc.SetSilicaRate(*i)
-	}
-	return pc
-}
-
 // SetSilicaProdLevel sets the silica_prod_level field.
 func (pc *PlanetCreate) SetSilicaProdLevel(i int) *PlanetCreate {
 	pc.silica_prod_level = &i
@@ -307,34 +214,6 @@ func (pc *PlanetCreate) SetNillablePopulation(i *int64) *PlanetCreate {
 	return pc
 }
 
-// SetPopulationLastUpdate sets the population_last_update field.
-func (pc *PlanetCreate) SetPopulationLastUpdate(t time.Time) *PlanetCreate {
-	pc.population_last_update = &t
-	return pc
-}
-
-// SetNillablePopulationLastUpdate sets the population_last_update field if the given value is not nil.
-func (pc *PlanetCreate) SetNillablePopulationLastUpdate(t *time.Time) *PlanetCreate {
-	if t != nil {
-		pc.SetPopulationLastUpdate(*t)
-	}
-	return pc
-}
-
-// SetPopulationRate sets the population_rate field.
-func (pc *PlanetCreate) SetPopulationRate(i int) *PlanetCreate {
-	pc.population_rate = &i
-	return pc
-}
-
-// SetNillablePopulationRate sets the population_rate field if the given value is not nil.
-func (pc *PlanetCreate) SetNillablePopulationRate(i *int) *PlanetCreate {
-	if i != nil {
-		pc.SetPopulationRate(*i)
-	}
-	return pc
-}
-
 // SetPopulationProdLevel sets the population_prod_level field.
 func (pc *PlanetCreate) SetPopulationProdLevel(i int) *PlanetCreate {
 	pc.population_prod_level = &i
@@ -359,34 +238,6 @@ func (pc *PlanetCreate) SetPopulationStorageLevel(i int) *PlanetCreate {
 func (pc *PlanetCreate) SetNillablePopulationStorageLevel(i *int) *PlanetCreate {
 	if i != nil {
 		pc.SetPopulationStorageLevel(*i)
-	}
-	return pc
-}
-
-// SetEnergyCons sets the energy_cons field.
-func (pc *PlanetCreate) SetEnergyCons(i int64) *PlanetCreate {
-	pc.energy_cons = &i
-	return pc
-}
-
-// SetNillableEnergyCons sets the energy_cons field if the given value is not nil.
-func (pc *PlanetCreate) SetNillableEnergyCons(i *int64) *PlanetCreate {
-	if i != nil {
-		pc.SetEnergyCons(*i)
-	}
-	return pc
-}
-
-// SetEnergyProd sets the energy_prod field.
-func (pc *PlanetCreate) SetEnergyProd(i int64) *PlanetCreate {
-	pc.energy_prod = &i
-	return pc
-}
-
-// SetNillableEnergyProd sets the energy_prod field if the given value is not nil.
-func (pc *PlanetCreate) SetNillableEnergyProd(i *int64) *PlanetCreate {
-	if i != nil {
-		pc.SetEnergyProd(*i)
 	}
 	return pc
 }
@@ -461,6 +312,20 @@ func (pc *PlanetCreate) SetPlanetSkin(s string) *PlanetCreate {
 	return pc
 }
 
+// SetLastResourceUpdate sets the last_resource_update field.
+func (pc *PlanetCreate) SetLastResourceUpdate(t time.Time) *PlanetCreate {
+	pc.last_resource_update = &t
+	return pc
+}
+
+// SetNillableLastResourceUpdate sets the last_resource_update field if the given value is not nil.
+func (pc *PlanetCreate) SetNillableLastResourceUpdate(t *time.Time) *PlanetCreate {
+	if t != nil {
+		pc.SetLastResourceUpdate(*t)
+	}
+	return pc
+}
+
 // SetOwnerID sets the owner edge to User by id.
 func (pc *PlanetCreate) SetOwnerID(id int) *PlanetCreate {
 	if pc.owner == nil {
@@ -520,14 +385,6 @@ func (pc *PlanetCreate) Save(ctx context.Context) (*Planet, error) {
 	if err := planet.MetalValidator(*pc.metal); err != nil {
 		return nil, fmt.Errorf("ent: validator failed for field \"metal\": %v", err)
 	}
-	if pc.metal_last_update == nil {
-		v := planet.DefaultMetalLastUpdate()
-		pc.metal_last_update = &v
-	}
-	if pc.metal_rate == nil {
-		v := planet.DefaultMetalRate
-		pc.metal_rate = &v
-	}
 	if pc.metal_prod_level == nil {
 		v := planet.DefaultMetalProdLevel
 		pc.metal_prod_level = &v
@@ -548,14 +405,6 @@ func (pc *PlanetCreate) Save(ctx context.Context) (*Planet, error) {
 	}
 	if err := planet.HydrogenValidator(*pc.hydrogen); err != nil {
 		return nil, fmt.Errorf("ent: validator failed for field \"hydrogen\": %v", err)
-	}
-	if pc.hydrogen_last_update == nil {
-		v := planet.DefaultHydrogenLastUpdate()
-		pc.hydrogen_last_update = &v
-	}
-	if pc.hydrogen_rate == nil {
-		v := planet.DefaultHydrogenRate
-		pc.hydrogen_rate = &v
 	}
 	if pc.hydrogen_prod_level == nil {
 		v := planet.DefaultHydrogenProdLevel
@@ -578,14 +427,6 @@ func (pc *PlanetCreate) Save(ctx context.Context) (*Planet, error) {
 	if err := planet.SilicaValidator(*pc.silica); err != nil {
 		return nil, fmt.Errorf("ent: validator failed for field \"silica\": %v", err)
 	}
-	if pc.silica_last_update == nil {
-		v := planet.DefaultSilicaLastUpdate()
-		pc.silica_last_update = &v
-	}
-	if pc.silica_rate == nil {
-		v := planet.DefaultSilicaRate
-		pc.silica_rate = &v
-	}
 	if pc.silica_prod_level == nil {
 		v := planet.DefaultSilicaProdLevel
 		pc.silica_prod_level = &v
@@ -607,14 +448,6 @@ func (pc *PlanetCreate) Save(ctx context.Context) (*Planet, error) {
 	if err := planet.PopulationValidator(*pc.population); err != nil {
 		return nil, fmt.Errorf("ent: validator failed for field \"population\": %v", err)
 	}
-	if pc.population_last_update == nil {
-		v := planet.DefaultPopulationLastUpdate()
-		pc.population_last_update = &v
-	}
-	if pc.population_rate == nil {
-		v := planet.DefaultPopulationRate
-		pc.population_rate = &v
-	}
 	if pc.population_prod_level == nil {
 		v := planet.DefaultPopulationProdLevel
 		pc.population_prod_level = &v
@@ -628,20 +461,6 @@ func (pc *PlanetCreate) Save(ctx context.Context) (*Planet, error) {
 	}
 	if err := planet.PopulationStorageLevelValidator(*pc.population_storage_level); err != nil {
 		return nil, fmt.Errorf("ent: validator failed for field \"population_storage_level\": %v", err)
-	}
-	if pc.energy_cons == nil {
-		v := planet.DefaultEnergyCons
-		pc.energy_cons = &v
-	}
-	if err := planet.EnergyConsValidator(*pc.energy_cons); err != nil {
-		return nil, fmt.Errorf("ent: validator failed for field \"energy_cons\": %v", err)
-	}
-	if pc.energy_prod == nil {
-		v := planet.DefaultEnergyProd
-		pc.energy_prod = &v
-	}
-	if err := planet.EnergyProdValidator(*pc.energy_prod); err != nil {
-		return nil, fmt.Errorf("ent: validator failed for field \"energy_prod\": %v", err)
 	}
 	if pc.solar_prod_level == nil {
 		v := planet.DefaultSolarProdLevel
@@ -693,6 +512,10 @@ func (pc *PlanetCreate) Save(ctx context.Context) (*Planet, error) {
 	if pc.planet_skin == nil {
 		return nil, errors.New("ent: missing required field \"planet_skin\"")
 	}
+	if pc.last_resource_update == nil {
+		v := planet.DefaultLastResourceUpdate()
+		pc.last_resource_update = &v
+	}
 	if len(pc.owner) > 1 {
 		return nil, errors.New("ent: multiple assignments on a unique edge \"owner\"")
 	}
@@ -710,8 +533,8 @@ func (pc *PlanetCreate) SaveX(ctx context.Context) *Planet {
 
 func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 	var (
-		pl   = &Planet{config: pc.config}
-		spec = &sqlgraph.CreateSpec{
+		pl    = &Planet{config: pc.config}
+		_spec = &sqlgraph.CreateSpec{
 			Table: planet.Table,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeInt,
@@ -720,7 +543,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		}
 	)
 	if value := pc.created_at; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Value:  *value,
 			Column: planet.FieldCreatedAt,
@@ -728,7 +551,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.CreatedAt = *value
 	}
 	if value := pc.updated_at; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Value:  *value,
 			Column: planet.FieldUpdatedAt,
@@ -736,31 +559,15 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.UpdatedAt = *value
 	}
 	if value := pc.metal; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
 			Value:  *value,
 			Column: planet.FieldMetal,
 		})
 		pl.Metal = *value
 	}
-	if value := pc.metal_last_update; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  *value,
-			Column: planet.FieldMetalLastUpdate,
-		})
-		pl.MetalLastUpdate = *value
-	}
-	if value := pc.metal_rate; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  *value,
-			Column: planet.FieldMetalRate,
-		})
-		pl.MetalRate = *value
-	}
 	if value := pc.metal_prod_level; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldMetalProdLevel,
@@ -768,7 +575,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.MetalProdLevel = *value
 	}
 	if value := pc.metal_storage_level; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldMetalStorageLevel,
@@ -776,31 +583,15 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.MetalStorageLevel = *value
 	}
 	if value := pc.hydrogen; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
 			Value:  *value,
 			Column: planet.FieldHydrogen,
 		})
 		pl.Hydrogen = *value
 	}
-	if value := pc.hydrogen_last_update; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  *value,
-			Column: planet.FieldHydrogenLastUpdate,
-		})
-		pl.HydrogenLastUpdate = *value
-	}
-	if value := pc.hydrogen_rate; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  *value,
-			Column: planet.FieldHydrogenRate,
-		})
-		pl.HydrogenRate = *value
-	}
 	if value := pc.hydrogen_prod_level; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldHydrogenProdLevel,
@@ -808,7 +599,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.HydrogenProdLevel = *value
 	}
 	if value := pc.hydrogen_storage_level; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldHydrogenStorageLevel,
@@ -816,31 +607,15 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.HydrogenStorageLevel = *value
 	}
 	if value := pc.silica; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
 			Value:  *value,
 			Column: planet.FieldSilica,
 		})
 		pl.Silica = *value
 	}
-	if value := pc.silica_last_update; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  *value,
-			Column: planet.FieldSilicaLastUpdate,
-		})
-		pl.SilicaLastUpdate = *value
-	}
-	if value := pc.silica_rate; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  *value,
-			Column: planet.FieldSilicaRate,
-		})
-		pl.SilicaRate = *value
-	}
 	if value := pc.silica_prod_level; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldSilicaProdLevel,
@@ -848,7 +623,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.SilicaProdLevel = *value
 	}
 	if value := pc.silica_storage_level; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldSilicaStorageLevel,
@@ -856,31 +631,15 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.SilicaStorageLevel = *value
 	}
 	if value := pc.population; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
 			Value:  *value,
 			Column: planet.FieldPopulation,
 		})
 		pl.Population = *value
 	}
-	if value := pc.population_last_update; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  *value,
-			Column: planet.FieldPopulationLastUpdate,
-		})
-		pl.PopulationLastUpdate = *value
-	}
-	if value := pc.population_rate; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  *value,
-			Column: planet.FieldPopulationRate,
-		})
-		pl.PopulationRate = *value
-	}
 	if value := pc.population_prod_level; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldPopulationProdLevel,
@@ -888,31 +647,15 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.PopulationProdLevel = *value
 	}
 	if value := pc.population_storage_level; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldPopulationStorageLevel,
 		})
 		pl.PopulationStorageLevel = *value
 	}
-	if value := pc.energy_cons; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  *value,
-			Column: planet.FieldEnergyCons,
-		})
-		pl.EnergyCons = *value
-	}
-	if value := pc.energy_prod; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  *value,
-			Column: planet.FieldEnergyProd,
-		})
-		pl.EnergyProd = *value
-	}
 	if value := pc.solar_prod_level; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldSolarProdLevel,
@@ -920,7 +663,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.SolarProdLevel = *value
 	}
 	if value := pc.region_code; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldRegionCode,
@@ -928,7 +671,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.RegionCode = *value
 	}
 	if value := pc.system_code; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldSystemCode,
@@ -936,7 +679,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.SystemCode = *value
 	}
 	if value := pc.orbit_code; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldOrbitCode,
@@ -944,7 +687,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.OrbitCode = *value
 	}
 	if value := pc.suborbit_code; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldSuborbitCode,
@@ -952,7 +695,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.SuborbitCode = *value
 	}
 	if value := pc.position_code; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  *value,
 			Column: planet.FieldPositionCode,
@@ -960,7 +703,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.PositionCode = *value
 	}
 	if value := pc.name; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  *value,
 			Column: planet.FieldName,
@@ -968,7 +711,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.Name = *value
 	}
 	if value := pc.planet_type; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeEnum,
 			Value:  *value,
 			Column: planet.FieldPlanetType,
@@ -976,12 +719,20 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		pl.PlanetType = *value
 	}
 	if value := pc.planet_skin; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  *value,
 			Column: planet.FieldPlanetSkin,
 		})
 		pl.PlanetSkin = *value
+	}
+	if value := pc.last_resource_update; value != nil {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  *value,
+			Column: planet.FieldLastResourceUpdate,
+		})
+		pl.LastResourceUpdate = *value
 	}
 	if nodes := pc.owner; len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -1000,7 +751,7 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		for k, _ := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		spec.Edges = append(spec.Edges, edge)
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := pc.timers; len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -1019,15 +770,15 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 		for k, _ := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		spec.Edges = append(spec.Edges, edge)
+		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if err := sqlgraph.CreateNode(ctx, pc.driver, spec); err != nil {
+	if err := sqlgraph.CreateNode(ctx, pc.driver, _spec); err != nil {
 		if cerr, ok := isSQLConstraintError(err); ok {
 			err = cerr
 		}
 		return nil, err
 	}
-	id := spec.ID.Value.(int64)
+	id := _spec.ID.Value.(int64)
 	pl.ID = int(id)
 	return pl, nil
 }

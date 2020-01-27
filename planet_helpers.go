@@ -45,7 +45,7 @@ func userPlanet(r *http.Request, tx *ent.Tx) (*ent.Planet, error) {
 	if err != nil {
 		return nil, newInternalServerError(fmt.Errorf("unable to update planet timers: %v", err))
 	}
-	data.UpdatePlanetState(p, time.Now())
+	data.UpdatePlanetResources(p, time.Now())
 	return p, nil
 }
 
@@ -54,8 +54,8 @@ func userPlanets(r *http.Request, tx *ent.Tx) ([]*ent.Planet, error) {
 	u := loggedInUser(r)
 
 	p, err := tx.Planet.Query().
-			Where(planet.HasOwnerWith(user.IDEQ(u.ID))).
-			All(r.Context())
+		Where(planet.HasOwnerWith(user.IDEQ(u.ID))).
+		All(r.Context())
 	if _, ok := err.(*ent.ErrNotFound); ok {
 		return nil, newNotFoundError(fmt.Errorf("unable to query planets for user %d; it does not exist", u.ID))
 	}
@@ -82,8 +82,10 @@ func regionPlanets(w http.ResponseWriter, r *http.Request) ([]*ent.Planet, error
 // items like constructions or research.
 type planetViewData struct {
 	UserPlanets []*ent.Planet
-	Planet *ent.Planet
-	Timer  *data.Timer
+	Planet      *ent.Planet
+	EnergyProd  int64
+	EnergyCons  int64
+	Timer       *data.Timer
 }
 
 // newPlanetViewData collects the data for the planet's construction, research and other
@@ -117,8 +119,10 @@ func newPlanetViewData(r *http.Request, g timer.Group) (*planetViewData, error) 
 	}
 	return &planetViewData{
 		UserPlanets: plist,
-		Planet: p,
-		Timer:  t,
+		Planet:      p,
+		EnergyProd:  data.GetEnergyProd(p),
+		EnergyCons:  data.GetEnergyCons(p),
+		Timer:       t,
 	}, nil
 }
 

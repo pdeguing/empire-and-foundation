@@ -18,7 +18,7 @@ const (
 	Table = "sessions"
 )
 
-// Columns holds all SQL columns are session fields.
+// Columns holds all SQL columns for session fields.
 var Columns = []string{
 	FieldID,
 	FieldToken,

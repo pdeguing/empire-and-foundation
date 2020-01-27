@@ -9,9 +9,11 @@ import (
 )
 
 type planetOverviewViewData struct {
-	UserPlanets	[]*ent.Planet
-	Planet *ent.Planet
-	Timers map[timer.Group]*data.Timer
+	UserPlanets []*ent.Planet
+	Planet      *ent.Planet
+	EnergyProd  int64
+	EnergyCons  int64
+	Timers      map[timer.Group]*data.Timer
 }
 
 // GET /planet/{id}
@@ -42,21 +44,23 @@ func servePlanet(w http.ResponseWriter, r *http.Request) {
 	}
 	pv := planetOverviewViewData{
 		UserPlanets: plist,
-		Planet: p,
-		Timers: t,
+		Planet:      p,
+		EnergyProd:  data.GetEnergyProd(p),
+		EnergyCons:  data.GetEnergyCons(p),
+		Timers:      t,
 	}
 	generateHTML(w, r, "planet-dashboard", pv, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "flash", "planet.overview")
 }
 
 type buildingsUpgradeCost struct {
-	MetalProdUpgradeCost	data.Amounts
-	HydrogenProdUpgradeCost	data.Amounts
-	SilicaProdUpgradeCost	data.Amounts
-	SolarProdUpgradeCost	data.Amounts
-	UrbanismUpgradeCost	data.Amounts
-	MetalStorageUpgradeCost	data.Amounts
-	HydrogenStorageUpgradeCost	data.Amounts
-	SilicaStorageUpgradeCost	data.Amounts
+	MetalProdUpgradeCost       data.Amounts
+	HydrogenProdUpgradeCost    data.Amounts
+	SilicaProdUpgradeCost      data.Amounts
+	SolarProdUpgradeCost       data.Amounts
+	UrbanismUpgradeCost        data.Amounts
+	MetalStorageUpgradeCost    data.Amounts
+	HydrogenStorageUpgradeCost data.Amounts
+	SilicaStorageUpgradeCost   data.Amounts
 }
 
 type constructionsViewData struct {
@@ -66,14 +70,14 @@ type constructionsViewData struct {
 
 func getBuildingsUpgradeCost(planet *ent.Planet) buildingsUpgradeCost {
 	return buildingsUpgradeCost{
-		MetalProdUpgradeCost: data.GetMetalProdUpgradeCost(planet.MetalProdLevel + 1),
-		HydrogenProdUpgradeCost: data.GetHydrogenProdUpgradeCost(planet.HydrogenProdLevel + 1),
-		SilicaProdUpgradeCost: data.GetSilicaProdUpgradeCost(planet.SilicaProdLevel + 1),
-		SolarProdUpgradeCost: data.GetSolarProdUpgradeCost(planet.SolarProdLevel + 1),
-		UrbanismUpgradeCost: data.GetUrbanismUpgradeCost(planet.PopulationProdLevel + 1),
-		MetalStorageUpgradeCost: data.GetMetalStorageUpgradeCost(planet.MetalStorageLevel + 1),
+		MetalProdUpgradeCost:       data.GetMetalProdUpgradeCost(planet.MetalProdLevel + 1),
+		HydrogenProdUpgradeCost:    data.GetHydrogenProdUpgradeCost(planet.HydrogenProdLevel + 1),
+		SilicaProdUpgradeCost:      data.GetSilicaProdUpgradeCost(planet.SilicaProdLevel + 1),
+		SolarProdUpgradeCost:       data.GetSolarProdUpgradeCost(planet.SolarProdLevel + 1),
+		UrbanismUpgradeCost:        data.GetUrbanismUpgradeCost(planet.PopulationProdLevel + 1),
+		MetalStorageUpgradeCost:    data.GetMetalStorageUpgradeCost(planet.MetalStorageLevel + 1),
 		HydrogenStorageUpgradeCost: data.GetHydrogenStorageUpgradeCost(planet.HydrogenStorageLevel + 1),
-		SilicaStorageUpgradeCost: data.GetSilicaStorageUpgradeCost(planet.SilicaStorageLevel + 1),
+		SilicaStorageUpgradeCost:   data.GetSilicaStorageUpgradeCost(planet.SilicaStorageLevel + 1),
 	}
 }
 
@@ -86,11 +90,11 @@ func serveConstructions(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	b := getBuildingsUpgradeCost(p.Planet)
-	data := constructionsViewData{
+	vd := constructionsViewData{
 		*p,
 		b,
 	}
-	generateHTML(w, r, "planet-constructions", data, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "flash", "planet.constructions")
+	generateHTML(w, r, "planet-constructions", vd, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "flash", "planet.constructions")
 }
 
 // GET /planet/{id}/factories
@@ -204,7 +208,7 @@ func serveUpgradeMetalStorage(w http.ResponseWriter, r *http.Request) {
 }
 
 // POST /planet/{id}/metal-storage/cancel
-// Cancel the upgrade of the metal storage 
+// Cancel the upgrade of the metal storage
 func serveCancelMetalStorage(w http.ResponseWriter, r *http.Request) {
 	serveCancelBuilding(w, r, timer.ActionUpgradeMetalStorage)
 }
@@ -216,7 +220,7 @@ func serveUpgradeHydrogenStorage(w http.ResponseWriter, r *http.Request) {
 }
 
 // POST /planet/{id}/hydrogen-storage/cancel
-// Cancel the upgrade of the hydrogen storage 
+// Cancel the upgrade of the hydrogen storage
 func serveCancelHydrogenStorage(w http.ResponseWriter, r *http.Request) {
 	serveCancelBuilding(w, r, timer.ActionUpgradeHydrogenStorage)
 }
@@ -228,7 +232,7 @@ func serveUpgradeSilicaStorage(w http.ResponseWriter, r *http.Request) {
 }
 
 // POST /planet/{id}/silica-storage/cancel
-// Cancel the upgrade of the silica storage 
+// Cancel the upgrade of the silica storage
 func serveCancelSilicaStorage(w http.ResponseWriter, r *http.Request) {
 	serveCancelBuilding(w, r, timer.ActionUpgradeSilicaStorage)
 }

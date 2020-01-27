@@ -5,9 +5,10 @@ package ent
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/facebookincubator/ent/dialect/sql"
+	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
+	"github.com/facebookincubator/ent/schema/field"
 	"github.com/pdeguing/empire-and-foundation/ent/planet"
 	"github.com/pdeguing/empire-and-foundation/ent/predicate"
 	"github.com/pdeguing/empire-and-foundation/ent/timer"
@@ -87,71 +88,65 @@ func (tu *TimerUpdate) ExecX(ctx context.Context) {
 }
 
 func (tu *TimerUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	var (
-		builder  = sql.Dialect(tu.driver.Dialect())
-		selector = builder.Select(timer.FieldID).From(builder.Table(timer.Table))
-	)
-	for _, p := range tu.predicates {
-		p(selector)
+	_spec := &sqlgraph.UpdateSpec{
+		Node: &sqlgraph.NodeSpec{
+			Table:   timer.Table,
+			Columns: timer.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeInt,
+				Column: timer.FieldID,
+			},
+		},
 	}
-	rows := &sql.Rows{}
-	query, args := selector.Query()
-	if err = tu.driver.Query(ctx, query, args, rows); err != nil {
-		return 0, err
-	}
-	defer rows.Close()
-
-	var ids []int
-	for rows.Next() {
-		var id int
-		if err := rows.Scan(&id); err != nil {
-			return 0, fmt.Errorf("ent: failed reading id: %v", err)
-		}
-		ids = append(ids, id)
-	}
-	if len(ids) == 0 {
-		return 0, nil
-	}
-
-	tx, err := tu.driver.Tx(ctx)
-	if err != nil {
-		return 0, err
-	}
-	var (
-		res     sql.Result
-		updater = builder.Update(timer.Table)
-	)
-	updater = updater.Where(sql.InInts(timer.FieldID, ids...))
-	if !updater.Empty() {
-		query, args := updater.Query()
-		if err := tx.Exec(ctx, query, args, &res); err != nil {
-			return 0, rollback(tx, err)
-		}
-	}
-	if tu.clearedPlanet {
-		query, args := builder.Update(timer.PlanetTable).
-			SetNull(timer.PlanetColumn).
-			Where(sql.InInts(planet.FieldID, ids...)).
-			Query()
-		if err := tx.Exec(ctx, query, args, &res); err != nil {
-			return 0, rollback(tx, err)
-		}
-	}
-	if len(tu.planet) > 0 {
-		for eid := range tu.planet {
-			query, args := builder.Update(timer.PlanetTable).
-				Set(timer.PlanetColumn, eid).
-				Where(sql.InInts(timer.FieldID, ids...)).
-				Query()
-			if err := tx.Exec(ctx, query, args, &res); err != nil {
-				return 0, rollback(tx, err)
+	if ps := tu.predicates; len(ps) > 0 {
+		_spec.Predicate = func(selector *sql.Selector) {
+			for i := range ps {
+				ps[i](selector)
 			}
 		}
 	}
-	if err = tx.Commit(); err != nil {
+	if tu.clearedPlanet {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   timer.PlanetTable,
+			Columns: []string{timer.PlanetColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: planet.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := tu.planet; len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   timer.PlanetTable,
+			Columns: []string{timer.PlanetColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: planet.FieldID,
+				},
+			},
+		}
+		for k, _ := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if n, err = sqlgraph.UpdateNodes(ctx, tu.driver, _spec); err != nil {
+		if cerr, ok := isSQLConstraintError(err); ok {
+			err = cerr
+		}
 		return 0, err
 	}
-	return len(ids), nil
+	return n, nil
 }
 
 // TimerUpdateOne is the builder for updating a single Timer entity.
@@ -222,71 +217,59 @@ func (tuo *TimerUpdateOne) ExecX(ctx context.Context) {
 }
 
 func (tuo *TimerUpdateOne) sqlSave(ctx context.Context) (t *Timer, err error) {
-	var (
-		builder  = sql.Dialect(tuo.driver.Dialect())
-		selector = builder.Select(timer.Columns...).From(builder.Table(timer.Table))
-	)
-	timer.ID(tuo.id)(selector)
-	rows := &sql.Rows{}
-	query, args := selector.Query()
-	if err = tuo.driver.Query(ctx, query, args, rows); err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var ids []int
-	for rows.Next() {
-		var id int
-		t = &Timer{config: tuo.config}
-		if err := t.FromRows(rows); err != nil {
-			return nil, fmt.Errorf("ent: failed scanning row into Timer: %v", err)
-		}
-		id = t.ID
-		ids = append(ids, id)
-	}
-	switch n := len(ids); {
-	case n == 0:
-		return nil, &ErrNotFound{fmt.Sprintf("Timer with id: %v", tuo.id)}
-	case n > 1:
-		return nil, fmt.Errorf("ent: more than one Timer with the same id: %v", tuo.id)
-	}
-
-	tx, err := tuo.driver.Tx(ctx)
-	if err != nil {
-		return nil, err
-	}
-	var (
-		res     sql.Result
-		updater = builder.Update(timer.Table)
-	)
-	updater = updater.Where(sql.InInts(timer.FieldID, ids...))
-	if !updater.Empty() {
-		query, args := updater.Query()
-		if err := tx.Exec(ctx, query, args, &res); err != nil {
-			return nil, rollback(tx, err)
-		}
+	_spec := &sqlgraph.UpdateSpec{
+		Node: &sqlgraph.NodeSpec{
+			Table:   timer.Table,
+			Columns: timer.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Value:  tuo.id,
+				Type:   field.TypeInt,
+				Column: timer.FieldID,
+			},
+		},
 	}
 	if tuo.clearedPlanet {
-		query, args := builder.Update(timer.PlanetTable).
-			SetNull(timer.PlanetColumn).
-			Where(sql.InInts(planet.FieldID, ids...)).
-			Query()
-		if err := tx.Exec(ctx, query, args, &res); err != nil {
-			return nil, rollback(tx, err)
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   timer.PlanetTable,
+			Columns: []string{timer.PlanetColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: planet.FieldID,
+				},
+			},
 		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if len(tuo.planet) > 0 {
-		for eid := range tuo.planet {
-			query, args := builder.Update(timer.PlanetTable).
-				Set(timer.PlanetColumn, eid).
-				Where(sql.InInts(timer.FieldID, ids...)).
-				Query()
-			if err := tx.Exec(ctx, query, args, &res); err != nil {
-				return nil, rollback(tx, err)
-			}
+	if nodes := tuo.planet; len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   timer.PlanetTable,
+			Columns: []string{timer.PlanetColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: planet.FieldID,
+				},
+			},
 		}
+		for k, _ := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if err = tx.Commit(); err != nil {
+	t = &Timer{config: tuo.config}
+	_spec.Assign = t.assignValues
+	_spec.ScanValues = t.scanValues()
+	if err = sqlgraph.UpdateNode(ctx, tuo.driver, _spec); err != nil {
+		if cerr, ok := isSQLConstraintError(err); ok {
+			err = cerr
+		}
 		return nil, err
 	}
 	return t, nil

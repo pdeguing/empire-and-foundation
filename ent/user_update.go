@@ -4,10 +4,11 @@ package ent
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/facebookincubator/ent/dialect/sql"
+	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
+	"github.com/facebookincubator/ent/schema/field"
 	"github.com/pdeguing/empire-and-foundation/ent/planet"
 	"github.com/pdeguing/empire-and-foundation/ent/predicate"
 	"github.com/pdeguing/empire-and-foundation/ent/user"
@@ -128,99 +129,96 @@ func (uu *UserUpdate) ExecX(ctx context.Context) {
 }
 
 func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	var (
-		builder  = sql.Dialect(uu.driver.Dialect())
-		selector = builder.Select(user.FieldID).From(builder.Table(user.Table))
-	)
-	for _, p := range uu.predicates {
-		p(selector)
+	_spec := &sqlgraph.UpdateSpec{
+		Node: &sqlgraph.NodeSpec{
+			Table:   user.Table,
+			Columns: user.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeInt,
+				Column: user.FieldID,
+			},
+		},
 	}
-	rows := &sql.Rows{}
-	query, args := selector.Query()
-	if err = uu.driver.Query(ctx, query, args, rows); err != nil {
-		return 0, err
-	}
-	defer rows.Close()
-
-	var ids []int
-	for rows.Next() {
-		var id int
-		if err := rows.Scan(&id); err != nil {
-			return 0, fmt.Errorf("ent: failed reading id: %v", err)
+	if ps := uu.predicates; len(ps) > 0 {
+		_spec.Predicate = func(selector *sql.Selector) {
+			for i := range ps {
+				ps[i](selector)
+			}
 		}
-		ids = append(ids, id)
 	}
-	if len(ids) == 0 {
-		return 0, nil
-	}
-
-	tx, err := uu.driver.Tx(ctx)
-	if err != nil {
-		return 0, err
-	}
-	var (
-		res     sql.Result
-		updater = builder.Update(user.Table)
-	)
-	updater = updater.Where(sql.InInts(user.FieldID, ids...))
 	if value := uu.updated_at; value != nil {
-		updater.Set(user.FieldUpdatedAt, *value)
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  *value,
+			Column: user.FieldUpdatedAt,
+		})
 	}
 	if value := uu.username; value != nil {
-		updater.Set(user.FieldUsername, *value)
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  *value,
+			Column: user.FieldUsername,
+		})
 	}
 	if value := uu.email; value != nil {
-		updater.Set(user.FieldEmail, *value)
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  *value,
+			Column: user.FieldEmail,
+		})
 	}
 	if value := uu.password; value != nil {
-		updater.Set(user.FieldPassword, *value)
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  *value,
+			Column: user.FieldPassword,
+		})
 	}
-	if !updater.Empty() {
-		query, args := updater.Query()
-		if err := tx.Exec(ctx, query, args, &res); err != nil {
-			return 0, rollback(tx, err)
+	if nodes := uu.removedPlanets; len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PlanetsTable,
+			Columns: []string{user.PlanetsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: planet.FieldID,
+				},
+			},
 		}
+		for k, _ := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if len(uu.removedPlanets) > 0 {
-		eids := make([]int, len(uu.removedPlanets))
-		for eid := range uu.removedPlanets {
-			eids = append(eids, eid)
+	if nodes := uu.planets; len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PlanetsTable,
+			Columns: []string{user.PlanetsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: planet.FieldID,
+				},
+			},
 		}
-		query, args := builder.Update(user.PlanetsTable).
-			SetNull(user.PlanetsColumn).
-			Where(sql.InInts(user.PlanetsColumn, ids...)).
-			Where(sql.InInts(planet.FieldID, eids...)).
-			Query()
-		if err := tx.Exec(ctx, query, args, &res); err != nil {
-			return 0, rollback(tx, err)
+		for k, _ := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if len(uu.planets) > 0 {
-		for _, id := range ids {
-			p := sql.P()
-			for eid := range uu.planets {
-				p.Or().EQ(planet.FieldID, eid)
-			}
-			query, args := builder.Update(user.PlanetsTable).
-				Set(user.PlanetsColumn, id).
-				Where(sql.And(p, sql.IsNull(user.PlanetsColumn))).
-				Query()
-			if err := tx.Exec(ctx, query, args, &res); err != nil {
-				return 0, rollback(tx, err)
-			}
-			affected, err := res.RowsAffected()
-			if err != nil {
-				return 0, rollback(tx, err)
-			}
-			if int(affected) < len(uu.planets) {
-				return 0, rollback(tx, &ConstraintError{msg: fmt.Sprintf("one of \"planets\" %v already connected to a different \"User\"", keys(uu.planets))})
-			}
+	if n, err = sqlgraph.UpdateNodes(ctx, uu.driver, _spec); err != nil {
+		if cerr, ok := isSQLConstraintError(err); ok {
+			err = cerr
 		}
-	}
-	if err = tx.Commit(); err != nil {
 		return 0, err
 	}
-	return len(ids), nil
+	return n, nil
 }
 
 // UserUpdateOne is the builder for updating a single User entity.
@@ -332,103 +330,90 @@ func (uuo *UserUpdateOne) ExecX(ctx context.Context) {
 }
 
 func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
-	var (
-		builder  = sql.Dialect(uuo.driver.Dialect())
-		selector = builder.Select(user.Columns...).From(builder.Table(user.Table))
-	)
-	user.ID(uuo.id)(selector)
-	rows := &sql.Rows{}
-	query, args := selector.Query()
-	if err = uuo.driver.Query(ctx, query, args, rows); err != nil {
-		return nil, err
+	_spec := &sqlgraph.UpdateSpec{
+		Node: &sqlgraph.NodeSpec{
+			Table:   user.Table,
+			Columns: user.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Value:  uuo.id,
+				Type:   field.TypeInt,
+				Column: user.FieldID,
+			},
+		},
 	}
-	defer rows.Close()
-
-	var ids []int
-	for rows.Next() {
-		var id int
-		u = &User{config: uuo.config}
-		if err := u.FromRows(rows); err != nil {
-			return nil, fmt.Errorf("ent: failed scanning row into User: %v", err)
-		}
-		id = u.ID
-		ids = append(ids, id)
-	}
-	switch n := len(ids); {
-	case n == 0:
-		return nil, &ErrNotFound{fmt.Sprintf("User with id: %v", uuo.id)}
-	case n > 1:
-		return nil, fmt.Errorf("ent: more than one User with the same id: %v", uuo.id)
-	}
-
-	tx, err := uuo.driver.Tx(ctx)
-	if err != nil {
-		return nil, err
-	}
-	var (
-		res     sql.Result
-		updater = builder.Update(user.Table)
-	)
-	updater = updater.Where(sql.InInts(user.FieldID, ids...))
 	if value := uuo.updated_at; value != nil {
-		updater.Set(user.FieldUpdatedAt, *value)
-		u.UpdatedAt = *value
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  *value,
+			Column: user.FieldUpdatedAt,
+		})
 	}
 	if value := uuo.username; value != nil {
-		updater.Set(user.FieldUsername, *value)
-		u.Username = *value
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  *value,
+			Column: user.FieldUsername,
+		})
 	}
 	if value := uuo.email; value != nil {
-		updater.Set(user.FieldEmail, *value)
-		u.Email = *value
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  *value,
+			Column: user.FieldEmail,
+		})
 	}
 	if value := uuo.password; value != nil {
-		updater.Set(user.FieldPassword, *value)
-		u.Password = *value
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  *value,
+			Column: user.FieldPassword,
+		})
 	}
-	if !updater.Empty() {
-		query, args := updater.Query()
-		if err := tx.Exec(ctx, query, args, &res); err != nil {
-			return nil, rollback(tx, err)
+	if nodes := uuo.removedPlanets; len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PlanetsTable,
+			Columns: []string{user.PlanetsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: planet.FieldID,
+				},
+			},
 		}
+		for k, _ := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if len(uuo.removedPlanets) > 0 {
-		eids := make([]int, len(uuo.removedPlanets))
-		for eid := range uuo.removedPlanets {
-			eids = append(eids, eid)
+	if nodes := uuo.planets; len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PlanetsTable,
+			Columns: []string{user.PlanetsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: planet.FieldID,
+				},
+			},
 		}
-		query, args := builder.Update(user.PlanetsTable).
-			SetNull(user.PlanetsColumn).
-			Where(sql.InInts(user.PlanetsColumn, ids...)).
-			Where(sql.InInts(planet.FieldID, eids...)).
-			Query()
-		if err := tx.Exec(ctx, query, args, &res); err != nil {
-			return nil, rollback(tx, err)
+		for k, _ := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if len(uuo.planets) > 0 {
-		for _, id := range ids {
-			p := sql.P()
-			for eid := range uuo.planets {
-				p.Or().EQ(planet.FieldID, eid)
-			}
-			query, args := builder.Update(user.PlanetsTable).
-				Set(user.PlanetsColumn, id).
-				Where(sql.And(p, sql.IsNull(user.PlanetsColumn))).
-				Query()
-			if err := tx.Exec(ctx, query, args, &res); err != nil {
-				return nil, rollback(tx, err)
-			}
-			affected, err := res.RowsAffected()
-			if err != nil {
-				return nil, rollback(tx, err)
-			}
-			if int(affected) < len(uuo.planets) {
-				return nil, rollback(tx, &ConstraintError{msg: fmt.Sprintf("one of \"planets\" %v already connected to a different \"User\"", keys(uuo.planets))})
-			}
+	u = &User{config: uuo.config}
+	_spec.Assign = u.assignValues
+	_spec.ScanValues = u.scanValues()
+	if err = sqlgraph.UpdateNode(ctx, uuo.driver, _spec); err != nil {
+		if cerr, ok := isSQLConstraintError(err); ok {
+			err = cerr
 		}
-	}
-	if err = tx.Commit(); err != nil {
 		return nil, err
 	}
 	return u, nil

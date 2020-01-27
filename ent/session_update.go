@@ -4,10 +4,11 @@ package ent
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/facebookincubator/ent/dialect/sql"
+	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
+	"github.com/facebookincubator/ent/schema/field"
 	"github.com/pdeguing/empire-and-foundation/ent/predicate"
 	"github.com/pdeguing/empire-and-foundation/ent/session"
 )
@@ -73,60 +74,51 @@ func (su *SessionUpdate) ExecX(ctx context.Context) {
 }
 
 func (su *SessionUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	var (
-		builder  = sql.Dialect(su.driver.Dialect())
-		selector = builder.Select(session.FieldID).From(builder.Table(session.Table))
-	)
-	for _, p := range su.predicates {
-		p(selector)
+	_spec := &sqlgraph.UpdateSpec{
+		Node: &sqlgraph.NodeSpec{
+			Table:   session.Table,
+			Columns: session.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeInt,
+				Column: session.FieldID,
+			},
+		},
 	}
-	rows := &sql.Rows{}
-	query, args := selector.Query()
-	if err = su.driver.Query(ctx, query, args, rows); err != nil {
-		return 0, err
-	}
-	defer rows.Close()
-
-	var ids []int
-	for rows.Next() {
-		var id int
-		if err := rows.Scan(&id); err != nil {
-			return 0, fmt.Errorf("ent: failed reading id: %v", err)
+	if ps := su.predicates; len(ps) > 0 {
+		_spec.Predicate = func(selector *sql.Selector) {
+			for i := range ps {
+				ps[i](selector)
+			}
 		}
-		ids = append(ids, id)
 	}
-	if len(ids) == 0 {
-		return 0, nil
-	}
-
-	tx, err := su.driver.Tx(ctx)
-	if err != nil {
-		return 0, err
-	}
-	var (
-		res     sql.Result
-		updater = builder.Update(session.Table)
-	)
-	updater = updater.Where(sql.InInts(session.FieldID, ids...))
 	if value := su.token; value != nil {
-		updater.Set(session.FieldToken, *value)
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  *value,
+			Column: session.FieldToken,
+		})
 	}
 	if value := su.data; value != nil {
-		updater.Set(session.FieldData, *value)
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBytes,
+			Value:  *value,
+			Column: session.FieldData,
+		})
 	}
 	if value := su.expiry; value != nil {
-		updater.Set(session.FieldExpiry, *value)
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  *value,
+			Column: session.FieldExpiry,
+		})
 	}
-	if !updater.Empty() {
-		query, args := updater.Query()
-		if err := tx.Exec(ctx, query, args, &res); err != nil {
-			return 0, rollback(tx, err)
+	if n, err = sqlgraph.UpdateNodes(ctx, su.driver, _spec); err != nil {
+		if cerr, ok := isSQLConstraintError(err); ok {
+			err = cerr
 		}
-	}
-	if err = tx.Commit(); err != nil {
 		return 0, err
 	}
-	return len(ids), nil
+	return n, nil
 }
 
 // SessionUpdateOne is the builder for updating a single Session entity.
@@ -184,63 +176,45 @@ func (suo *SessionUpdateOne) ExecX(ctx context.Context) {
 }
 
 func (suo *SessionUpdateOne) sqlSave(ctx context.Context) (s *Session, err error) {
-	var (
-		builder  = sql.Dialect(suo.driver.Dialect())
-		selector = builder.Select(session.Columns...).From(builder.Table(session.Table))
-	)
-	session.ID(suo.id)(selector)
-	rows := &sql.Rows{}
-	query, args := selector.Query()
-	if err = suo.driver.Query(ctx, query, args, rows); err != nil {
-		return nil, err
+	_spec := &sqlgraph.UpdateSpec{
+		Node: &sqlgraph.NodeSpec{
+			Table:   session.Table,
+			Columns: session.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Value:  suo.id,
+				Type:   field.TypeInt,
+				Column: session.FieldID,
+			},
+		},
 	}
-	defer rows.Close()
-
-	var ids []int
-	for rows.Next() {
-		var id int
-		s = &Session{config: suo.config}
-		if err := s.FromRows(rows); err != nil {
-			return nil, fmt.Errorf("ent: failed scanning row into Session: %v", err)
-		}
-		id = s.ID
-		ids = append(ids, id)
-	}
-	switch n := len(ids); {
-	case n == 0:
-		return nil, &ErrNotFound{fmt.Sprintf("Session with id: %v", suo.id)}
-	case n > 1:
-		return nil, fmt.Errorf("ent: more than one Session with the same id: %v", suo.id)
-	}
-
-	tx, err := suo.driver.Tx(ctx)
-	if err != nil {
-		return nil, err
-	}
-	var (
-		res     sql.Result
-		updater = builder.Update(session.Table)
-	)
-	updater = updater.Where(sql.InInts(session.FieldID, ids...))
 	if value := suo.token; value != nil {
-		updater.Set(session.FieldToken, *value)
-		s.Token = *value
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  *value,
+			Column: session.FieldToken,
+		})
 	}
 	if value := suo.data; value != nil {
-		updater.Set(session.FieldData, *value)
-		s.Data = *value
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBytes,
+			Value:  *value,
+			Column: session.FieldData,
+		})
 	}
 	if value := suo.expiry; value != nil {
-		updater.Set(session.FieldExpiry, *value)
-		s.Expiry = *value
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  *value,
+			Column: session.FieldExpiry,
+		})
 	}
-	if !updater.Empty() {
-		query, args := updater.Query()
-		if err := tx.Exec(ctx, query, args, &res); err != nil {
-			return nil, rollback(tx, err)
+	s = &Session{config: suo.config}
+	_spec.Assign = s.assignValues
+	_spec.ScanValues = s.scanValues()
+	if err = sqlgraph.UpdateNode(ctx, suo.driver, _spec); err != nil {
+		if cerr, ok := isSQLConstraintError(err); ok {
+			err = cerr
 		}
-	}
-	if err = tx.Commit(); err != nil {
 		return nil, err
 	}
 	return s, nil
