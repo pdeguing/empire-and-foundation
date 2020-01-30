@@ -171,7 +171,7 @@ func routes() http.Handler {
 	// Routes that require authentication
 	rAuth := r.NewRoute().Subrouter()
 	rAuth.HandleFunc("/dashboard", serveDashboard)
-	rAuth.HandleFunc("/dashboard/cartography", serveCartography)
+	rAuth.HandleFunc("/dashboard/cartography/{systemCode:[0-9a-fA-F]{4}}", serveCartography)
 	rAuth.HandleFunc("/dashboard/fleetcontrol", serveFleetControl)
 	rAuth.HandleFunc("/dashboard/technology", serveTechnology)
 	rAuth.HandleFunc("/dashboard/diplomacy", serveDiplomacy)

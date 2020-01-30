@@ -43,6 +43,13 @@ func newTestPlanet(ctx context.Context, client *ent.Client) *ent.Planet {
 		SetMetal(100000).
 		SetSilica(10000).
 		SetHydrogen(10000).
+		SetRegionCode(0). // Temporary until factories in other branch are merged.
+		SetSystemCode(0).
+		SetOrbitCode(0).
+		SetSuborbitCode(0).
+		SetPositionCode(0).
+		SetPlanetType(planet.PlanetTypeHabitable).
+		SetPlanetSkin("earth").
 		Save(ctx)
 	if err != nil {
 		panic(err)

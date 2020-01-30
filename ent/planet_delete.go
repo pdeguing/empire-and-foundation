@@ -70,7 +70,7 @@ func (pdo *PlanetDeleteOne) Exec(ctx context.Context) error {
 	case err != nil:
 		return err
 	case n == 0:
-		return &ErrNotFound{planet.Label}
+		return &NotFoundError{planet.Label}
 	default:
 		return nil
 	}

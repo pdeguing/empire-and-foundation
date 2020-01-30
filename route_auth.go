@@ -88,7 +88,7 @@ func serveAuthenticate(w http.ResponseWriter, r *http.Request) {
 		Query().
 		Where(user.Email(r.PostFormValue("email"))).
 		Only(r.Context())
-	var nferr *ent.ErrNotFound
+	var nferr *ent.NotFoundError
 	if errors.As(err, &nferr) {
 		flash(r, flashDanger, "The username or password you have entered is invalid.")
 		rememberForm(r)

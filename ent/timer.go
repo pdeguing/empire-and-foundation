@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/facebookincubator/ent/dialect/sql"
+	"github.com/pdeguing/empire-and-foundation/ent/planet"
 	"github.com/pdeguing/empire-and-foundation/ent/timer"
 )
 
@@ -24,11 +25,31 @@ type Timer struct {
 	EndTime time.Time `json:"end_time,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TimerQuery when eager-loading is set.
-	Edges struct {
-		// Planet holds the value of the planet edge.
-		Planet *Planet
-	} `json:"edges"`
+	Edges     TimerEdges `json:"edges"`
 	planet_id *int
+}
+
+// TimerEdges holds the relations/edges for other nodes in the graph.
+type TimerEdges struct {
+	// Planet holds the value of the planet edge.
+	Planet *Planet
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// PlanetErr returns the Planet value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e TimerEdges) PlanetErr() (*Planet, error) {
+	if e.loadedTypes[0] {
+		if e.Planet == nil {
+			// The edge planet was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: planet.Label}
+		}
+		return e.Planet, nil
+	}
+	return nil, &NotLoadedError{edge: "planet"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.

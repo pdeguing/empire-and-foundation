@@ -1,10 +1,11 @@
 package main
 
 import (
-	"net/http"
-
+	"github.com/gorilla/mux"
 	"github.com/pdeguing/empire-and-foundation/data"
 	"github.com/pdeguing/empire-and-foundation/ent"
+	"net/http"
+	"strconv"
 )
 
 type dashboardViewData struct {
@@ -45,7 +46,14 @@ func serveDashboard(w http.ResponseWriter, r *http.Request) {
 // GET /dashboard/cartography
 // Show map page
 func serveCartography(w http.ResponseWriter, r *http.Request) {
-	regionPlanets, err := regionPlanets(w, r)
+	systemCode, err := strconv.ParseUint(mux.Vars(r)["systemCode"], 16, 16)
+	if err != nil {
+		serveError(w, r, err)
+		return
+	}
+	region, system, _, _ := data.ParsePositionCode(int(systemCode << 8))
+
+	regionPlanets, err := regionPlanets(w, r, region, system)
 	if err != nil {
 		serveError(w, r, err)
 		return
@@ -58,11 +66,14 @@ func serveCartography(w http.ResponseWriter, r *http.Request) {
 	}
 
 	d := struct {
+		Region, System int
 		RegionPlanets	[]*ent.Planet
 		UserPlanets	[]*ent.Planet
 	}{
-		regionPlanets,
-		userPlanets,
+		Region: region,
+		System: system,
+		RegionPlanets: regionPlanets,
+		UserPlanets: userPlanets,
 	}
 	generateHTML(w, r, "cartography", d, "layout", "private.navbar", "dashboard", "leftbar", "cartography")
 }

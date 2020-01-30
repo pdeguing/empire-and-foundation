@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"github.com/Masterminds/sprig/v3"
 	"html/template"
 	"io"
 	"log"
@@ -122,7 +123,12 @@ func generateHTML(w http.ResponseWriter, r *http.Request, pageName string, data 
 	for _, file := range fn {
 		files = append(files, fmt.Sprintf("templates/%s.html", file))
 	}
-	templates := template.Must(template.New("layout").Funcs(templateFuncs(r)).ParseFiles(files...))
+	templates := template.Must(
+		template.New("layout").
+			Funcs(sprig.FuncMap()).
+			Funcs(templateFuncs(r)).
+			ParseFiles(files...),
+	)
 	err := templates.Execute(w, viewData{
 		PageName: pageName,
 		Data:     data,

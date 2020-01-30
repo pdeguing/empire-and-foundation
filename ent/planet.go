@@ -9,6 +9,7 @@ import (
 
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/pdeguing/empire-and-foundation/ent/planet"
+	"github.com/pdeguing/empire-and-foundation/ent/user"
 )
 
 // Planet is the model entity for the Planet schema.
@@ -84,13 +85,42 @@ type Planet struct {
 	PlanetSkin string `json:"planet_skin,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the PlanetQuery when eager-loading is set.
-	Edges struct {
-		// Owner holds the value of the owner edge.
-		Owner *User
-		// Timers holds the value of the timers edge.
-		Timers []*Timer
-	} `json:"edges"`
+	Edges    PlanetEdges `json:"edges"`
 	owner_id *int
+}
+
+// PlanetEdges holds the relations/edges for other nodes in the graph.
+type PlanetEdges struct {
+	// Owner holds the value of the owner edge.
+	Owner *User
+	// Timers holds the value of the timers edge.
+	Timers []*Timer
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [2]bool
+}
+
+// OwnerErr returns the Owner value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e PlanetEdges) OwnerErr() (*User, error) {
+	if e.loadedTypes[0] {
+		if e.Owner == nil {
+			// The edge owner was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: user.Label}
+		}
+		return e.Owner, nil
+	}
+	return nil, &NotLoadedError{edge: "owner"}
+}
+
+// TimersErr returns the Timers value or an error if the edge
+// was not loaded in eager-loading.
+func (e PlanetEdges) TimersErr() ([]*Timer, error) {
+	if e.loadedTypes[1] {
+		return e.Timers, nil
+	}
+	return nil, &NotLoadedError{edge: "timers"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.

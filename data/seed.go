@@ -26,11 +26,6 @@ func randomPlanetType(r *rand.Rand) planet.PlanetType {
 	}
 }
 
-func getPositionCode(region, system, orbit, suborbit int) int {
-	return suborbit + orbit << 4 + system << 8 + region << 12
-
-}
-
 func randomPlanetName(r *rand.Rand) string {
 	nameGenerator := namegenerator.NewNameGenerator(int64(r.Intn(9)))
 
@@ -49,7 +44,7 @@ func randomPlanetSkin(r *rand.Rand, planetSkins []os.FileInfo) string {
 }
 
 func generateEntity(region, system, orbit, suborbit int, planetType planet.PlanetType, planetSkin, planetName string) {
-	positionCode := getPositionCode(region, system, orbit, suborbit)
+	positionCode := GetPositionCode(region, system, orbit, suborbit)
 
 	log.Println("create planet:", planetName, planetType, positionCode, planetSkin, "(with:", region, system, orbit, suborbit, ")")
 

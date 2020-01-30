@@ -67,14 +67,14 @@ func (tq *TimerQuery) QueryPlanet() *PlanetQuery {
 	return query
 }
 
-// First returns the first Timer entity in the query. Returns *ErrNotFound when no timer was found.
+// First returns the first Timer entity in the query. Returns *NotFoundError when no timer was found.
 func (tq *TimerQuery) First(ctx context.Context) (*Timer, error) {
 	ts, err := tq.Limit(1).All(ctx)
 	if err != nil {
 		return nil, err
 	}
 	if len(ts) == 0 {
-		return nil, &ErrNotFound{timer.Label}
+		return nil, &NotFoundError{timer.Label}
 	}
 	return ts[0], nil
 }
@@ -88,14 +88,14 @@ func (tq *TimerQuery) FirstX(ctx context.Context) *Timer {
 	return t
 }
 
-// FirstID returns the first Timer id in the query. Returns *ErrNotFound when no id was found.
+// FirstID returns the first Timer id in the query. Returns *NotFoundError when no id was found.
 func (tq *TimerQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
 	if ids, err = tq.Limit(1).IDs(ctx); err != nil {
 		return
 	}
 	if len(ids) == 0 {
-		err = &ErrNotFound{timer.Label}
+		err = &NotFoundError{timer.Label}
 		return
 	}
 	return ids[0], nil
@@ -120,9 +120,9 @@ func (tq *TimerQuery) Only(ctx context.Context) (*Timer, error) {
 	case 1:
 		return ts[0], nil
 	case 0:
-		return nil, &ErrNotFound{timer.Label}
+		return nil, &NotFoundError{timer.Label}
 	default:
-		return nil, &ErrNotSingular{timer.Label}
+		return nil, &NotSingularError{timer.Label}
 	}
 }
 
@@ -145,9 +145,9 @@ func (tq *TimerQuery) OnlyID(ctx context.Context) (id int, err error) {
 	case 1:
 		id = ids[0]
 	case 0:
-		err = &ErrNotFound{timer.Label}
+		err = &NotFoundError{timer.Label}
 	default:
-		err = &ErrNotSingular{timer.Label}
+		err = &NotSingularError{timer.Label}
 	}
 	return
 }
@@ -290,9 +290,12 @@ func (tq *TimerQuery) Select(field string, fields ...string) *TimerSelect {
 
 func (tq *TimerQuery) sqlAll(ctx context.Context) ([]*Timer, error) {
 	var (
-		nodes   []*Timer
-		withFKs = tq.withFKs
-		_spec   = tq.querySpec()
+		nodes       = []*Timer{}
+		withFKs     = tq.withFKs
+		_spec       = tq.querySpec()
+		loadedTypes = [1]bool{
+			tq.withPlanet != nil,
+		}
 	)
 	if tq.withPlanet != nil {
 		withFKs = true
@@ -314,12 +317,12 @@ func (tq *TimerQuery) sqlAll(ctx context.Context) ([]*Timer, error) {
 			return fmt.Errorf("ent: Assign called without calling ScanValues")
 		}
 		node := nodes[len(nodes)-1]
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(values...)
 	}
 	if err := sqlgraph.QueryNodes(ctx, tq.driver, _spec); err != nil {
 		return nil, err
 	}
-
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
