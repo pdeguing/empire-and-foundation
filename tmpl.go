@@ -22,6 +22,7 @@ func templateFuncs(r *http.Request) template.FuncMap {
 		"quantity":         tmplQuantity,
 		"duration":         tmplDuration,
 		"byTimerGroup":     tmplByTimerGroup,
+		"hex":              tmplHex,
 	}
 }
 
@@ -91,4 +92,9 @@ func tmplDuration(d time.Duration) template.HTML {
 // is does not exist in the map.
 func tmplByTimerGroup(m map[timer.Group]*data.Timer, g string) *data.Timer {
 	return m[timer.Group(g)]
+}
+
+// tmplHex converts i to a hex number with (minimally) a given number of hexadecimal digits.
+func tmplHex(i interface{}, digits int) string {
+	return fmt.Sprintf("%0*X", digits, i)
 }
