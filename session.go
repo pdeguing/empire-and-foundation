@@ -35,7 +35,7 @@ func initSessionManager(driver string) {
 	case "postgres":
 		store = postgresstore.New(data.DB)
 	default:
-		panic(fmt.Sprintf("driver %q not supported for managing the session. (but possibly with an import)"))
+		panic(fmt.Sprintf("driver %q not supported for managing the session. (but possibly with an import)", driver))
 	}
 	sessionManager = func() *scs.SessionManager {
 		mngr := scs.New()
