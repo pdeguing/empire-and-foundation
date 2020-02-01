@@ -16,19 +16,58 @@ jobs:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
 
-    - name: Get dependencies
-      run: |
-        go get -v -t -d ./...
-
-    - uses: actions/cache@v1
+    - name: Cache Go modules
+      uses: actions/cache@v1
       with:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
           ${{ runner.os }}-go-
 
-#    - name: Build
-#      run: go build -v .
+    - name: Get dependencies
+      run: |
+        go get -v -t -d ./...
 
-    - name: Test
-      run: go test ./...
+    - name: Build
+      run: go build -v .
+
+#    - name: Test
+#      run: go test ./...
+
+    - name: Setup PostgreSQL
+      uses: Harmon758/postgresql-action@v1.0.0
+      with:
+        postgresql db: empire-and-foundation
+        postgresql user: empire-and-foundation
+        postgresql password: secret
+    
+    - name: Wait / Sleep
+      uses: jakejarvis/wait-action@v0.1.0
+      with:
+        time: '10s'
+   
+    - name: Collect Docker Logs
+      uses: jwalton/gh-docker-logs@v1.0.0
+   
+    - name: Check running containers
+      run: docker ps -a
+    
+    - name: Test migrations on PostgreSQL database
+      run: ./empire-and-foundation migrate
+      env:
+        DB_DRIVER: postgres
+        DB_HOST: localhost
+        DB_PORT: 5432
+        DB_DATABASE: empire-and-foundation
+        DB_USERNAME: empire-and-foundation
+        DB_PASSWORD: secret
+
+    - name: Test seeds on PostgreSQL database
+      run: ./empire-and-foundation seed
+      env:
+        DB_DRIVER: postgres
+        DB_HOST: localhost
+        DB_PORT: 5432
+        DB_DATABASE: empire-and-foundation
+        DB_USERNAME: empire-and-foundation
+        DB_PASSWORD: secret
