@@ -9,37 +9,27 @@ import (
 )
 
 type ResourceMixin struct {
-    Type string
+	Type string
 }
 
 func (r ResourceMixin) Fields() []ent.Field {
-    return []ent.Field {
-        field.Int64(r.Type).
-            NonNegative().
-            Default(0),
-        field.Time(r.Type + "_last_update").
-            Default(time.Now),
-        field.Int(r.Type + "_rate").
-            Default(0),
-        field.Int(r.Type + "_prod_level").
-            NonNegative().
-            Default(0),
-        field.Int(r.Type + "_storage_level").
-            NonNegative().
-            Default(0),
-    }
+	return []ent.Field{
+		field.Int64(r.Type).
+			NonNegative().
+			Default(0),
+		field.Int(r.Type + "_prod_level").
+			NonNegative().
+			Default(0),
+		field.Int(r.Type + "_storage_level").
+			NonNegative().
+			Default(0),
+	}
 }
 
 type EnergyMixin struct{}
 
 func (EnergyMixin) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int64("energy_cons").
-			NonNegative().
-			Default(0),
-		field.Int64("energy_prod").
-			NonNegative().
-			Default(0),
 		field.Int("solar_prod_level").
 			NonNegative().
 			Default(0),
@@ -75,15 +65,15 @@ type Planet struct {
 }
 
 func (Planet) Mixin() []ent.Mixin {
-    return []ent.Mixin{
-        TimeMixin{},
-	ResourceMixin{Type: "metal"},
-	ResourceMixin{Type: "hydrogen"},
-	ResourceMixin{Type: "silica"},
-	ResourceMixin{Type: "population"},
-	EnergyMixin{},
-	PositionMixin{},
-    }
+	return []ent.Mixin{
+		TimeMixin{},
+		ResourceMixin{Type: "metal"},
+		ResourceMixin{Type: "hydrogen"},
+		ResourceMixin{Type: "silica"},
+		ResourceMixin{Type: "population"},
+		EnergyMixin{},
+		PositionMixin{},
+	}
 }
 
 // Fields of the Planet.
@@ -95,6 +85,8 @@ func (Planet) Fields() []ent.Field {
 			Values("habitable", "mineral", "gas_giant", "ice_giant").
 			Immutable(),
 		field.String("planet_skin"),
+		field.Time("last_resource_update").
+			Default(time.Now),
 	}
 }
 

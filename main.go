@@ -155,7 +155,7 @@ func main() {
 	}
 }
 
-func routes() http.Handler {
+func routes() *mux.Router {
 	// Public routes
 	r := mux.NewRouter()
 	files := http.FileServer(http.Dir("public"))

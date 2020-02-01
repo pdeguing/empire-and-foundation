@@ -9,6 +9,8 @@ import (
 	"time"
 
 	"github.com/facebookincubator/ent/dialect/sql"
+	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
+	"github.com/facebookincubator/ent/schema/field"
 	"github.com/pdeguing/empire-and-foundation/ent/planet"
 	"github.com/pdeguing/empire-and-foundation/ent/predicate"
 	"github.com/pdeguing/empire-and-foundation/ent/timer"
@@ -22,55 +24,40 @@ type PlanetUpdate struct {
 	updated_at                  *time.Time
 	metal                       *int64
 	addmetal                    *int64
-	metal_last_update           *time.Time
-	metal_rate                  *int
-	addmetal_rate               *int
 	metal_prod_level            *int
 	addmetal_prod_level         *int
 	metal_storage_level         *int
 	addmetal_storage_level      *int
 	hydrogen                    *int64
 	addhydrogen                 *int64
-	hydrogen_last_update        *time.Time
-	hydrogen_rate               *int
-	addhydrogen_rate            *int
 	hydrogen_prod_level         *int
 	addhydrogen_prod_level      *int
 	hydrogen_storage_level      *int
 	addhydrogen_storage_level   *int
 	silica                      *int64
 	addsilica                   *int64
-	silica_last_update          *time.Time
-	silica_rate                 *int
-	addsilica_rate              *int
 	silica_prod_level           *int
 	addsilica_prod_level        *int
 	silica_storage_level        *int
 	addsilica_storage_level     *int
 	population                  *int64
 	addpopulation               *int64
-	population_last_update      *time.Time
-	population_rate             *int
-	addpopulation_rate          *int
 	population_prod_level       *int
 	addpopulation_prod_level    *int
 	population_storage_level    *int
 	addpopulation_storage_level *int
-	energy_cons                 *int64
-	addenergy_cons              *int64
-	energy_prod                 *int64
-	addenergy_prod              *int64
 	solar_prod_level            *int
 	addsolar_prod_level         *int
 
 	name *string
 
-	planet_skin   *string
-	owner         map[int]struct{}
-	timers        map[int]struct{}
-	clearedOwner  bool
-	removedTimers map[int]struct{}
-	predicates    []predicate.Planet
+	planet_skin          *string
+	last_resource_update *time.Time
+	owner                map[int]struct{}
+	timers               map[int]struct{}
+	clearedOwner         bool
+	removedTimers        map[int]struct{}
+	predicates           []predicate.Planet
 }
 
 // Where adds a new predicate for the builder.
@@ -106,45 +93,6 @@ func (pu *PlanetUpdate) AddMetal(i int64) *PlanetUpdate {
 		pu.addmetal = &i
 	} else {
 		*pu.addmetal += i
-	}
-	return pu
-}
-
-// SetMetalLastUpdate sets the metal_last_update field.
-func (pu *PlanetUpdate) SetMetalLastUpdate(t time.Time) *PlanetUpdate {
-	pu.metal_last_update = &t
-	return pu
-}
-
-// SetNillableMetalLastUpdate sets the metal_last_update field if the given value is not nil.
-func (pu *PlanetUpdate) SetNillableMetalLastUpdate(t *time.Time) *PlanetUpdate {
-	if t != nil {
-		pu.SetMetalLastUpdate(*t)
-	}
-	return pu
-}
-
-// SetMetalRate sets the metal_rate field.
-func (pu *PlanetUpdate) SetMetalRate(i int) *PlanetUpdate {
-	pu.metal_rate = &i
-	pu.addmetal_rate = nil
-	return pu
-}
-
-// SetNillableMetalRate sets the metal_rate field if the given value is not nil.
-func (pu *PlanetUpdate) SetNillableMetalRate(i *int) *PlanetUpdate {
-	if i != nil {
-		pu.SetMetalRate(*i)
-	}
-	return pu
-}
-
-// AddMetalRate adds i to metal_rate.
-func (pu *PlanetUpdate) AddMetalRate(i int) *PlanetUpdate {
-	if pu.addmetal_rate == nil {
-		pu.addmetal_rate = &i
-	} else {
-		*pu.addmetal_rate += i
 	}
 	return pu
 }
@@ -224,45 +172,6 @@ func (pu *PlanetUpdate) AddHydrogen(i int64) *PlanetUpdate {
 	return pu
 }
 
-// SetHydrogenLastUpdate sets the hydrogen_last_update field.
-func (pu *PlanetUpdate) SetHydrogenLastUpdate(t time.Time) *PlanetUpdate {
-	pu.hydrogen_last_update = &t
-	return pu
-}
-
-// SetNillableHydrogenLastUpdate sets the hydrogen_last_update field if the given value is not nil.
-func (pu *PlanetUpdate) SetNillableHydrogenLastUpdate(t *time.Time) *PlanetUpdate {
-	if t != nil {
-		pu.SetHydrogenLastUpdate(*t)
-	}
-	return pu
-}
-
-// SetHydrogenRate sets the hydrogen_rate field.
-func (pu *PlanetUpdate) SetHydrogenRate(i int) *PlanetUpdate {
-	pu.hydrogen_rate = &i
-	pu.addhydrogen_rate = nil
-	return pu
-}
-
-// SetNillableHydrogenRate sets the hydrogen_rate field if the given value is not nil.
-func (pu *PlanetUpdate) SetNillableHydrogenRate(i *int) *PlanetUpdate {
-	if i != nil {
-		pu.SetHydrogenRate(*i)
-	}
-	return pu
-}
-
-// AddHydrogenRate adds i to hydrogen_rate.
-func (pu *PlanetUpdate) AddHydrogenRate(i int) *PlanetUpdate {
-	if pu.addhydrogen_rate == nil {
-		pu.addhydrogen_rate = &i
-	} else {
-		*pu.addhydrogen_rate += i
-	}
-	return pu
-}
-
 // SetHydrogenProdLevel sets the hydrogen_prod_level field.
 func (pu *PlanetUpdate) SetHydrogenProdLevel(i int) *PlanetUpdate {
 	pu.hydrogen_prod_level = &i
@@ -334,45 +243,6 @@ func (pu *PlanetUpdate) AddSilica(i int64) *PlanetUpdate {
 		pu.addsilica = &i
 	} else {
 		*pu.addsilica += i
-	}
-	return pu
-}
-
-// SetSilicaLastUpdate sets the silica_last_update field.
-func (pu *PlanetUpdate) SetSilicaLastUpdate(t time.Time) *PlanetUpdate {
-	pu.silica_last_update = &t
-	return pu
-}
-
-// SetNillableSilicaLastUpdate sets the silica_last_update field if the given value is not nil.
-func (pu *PlanetUpdate) SetNillableSilicaLastUpdate(t *time.Time) *PlanetUpdate {
-	if t != nil {
-		pu.SetSilicaLastUpdate(*t)
-	}
-	return pu
-}
-
-// SetSilicaRate sets the silica_rate field.
-func (pu *PlanetUpdate) SetSilicaRate(i int) *PlanetUpdate {
-	pu.silica_rate = &i
-	pu.addsilica_rate = nil
-	return pu
-}
-
-// SetNillableSilicaRate sets the silica_rate field if the given value is not nil.
-func (pu *PlanetUpdate) SetNillableSilicaRate(i *int) *PlanetUpdate {
-	if i != nil {
-		pu.SetSilicaRate(*i)
-	}
-	return pu
-}
-
-// AddSilicaRate adds i to silica_rate.
-func (pu *PlanetUpdate) AddSilicaRate(i int) *PlanetUpdate {
-	if pu.addsilica_rate == nil {
-		pu.addsilica_rate = &i
-	} else {
-		*pu.addsilica_rate += i
 	}
 	return pu
 }
@@ -452,45 +322,6 @@ func (pu *PlanetUpdate) AddPopulation(i int64) *PlanetUpdate {
 	return pu
 }
 
-// SetPopulationLastUpdate sets the population_last_update field.
-func (pu *PlanetUpdate) SetPopulationLastUpdate(t time.Time) *PlanetUpdate {
-	pu.population_last_update = &t
-	return pu
-}
-
-// SetNillablePopulationLastUpdate sets the population_last_update field if the given value is not nil.
-func (pu *PlanetUpdate) SetNillablePopulationLastUpdate(t *time.Time) *PlanetUpdate {
-	if t != nil {
-		pu.SetPopulationLastUpdate(*t)
-	}
-	return pu
-}
-
-// SetPopulationRate sets the population_rate field.
-func (pu *PlanetUpdate) SetPopulationRate(i int) *PlanetUpdate {
-	pu.population_rate = &i
-	pu.addpopulation_rate = nil
-	return pu
-}
-
-// SetNillablePopulationRate sets the population_rate field if the given value is not nil.
-func (pu *PlanetUpdate) SetNillablePopulationRate(i *int) *PlanetUpdate {
-	if i != nil {
-		pu.SetPopulationRate(*i)
-	}
-	return pu
-}
-
-// AddPopulationRate adds i to population_rate.
-func (pu *PlanetUpdate) AddPopulationRate(i int) *PlanetUpdate {
-	if pu.addpopulation_rate == nil {
-		pu.addpopulation_rate = &i
-	} else {
-		*pu.addpopulation_rate += i
-	}
-	return pu
-}
-
 // SetPopulationProdLevel sets the population_prod_level field.
 func (pu *PlanetUpdate) SetPopulationProdLevel(i int) *PlanetUpdate {
 	pu.population_prod_level = &i
@@ -541,56 +372,6 @@ func (pu *PlanetUpdate) AddPopulationStorageLevel(i int) *PlanetUpdate {
 	return pu
 }
 
-// SetEnergyCons sets the energy_cons field.
-func (pu *PlanetUpdate) SetEnergyCons(i int64) *PlanetUpdate {
-	pu.energy_cons = &i
-	pu.addenergy_cons = nil
-	return pu
-}
-
-// SetNillableEnergyCons sets the energy_cons field if the given value is not nil.
-func (pu *PlanetUpdate) SetNillableEnergyCons(i *int64) *PlanetUpdate {
-	if i != nil {
-		pu.SetEnergyCons(*i)
-	}
-	return pu
-}
-
-// AddEnergyCons adds i to energy_cons.
-func (pu *PlanetUpdate) AddEnergyCons(i int64) *PlanetUpdate {
-	if pu.addenergy_cons == nil {
-		pu.addenergy_cons = &i
-	} else {
-		*pu.addenergy_cons += i
-	}
-	return pu
-}
-
-// SetEnergyProd sets the energy_prod field.
-func (pu *PlanetUpdate) SetEnergyProd(i int64) *PlanetUpdate {
-	pu.energy_prod = &i
-	pu.addenergy_prod = nil
-	return pu
-}
-
-// SetNillableEnergyProd sets the energy_prod field if the given value is not nil.
-func (pu *PlanetUpdate) SetNillableEnergyProd(i *int64) *PlanetUpdate {
-	if i != nil {
-		pu.SetEnergyProd(*i)
-	}
-	return pu
-}
-
-// AddEnergyProd adds i to energy_prod.
-func (pu *PlanetUpdate) AddEnergyProd(i int64) *PlanetUpdate {
-	if pu.addenergy_prod == nil {
-		pu.addenergy_prod = &i
-	} else {
-		*pu.addenergy_prod += i
-	}
-	return pu
-}
-
 // SetSolarProdLevel sets the solar_prod_level field.
 func (pu *PlanetUpdate) SetSolarProdLevel(i int) *PlanetUpdate {
 	pu.solar_prod_level = &i
@@ -633,6 +414,20 @@ func (pu *PlanetUpdate) SetNillableName(s *string) *PlanetUpdate {
 // SetPlanetSkin sets the planet_skin field.
 func (pu *PlanetUpdate) SetPlanetSkin(s string) *PlanetUpdate {
 	pu.planet_skin = &s
+	return pu
+}
+
+// SetLastResourceUpdate sets the last_resource_update field.
+func (pu *PlanetUpdate) SetLastResourceUpdate(t time.Time) *PlanetUpdate {
+	pu.last_resource_update = &t
+	return pu
+}
+
+// SetNillableLastResourceUpdate sets the last_resource_update field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableLastResourceUpdate(t *time.Time) *PlanetUpdate {
+	if t != nil {
+		pu.SetLastResourceUpdate(*t)
+	}
 	return pu
 }
 
@@ -770,16 +565,6 @@ func (pu *PlanetUpdate) Save(ctx context.Context) (int, error) {
 			return 0, fmt.Errorf("ent: validator failed for field \"population_storage_level\": %v", err)
 		}
 	}
-	if pu.energy_cons != nil {
-		if err := planet.EnergyConsValidator(*pu.energy_cons); err != nil {
-			return 0, fmt.Errorf("ent: validator failed for field \"energy_cons\": %v", err)
-		}
-	}
-	if pu.energy_prod != nil {
-		if err := planet.EnergyProdValidator(*pu.energy_prod); err != nil {
-			return 0, fmt.Errorf("ent: validator failed for field \"energy_prod\": %v", err)
-		}
-	}
 	if pu.solar_prod_level != nil {
 		if err := planet.SolarProdLevelValidator(*pu.solar_prod_level); err != nil {
 			return 0, fmt.Errorf("ent: validator failed for field \"solar_prod_level\": %v", err)
@@ -814,242 +599,313 @@ func (pu *PlanetUpdate) ExecX(ctx context.Context) {
 }
 
 func (pu *PlanetUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	var (
-		builder  = sql.Dialect(pu.driver.Dialect())
-		selector = builder.Select(planet.FieldID).From(builder.Table(planet.Table))
-	)
-	for _, p := range pu.predicates {
-		p(selector)
+	_spec := &sqlgraph.UpdateSpec{
+		Node: &sqlgraph.NodeSpec{
+			Table:   planet.Table,
+			Columns: planet.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeInt,
+				Column: planet.FieldID,
+			},
+		},
 	}
-	rows := &sql.Rows{}
-	query, args := selector.Query()
-	if err = pu.driver.Query(ctx, query, args, rows); err != nil {
-		return 0, err
-	}
-	defer rows.Close()
-
-	var ids []int
-	for rows.Next() {
-		var id int
-		if err := rows.Scan(&id); err != nil {
-			return 0, fmt.Errorf("ent: failed reading id: %v", err)
+	if ps := pu.predicates; len(ps) > 0 {
+		_spec.Predicate = func(selector *sql.Selector) {
+			for i := range ps {
+				ps[i](selector)
+			}
 		}
-		ids = append(ids, id)
 	}
-	if len(ids) == 0 {
-		return 0, nil
-	}
-
-	tx, err := pu.driver.Tx(ctx)
-	if err != nil {
-		return 0, err
-	}
-	var (
-		res     sql.Result
-		updater = builder.Update(planet.Table)
-	)
-	updater = updater.Where(sql.InInts(planet.FieldID, ids...))
 	if value := pu.updated_at; value != nil {
-		updater.Set(planet.FieldUpdatedAt, *value)
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  *value,
+			Column: planet.FieldUpdatedAt,
+		})
 	}
 	if value := pu.metal; value != nil {
-		updater.Set(planet.FieldMetal, *value)
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  *value,
+			Column: planet.FieldMetal,
+		})
 	}
 	if value := pu.addmetal; value != nil {
-		updater.Add(planet.FieldMetal, *value)
-	}
-	if value := pu.metal_last_update; value != nil {
-		updater.Set(planet.FieldMetalLastUpdate, *value)
-	}
-	if value := pu.metal_rate; value != nil {
-		updater.Set(planet.FieldMetalRate, *value)
-	}
-	if value := pu.addmetal_rate; value != nil {
-		updater.Add(planet.FieldMetalRate, *value)
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  *value,
+			Column: planet.FieldMetal,
+		})
 	}
 	if value := pu.metal_prod_level; value != nil {
-		updater.Set(planet.FieldMetalProdLevel, *value)
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldMetalProdLevel,
+		})
 	}
 	if value := pu.addmetal_prod_level; value != nil {
-		updater.Add(planet.FieldMetalProdLevel, *value)
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldMetalProdLevel,
+		})
 	}
 	if value := pu.metal_storage_level; value != nil {
-		updater.Set(planet.FieldMetalStorageLevel, *value)
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldMetalStorageLevel,
+		})
 	}
 	if value := pu.addmetal_storage_level; value != nil {
-		updater.Add(planet.FieldMetalStorageLevel, *value)
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldMetalStorageLevel,
+		})
 	}
 	if value := pu.hydrogen; value != nil {
-		updater.Set(planet.FieldHydrogen, *value)
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  *value,
+			Column: planet.FieldHydrogen,
+		})
 	}
 	if value := pu.addhydrogen; value != nil {
-		updater.Add(planet.FieldHydrogen, *value)
-	}
-	if value := pu.hydrogen_last_update; value != nil {
-		updater.Set(planet.FieldHydrogenLastUpdate, *value)
-	}
-	if value := pu.hydrogen_rate; value != nil {
-		updater.Set(planet.FieldHydrogenRate, *value)
-	}
-	if value := pu.addhydrogen_rate; value != nil {
-		updater.Add(planet.FieldHydrogenRate, *value)
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  *value,
+			Column: planet.FieldHydrogen,
+		})
 	}
 	if value := pu.hydrogen_prod_level; value != nil {
-		updater.Set(planet.FieldHydrogenProdLevel, *value)
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldHydrogenProdLevel,
+		})
 	}
 	if value := pu.addhydrogen_prod_level; value != nil {
-		updater.Add(planet.FieldHydrogenProdLevel, *value)
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldHydrogenProdLevel,
+		})
 	}
 	if value := pu.hydrogen_storage_level; value != nil {
-		updater.Set(planet.FieldHydrogenStorageLevel, *value)
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldHydrogenStorageLevel,
+		})
 	}
 	if value := pu.addhydrogen_storage_level; value != nil {
-		updater.Add(planet.FieldHydrogenStorageLevel, *value)
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldHydrogenStorageLevel,
+		})
 	}
 	if value := pu.silica; value != nil {
-		updater.Set(planet.FieldSilica, *value)
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  *value,
+			Column: planet.FieldSilica,
+		})
 	}
 	if value := pu.addsilica; value != nil {
-		updater.Add(planet.FieldSilica, *value)
-	}
-	if value := pu.silica_last_update; value != nil {
-		updater.Set(planet.FieldSilicaLastUpdate, *value)
-	}
-	if value := pu.silica_rate; value != nil {
-		updater.Set(planet.FieldSilicaRate, *value)
-	}
-	if value := pu.addsilica_rate; value != nil {
-		updater.Add(planet.FieldSilicaRate, *value)
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  *value,
+			Column: planet.FieldSilica,
+		})
 	}
 	if value := pu.silica_prod_level; value != nil {
-		updater.Set(planet.FieldSilicaProdLevel, *value)
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldSilicaProdLevel,
+		})
 	}
 	if value := pu.addsilica_prod_level; value != nil {
-		updater.Add(planet.FieldSilicaProdLevel, *value)
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldSilicaProdLevel,
+		})
 	}
 	if value := pu.silica_storage_level; value != nil {
-		updater.Set(planet.FieldSilicaStorageLevel, *value)
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldSilicaStorageLevel,
+		})
 	}
 	if value := pu.addsilica_storage_level; value != nil {
-		updater.Add(planet.FieldSilicaStorageLevel, *value)
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldSilicaStorageLevel,
+		})
 	}
 	if value := pu.population; value != nil {
-		updater.Set(planet.FieldPopulation, *value)
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  *value,
+			Column: planet.FieldPopulation,
+		})
 	}
 	if value := pu.addpopulation; value != nil {
-		updater.Add(planet.FieldPopulation, *value)
-	}
-	if value := pu.population_last_update; value != nil {
-		updater.Set(planet.FieldPopulationLastUpdate, *value)
-	}
-	if value := pu.population_rate; value != nil {
-		updater.Set(planet.FieldPopulationRate, *value)
-	}
-	if value := pu.addpopulation_rate; value != nil {
-		updater.Add(planet.FieldPopulationRate, *value)
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  *value,
+			Column: planet.FieldPopulation,
+		})
 	}
 	if value := pu.population_prod_level; value != nil {
-		updater.Set(planet.FieldPopulationProdLevel, *value)
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldPopulationProdLevel,
+		})
 	}
 	if value := pu.addpopulation_prod_level; value != nil {
-		updater.Add(planet.FieldPopulationProdLevel, *value)
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldPopulationProdLevel,
+		})
 	}
 	if value := pu.population_storage_level; value != nil {
-		updater.Set(planet.FieldPopulationStorageLevel, *value)
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldPopulationStorageLevel,
+		})
 	}
 	if value := pu.addpopulation_storage_level; value != nil {
-		updater.Add(planet.FieldPopulationStorageLevel, *value)
-	}
-	if value := pu.energy_cons; value != nil {
-		updater.Set(planet.FieldEnergyCons, *value)
-	}
-	if value := pu.addenergy_cons; value != nil {
-		updater.Add(planet.FieldEnergyCons, *value)
-	}
-	if value := pu.energy_prod; value != nil {
-		updater.Set(planet.FieldEnergyProd, *value)
-	}
-	if value := pu.addenergy_prod; value != nil {
-		updater.Add(planet.FieldEnergyProd, *value)
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldPopulationStorageLevel,
+		})
 	}
 	if value := pu.solar_prod_level; value != nil {
-		updater.Set(planet.FieldSolarProdLevel, *value)
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldSolarProdLevel,
+		})
 	}
 	if value := pu.addsolar_prod_level; value != nil {
-		updater.Add(planet.FieldSolarProdLevel, *value)
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldSolarProdLevel,
+		})
 	}
 	if value := pu.name; value != nil {
-		updater.Set(planet.FieldName, *value)
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  *value,
+			Column: planet.FieldName,
+		})
 	}
 	if value := pu.planet_skin; value != nil {
-		updater.Set(planet.FieldPlanetSkin, *value)
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  *value,
+			Column: planet.FieldPlanetSkin,
+		})
 	}
-	if !updater.Empty() {
-		query, args := updater.Query()
-		if err := tx.Exec(ctx, query, args, &res); err != nil {
-			return 0, rollback(tx, err)
-		}
+	if value := pu.last_resource_update; value != nil {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  *value,
+			Column: planet.FieldLastResourceUpdate,
+		})
 	}
 	if pu.clearedOwner {
-		query, args := builder.Update(planet.OwnerTable).
-			SetNull(planet.OwnerColumn).
-			Where(sql.InInts(user.FieldID, ids...)).
-			Query()
-		if err := tx.Exec(ctx, query, args, &res); err != nil {
-			return 0, rollback(tx, err)
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   planet.OwnerTable,
+			Columns: []string{planet.OwnerColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: user.FieldID,
+				},
+			},
 		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if len(pu.owner) > 0 {
-		for eid := range pu.owner {
-			query, args := builder.Update(planet.OwnerTable).
-				Set(planet.OwnerColumn, eid).
-				Where(sql.InInts(planet.FieldID, ids...)).
-				Query()
-			if err := tx.Exec(ctx, query, args, &res); err != nil {
-				return 0, rollback(tx, err)
-			}
+	if nodes := pu.owner; len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   planet.OwnerTable,
+			Columns: []string{planet.OwnerColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: user.FieldID,
+				},
+			},
 		}
+		for k, _ := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if len(pu.removedTimers) > 0 {
-		eids := make([]int, len(pu.removedTimers))
-		for eid := range pu.removedTimers {
-			eids = append(eids, eid)
+	if nodes := pu.removedTimers; len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   planet.TimersTable,
+			Columns: []string{planet.TimersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: timer.FieldID,
+				},
+			},
 		}
-		query, args := builder.Update(planet.TimersTable).
-			SetNull(planet.TimersColumn).
-			Where(sql.InInts(planet.TimersColumn, ids...)).
-			Where(sql.InInts(timer.FieldID, eids...)).
-			Query()
-		if err := tx.Exec(ctx, query, args, &res); err != nil {
-			return 0, rollback(tx, err)
+		for k, _ := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if len(pu.timers) > 0 {
-		for _, id := range ids {
-			p := sql.P()
-			for eid := range pu.timers {
-				p.Or().EQ(timer.FieldID, eid)
-			}
-			query, args := builder.Update(planet.TimersTable).
-				Set(planet.TimersColumn, id).
-				Where(sql.And(p, sql.IsNull(planet.TimersColumn))).
-				Query()
-			if err := tx.Exec(ctx, query, args, &res); err != nil {
-				return 0, rollback(tx, err)
-			}
-			affected, err := res.RowsAffected()
-			if err != nil {
-				return 0, rollback(tx, err)
-			}
-			if int(affected) < len(pu.timers) {
-				return 0, rollback(tx, &ConstraintError{msg: fmt.Sprintf("one of \"timers\" %v already connected to a different \"Planet\"", keys(pu.timers))})
-			}
+	if nodes := pu.timers; len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   planet.TimersTable,
+			Columns: []string{planet.TimersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: timer.FieldID,
+				},
+			},
 		}
+		for k, _ := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if err = tx.Commit(); err != nil {
+	if n, err = sqlgraph.UpdateNodes(ctx, pu.driver, _spec); err != nil {
+		if cerr, ok := isSQLConstraintError(err); ok {
+			err = cerr
+		}
 		return 0, err
 	}
-	return len(ids), nil
+	return n, nil
 }
 
 // PlanetUpdateOne is the builder for updating a single Planet entity.
@@ -1060,54 +916,39 @@ type PlanetUpdateOne struct {
 	updated_at                  *time.Time
 	metal                       *int64
 	addmetal                    *int64
-	metal_last_update           *time.Time
-	metal_rate                  *int
-	addmetal_rate               *int
 	metal_prod_level            *int
 	addmetal_prod_level         *int
 	metal_storage_level         *int
 	addmetal_storage_level      *int
 	hydrogen                    *int64
 	addhydrogen                 *int64
-	hydrogen_last_update        *time.Time
-	hydrogen_rate               *int
-	addhydrogen_rate            *int
 	hydrogen_prod_level         *int
 	addhydrogen_prod_level      *int
 	hydrogen_storage_level      *int
 	addhydrogen_storage_level   *int
 	silica                      *int64
 	addsilica                   *int64
-	silica_last_update          *time.Time
-	silica_rate                 *int
-	addsilica_rate              *int
 	silica_prod_level           *int
 	addsilica_prod_level        *int
 	silica_storage_level        *int
 	addsilica_storage_level     *int
 	population                  *int64
 	addpopulation               *int64
-	population_last_update      *time.Time
-	population_rate             *int
-	addpopulation_rate          *int
 	population_prod_level       *int
 	addpopulation_prod_level    *int
 	population_storage_level    *int
 	addpopulation_storage_level *int
-	energy_cons                 *int64
-	addenergy_cons              *int64
-	energy_prod                 *int64
-	addenergy_prod              *int64
 	solar_prod_level            *int
 	addsolar_prod_level         *int
 
 	name *string
 
-	planet_skin   *string
-	owner         map[int]struct{}
-	timers        map[int]struct{}
-	clearedOwner  bool
-	removedTimers map[int]struct{}
+	planet_skin          *string
+	last_resource_update *time.Time
+	owner                map[int]struct{}
+	timers               map[int]struct{}
+	clearedOwner         bool
+	removedTimers        map[int]struct{}
 }
 
 // SetUpdatedAt sets the updated_at field.
@@ -1137,45 +978,6 @@ func (puo *PlanetUpdateOne) AddMetal(i int64) *PlanetUpdateOne {
 		puo.addmetal = &i
 	} else {
 		*puo.addmetal += i
-	}
-	return puo
-}
-
-// SetMetalLastUpdate sets the metal_last_update field.
-func (puo *PlanetUpdateOne) SetMetalLastUpdate(t time.Time) *PlanetUpdateOne {
-	puo.metal_last_update = &t
-	return puo
-}
-
-// SetNillableMetalLastUpdate sets the metal_last_update field if the given value is not nil.
-func (puo *PlanetUpdateOne) SetNillableMetalLastUpdate(t *time.Time) *PlanetUpdateOne {
-	if t != nil {
-		puo.SetMetalLastUpdate(*t)
-	}
-	return puo
-}
-
-// SetMetalRate sets the metal_rate field.
-func (puo *PlanetUpdateOne) SetMetalRate(i int) *PlanetUpdateOne {
-	puo.metal_rate = &i
-	puo.addmetal_rate = nil
-	return puo
-}
-
-// SetNillableMetalRate sets the metal_rate field if the given value is not nil.
-func (puo *PlanetUpdateOne) SetNillableMetalRate(i *int) *PlanetUpdateOne {
-	if i != nil {
-		puo.SetMetalRate(*i)
-	}
-	return puo
-}
-
-// AddMetalRate adds i to metal_rate.
-func (puo *PlanetUpdateOne) AddMetalRate(i int) *PlanetUpdateOne {
-	if puo.addmetal_rate == nil {
-		puo.addmetal_rate = &i
-	} else {
-		*puo.addmetal_rate += i
 	}
 	return puo
 }
@@ -1255,45 +1057,6 @@ func (puo *PlanetUpdateOne) AddHydrogen(i int64) *PlanetUpdateOne {
 	return puo
 }
 
-// SetHydrogenLastUpdate sets the hydrogen_last_update field.
-func (puo *PlanetUpdateOne) SetHydrogenLastUpdate(t time.Time) *PlanetUpdateOne {
-	puo.hydrogen_last_update = &t
-	return puo
-}
-
-// SetNillableHydrogenLastUpdate sets the hydrogen_last_update field if the given value is not nil.
-func (puo *PlanetUpdateOne) SetNillableHydrogenLastUpdate(t *time.Time) *PlanetUpdateOne {
-	if t != nil {
-		puo.SetHydrogenLastUpdate(*t)
-	}
-	return puo
-}
-
-// SetHydrogenRate sets the hydrogen_rate field.
-func (puo *PlanetUpdateOne) SetHydrogenRate(i int) *PlanetUpdateOne {
-	puo.hydrogen_rate = &i
-	puo.addhydrogen_rate = nil
-	return puo
-}
-
-// SetNillableHydrogenRate sets the hydrogen_rate field if the given value is not nil.
-func (puo *PlanetUpdateOne) SetNillableHydrogenRate(i *int) *PlanetUpdateOne {
-	if i != nil {
-		puo.SetHydrogenRate(*i)
-	}
-	return puo
-}
-
-// AddHydrogenRate adds i to hydrogen_rate.
-func (puo *PlanetUpdateOne) AddHydrogenRate(i int) *PlanetUpdateOne {
-	if puo.addhydrogen_rate == nil {
-		puo.addhydrogen_rate = &i
-	} else {
-		*puo.addhydrogen_rate += i
-	}
-	return puo
-}
-
 // SetHydrogenProdLevel sets the hydrogen_prod_level field.
 func (puo *PlanetUpdateOne) SetHydrogenProdLevel(i int) *PlanetUpdateOne {
 	puo.hydrogen_prod_level = &i
@@ -1365,45 +1128,6 @@ func (puo *PlanetUpdateOne) AddSilica(i int64) *PlanetUpdateOne {
 		puo.addsilica = &i
 	} else {
 		*puo.addsilica += i
-	}
-	return puo
-}
-
-// SetSilicaLastUpdate sets the silica_last_update field.
-func (puo *PlanetUpdateOne) SetSilicaLastUpdate(t time.Time) *PlanetUpdateOne {
-	puo.silica_last_update = &t
-	return puo
-}
-
-// SetNillableSilicaLastUpdate sets the silica_last_update field if the given value is not nil.
-func (puo *PlanetUpdateOne) SetNillableSilicaLastUpdate(t *time.Time) *PlanetUpdateOne {
-	if t != nil {
-		puo.SetSilicaLastUpdate(*t)
-	}
-	return puo
-}
-
-// SetSilicaRate sets the silica_rate field.
-func (puo *PlanetUpdateOne) SetSilicaRate(i int) *PlanetUpdateOne {
-	puo.silica_rate = &i
-	puo.addsilica_rate = nil
-	return puo
-}
-
-// SetNillableSilicaRate sets the silica_rate field if the given value is not nil.
-func (puo *PlanetUpdateOne) SetNillableSilicaRate(i *int) *PlanetUpdateOne {
-	if i != nil {
-		puo.SetSilicaRate(*i)
-	}
-	return puo
-}
-
-// AddSilicaRate adds i to silica_rate.
-func (puo *PlanetUpdateOne) AddSilicaRate(i int) *PlanetUpdateOne {
-	if puo.addsilica_rate == nil {
-		puo.addsilica_rate = &i
-	} else {
-		*puo.addsilica_rate += i
 	}
 	return puo
 }
@@ -1483,45 +1207,6 @@ func (puo *PlanetUpdateOne) AddPopulation(i int64) *PlanetUpdateOne {
 	return puo
 }
 
-// SetPopulationLastUpdate sets the population_last_update field.
-func (puo *PlanetUpdateOne) SetPopulationLastUpdate(t time.Time) *PlanetUpdateOne {
-	puo.population_last_update = &t
-	return puo
-}
-
-// SetNillablePopulationLastUpdate sets the population_last_update field if the given value is not nil.
-func (puo *PlanetUpdateOne) SetNillablePopulationLastUpdate(t *time.Time) *PlanetUpdateOne {
-	if t != nil {
-		puo.SetPopulationLastUpdate(*t)
-	}
-	return puo
-}
-
-// SetPopulationRate sets the population_rate field.
-func (puo *PlanetUpdateOne) SetPopulationRate(i int) *PlanetUpdateOne {
-	puo.population_rate = &i
-	puo.addpopulation_rate = nil
-	return puo
-}
-
-// SetNillablePopulationRate sets the population_rate field if the given value is not nil.
-func (puo *PlanetUpdateOne) SetNillablePopulationRate(i *int) *PlanetUpdateOne {
-	if i != nil {
-		puo.SetPopulationRate(*i)
-	}
-	return puo
-}
-
-// AddPopulationRate adds i to population_rate.
-func (puo *PlanetUpdateOne) AddPopulationRate(i int) *PlanetUpdateOne {
-	if puo.addpopulation_rate == nil {
-		puo.addpopulation_rate = &i
-	} else {
-		*puo.addpopulation_rate += i
-	}
-	return puo
-}
-
 // SetPopulationProdLevel sets the population_prod_level field.
 func (puo *PlanetUpdateOne) SetPopulationProdLevel(i int) *PlanetUpdateOne {
 	puo.population_prod_level = &i
@@ -1572,56 +1257,6 @@ func (puo *PlanetUpdateOne) AddPopulationStorageLevel(i int) *PlanetUpdateOne {
 	return puo
 }
 
-// SetEnergyCons sets the energy_cons field.
-func (puo *PlanetUpdateOne) SetEnergyCons(i int64) *PlanetUpdateOne {
-	puo.energy_cons = &i
-	puo.addenergy_cons = nil
-	return puo
-}
-
-// SetNillableEnergyCons sets the energy_cons field if the given value is not nil.
-func (puo *PlanetUpdateOne) SetNillableEnergyCons(i *int64) *PlanetUpdateOne {
-	if i != nil {
-		puo.SetEnergyCons(*i)
-	}
-	return puo
-}
-
-// AddEnergyCons adds i to energy_cons.
-func (puo *PlanetUpdateOne) AddEnergyCons(i int64) *PlanetUpdateOne {
-	if puo.addenergy_cons == nil {
-		puo.addenergy_cons = &i
-	} else {
-		*puo.addenergy_cons += i
-	}
-	return puo
-}
-
-// SetEnergyProd sets the energy_prod field.
-func (puo *PlanetUpdateOne) SetEnergyProd(i int64) *PlanetUpdateOne {
-	puo.energy_prod = &i
-	puo.addenergy_prod = nil
-	return puo
-}
-
-// SetNillableEnergyProd sets the energy_prod field if the given value is not nil.
-func (puo *PlanetUpdateOne) SetNillableEnergyProd(i *int64) *PlanetUpdateOne {
-	if i != nil {
-		puo.SetEnergyProd(*i)
-	}
-	return puo
-}
-
-// AddEnergyProd adds i to energy_prod.
-func (puo *PlanetUpdateOne) AddEnergyProd(i int64) *PlanetUpdateOne {
-	if puo.addenergy_prod == nil {
-		puo.addenergy_prod = &i
-	} else {
-		*puo.addenergy_prod += i
-	}
-	return puo
-}
-
 // SetSolarProdLevel sets the solar_prod_level field.
 func (puo *PlanetUpdateOne) SetSolarProdLevel(i int) *PlanetUpdateOne {
 	puo.solar_prod_level = &i
@@ -1664,6 +1299,20 @@ func (puo *PlanetUpdateOne) SetNillableName(s *string) *PlanetUpdateOne {
 // SetPlanetSkin sets the planet_skin field.
 func (puo *PlanetUpdateOne) SetPlanetSkin(s string) *PlanetUpdateOne {
 	puo.planet_skin = &s
+	return puo
+}
+
+// SetLastResourceUpdate sets the last_resource_update field.
+func (puo *PlanetUpdateOne) SetLastResourceUpdate(t time.Time) *PlanetUpdateOne {
+	puo.last_resource_update = &t
+	return puo
+}
+
+// SetNillableLastResourceUpdate sets the last_resource_update field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableLastResourceUpdate(t *time.Time) *PlanetUpdateOne {
+	if t != nil {
+		puo.SetLastResourceUpdate(*t)
+	}
 	return puo
 }
 
@@ -1801,16 +1450,6 @@ func (puo *PlanetUpdateOne) Save(ctx context.Context) (*Planet, error) {
 			return nil, fmt.Errorf("ent: validator failed for field \"population_storage_level\": %v", err)
 		}
 	}
-	if puo.energy_cons != nil {
-		if err := planet.EnergyConsValidator(*puo.energy_cons); err != nil {
-			return nil, fmt.Errorf("ent: validator failed for field \"energy_cons\": %v", err)
-		}
-	}
-	if puo.energy_prod != nil {
-		if err := planet.EnergyProdValidator(*puo.energy_prod); err != nil {
-			return nil, fmt.Errorf("ent: validator failed for field \"energy_prod\": %v", err)
-		}
-	}
 	if puo.solar_prod_level != nil {
 		if err := planet.SolarProdLevelValidator(*puo.solar_prod_level); err != nil {
 			return nil, fmt.Errorf("ent: validator failed for field \"solar_prod_level\": %v", err)
@@ -1845,287 +1484,307 @@ func (puo *PlanetUpdateOne) ExecX(ctx context.Context) {
 }
 
 func (puo *PlanetUpdateOne) sqlSave(ctx context.Context) (pl *Planet, err error) {
-	var (
-		builder  = sql.Dialect(puo.driver.Dialect())
-		selector = builder.Select(planet.Columns...).From(builder.Table(planet.Table))
-	)
-	planet.ID(puo.id)(selector)
-	rows := &sql.Rows{}
-	query, args := selector.Query()
-	if err = puo.driver.Query(ctx, query, args, rows); err != nil {
-		return nil, err
+	_spec := &sqlgraph.UpdateSpec{
+		Node: &sqlgraph.NodeSpec{
+			Table:   planet.Table,
+			Columns: planet.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Value:  puo.id,
+				Type:   field.TypeInt,
+				Column: planet.FieldID,
+			},
+		},
 	}
-	defer rows.Close()
-
-	var ids []int
-	for rows.Next() {
-		var id int
-		pl = &Planet{config: puo.config}
-		if err := pl.FromRows(rows); err != nil {
-			return nil, fmt.Errorf("ent: failed scanning row into Planet: %v", err)
-		}
-		id = pl.ID
-		ids = append(ids, id)
-	}
-	switch n := len(ids); {
-	case n == 0:
-		return nil, &ErrNotFound{fmt.Sprintf("Planet with id: %v", puo.id)}
-	case n > 1:
-		return nil, fmt.Errorf("ent: more than one Planet with the same id: %v", puo.id)
-	}
-
-	tx, err := puo.driver.Tx(ctx)
-	if err != nil {
-		return nil, err
-	}
-	var (
-		res     sql.Result
-		updater = builder.Update(planet.Table)
-	)
-	updater = updater.Where(sql.InInts(planet.FieldID, ids...))
 	if value := puo.updated_at; value != nil {
-		updater.Set(planet.FieldUpdatedAt, *value)
-		pl.UpdatedAt = *value
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  *value,
+			Column: planet.FieldUpdatedAt,
+		})
 	}
 	if value := puo.metal; value != nil {
-		updater.Set(planet.FieldMetal, *value)
-		pl.Metal = *value
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  *value,
+			Column: planet.FieldMetal,
+		})
 	}
 	if value := puo.addmetal; value != nil {
-		updater.Add(planet.FieldMetal, *value)
-		pl.Metal += *value
-	}
-	if value := puo.metal_last_update; value != nil {
-		updater.Set(planet.FieldMetalLastUpdate, *value)
-		pl.MetalLastUpdate = *value
-	}
-	if value := puo.metal_rate; value != nil {
-		updater.Set(planet.FieldMetalRate, *value)
-		pl.MetalRate = *value
-	}
-	if value := puo.addmetal_rate; value != nil {
-		updater.Add(planet.FieldMetalRate, *value)
-		pl.MetalRate += *value
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  *value,
+			Column: planet.FieldMetal,
+		})
 	}
 	if value := puo.metal_prod_level; value != nil {
-		updater.Set(planet.FieldMetalProdLevel, *value)
-		pl.MetalProdLevel = *value
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldMetalProdLevel,
+		})
 	}
 	if value := puo.addmetal_prod_level; value != nil {
-		updater.Add(planet.FieldMetalProdLevel, *value)
-		pl.MetalProdLevel += *value
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldMetalProdLevel,
+		})
 	}
 	if value := puo.metal_storage_level; value != nil {
-		updater.Set(planet.FieldMetalStorageLevel, *value)
-		pl.MetalStorageLevel = *value
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldMetalStorageLevel,
+		})
 	}
 	if value := puo.addmetal_storage_level; value != nil {
-		updater.Add(planet.FieldMetalStorageLevel, *value)
-		pl.MetalStorageLevel += *value
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldMetalStorageLevel,
+		})
 	}
 	if value := puo.hydrogen; value != nil {
-		updater.Set(planet.FieldHydrogen, *value)
-		pl.Hydrogen = *value
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  *value,
+			Column: planet.FieldHydrogen,
+		})
 	}
 	if value := puo.addhydrogen; value != nil {
-		updater.Add(planet.FieldHydrogen, *value)
-		pl.Hydrogen += *value
-	}
-	if value := puo.hydrogen_last_update; value != nil {
-		updater.Set(planet.FieldHydrogenLastUpdate, *value)
-		pl.HydrogenLastUpdate = *value
-	}
-	if value := puo.hydrogen_rate; value != nil {
-		updater.Set(planet.FieldHydrogenRate, *value)
-		pl.HydrogenRate = *value
-	}
-	if value := puo.addhydrogen_rate; value != nil {
-		updater.Add(planet.FieldHydrogenRate, *value)
-		pl.HydrogenRate += *value
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  *value,
+			Column: planet.FieldHydrogen,
+		})
 	}
 	if value := puo.hydrogen_prod_level; value != nil {
-		updater.Set(planet.FieldHydrogenProdLevel, *value)
-		pl.HydrogenProdLevel = *value
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldHydrogenProdLevel,
+		})
 	}
 	if value := puo.addhydrogen_prod_level; value != nil {
-		updater.Add(planet.FieldHydrogenProdLevel, *value)
-		pl.HydrogenProdLevel += *value
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldHydrogenProdLevel,
+		})
 	}
 	if value := puo.hydrogen_storage_level; value != nil {
-		updater.Set(planet.FieldHydrogenStorageLevel, *value)
-		pl.HydrogenStorageLevel = *value
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldHydrogenStorageLevel,
+		})
 	}
 	if value := puo.addhydrogen_storage_level; value != nil {
-		updater.Add(planet.FieldHydrogenStorageLevel, *value)
-		pl.HydrogenStorageLevel += *value
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldHydrogenStorageLevel,
+		})
 	}
 	if value := puo.silica; value != nil {
-		updater.Set(planet.FieldSilica, *value)
-		pl.Silica = *value
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  *value,
+			Column: planet.FieldSilica,
+		})
 	}
 	if value := puo.addsilica; value != nil {
-		updater.Add(planet.FieldSilica, *value)
-		pl.Silica += *value
-	}
-	if value := puo.silica_last_update; value != nil {
-		updater.Set(planet.FieldSilicaLastUpdate, *value)
-		pl.SilicaLastUpdate = *value
-	}
-	if value := puo.silica_rate; value != nil {
-		updater.Set(planet.FieldSilicaRate, *value)
-		pl.SilicaRate = *value
-	}
-	if value := puo.addsilica_rate; value != nil {
-		updater.Add(planet.FieldSilicaRate, *value)
-		pl.SilicaRate += *value
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  *value,
+			Column: planet.FieldSilica,
+		})
 	}
 	if value := puo.silica_prod_level; value != nil {
-		updater.Set(planet.FieldSilicaProdLevel, *value)
-		pl.SilicaProdLevel = *value
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldSilicaProdLevel,
+		})
 	}
 	if value := puo.addsilica_prod_level; value != nil {
-		updater.Add(planet.FieldSilicaProdLevel, *value)
-		pl.SilicaProdLevel += *value
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldSilicaProdLevel,
+		})
 	}
 	if value := puo.silica_storage_level; value != nil {
-		updater.Set(planet.FieldSilicaStorageLevel, *value)
-		pl.SilicaStorageLevel = *value
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldSilicaStorageLevel,
+		})
 	}
 	if value := puo.addsilica_storage_level; value != nil {
-		updater.Add(planet.FieldSilicaStorageLevel, *value)
-		pl.SilicaStorageLevel += *value
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldSilicaStorageLevel,
+		})
 	}
 	if value := puo.population; value != nil {
-		updater.Set(planet.FieldPopulation, *value)
-		pl.Population = *value
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  *value,
+			Column: planet.FieldPopulation,
+		})
 	}
 	if value := puo.addpopulation; value != nil {
-		updater.Add(planet.FieldPopulation, *value)
-		pl.Population += *value
-	}
-	if value := puo.population_last_update; value != nil {
-		updater.Set(planet.FieldPopulationLastUpdate, *value)
-		pl.PopulationLastUpdate = *value
-	}
-	if value := puo.population_rate; value != nil {
-		updater.Set(planet.FieldPopulationRate, *value)
-		pl.PopulationRate = *value
-	}
-	if value := puo.addpopulation_rate; value != nil {
-		updater.Add(planet.FieldPopulationRate, *value)
-		pl.PopulationRate += *value
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  *value,
+			Column: planet.FieldPopulation,
+		})
 	}
 	if value := puo.population_prod_level; value != nil {
-		updater.Set(planet.FieldPopulationProdLevel, *value)
-		pl.PopulationProdLevel = *value
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldPopulationProdLevel,
+		})
 	}
 	if value := puo.addpopulation_prod_level; value != nil {
-		updater.Add(planet.FieldPopulationProdLevel, *value)
-		pl.PopulationProdLevel += *value
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldPopulationProdLevel,
+		})
 	}
 	if value := puo.population_storage_level; value != nil {
-		updater.Set(planet.FieldPopulationStorageLevel, *value)
-		pl.PopulationStorageLevel = *value
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldPopulationStorageLevel,
+		})
 	}
 	if value := puo.addpopulation_storage_level; value != nil {
-		updater.Add(planet.FieldPopulationStorageLevel, *value)
-		pl.PopulationStorageLevel += *value
-	}
-	if value := puo.energy_cons; value != nil {
-		updater.Set(planet.FieldEnergyCons, *value)
-		pl.EnergyCons = *value
-	}
-	if value := puo.addenergy_cons; value != nil {
-		updater.Add(planet.FieldEnergyCons, *value)
-		pl.EnergyCons += *value
-	}
-	if value := puo.energy_prod; value != nil {
-		updater.Set(planet.FieldEnergyProd, *value)
-		pl.EnergyProd = *value
-	}
-	if value := puo.addenergy_prod; value != nil {
-		updater.Add(planet.FieldEnergyProd, *value)
-		pl.EnergyProd += *value
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldPopulationStorageLevel,
+		})
 	}
 	if value := puo.solar_prod_level; value != nil {
-		updater.Set(planet.FieldSolarProdLevel, *value)
-		pl.SolarProdLevel = *value
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldSolarProdLevel,
+		})
 	}
 	if value := puo.addsolar_prod_level; value != nil {
-		updater.Add(planet.FieldSolarProdLevel, *value)
-		pl.SolarProdLevel += *value
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  *value,
+			Column: planet.FieldSolarProdLevel,
+		})
 	}
 	if value := puo.name; value != nil {
-		updater.Set(planet.FieldName, *value)
-		pl.Name = *value
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  *value,
+			Column: planet.FieldName,
+		})
 	}
 	if value := puo.planet_skin; value != nil {
-		updater.Set(planet.FieldPlanetSkin, *value)
-		pl.PlanetSkin = *value
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  *value,
+			Column: planet.FieldPlanetSkin,
+		})
 	}
-	if !updater.Empty() {
-		query, args := updater.Query()
-		if err := tx.Exec(ctx, query, args, &res); err != nil {
-			return nil, rollback(tx, err)
-		}
+	if value := puo.last_resource_update; value != nil {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  *value,
+			Column: planet.FieldLastResourceUpdate,
+		})
 	}
 	if puo.clearedOwner {
-		query, args := builder.Update(planet.OwnerTable).
-			SetNull(planet.OwnerColumn).
-			Where(sql.InInts(user.FieldID, ids...)).
-			Query()
-		if err := tx.Exec(ctx, query, args, &res); err != nil {
-			return nil, rollback(tx, err)
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   planet.OwnerTable,
+			Columns: []string{planet.OwnerColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: user.FieldID,
+				},
+			},
 		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if len(puo.owner) > 0 {
-		for eid := range puo.owner {
-			query, args := builder.Update(planet.OwnerTable).
-				Set(planet.OwnerColumn, eid).
-				Where(sql.InInts(planet.FieldID, ids...)).
-				Query()
-			if err := tx.Exec(ctx, query, args, &res); err != nil {
-				return nil, rollback(tx, err)
-			}
+	if nodes := puo.owner; len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   planet.OwnerTable,
+			Columns: []string{planet.OwnerColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: user.FieldID,
+				},
+			},
 		}
+		for k, _ := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if len(puo.removedTimers) > 0 {
-		eids := make([]int, len(puo.removedTimers))
-		for eid := range puo.removedTimers {
-			eids = append(eids, eid)
+	if nodes := puo.removedTimers; len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   planet.TimersTable,
+			Columns: []string{planet.TimersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: timer.FieldID,
+				},
+			},
 		}
-		query, args := builder.Update(planet.TimersTable).
-			SetNull(planet.TimersColumn).
-			Where(sql.InInts(planet.TimersColumn, ids...)).
-			Where(sql.InInts(timer.FieldID, eids...)).
-			Query()
-		if err := tx.Exec(ctx, query, args, &res); err != nil {
-			return nil, rollback(tx, err)
+		for k, _ := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if len(puo.timers) > 0 {
-		for _, id := range ids {
-			p := sql.P()
-			for eid := range puo.timers {
-				p.Or().EQ(timer.FieldID, eid)
-			}
-			query, args := builder.Update(planet.TimersTable).
-				Set(planet.TimersColumn, id).
-				Where(sql.And(p, sql.IsNull(planet.TimersColumn))).
-				Query()
-			if err := tx.Exec(ctx, query, args, &res); err != nil {
-				return nil, rollback(tx, err)
-			}
-			affected, err := res.RowsAffected()
-			if err != nil {
-				return nil, rollback(tx, err)
-			}
-			if int(affected) < len(puo.timers) {
-				return nil, rollback(tx, &ConstraintError{msg: fmt.Sprintf("one of \"timers\" %v already connected to a different \"Planet\"", keys(puo.timers))})
-			}
+	if nodes := puo.timers; len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   planet.TimersTable,
+			Columns: []string{planet.TimersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: timer.FieldID,
+				},
+			},
 		}
+		for k, _ := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if err = tx.Commit(); err != nil {
+	pl = &Planet{config: puo.config}
+	_spec.Assign = pl.assignValues
+	_spec.ScanValues = pl.scanValues()
+	if err = sqlgraph.UpdateNode(ctx, puo.driver, _spec); err != nil {
+		if cerr, ok := isSQLConstraintError(err); ok {
+			err = cerr
+		}
 		return nil, err
 	}
 	return pl, nil

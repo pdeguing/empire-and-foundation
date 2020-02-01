@@ -16,27 +16,17 @@ var (
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "metal", Type: field.TypeInt64, Default: planet.DefaultMetal},
-		{Name: "metal_last_update", Type: field.TypeTime},
-		{Name: "metal_rate", Type: field.TypeInt, Default: planet.DefaultMetalRate},
 		{Name: "metal_prod_level", Type: field.TypeInt, Default: planet.DefaultMetalProdLevel},
 		{Name: "metal_storage_level", Type: field.TypeInt, Default: planet.DefaultMetalStorageLevel},
 		{Name: "hydrogen", Type: field.TypeInt64, Default: planet.DefaultHydrogen},
-		{Name: "hydrogen_last_update", Type: field.TypeTime},
-		{Name: "hydrogen_rate", Type: field.TypeInt, Default: planet.DefaultHydrogenRate},
 		{Name: "hydrogen_prod_level", Type: field.TypeInt, Default: planet.DefaultHydrogenProdLevel},
 		{Name: "hydrogen_storage_level", Type: field.TypeInt, Default: planet.DefaultHydrogenStorageLevel},
 		{Name: "silica", Type: field.TypeInt64, Default: planet.DefaultSilica},
-		{Name: "silica_last_update", Type: field.TypeTime},
-		{Name: "silica_rate", Type: field.TypeInt, Default: planet.DefaultSilicaRate},
 		{Name: "silica_prod_level", Type: field.TypeInt, Default: planet.DefaultSilicaProdLevel},
 		{Name: "silica_storage_level", Type: field.TypeInt, Default: planet.DefaultSilicaStorageLevel},
 		{Name: "population", Type: field.TypeInt64, Default: planet.DefaultPopulation},
-		{Name: "population_last_update", Type: field.TypeTime},
-		{Name: "population_rate", Type: field.TypeInt, Default: planet.DefaultPopulationRate},
 		{Name: "population_prod_level", Type: field.TypeInt, Default: planet.DefaultPopulationProdLevel},
 		{Name: "population_storage_level", Type: field.TypeInt, Default: planet.DefaultPopulationStorageLevel},
-		{Name: "energy_cons", Type: field.TypeInt64, Default: planet.DefaultEnergyCons},
-		{Name: "energy_prod", Type: field.TypeInt64, Default: planet.DefaultEnergyProd},
 		{Name: "solar_prod_level", Type: field.TypeInt, Default: planet.DefaultSolarProdLevel},
 		{Name: "region_code", Type: field.TypeInt},
 		{Name: "system_code", Type: field.TypeInt},
@@ -46,6 +36,7 @@ var (
 		{Name: "name", Type: field.TypeString, Default: planet.DefaultName},
 		{Name: "planet_type", Type: field.TypeEnum, Enums: []string{"habitable", "mineral", "gas_giant", "ice_giant"}},
 		{Name: "planet_skin", Type: field.TypeString},
+		{Name: "last_resource_update", Type: field.TypeTime},
 		{Name: "owner_id", Type: field.TypeInt, Nullable: true},
 	}
 	// PlanetsTable holds the schema information for the "planets" table.
@@ -56,7 +47,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:  "planets_users_planets",
-				Columns: []*schema.Column{PlanetsColumns[34]},
+				Columns: []*schema.Column{PlanetsColumns[25]},
 
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,
@@ -80,7 +71,7 @@ var (
 	// TimersColumns holds the columns for the "timers" table.
 	TimersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "action", Type: field.TypeEnum, Enums: []string{"upgrade_metal_prod", "upgrade_hydrogen_prod", "upgrade_silica_prod", "upgrade_solar_prod", "upgrade_urbanism", "upgrade_metal_storage", "upgrade_hydrogen_storage", "upgrade_silica_storage"}},
+		{Name: "action", Type: field.TypeEnum, Enums: []string{"upgrade_metal_prod", "upgrade_hydrogen_prod", "upgrade_silica_prod", "upgrade_solar_prod", "upgrade_urbanism", "upgrade_metal_storage", "upgrade_hydrogen_storage", "upgrade_silica_storage", "test"}},
 		{Name: "group", Type: field.TypeEnum, Enums: []string{"building"}},
 		{Name: "end_time", Type: field.TypeTime},
 		{Name: "planet_id", Type: field.TypeInt, Nullable: true},

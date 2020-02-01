@@ -9,6 +9,8 @@ import (
 	"math"
 
 	"github.com/facebookincubator/ent/dialect/sql"
+	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
+	"github.com/facebookincubator/ent/schema/field"
 	"github.com/pdeguing/empire-and-foundation/ent/predicate"
 	"github.com/pdeguing/empire-and-foundation/ent/session"
 )
@@ -260,45 +262,36 @@ func (sq *SessionQuery) Select(field string, fields ...string) *SessionSelect {
 }
 
 func (sq *SessionQuery) sqlAll(ctx context.Context) ([]*Session, error) {
-	rows := &sql.Rows{}
-	selector := sq.sqlQuery()
-	if unique := sq.unique; len(unique) == 0 {
-		selector.Distinct()
+	var (
+		nodes []*Session
+		_spec = sq.querySpec()
+	)
+	_spec.ScanValues = func() []interface{} {
+		node := &Session{config: sq.config}
+		nodes = append(nodes, node)
+		values := node.scanValues()
+		return values
 	}
-	query, args := selector.Query()
-	if err := sq.driver.Query(ctx, query, args, rows); err != nil {
+	_spec.Assign = func(values ...interface{}) error {
+		if len(nodes) == 0 {
+			return fmt.Errorf("ent: Assign called without calling ScanValues")
+		}
+		node := nodes[len(nodes)-1]
+		return node.assignValues(values...)
+	}
+	if err := sqlgraph.QueryNodes(ctx, sq.driver, _spec); err != nil {
 		return nil, err
 	}
-	defer rows.Close()
-	var sSlice Sessions
-	if err := sSlice.FromRows(rows); err != nil {
-		return nil, err
+
+	if len(nodes) == 0 {
+		return nodes, nil
 	}
-	sSlice.config(sq.config)
-	return sSlice, nil
+	return nodes, nil
 }
 
 func (sq *SessionQuery) sqlCount(ctx context.Context) (int, error) {
-	rows := &sql.Rows{}
-	selector := sq.sqlQuery()
-	unique := []string{session.FieldID}
-	if len(sq.unique) > 0 {
-		unique = sq.unique
-	}
-	selector.Count(sql.Distinct(selector.Columns(unique...)...))
-	query, args := selector.Query()
-	if err := sq.driver.Query(ctx, query, args, rows); err != nil {
-		return 0, err
-	}
-	defer rows.Close()
-	if !rows.Next() {
-		return 0, errors.New("ent: no rows found")
-	}
-	var n int
-	if err := rows.Scan(&n); err != nil {
-		return 0, fmt.Errorf("ent: failed reading count: %v", err)
-	}
-	return n, nil
+	_spec := sq.querySpec()
+	return sqlgraph.CountNodes(ctx, sq.driver, _spec)
 }
 
 func (sq *SessionQuery) sqlExist(ctx context.Context) (bool, error) {
@@ -307,6 +300,42 @@ func (sq *SessionQuery) sqlExist(ctx context.Context) (bool, error) {
 		return false, fmt.Errorf("ent: check existence: %v", err)
 	}
 	return n > 0, nil
+}
+
+func (sq *SessionQuery) querySpec() *sqlgraph.QuerySpec {
+	_spec := &sqlgraph.QuerySpec{
+		Node: &sqlgraph.NodeSpec{
+			Table:   session.Table,
+			Columns: session.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeInt,
+				Column: session.FieldID,
+			},
+		},
+		From:   sq.sql,
+		Unique: true,
+	}
+	if ps := sq.predicates; len(ps) > 0 {
+		_spec.Predicate = func(selector *sql.Selector) {
+			for i := range ps {
+				ps[i](selector)
+			}
+		}
+	}
+	if limit := sq.limit; limit != nil {
+		_spec.Limit = *limit
+	}
+	if offset := sq.offset; offset != nil {
+		_spec.Offset = *offset
+	}
+	if ps := sq.order; len(ps) > 0 {
+		_spec.Order = func(selector *sql.Selector) {
+			for i := range ps {
+				ps[i](selector)
+			}
+		}
+	}
+	return _spec
 }
 
 func (sq *SessionQuery) sqlQuery() *sql.Selector {
@@ -580,7 +609,7 @@ func (ss *SessionSelect) sqlScan(ctx context.Context, v interface{}) error {
 }
 
 func (ss *SessionSelect) sqlQuery() sql.Querier {
-	view := "session_view"
-	return sql.Dialect(ss.driver.Dialect()).
-		Select(ss.fields...).From(ss.sql.As(view))
+	selector := ss.sql
+	selector.Select(selector.Columns(ss.fields...)...)
+	return selector
 }

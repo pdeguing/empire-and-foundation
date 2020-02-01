@@ -39,7 +39,7 @@ func (pd *PlanetDelete) ExecX(ctx context.Context) int {
 }
 
 func (pd *PlanetDelete) sqlExec(ctx context.Context) (int, error) {
-	spec := &sqlgraph.DeleteSpec{
+	_spec := &sqlgraph.DeleteSpec{
 		Node: &sqlgraph.NodeSpec{
 			Table: planet.Table,
 			ID: &sqlgraph.FieldSpec{
@@ -49,13 +49,13 @@ func (pd *PlanetDelete) sqlExec(ctx context.Context) (int, error) {
 		},
 	}
 	if ps := pd.predicates; len(ps) > 0 {
-		spec.Predicate = func(selector *sql.Selector) {
+		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	return sqlgraph.DeleteNodes(ctx, pd.driver, spec)
+	return sqlgraph.DeleteNodes(ctx, pd.driver, _spec)
 }
 
 // PlanetDeleteOne is the builder for deleting a single Planet entity.

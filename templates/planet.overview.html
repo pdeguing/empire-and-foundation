@@ -54,16 +54,22 @@
         <a href="/planet/{{ .Data.Planet.ID }}/constructions"
           class="columns is-inline-flex is-gapless dashboard-item dashboard-item-link">
           <span class="column is-half is-growing dashboard-item-name">
-            {{ if eq $timer.Action "upgrade_metal_mine" }}
+            {{ if eq $timer.Action "upgrade_metal_prod" }}
             Metal mine upgrade
-            {{ else if eq $timer.Action "upgrade_hydrogen_extractor" }}
+            {{ else if eq $timer.Action "upgrade_hydrogen_prod" }}
             Hydrogen extractor upgrade
-            {{ else if eq $timer.Action "upgrade_silica_quarry" }}
+            {{ else if eq $timer.Action "upgrade_silica_prod" }}
             Silica quarry upgrade
-            {{ else if eq $timer.Action "upgrade_solar_plant" }}
+            {{ else if eq $timer.Action "upgrade_solar_prod" }}
             Solar plant upgrade
-            {{ else if eq $timer.Action "upgrade_housing_facilities" }}
+            {{ else if eq $timer.Action "upgrade_urbanism" }}
             Housing facilities upgrade
+            {{ else if eq $timer.Action "upgrade_metal_storage" }}
+            Metal storage upgrade
+            {{ else if eq $timer.Action "upgrade_hydrogen_storage" }}
+            Hydrogen storage upgrade
+            {{ else if eq $timer.Action "upgrade_silica_storage" }}
+            Silica storage upgrade
             {{ end }}
           </span>
           <span class="column is-narrow dashboard-item-value">{{ duration $timer.Duration }}</span>

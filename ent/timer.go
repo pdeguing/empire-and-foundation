@@ -22,29 +22,68 @@ type Timer struct {
 	Group timer.Group `json:"group,omitempty"`
 	// EndTime holds the value of the "end_time" field.
 	EndTime time.Time `json:"end_time,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the TimerQuery when eager-loading is set.
+	Edges struct {
+		// Planet holds the value of the planet edge.
+		Planet *Planet
+	} `json:"edges"`
+	planet_id *int
 }
 
-// FromRows scans the sql response data into Timer.
-func (t *Timer) FromRows(rows *sql.Rows) error {
-	var scant struct {
-		ID      int
-		Action  sql.NullString
-		Group   sql.NullString
-		EndTime sql.NullTime
+// scanValues returns the types for scanning values from sql.Rows.
+func (*Timer) scanValues() []interface{} {
+	return []interface{}{
+		&sql.NullInt64{},  // id
+		&sql.NullString{}, // action
+		&sql.NullString{}, // group
+		&sql.NullTime{},   // end_time
 	}
-	// the order here should be the same as in the `timer.Columns`.
-	if err := rows.Scan(
-		&scant.ID,
-		&scant.Action,
-		&scant.Group,
-		&scant.EndTime,
-	); err != nil {
-		return err
+}
+
+// fkValues returns the types for scanning foreign-keys values from sql.Rows.
+func (*Timer) fkValues() []interface{} {
+	return []interface{}{
+		&sql.NullInt64{}, // planet_id
 	}
-	t.ID = scant.ID
-	t.Action = timer.Action(scant.Action.String)
-	t.Group = timer.Group(scant.Group.String)
-	t.EndTime = scant.EndTime.Time
+}
+
+// assignValues assigns the values that were returned from sql.Rows (after scanning)
+// to the Timer fields.
+func (t *Timer) assignValues(values ...interface{}) error {
+	if m, n := len(values), len(timer.Columns); m < n {
+		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
+	}
+	value, ok := values[0].(*sql.NullInt64)
+	if !ok {
+		return fmt.Errorf("unexpected type %T for field id", value)
+	}
+	t.ID = int(value.Int64)
+	values = values[1:]
+	if value, ok := values[0].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field action", values[0])
+	} else if value.Valid {
+		t.Action = timer.Action(value.String)
+	}
+	if value, ok := values[1].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field group", values[1])
+	} else if value.Valid {
+		t.Group = timer.Group(value.String)
+	}
+	if value, ok := values[2].(*sql.NullTime); !ok {
+		return fmt.Errorf("unexpected type %T for field end_time", values[2])
+	} else if value.Valid {
+		t.EndTime = value.Time
+	}
+	values = values[3:]
+	if len(values) == len(timer.ForeignKeys) {
+		if value, ok := values[0].(*sql.NullInt64); !ok {
+			return fmt.Errorf("unexpected type %T for edge-field planet_id", value)
+		} else if value.Valid {
+			t.planet_id = new(int)
+			*t.planet_id = int(value.Int64)
+		}
+	}
 	return nil
 }
 
@@ -88,18 +127,6 @@ func (t *Timer) String() string {
 
 // Timers is a parsable slice of Timer.
 type Timers []*Timer
-
-// FromRows scans the sql response data into Timers.
-func (t *Timers) FromRows(rows *sql.Rows) error {
-	for rows.Next() {
-		scant := &Timer{}
-		if err := scant.FromRows(rows); err != nil {
-			return err
-		}
-		*t = append(*t, scant)
-	}
-	return nil
-}
 
 func (t Timers) config(cfg config) {
 	for _i := range t {

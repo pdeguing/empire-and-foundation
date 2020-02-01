@@ -63,8 +63,8 @@ func (sc *SessionCreate) SaveX(ctx context.Context) *Session {
 
 func (sc *SessionCreate) sqlSave(ctx context.Context) (*Session, error) {
 	var (
-		s    = &Session{config: sc.config}
-		spec = &sqlgraph.CreateSpec{
+		s     = &Session{config: sc.config}
+		_spec = &sqlgraph.CreateSpec{
 			Table: session.Table,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeInt,
@@ -73,7 +73,7 @@ func (sc *SessionCreate) sqlSave(ctx context.Context) (*Session, error) {
 		}
 	)
 	if value := sc.token; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  *value,
 			Column: session.FieldToken,
@@ -81,7 +81,7 @@ func (sc *SessionCreate) sqlSave(ctx context.Context) (*Session, error) {
 		s.Token = *value
 	}
 	if value := sc.data; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeBytes,
 			Value:  *value,
 			Column: session.FieldData,
@@ -89,20 +89,20 @@ func (sc *SessionCreate) sqlSave(ctx context.Context) (*Session, error) {
 		s.Data = *value
 	}
 	if value := sc.expiry; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Value:  *value,
 			Column: session.FieldExpiry,
 		})
 		s.Expiry = *value
 	}
-	if err := sqlgraph.CreateNode(ctx, sc.driver, spec); err != nil {
+	if err := sqlgraph.CreateNode(ctx, sc.driver, _spec); err != nil {
 		if cerr, ok := isSQLConstraintError(err); ok {
 			err = cerr
 		}
 		return nil, err
 	}
-	id := spec.ID.Value.(int64)
+	id := _spec.ID.Value.(int64)
 	s.ID = int(id)
 	return s, nil
 }

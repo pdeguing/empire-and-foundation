@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/facebookincubator/ent/dialect/sql"
+	"github.com/pdeguing/empire-and-foundation/ent/session"
 )
 
 // Session is the model entity for the Session schema.
@@ -23,27 +24,43 @@ type Session struct {
 	Expiry time.Time `json:"expiry,omitempty"`
 }
 
-// FromRows scans the sql response data into Session.
-func (s *Session) FromRows(rows *sql.Rows) error {
-	var scans struct {
-		ID     int
-		Token  sql.NullString
-		Data   []byte
-		Expiry sql.NullTime
+// scanValues returns the types for scanning values from sql.Rows.
+func (*Session) scanValues() []interface{} {
+	return []interface{}{
+		&sql.NullInt64{},  // id
+		&sql.NullString{}, // token
+		&[]byte{},         // data
+		&sql.NullTime{},   // expiry
 	}
-	// the order here should be the same as in the `session.Columns`.
-	if err := rows.Scan(
-		&scans.ID,
-		&scans.Token,
-		&scans.Data,
-		&scans.Expiry,
-	); err != nil {
-		return err
+}
+
+// assignValues assigns the values that were returned from sql.Rows (after scanning)
+// to the Session fields.
+func (s *Session) assignValues(values ...interface{}) error {
+	if m, n := len(values), len(session.Columns); m < n {
+		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
-	s.ID = scans.ID
-	s.Token = scans.Token.String
-	s.Data = scans.Data
-	s.Expiry = scans.Expiry.Time
+	value, ok := values[0].(*sql.NullInt64)
+	if !ok {
+		return fmt.Errorf("unexpected type %T for field id", value)
+	}
+	s.ID = int(value.Int64)
+	values = values[1:]
+	if value, ok := values[0].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field token", values[0])
+	} else if value.Valid {
+		s.Token = value.String
+	}
+	if value, ok := values[1].(*[]byte); !ok {
+		return fmt.Errorf("unexpected type %T for field data", values[1])
+	} else if value != nil {
+		s.Data = *value
+	}
+	if value, ok := values[2].(*sql.NullTime); !ok {
+		return fmt.Errorf("unexpected type %T for field expiry", values[2])
+	} else if value.Valid {
+		s.Expiry = value.Time
+	}
 	return nil
 }
 
@@ -82,18 +99,6 @@ func (s *Session) String() string {
 
 // Sessions is a parsable slice of Session.
 type Sessions []*Session
-
-// FromRows scans the sql response data into Sessions.
-func (s *Sessions) FromRows(rows *sql.Rows) error {
-	for rows.Next() {
-		scans := &Session{}
-		if err := scans.FromRows(rows); err != nil {
-			return err
-		}
-		*s = append(*s, scans)
-	}
-	return nil
-}
 
 func (s Sessions) config(cfg config) {
 	for _i := range s {
