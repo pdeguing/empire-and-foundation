@@ -34,15 +34,15 @@ jobs:
 #    - name: Test
 #      run: go test ./...
 
-    - name: Collect Docker Logs
-      uses: jwalton/gh-docker-logs@v1.0.0
-
     - name: Setup PostgreSQL
       uses: Harmon758/postgresql-action@v1.0.0
       with:
         postgresql db: empire-and-foundation
         postgresql user: empire-and-foundation
         postgresql password: secret
+   
+    - name: Collect Docker Logs
+      uses: jwalton/gh-docker-logs@v1.0.0
    
     - name: Check running containers
       run: docker ps -a
