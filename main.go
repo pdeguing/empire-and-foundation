@@ -243,7 +243,7 @@ func mysqlConnString(c *cli.Context) string {
 // postgresqlConnString uses the cli context to build a PostgreSQL connection string.
 func postgresqlConnString(c *cli.Context) string {
 	return fmt.Sprintf(
-		"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+		"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable connect_timeout=10",
 		c.String("db-host"),
 		c.Int("db-port"),
 		c.String("db-user"),
