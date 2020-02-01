@@ -37,9 +37,9 @@ jobs:
     - name: Setup PostgreSQL
       uses: Harmon758/postgresql-action@v1
       with:
-        postgresql_db: empire-and-foundation
-        postgresql_user: empire-and-foundation
-        postgresql_password: secret
+        postgresql db: empire-and-foundation
+        postgresql user: empire-and-foundation
+        postgresql password: secret
     
     - name: Test migrations on PostgreSQL database
       run: ./empire-and-foundation migrate
