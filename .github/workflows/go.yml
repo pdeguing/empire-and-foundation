@@ -27,8 +27,26 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-go-
 
-#    - name: Build
-#      run: go build -v .
+    - name: Build
+      run: go build -v .
 
     - name: Test
       run: go test ./...
+
+    - name: Setup PostgreSQL
+      uses: Harmon758/postgresql-action@v1
+      with:
+        postgresql_db: empire-and-foundation
+        postgresql_user: empire-and-foundation
+        postgresql_password: secret
+    
+    - name: Test migrations on PostgreSQL database
+      run: ./empire-and-foundation migrate
+      env:
+        DB_DRIVER: postgres
+        DB_HOST: localhost
+        DB_PORT: 5432
+        DB_DATABASE: empire-and-foundation
+        DB_USERNAME: empire-and-foundation
+        DB_PASSWORD: secret
+      
