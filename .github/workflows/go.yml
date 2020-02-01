@@ -61,3 +61,13 @@ jobs:
         DB_DATABASE: empire-and-foundation
         DB_USERNAME: empire-and-foundation
         DB_PASSWORD: secret
+
+    - name: Test seeds on PostgreSQL database
+      run: ./empire-and-foundation seed
+      env:
+        DB_DRIVER: postgres
+        DB_HOST: localhost
+        DB_PORT: 5432
+        DB_DATABASE: empire-and-foundation
+        DB_USERNAME: empire-and-foundation
+        DB_PASSWORD: secret
