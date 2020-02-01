@@ -35,7 +35,7 @@ jobs:
       run: go test ./...
 
     - name: Setup PostgreSQL
-      uses: Harmon758/postgresql-action@v1
+      uses: Harmon758/postgresql-action@v1.0.0
       with:
         postgresql db: empire-and-foundation
         postgresql user: empire-and-foundation
@@ -50,4 +50,6 @@ jobs:
         DB_DATABASE: empire-and-foundation
         DB_USERNAME: empire-and-foundation
         DB_PASSWORD: secret
-      
+   
+    - name: Check running containers
+      run: docker ps -a
