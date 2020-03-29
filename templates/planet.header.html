@@ -6,7 +6,7 @@
 		<div class="level-item">
 			<p class="subtitle is-5">
 			<strong>{{ .Data.Planet.Name }}</strong>
-				[{{ .Data.Planet.RegionCode }}:{{ .Data.Planet.SystemCode }}:{{ .Data.Planet.OrbitCode }}:{{ .Data.Planet.SuborbitCode }}]
+				[{{ hex .Data.Planet.RegionCode 2}}:{{ hex .Data.Planet.SystemCode 2}}:{{ hex .Data.Planet.OrbitCode 1}}:{{ hex .Data.Planet.SuborbitCode 1}}]
 			</p>
 		</div>
 	</div>
