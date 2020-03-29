@@ -49,7 +49,12 @@ func serveSignupAccount(w http.ResponseWriter, r *http.Request) {
 		}
 
 		c, err := tx.Planet.Query().
-				Where(planet.Not(planet.HasOwner())).
+				Where(
+					planet.And(
+						planet.PlanetTypeEQ(planet.PlanetTypeHabitable),
+						planet.Not(planet.HasOwner()),
+					),
+				).
 				Count(r.Context())
 
 		if err != nil {
@@ -61,7 +66,12 @@ func serveSignupAccount(w http.ResponseWriter, r *http.Request) {
 		n := ra.Intn(c)
 
 		p, err := tx.Planet.Query().
-				Where(planet.Not(planet.HasOwner())).
+				Where(
+					planet.And(
+						planet.PlanetTypeEQ(planet.PlanetTypeHabitable),
+						planet.Not(planet.HasOwner()),
+					),
+				).
 				Offset(n).
 				First(r.Context())
 
