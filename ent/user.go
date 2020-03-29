@@ -28,10 +28,25 @@ type User struct {
 	Password string `json:"-"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserQuery when eager-loading is set.
-	Edges struct {
-		// Planets holds the value of the planets edge.
-		Planets []*Planet
-	} `json:"edges"`
+	Edges UserEdges `json:"edges"`
+}
+
+// UserEdges holds the relations/edges for other nodes in the graph.
+type UserEdges struct {
+	// Planets holds the value of the planets edge.
+	Planets []*Planet
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// PlanetsOrErr returns the Planets value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) PlanetsOrErr() ([]*Planet, error) {
+	if e.loadedTypes[0] {
+		return e.Planets, nil
+	}
+	return nil, &NotLoadedError{edge: "planets"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -88,14 +103,14 @@ func (u *User) assignValues(values ...interface{}) error {
 
 // QueryPlanets queries the planets edge of the User.
 func (u *User) QueryPlanets() *PlanetQuery {
-	return (&UserClient{u.config}).QueryPlanets(u)
+	return (&UserClient{config: u.config}).QueryPlanets(u)
 }
 
 // Update returns a builder for updating this User.
 // Note that, you need to call User.Unwrap() before calling this method, if this User
 // was returned from a transaction, and the transaction was committed or rolled back.
 func (u *User) Update() *UserUpdateOne {
-	return (&UserClient{u.config}).UpdateOne(u)
+	return (&UserClient{config: u.config}).UpdateOne(u)
 }
 
 // Unwrap unwraps the entity that was returned from a transaction after it was closed,

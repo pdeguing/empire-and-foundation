@@ -9,6 +9,7 @@ import (
 
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/pdeguing/empire-and-foundation/ent/planet"
+	"github.com/pdeguing/empire-and-foundation/ent/user"
 )
 
 // Planet is the model entity for the Planet schema.
@@ -66,13 +67,42 @@ type Planet struct {
 	LastResourceUpdate time.Time `json:"last_resource_update,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the PlanetQuery when eager-loading is set.
-	Edges struct {
-		// Owner holds the value of the owner edge.
-		Owner *User
-		// Timers holds the value of the timers edge.
-		Timers []*Timer
-	} `json:"edges"`
-	owner_id *int
+	Edges        PlanetEdges `json:"edges"`
+	user_planets *int
+}
+
+// PlanetEdges holds the relations/edges for other nodes in the graph.
+type PlanetEdges struct {
+	// Owner holds the value of the owner edge.
+	Owner *User
+	// Timers holds the value of the timers edge.
+	Timers []*Timer
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [2]bool
+}
+
+// OwnerOrErr returns the Owner value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e PlanetEdges) OwnerOrErr() (*User, error) {
+	if e.loadedTypes[0] {
+		if e.Owner == nil {
+			// The edge owner was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: user.Label}
+		}
+		return e.Owner, nil
+	}
+	return nil, &NotLoadedError{edge: "owner"}
+}
+
+// TimersOrErr returns the Timers value or an error if the edge
+// was not loaded in eager-loading.
+func (e PlanetEdges) TimersOrErr() ([]*Timer, error) {
+	if e.loadedTypes[1] {
+		return e.Timers, nil
+	}
+	return nil, &NotLoadedError{edge: "timers"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -109,7 +139,7 @@ func (*Planet) scanValues() []interface{} {
 // fkValues returns the types for scanning foreign-keys values from sql.Rows.
 func (*Planet) fkValues() []interface{} {
 	return []interface{}{
-		&sql.NullInt64{}, // owner_id
+		&sql.NullInt64{}, // user_planets
 	}
 }
 
@@ -248,10 +278,10 @@ func (pl *Planet) assignValues(values ...interface{}) error {
 	values = values[24:]
 	if len(values) == len(planet.ForeignKeys) {
 		if value, ok := values[0].(*sql.NullInt64); !ok {
-			return fmt.Errorf("unexpected type %T for edge-field owner_id", value)
+			return fmt.Errorf("unexpected type %T for edge-field user_planets", value)
 		} else if value.Valid {
-			pl.owner_id = new(int)
-			*pl.owner_id = int(value.Int64)
+			pl.user_planets = new(int)
+			*pl.user_planets = int(value.Int64)
 		}
 	}
 	return nil
@@ -259,19 +289,19 @@ func (pl *Planet) assignValues(values ...interface{}) error {
 
 // QueryOwner queries the owner edge of the Planet.
 func (pl *Planet) QueryOwner() *UserQuery {
-	return (&PlanetClient{pl.config}).QueryOwner(pl)
+	return (&PlanetClient{config: pl.config}).QueryOwner(pl)
 }
 
 // QueryTimers queries the timers edge of the Planet.
 func (pl *Planet) QueryTimers() *TimerQuery {
-	return (&PlanetClient{pl.config}).QueryTimers(pl)
+	return (&PlanetClient{config: pl.config}).QueryTimers(pl)
 }
 
 // Update returns a builder for updating this Planet.
 // Note that, you need to call Planet.Unwrap() before calling this method, if this Planet
 // was returned from a transaction, and the transaction was committed or rolled back.
 func (pl *Planet) Update() *PlanetUpdateOne {
-	return (&PlanetClient{pl.config}).UpdateOne(pl)
+	return (&PlanetClient{config: pl.config}).UpdateOne(pl)
 }
 
 // Unwrap unwraps the entity that was returned from a transaction after it was closed,

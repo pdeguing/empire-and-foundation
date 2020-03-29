@@ -51,14 +51,14 @@ func (sq *SessionQuery) Order(o ...Order) *SessionQuery {
 	return sq
 }
 
-// First returns the first Session entity in the query. Returns *ErrNotFound when no session was found.
+// First returns the first Session entity in the query. Returns *NotFoundError when no session was found.
 func (sq *SessionQuery) First(ctx context.Context) (*Session, error) {
 	sSlice, err := sq.Limit(1).All(ctx)
 	if err != nil {
 		return nil, err
 	}
 	if len(sSlice) == 0 {
-		return nil, &ErrNotFound{session.Label}
+		return nil, &NotFoundError{session.Label}
 	}
 	return sSlice[0], nil
 }
@@ -72,14 +72,14 @@ func (sq *SessionQuery) FirstX(ctx context.Context) *Session {
 	return s
 }
 
-// FirstID returns the first Session id in the query. Returns *ErrNotFound when no id was found.
+// FirstID returns the first Session id in the query. Returns *NotFoundError when no id was found.
 func (sq *SessionQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
 	if ids, err = sq.Limit(1).IDs(ctx); err != nil {
 		return
 	}
 	if len(ids) == 0 {
-		err = &ErrNotFound{session.Label}
+		err = &NotFoundError{session.Label}
 		return
 	}
 	return ids[0], nil
@@ -104,9 +104,9 @@ func (sq *SessionQuery) Only(ctx context.Context) (*Session, error) {
 	case 1:
 		return sSlice[0], nil
 	case 0:
-		return nil, &ErrNotFound{session.Label}
+		return nil, &NotFoundError{session.Label}
 	default:
-		return nil, &ErrNotSingular{session.Label}
+		return nil, &NotSingularError{session.Label}
 	}
 }
 
@@ -129,9 +129,9 @@ func (sq *SessionQuery) OnlyID(ctx context.Context) (id int, err error) {
 	case 1:
 		id = ids[0]
 	case 0:
-		err = &ErrNotFound{session.Label}
+		err = &NotFoundError{session.Label}
 	default:
-		err = &ErrNotSingular{session.Label}
+		err = &NotSingularError{session.Label}
 	}
 	return
 }
@@ -263,7 +263,7 @@ func (sq *SessionQuery) Select(field string, fields ...string) *SessionSelect {
 
 func (sq *SessionQuery) sqlAll(ctx context.Context) ([]*Session, error) {
 	var (
-		nodes []*Session
+		nodes = []*Session{}
 		_spec = sq.querySpec()
 	)
 	_spec.ScanValues = func() []interface{} {
@@ -282,7 +282,6 @@ func (sq *SessionQuery) sqlAll(ctx context.Context) ([]*Session, error) {
 	if err := sqlgraph.QueryNodes(ctx, sq.driver, _spec); err != nil {
 		return nil, err
 	}
-
 	if len(nodes) == 0 {
 		return nodes, nil
 	}

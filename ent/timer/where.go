@@ -12,27 +12,23 @@ import (
 
 // ID filters vertices based on their identifier.
 func ID(id int) predicate.Timer {
-	return predicate.Timer(
-		func(s *sql.Selector) {
-			s.Where(sql.EQ(s.C(FieldID), id))
-		},
-	)
+	return predicate.Timer(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldID), id))
+	})
 }
 
 // IDEQ applies the EQ predicate on the ID field.
 func IDEQ(id int) predicate.Timer {
 	return predicate.Timer(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldID), id))
-	},
-	)
+	})
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
 func IDNEQ(id int) predicate.Timer {
 	return predicate.Timer(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldID), id))
-	},
-	)
+	})
 }
 
 // IDIn applies the In predicate on the ID field.
@@ -49,8 +45,7 @@ func IDIn(ids ...int) predicate.Timer {
 			v[i] = ids[i]
 		}
 		s.Where(sql.In(s.C(FieldID), v...))
-	},
-	)
+	})
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
@@ -67,64 +62,56 @@ func IDNotIn(ids ...int) predicate.Timer {
 			v[i] = ids[i]
 		}
 		s.Where(sql.NotIn(s.C(FieldID), v...))
-	},
-	)
+	})
 }
 
 // IDGT applies the GT predicate on the ID field.
 func IDGT(id int) predicate.Timer {
 	return predicate.Timer(func(s *sql.Selector) {
 		s.Where(sql.GT(s.C(FieldID), id))
-	},
-	)
+	})
 }
 
 // IDGTE applies the GTE predicate on the ID field.
 func IDGTE(id int) predicate.Timer {
 	return predicate.Timer(func(s *sql.Selector) {
 		s.Where(sql.GTE(s.C(FieldID), id))
-	},
-	)
+	})
 }
 
 // IDLT applies the LT predicate on the ID field.
 func IDLT(id int) predicate.Timer {
 	return predicate.Timer(func(s *sql.Selector) {
 		s.Where(sql.LT(s.C(FieldID), id))
-	},
-	)
+	})
 }
 
 // IDLTE applies the LTE predicate on the ID field.
 func IDLTE(id int) predicate.Timer {
 	return predicate.Timer(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldID), id))
-	},
-	)
+	})
 }
 
 // EndTime applies equality check predicate on the "end_time" field. It's identical to EndTimeEQ.
 func EndTime(v time.Time) predicate.Timer {
 	return predicate.Timer(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldEndTime), v))
-	},
-	)
+	})
 }
 
 // ActionEQ applies the EQ predicate on the "action" field.
 func ActionEQ(v Action) predicate.Timer {
 	return predicate.Timer(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldAction), v))
-	},
-	)
+	})
 }
 
 // ActionNEQ applies the NEQ predicate on the "action" field.
 func ActionNEQ(v Action) predicate.Timer {
 	return predicate.Timer(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldAction), v))
-	},
-	)
+	})
 }
 
 // ActionIn applies the In predicate on the "action" field.
@@ -141,8 +128,7 @@ func ActionIn(vs ...Action) predicate.Timer {
 			return
 		}
 		s.Where(sql.In(s.C(FieldAction), v...))
-	},
-	)
+	})
 }
 
 // ActionNotIn applies the NotIn predicate on the "action" field.
@@ -159,24 +145,21 @@ func ActionNotIn(vs ...Action) predicate.Timer {
 			return
 		}
 		s.Where(sql.NotIn(s.C(FieldAction), v...))
-	},
-	)
+	})
 }
 
 // GroupEQ applies the EQ predicate on the "group" field.
 func GroupEQ(v Group) predicate.Timer {
 	return predicate.Timer(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldGroup), v))
-	},
-	)
+	})
 }
 
 // GroupNEQ applies the NEQ predicate on the "group" field.
 func GroupNEQ(v Group) predicate.Timer {
 	return predicate.Timer(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldGroup), v))
-	},
-	)
+	})
 }
 
 // GroupIn applies the In predicate on the "group" field.
@@ -193,8 +176,7 @@ func GroupIn(vs ...Group) predicate.Timer {
 			return
 		}
 		s.Where(sql.In(s.C(FieldGroup), v...))
-	},
-	)
+	})
 }
 
 // GroupNotIn applies the NotIn predicate on the "group" field.
@@ -211,24 +193,21 @@ func GroupNotIn(vs ...Group) predicate.Timer {
 			return
 		}
 		s.Where(sql.NotIn(s.C(FieldGroup), v...))
-	},
-	)
+	})
 }
 
 // EndTimeEQ applies the EQ predicate on the "end_time" field.
 func EndTimeEQ(v time.Time) predicate.Timer {
 	return predicate.Timer(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldEndTime), v))
-	},
-	)
+	})
 }
 
 // EndTimeNEQ applies the NEQ predicate on the "end_time" field.
 func EndTimeNEQ(v time.Time) predicate.Timer {
 	return predicate.Timer(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldEndTime), v))
-	},
-	)
+	})
 }
 
 // EndTimeIn applies the In predicate on the "end_time" field.
@@ -245,8 +224,7 @@ func EndTimeIn(vs ...time.Time) predicate.Timer {
 			return
 		}
 		s.Where(sql.In(s.C(FieldEndTime), v...))
-	},
-	)
+	})
 }
 
 // EndTimeNotIn applies the NotIn predicate on the "end_time" field.
@@ -263,40 +241,35 @@ func EndTimeNotIn(vs ...time.Time) predicate.Timer {
 			return
 		}
 		s.Where(sql.NotIn(s.C(FieldEndTime), v...))
-	},
-	)
+	})
 }
 
 // EndTimeGT applies the GT predicate on the "end_time" field.
 func EndTimeGT(v time.Time) predicate.Timer {
 	return predicate.Timer(func(s *sql.Selector) {
 		s.Where(sql.GT(s.C(FieldEndTime), v))
-	},
-	)
+	})
 }
 
 // EndTimeGTE applies the GTE predicate on the "end_time" field.
 func EndTimeGTE(v time.Time) predicate.Timer {
 	return predicate.Timer(func(s *sql.Selector) {
 		s.Where(sql.GTE(s.C(FieldEndTime), v))
-	},
-	)
+	})
 }
 
 // EndTimeLT applies the LT predicate on the "end_time" field.
 func EndTimeLT(v time.Time) predicate.Timer {
 	return predicate.Timer(func(s *sql.Selector) {
 		s.Where(sql.LT(s.C(FieldEndTime), v))
-	},
-	)
+	})
 }
 
 // EndTimeLTE applies the LTE predicate on the "end_time" field.
 func EndTimeLTE(v time.Time) predicate.Timer {
 	return predicate.Timer(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldEndTime), v))
-	},
-	)
+	})
 }
 
 // HasPlanet applies the HasEdge predicate on the "planet" edge.
@@ -308,8 +281,7 @@ func HasPlanet() predicate.Timer {
 			sqlgraph.Edge(sqlgraph.M2O, true, PlanetTable, PlanetColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
-	},
-	)
+	})
 }
 
 // HasPlanetWith applies the HasEdge predicate on the "planet" edge with a given conditions (other predicates).
@@ -325,44 +297,37 @@ func HasPlanetWith(preds ...predicate.Planet) predicate.Timer {
 				p(s)
 			}
 		})
-	},
-	)
+	})
 }
 
 // And groups list of predicates with the AND operator between them.
 func And(predicates ...predicate.Timer) predicate.Timer {
-	return predicate.Timer(
-		func(s *sql.Selector) {
-			s1 := s.Clone().SetP(nil)
-			for _, p := range predicates {
-				p(s1)
-			}
-			s.Where(s1.P())
-		},
-	)
+	return predicate.Timer(func(s *sql.Selector) {
+		s1 := s.Clone().SetP(nil)
+		for _, p := range predicates {
+			p(s1)
+		}
+		s.Where(s1.P())
+	})
 }
 
 // Or groups list of predicates with the OR operator between them.
 func Or(predicates ...predicate.Timer) predicate.Timer {
-	return predicate.Timer(
-		func(s *sql.Selector) {
-			s1 := s.Clone().SetP(nil)
-			for i, p := range predicates {
-				if i > 0 {
-					s1.Or()
-				}
-				p(s1)
+	return predicate.Timer(func(s *sql.Selector) {
+		s1 := s.Clone().SetP(nil)
+		for i, p := range predicates {
+			if i > 0 {
+				s1.Or()
 			}
-			s.Where(s1.P())
-		},
-	)
+			p(s1)
+		}
+		s.Where(s1.P())
+	})
 }
 
 // Not applies the not operator on the given predicate.
 func Not(p predicate.Timer) predicate.Timer {
-	return predicate.Timer(
-		func(s *sql.Selector) {
-			p(s.Not())
-		},
-	)
+	return predicate.Timer(func(s *sql.Selector) {
+		p(s.Not())
+	})
 }

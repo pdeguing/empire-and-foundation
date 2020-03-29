@@ -10,7 +10,7 @@
 			<div>
 				<div>{{ .Name }}</div>
 				<div>
-				[{{ .RegionCode }}:{{ .SystemCode }}:{{ .OrbitCode }}:{{ .SuborbitCode }}]
+				[{{ hex .RegionCode 2}}:{{ hex .SystemCode 2}}:{{ hex .OrbitCode 1}}:{{ hex .SuborbitCode 2}}]
 				</div>
 			</div>
 		</a>

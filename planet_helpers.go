@@ -32,7 +32,7 @@ func userPlanet(r *http.Request, tx *ent.Tx) (*ent.Planet, error) {
 			),
 		).
 		First(r.Context())
-	if _, ok := err.(*ent.ErrNotFound); ok {
+	if _, ok := err.(*ent.NotFoundError); ok {
 		return nil, newNotFoundError(fmt.Errorf("unable to query planet #%d for user %d; it does not exist", n, u.ID))
 	}
 	if err != nil {
@@ -54,9 +54,9 @@ func userPlanets(r *http.Request, tx *ent.Tx) ([]*ent.Planet, error) {
 	u := loggedInUser(r)
 
 	p, err := tx.Planet.Query().
-		Where(planet.HasOwnerWith(user.IDEQ(u.ID))).
-		All(r.Context())
-	if _, ok := err.(*ent.ErrNotFound); ok {
+			Where(planet.HasOwnerWith(user.IDEQ(u.ID))).
+			All(r.Context())
+	if _, ok := err.(*ent.NotFoundError); ok {
 		return nil, newNotFoundError(fmt.Errorf("unable to query planets for user %d; it does not exist", u.ID))
 	}
 	if err != nil {
@@ -65,10 +65,14 @@ func userPlanets(r *http.Request, tx *ent.Tx) ([]*ent.Planet, error) {
 	return p, nil
 }
 
-// regionPlanets retrieves all planets
-func regionPlanets(w http.ResponseWriter, r *http.Request) ([]*ent.Planet, error) {
-	p, err := data.Client.Planet.Query().
+// regionPlanets create slice of positions and planets in a system 
+func regionPlanets(w http.ResponseWriter, r *http.Request, region, system int) ([]*ent.Planet, error) {
+	p, err := data.Client.Planet.
+		Query().
+		Where(planet.RegionCodeEQ(region)).
+		Where(planet.SystemCodeEQ(system)).
 		Order(ent.Asc(planet.FieldPositionCode)).
+		WithOwner().
 		All(r.Context())
 
 	if err != nil {

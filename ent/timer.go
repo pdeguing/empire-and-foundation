@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/facebookincubator/ent/dialect/sql"
+	"github.com/pdeguing/empire-and-foundation/ent/planet"
 	"github.com/pdeguing/empire-and-foundation/ent/timer"
 )
 
@@ -24,11 +25,31 @@ type Timer struct {
 	EndTime time.Time `json:"end_time,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TimerQuery when eager-loading is set.
-	Edges struct {
-		// Planet holds the value of the planet edge.
-		Planet *Planet
-	} `json:"edges"`
-	planet_id *int
+	Edges         TimerEdges `json:"edges"`
+	planet_timers *int
+}
+
+// TimerEdges holds the relations/edges for other nodes in the graph.
+type TimerEdges struct {
+	// Planet holds the value of the planet edge.
+	Planet *Planet
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// PlanetOrErr returns the Planet value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e TimerEdges) PlanetOrErr() (*Planet, error) {
+	if e.loadedTypes[0] {
+		if e.Planet == nil {
+			// The edge planet was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: planet.Label}
+		}
+		return e.Planet, nil
+	}
+	return nil, &NotLoadedError{edge: "planet"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -44,7 +65,7 @@ func (*Timer) scanValues() []interface{} {
 // fkValues returns the types for scanning foreign-keys values from sql.Rows.
 func (*Timer) fkValues() []interface{} {
 	return []interface{}{
-		&sql.NullInt64{}, // planet_id
+		&sql.NullInt64{}, // planet_timers
 	}
 }
 
@@ -78,10 +99,10 @@ func (t *Timer) assignValues(values ...interface{}) error {
 	values = values[3:]
 	if len(values) == len(timer.ForeignKeys) {
 		if value, ok := values[0].(*sql.NullInt64); !ok {
-			return fmt.Errorf("unexpected type %T for edge-field planet_id", value)
+			return fmt.Errorf("unexpected type %T for edge-field planet_timers", value)
 		} else if value.Valid {
-			t.planet_id = new(int)
-			*t.planet_id = int(value.Int64)
+			t.planet_timers = new(int)
+			*t.planet_timers = int(value.Int64)
 		}
 	}
 	return nil
@@ -89,14 +110,14 @@ func (t *Timer) assignValues(values ...interface{}) error {
 
 // QueryPlanet queries the planet edge of the Timer.
 func (t *Timer) QueryPlanet() *PlanetQuery {
-	return (&TimerClient{t.config}).QueryPlanet(t)
+	return (&TimerClient{config: t.config}).QueryPlanet(t)
 }
 
 // Update returns a builder for updating this Timer.
 // Note that, you need to call Timer.Unwrap() before calling this method, if this Timer
 // was returned from a transaction, and the transaction was committed or rolled back.
 func (t *Timer) Update() *TimerUpdateOne {
-	return (&TimerClient{t.config}).UpdateOne(t)
+	return (&TimerClient{config: t.config}).UpdateOne(t)
 }
 
 // Unwrap unwraps the entity that was returned from a transaction after it was closed,

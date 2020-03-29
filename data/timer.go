@@ -277,7 +277,7 @@ func GetTimer(ctx context.Context, p *ent.Planet, g timer.Group) (*Timer, error)
 	t, err := p.QueryTimers().
 		Where(timer.GroupEQ(g)).
 		Only(ctx)
-	if _, ok := err.(*ent.ErrNotFound); ok {
+	if _, ok := err.(*ent.NotFoundError); ok {
 		return nil, nil
 	}
 	if err != nil {
@@ -293,6 +293,9 @@ func GetTimer(ctx context.Context, p *ent.Planet, g timer.Group) (*Timer, error)
 func GetTimers(ctx context.Context, p *ent.Planet) (map[timer.Group]*Timer, error) {
 	timers, err := p.QueryTimers().
 		All(ctx)
+	if _, ok := err.(*ent.NotFoundError); ok {
+		return nil, nil
+	}
 	if err != nil {
 		return nil, fmt.Errorf("unable to retrieve timers for planet: %v", err)
 	}

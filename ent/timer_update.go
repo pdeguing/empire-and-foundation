@@ -4,7 +4,7 @@ package ent
 
 import (
 	"context"
-	"errors"
+	"fmt"
 
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
@@ -17,10 +17,9 @@ import (
 // TimerUpdate is the builder for updating Timer entities.
 type TimerUpdate struct {
 	config
-
-	planet        map[int]struct{}
-	clearedPlanet bool
-	predicates    []predicate.Timer
+	hooks      []Hook
+	mutation   *TimerMutation
+	predicates []predicate.Timer
 }
 
 // Where adds a new predicate for the builder.
@@ -31,10 +30,7 @@ func (tu *TimerUpdate) Where(ps ...predicate.Timer) *TimerUpdate {
 
 // SetPlanetID sets the planet edge to Planet by id.
 func (tu *TimerUpdate) SetPlanetID(id int) *TimerUpdate {
-	if tu.planet == nil {
-		tu.planet = make(map[int]struct{})
-	}
-	tu.planet[id] = struct{}{}
+	tu.mutation.SetPlanetID(id)
 	return tu
 }
 
@@ -53,16 +49,37 @@ func (tu *TimerUpdate) SetPlanet(p *Planet) *TimerUpdate {
 
 // ClearPlanet clears the planet edge to Planet.
 func (tu *TimerUpdate) ClearPlanet() *TimerUpdate {
-	tu.clearedPlanet = true
+	tu.mutation.ClearPlanet()
 	return tu
 }
 
 // Save executes the query and returns the number of rows/vertices matched by this operation.
 func (tu *TimerUpdate) Save(ctx context.Context) (int, error) {
-	if len(tu.planet) > 1 {
-		return 0, errors.New("ent: multiple assignments on a unique edge \"planet\"")
+
+	var (
+		err      error
+		affected int
+	)
+	if len(tu.hooks) == 0 {
+		affected, err = tu.sqlSave(ctx)
+	} else {
+		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
+			mutation, ok := m.(*TimerMutation)
+			if !ok {
+				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			tu.mutation = mutation
+			affected, err = tu.sqlSave(ctx)
+			return affected, err
+		})
+		for i := len(tu.hooks) - 1; i >= 0; i-- {
+			mut = tu.hooks[i](mut)
+		}
+		if _, err := mut.Mutate(ctx, tu.mutation); err != nil {
+			return 0, err
+		}
 	}
-	return tu.sqlSave(ctx)
+	return affected, err
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -105,7 +122,7 @@ func (tu *TimerUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if tu.clearedPlanet {
+	if tu.mutation.PlanetCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -121,7 +138,7 @@ func (tu *TimerUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tu.planet; len(nodes) > 0 {
+	if nodes := tu.mutation.PlanetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -135,13 +152,15 @@ func (tu *TimerUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				},
 			},
 		}
-		for k, _ := range nodes {
+		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, tu.driver, _spec); err != nil {
-		if cerr, ok := isSQLConstraintError(err); ok {
+		if _, ok := err.(*sqlgraph.NotFoundError); ok {
+			err = &NotFoundError{timer.Label}
+		} else if cerr, ok := isSQLConstraintError(err); ok {
 			err = cerr
 		}
 		return 0, err
@@ -152,18 +171,13 @@ func (tu *TimerUpdate) sqlSave(ctx context.Context) (n int, err error) {
 // TimerUpdateOne is the builder for updating a single Timer entity.
 type TimerUpdateOne struct {
 	config
-	id int
-
-	planet        map[int]struct{}
-	clearedPlanet bool
+	hooks    []Hook
+	mutation *TimerMutation
 }
 
 // SetPlanetID sets the planet edge to Planet by id.
 func (tuo *TimerUpdateOne) SetPlanetID(id int) *TimerUpdateOne {
-	if tuo.planet == nil {
-		tuo.planet = make(map[int]struct{})
-	}
-	tuo.planet[id] = struct{}{}
+	tuo.mutation.SetPlanetID(id)
 	return tuo
 }
 
@@ -182,16 +196,37 @@ func (tuo *TimerUpdateOne) SetPlanet(p *Planet) *TimerUpdateOne {
 
 // ClearPlanet clears the planet edge to Planet.
 func (tuo *TimerUpdateOne) ClearPlanet() *TimerUpdateOne {
-	tuo.clearedPlanet = true
+	tuo.mutation.ClearPlanet()
 	return tuo
 }
 
 // Save executes the query and returns the updated entity.
 func (tuo *TimerUpdateOne) Save(ctx context.Context) (*Timer, error) {
-	if len(tuo.planet) > 1 {
-		return nil, errors.New("ent: multiple assignments on a unique edge \"planet\"")
+
+	var (
+		err  error
+		node *Timer
+	)
+	if len(tuo.hooks) == 0 {
+		node, err = tuo.sqlSave(ctx)
+	} else {
+		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
+			mutation, ok := m.(*TimerMutation)
+			if !ok {
+				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			tuo.mutation = mutation
+			node, err = tuo.sqlSave(ctx)
+			return node, err
+		})
+		for i := len(tuo.hooks) - 1; i >= 0; i-- {
+			mut = tuo.hooks[i](mut)
+		}
+		if _, err := mut.Mutate(ctx, tuo.mutation); err != nil {
+			return nil, err
+		}
 	}
-	return tuo.sqlSave(ctx)
+	return node, err
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -222,13 +257,17 @@ func (tuo *TimerUpdateOne) sqlSave(ctx context.Context) (t *Timer, err error) {
 			Table:   timer.Table,
 			Columns: timer.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Value:  tuo.id,
 				Type:   field.TypeInt,
 				Column: timer.FieldID,
 			},
 		},
 	}
-	if tuo.clearedPlanet {
+	id, ok := tuo.mutation.ID()
+	if !ok {
+		return nil, fmt.Errorf("missing Timer.ID for update")
+	}
+	_spec.Node.ID.Value = id
+	if tuo.mutation.PlanetCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -244,7 +283,7 @@ func (tuo *TimerUpdateOne) sqlSave(ctx context.Context) (t *Timer, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tuo.planet; len(nodes) > 0 {
+	if nodes := tuo.mutation.PlanetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -258,7 +297,7 @@ func (tuo *TimerUpdateOne) sqlSave(ctx context.Context) (t *Timer, err error) {
 				},
 			},
 		}
-		for k, _ := range nodes {
+		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
@@ -267,7 +306,9 @@ func (tuo *TimerUpdateOne) sqlSave(ctx context.Context) (t *Timer, err error) {
 	_spec.Assign = t.assignValues
 	_spec.ScanValues = t.scanValues()
 	if err = sqlgraph.UpdateNode(ctx, tuo.driver, _spec); err != nil {
-		if cerr, ok := isSQLConstraintError(err); ok {
+		if _, ok := err.(*sqlgraph.NotFoundError); ok {
+			err = &NotFoundError{timer.Label}
+		} else if cerr, ok := isSQLConstraintError(err); ok {
 			err = cerr
 		}
 		return nil, err

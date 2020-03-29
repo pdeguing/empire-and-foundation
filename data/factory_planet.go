@@ -30,7 +30,7 @@ func NewPlanetFactory() *planetFactory {
 	f.SystemCode, _ = strconv.Atoi(faker.Number().Between(0, 255))
 	f.OrbitCode, _ = strconv.Atoi(faker.Number().Between(1, 15))
 	f.SuborbitCode = 0
-	f.PositionCode = getPositionCode(f.RegionCode, f.SystemCode, f.OrbitCode, f.SuborbitCode)
+	f.PositionCode = GetPositionCode(f.RegionCode, f.SystemCode, f.OrbitCode, f.SuborbitCode)
 	f.LastResourceUpdate = time.Now().Add(-time.Hour)
 	f.CreatedAt = faker.Time().Backward(time.Hour * 24 * 365)
 	f.UpdatedAt = faker.Time().Backward(time.Since(f.CreatedAt))

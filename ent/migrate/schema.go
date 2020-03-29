@@ -3,8 +3,6 @@
 package migrate
 
 import (
-	"github.com/pdeguing/empire-and-foundation/ent/planet"
-
 	"github.com/facebookincubator/ent/dialect/sql/schema"
 	"github.com/facebookincubator/ent/schema/field"
 )
@@ -15,29 +13,29 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "metal", Type: field.TypeInt64, Default: planet.DefaultMetal},
-		{Name: "metal_prod_level", Type: field.TypeInt, Default: planet.DefaultMetalProdLevel},
-		{Name: "metal_storage_level", Type: field.TypeInt, Default: planet.DefaultMetalStorageLevel},
-		{Name: "hydrogen", Type: field.TypeInt64, Default: planet.DefaultHydrogen},
-		{Name: "hydrogen_prod_level", Type: field.TypeInt, Default: planet.DefaultHydrogenProdLevel},
-		{Name: "hydrogen_storage_level", Type: field.TypeInt, Default: planet.DefaultHydrogenStorageLevel},
-		{Name: "silica", Type: field.TypeInt64, Default: planet.DefaultSilica},
-		{Name: "silica_prod_level", Type: field.TypeInt, Default: planet.DefaultSilicaProdLevel},
-		{Name: "silica_storage_level", Type: field.TypeInt, Default: planet.DefaultSilicaStorageLevel},
-		{Name: "population", Type: field.TypeInt64, Default: planet.DefaultPopulation},
-		{Name: "population_prod_level", Type: field.TypeInt, Default: planet.DefaultPopulationProdLevel},
-		{Name: "population_storage_level", Type: field.TypeInt, Default: planet.DefaultPopulationStorageLevel},
-		{Name: "solar_prod_level", Type: field.TypeInt, Default: planet.DefaultSolarProdLevel},
+		{Name: "metal", Type: field.TypeInt64},
+		{Name: "metal_prod_level", Type: field.TypeInt},
+		{Name: "metal_storage_level", Type: field.TypeInt},
+		{Name: "hydrogen", Type: field.TypeInt64},
+		{Name: "hydrogen_prod_level", Type: field.TypeInt},
+		{Name: "hydrogen_storage_level", Type: field.TypeInt},
+		{Name: "silica", Type: field.TypeInt64},
+		{Name: "silica_prod_level", Type: field.TypeInt},
+		{Name: "silica_storage_level", Type: field.TypeInt},
+		{Name: "population", Type: field.TypeInt64},
+		{Name: "population_prod_level", Type: field.TypeInt},
+		{Name: "population_storage_level", Type: field.TypeInt},
+		{Name: "solar_prod_level", Type: field.TypeInt},
 		{Name: "region_code", Type: field.TypeInt},
 		{Name: "system_code", Type: field.TypeInt},
 		{Name: "orbit_code", Type: field.TypeInt},
 		{Name: "suborbit_code", Type: field.TypeInt},
 		{Name: "position_code", Type: field.TypeInt, Unique: true},
-		{Name: "name", Type: field.TypeString, Default: planet.DefaultName},
+		{Name: "name", Type: field.TypeString, Default: "Unnamed"},
 		{Name: "planet_type", Type: field.TypeEnum, Enums: []string{"habitable", "mineral", "gas_giant", "ice_giant"}},
 		{Name: "planet_skin", Type: field.TypeString},
 		{Name: "last_resource_update", Type: field.TypeTime},
-		{Name: "owner_id", Type: field.TypeInt, Nullable: true},
+		{Name: "user_planets", Type: field.TypeInt, Nullable: true},
 	}
 	// PlanetsTable holds the schema information for the "planets" table.
 	PlanetsTable = &schema.Table{
@@ -74,7 +72,7 @@ var (
 		{Name: "action", Type: field.TypeEnum, Enums: []string{"upgrade_metal_prod", "upgrade_hydrogen_prod", "upgrade_silica_prod", "upgrade_solar_prod", "upgrade_urbanism", "upgrade_metal_storage", "upgrade_hydrogen_storage", "upgrade_silica_storage", "test"}},
 		{Name: "group", Type: field.TypeEnum, Enums: []string{"building"}},
 		{Name: "end_time", Type: field.TypeTime},
-		{Name: "planet_id", Type: field.TypeInt, Nullable: true},
+		{Name: "planet_timers", Type: field.TypeInt, Nullable: true},
 	}
 	// TimersTable holds the schema information for the "timers" table.
 	TimersTable = &schema.Table{
@@ -92,7 +90,7 @@ var (
 		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "timer_group_planet_id",
+				Name:    "timer_group_planet_timers",
 				Unique:  true,
 				Columns: []*schema.Column{TimersColumns[2], TimersColumns[4]},
 			},

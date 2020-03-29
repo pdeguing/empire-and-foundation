@@ -10,13 +10,13 @@ const (
 	// Label holds the string label denoting the timer type in the database.
 	Label = "timer"
 	// FieldID holds the string denoting the id field in the database.
-	FieldID = "id"
-	// FieldAction holds the string denoting the action vertex property in the database.
-	FieldAction = "action"
-	// FieldGroup holds the string denoting the group vertex property in the database.
-	FieldGroup = "group"
-	// FieldEndTime holds the string denoting the end_time vertex property in the database.
+	FieldID      = "id"     // FieldAction holds the string denoting the action vertex property in the database.
+	FieldAction  = "action" // FieldGroup holds the string denoting the group vertex property in the database.
+	FieldGroup   = "group"  // FieldEndTime holds the string denoting the end_time vertex property in the database.
 	FieldEndTime = "end_time"
+
+	// EdgePlanet holds the string denoting the planet edge name in mutations.
+	EdgePlanet = "planet"
 
 	// Table holds the table name of the timer in the database.
 	Table = "timers"
@@ -26,7 +26,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "planet" package.
 	PlanetInverseTable = "planets"
 	// PlanetColumn is the table column denoting the planet relation/edge.
-	PlanetColumn = "planet_id"
+	PlanetColumn = "planet_timers"
 )
 
 // Columns holds all SQL columns for timer fields.
@@ -39,7 +39,7 @@ var Columns = []string{
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the Timer type.
 var ForeignKeys = []string{
-	"planet_id",
+	"planet_timers",
 }
 
 // Action defines the type for the action enum field.

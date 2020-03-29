@@ -5,6 +5,7 @@ package ent
 import (
 	"context"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
@@ -16,17 +17,13 @@ import (
 // UserCreate is the builder for creating a User entity.
 type UserCreate struct {
 	config
-	created_at *time.Time
-	updated_at *time.Time
-	username   *string
-	email      *string
-	password   *string
-	planets    map[int]struct{}
+	mutation *UserMutation
+	hooks    []Hook
 }
 
 // SetCreatedAt sets the created_at field.
 func (uc *UserCreate) SetCreatedAt(t time.Time) *UserCreate {
-	uc.created_at = &t
+	uc.mutation.SetCreatedAt(t)
 	return uc
 }
 
@@ -40,7 +37,7 @@ func (uc *UserCreate) SetNillableCreatedAt(t *time.Time) *UserCreate {
 
 // SetUpdatedAt sets the updated_at field.
 func (uc *UserCreate) SetUpdatedAt(t time.Time) *UserCreate {
-	uc.updated_at = &t
+	uc.mutation.SetUpdatedAt(t)
 	return uc
 }
 
@@ -54,30 +51,25 @@ func (uc *UserCreate) SetNillableUpdatedAt(t *time.Time) *UserCreate {
 
 // SetUsername sets the username field.
 func (uc *UserCreate) SetUsername(s string) *UserCreate {
-	uc.username = &s
+	uc.mutation.SetUsername(s)
 	return uc
 }
 
 // SetEmail sets the email field.
 func (uc *UserCreate) SetEmail(s string) *UserCreate {
-	uc.email = &s
+	uc.mutation.SetEmail(s)
 	return uc
 }
 
 // SetPassword sets the password field.
 func (uc *UserCreate) SetPassword(s string) *UserCreate {
-	uc.password = &s
+	uc.mutation.SetPassword(s)
 	return uc
 }
 
 // AddPlanetIDs adds the planets edge to Planet by ids.
 func (uc *UserCreate) AddPlanetIDs(ids ...int) *UserCreate {
-	if uc.planets == nil {
-		uc.planets = make(map[int]struct{})
-	}
-	for i := range ids {
-		uc.planets[ids[i]] = struct{}{}
-	}
+	uc.mutation.AddPlanetIDs(ids...)
 	return uc
 }
 
@@ -92,24 +84,47 @@ func (uc *UserCreate) AddPlanets(p ...*Planet) *UserCreate {
 
 // Save creates the User in the database.
 func (uc *UserCreate) Save(ctx context.Context) (*User, error) {
-	if uc.created_at == nil {
+	if _, ok := uc.mutation.CreatedAt(); !ok {
 		v := user.DefaultCreatedAt()
-		uc.created_at = &v
+		uc.mutation.SetCreatedAt(v)
 	}
-	if uc.updated_at == nil {
+	if _, ok := uc.mutation.UpdatedAt(); !ok {
 		v := user.DefaultUpdatedAt()
-		uc.updated_at = &v
+		uc.mutation.SetUpdatedAt(v)
 	}
-	if uc.username == nil {
+	if _, ok := uc.mutation.Username(); !ok {
 		return nil, errors.New("ent: missing required field \"username\"")
 	}
-	if uc.email == nil {
+	if _, ok := uc.mutation.Email(); !ok {
 		return nil, errors.New("ent: missing required field \"email\"")
 	}
-	if uc.password == nil {
+	if _, ok := uc.mutation.Password(); !ok {
 		return nil, errors.New("ent: missing required field \"password\"")
 	}
-	return uc.sqlSave(ctx)
+	var (
+		err  error
+		node *User
+	)
+	if len(uc.hooks) == 0 {
+		node, err = uc.sqlSave(ctx)
+	} else {
+		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
+			mutation, ok := m.(*UserMutation)
+			if !ok {
+				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			uc.mutation = mutation
+			node, err = uc.sqlSave(ctx)
+			return node, err
+		})
+		for i := len(uc.hooks) - 1; i >= 0; i-- {
+			mut = uc.hooks[i](mut)
+		}
+		if _, err := mut.Mutate(ctx, uc.mutation); err != nil {
+			return nil, err
+		}
+	}
+	return node, err
 }
 
 // SaveX calls Save and panics if Save returns an error.
@@ -132,47 +147,47 @@ func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
 			},
 		}
 	)
-	if value := uc.created_at; value != nil {
+	if value, ok := uc.mutation.CreatedAt(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
-			Value:  *value,
+			Value:  value,
 			Column: user.FieldCreatedAt,
 		})
-		u.CreatedAt = *value
+		u.CreatedAt = value
 	}
-	if value := uc.updated_at; value != nil {
+	if value, ok := uc.mutation.UpdatedAt(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
-			Value:  *value,
+			Value:  value,
 			Column: user.FieldUpdatedAt,
 		})
-		u.UpdatedAt = *value
+		u.UpdatedAt = value
 	}
-	if value := uc.username; value != nil {
+	if value, ok := uc.mutation.Username(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
-			Value:  *value,
+			Value:  value,
 			Column: user.FieldUsername,
 		})
-		u.Username = *value
+		u.Username = value
 	}
-	if value := uc.email; value != nil {
+	if value, ok := uc.mutation.Email(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
-			Value:  *value,
+			Value:  value,
 			Column: user.FieldEmail,
 		})
-		u.Email = *value
+		u.Email = value
 	}
-	if value := uc.password; value != nil {
+	if value, ok := uc.mutation.Password(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
-			Value:  *value,
+			Value:  value,
 			Column: user.FieldPassword,
 		})
-		u.Password = *value
+		u.Password = value
 	}
-	if nodes := uc.planets; len(nodes) > 0 {
+	if nodes := uc.mutation.PlanetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -186,7 +201,7 @@ func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
 				},
 			},
 		}
-		for k, _ := range nodes {
+		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges = append(_spec.Edges, edge)

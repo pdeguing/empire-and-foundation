@@ -4,26 +4,21 @@ package user
 
 import (
 	"time"
-
-	"github.com/facebookincubator/ent"
-	"github.com/pdeguing/empire-and-foundation/ent/schema"
 )
 
 const (
 	// Label holds the string label denoting the user type in the database.
 	Label = "user"
 	// FieldID holds the string denoting the id field in the database.
-	FieldID = "id"
-	// FieldCreatedAt holds the string denoting the created_at vertex property in the database.
-	FieldCreatedAt = "created_at"
-	// FieldUpdatedAt holds the string denoting the updated_at vertex property in the database.
-	FieldUpdatedAt = "updated_at"
-	// FieldUsername holds the string denoting the username vertex property in the database.
-	FieldUsername = "username"
-	// FieldEmail holds the string denoting the email vertex property in the database.
-	FieldEmail = "email"
-	// FieldPassword holds the string denoting the password vertex property in the database.
-	FieldPassword = "password"
+	FieldID        = "id"         // FieldCreatedAt holds the string denoting the created_at vertex property in the database.
+	FieldCreatedAt = "created_at" // FieldUpdatedAt holds the string denoting the updated_at vertex property in the database.
+	FieldUpdatedAt = "updated_at" // FieldUsername holds the string denoting the username vertex property in the database.
+	FieldUsername  = "username"   // FieldEmail holds the string denoting the email vertex property in the database.
+	FieldEmail     = "email"      // FieldPassword holds the string denoting the password vertex property in the database.
+	FieldPassword  = "password"
+
+	// EdgePlanets holds the string denoting the planets edge name in mutations.
+	EdgePlanets = "planets"
 
 	// Table holds the table name of the user in the database.
 	Table = "users"
@@ -33,7 +28,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "planet" package.
 	PlanetsInverseTable = "planets"
 	// PlanetsColumn is the table column denoting the planets relation/edge.
-	PlanetsColumn = "owner_id"
+	PlanetsColumn = "user_planets"
 )
 
 // Columns holds all SQL columns for user fields.
@@ -47,21 +42,10 @@ var Columns = []string{
 }
 
 var (
-	mixin       = schema.User{}.Mixin()
-	mixinFields = [...][]ent.Field{
-		mixin[0].Fields(),
-	}
-	fields = schema.User{}.Fields()
-
-	// descCreatedAt is the schema descriptor for created_at field.
-	descCreatedAt = mixinFields[0][0].Descriptor()
 	// DefaultCreatedAt holds the default value on creation for the created_at field.
-	DefaultCreatedAt = descCreatedAt.Default.(func() time.Time)
-
-	// descUpdatedAt is the schema descriptor for updated_at field.
-	descUpdatedAt = mixinFields[0][1].Descriptor()
+	DefaultCreatedAt func() time.Time
 	// DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	DefaultUpdatedAt = descUpdatedAt.Default.(func() time.Time)
+	DefaultUpdatedAt func() time.Time
 	// UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	UpdateDefaultUpdatedAt = descUpdatedAt.UpdateDefault.(func() time.Time)
+	UpdateDefaultUpdatedAt func() time.Time
 )

@@ -4,7 +4,6 @@ package ent
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"time"
 
@@ -20,44 +19,9 @@ import (
 // PlanetUpdate is the builder for updating Planet entities.
 type PlanetUpdate struct {
 	config
-
-	updated_at                  *time.Time
-	metal                       *int64
-	addmetal                    *int64
-	metal_prod_level            *int
-	addmetal_prod_level         *int
-	metal_storage_level         *int
-	addmetal_storage_level      *int
-	hydrogen                    *int64
-	addhydrogen                 *int64
-	hydrogen_prod_level         *int
-	addhydrogen_prod_level      *int
-	hydrogen_storage_level      *int
-	addhydrogen_storage_level   *int
-	silica                      *int64
-	addsilica                   *int64
-	silica_prod_level           *int
-	addsilica_prod_level        *int
-	silica_storage_level        *int
-	addsilica_storage_level     *int
-	population                  *int64
-	addpopulation               *int64
-	population_prod_level       *int
-	addpopulation_prod_level    *int
-	population_storage_level    *int
-	addpopulation_storage_level *int
-	solar_prod_level            *int
-	addsolar_prod_level         *int
-
-	name *string
-
-	planet_skin          *string
-	last_resource_update *time.Time
-	owner                map[int]struct{}
-	timers               map[int]struct{}
-	clearedOwner         bool
-	removedTimers        map[int]struct{}
-	predicates           []predicate.Planet
+	hooks      []Hook
+	mutation   *PlanetMutation
+	predicates []predicate.Planet
 }
 
 // Where adds a new predicate for the builder.
@@ -68,14 +32,14 @@ func (pu *PlanetUpdate) Where(ps ...predicate.Planet) *PlanetUpdate {
 
 // SetUpdatedAt sets the updated_at field.
 func (pu *PlanetUpdate) SetUpdatedAt(t time.Time) *PlanetUpdate {
-	pu.updated_at = &t
+	pu.mutation.SetUpdatedAt(t)
 	return pu
 }
 
 // SetMetal sets the metal field.
 func (pu *PlanetUpdate) SetMetal(i int64) *PlanetUpdate {
-	pu.metal = &i
-	pu.addmetal = nil
+	pu.mutation.ResetMetal()
+	pu.mutation.SetMetal(i)
 	return pu
 }
 
@@ -89,18 +53,14 @@ func (pu *PlanetUpdate) SetNillableMetal(i *int64) *PlanetUpdate {
 
 // AddMetal adds i to metal.
 func (pu *PlanetUpdate) AddMetal(i int64) *PlanetUpdate {
-	if pu.addmetal == nil {
-		pu.addmetal = &i
-	} else {
-		*pu.addmetal += i
-	}
+	pu.mutation.AddMetal(i)
 	return pu
 }
 
 // SetMetalProdLevel sets the metal_prod_level field.
 func (pu *PlanetUpdate) SetMetalProdLevel(i int) *PlanetUpdate {
-	pu.metal_prod_level = &i
-	pu.addmetal_prod_level = nil
+	pu.mutation.ResetMetalProdLevel()
+	pu.mutation.SetMetalProdLevel(i)
 	return pu
 }
 
@@ -114,18 +74,14 @@ func (pu *PlanetUpdate) SetNillableMetalProdLevel(i *int) *PlanetUpdate {
 
 // AddMetalProdLevel adds i to metal_prod_level.
 func (pu *PlanetUpdate) AddMetalProdLevel(i int) *PlanetUpdate {
-	if pu.addmetal_prod_level == nil {
-		pu.addmetal_prod_level = &i
-	} else {
-		*pu.addmetal_prod_level += i
-	}
+	pu.mutation.AddMetalProdLevel(i)
 	return pu
 }
 
 // SetMetalStorageLevel sets the metal_storage_level field.
 func (pu *PlanetUpdate) SetMetalStorageLevel(i int) *PlanetUpdate {
-	pu.metal_storage_level = &i
-	pu.addmetal_storage_level = nil
+	pu.mutation.ResetMetalStorageLevel()
+	pu.mutation.SetMetalStorageLevel(i)
 	return pu
 }
 
@@ -139,18 +95,14 @@ func (pu *PlanetUpdate) SetNillableMetalStorageLevel(i *int) *PlanetUpdate {
 
 // AddMetalStorageLevel adds i to metal_storage_level.
 func (pu *PlanetUpdate) AddMetalStorageLevel(i int) *PlanetUpdate {
-	if pu.addmetal_storage_level == nil {
-		pu.addmetal_storage_level = &i
-	} else {
-		*pu.addmetal_storage_level += i
-	}
+	pu.mutation.AddMetalStorageLevel(i)
 	return pu
 }
 
 // SetHydrogen sets the hydrogen field.
 func (pu *PlanetUpdate) SetHydrogen(i int64) *PlanetUpdate {
-	pu.hydrogen = &i
-	pu.addhydrogen = nil
+	pu.mutation.ResetHydrogen()
+	pu.mutation.SetHydrogen(i)
 	return pu
 }
 
@@ -164,18 +116,14 @@ func (pu *PlanetUpdate) SetNillableHydrogen(i *int64) *PlanetUpdate {
 
 // AddHydrogen adds i to hydrogen.
 func (pu *PlanetUpdate) AddHydrogen(i int64) *PlanetUpdate {
-	if pu.addhydrogen == nil {
-		pu.addhydrogen = &i
-	} else {
-		*pu.addhydrogen += i
-	}
+	pu.mutation.AddHydrogen(i)
 	return pu
 }
 
 // SetHydrogenProdLevel sets the hydrogen_prod_level field.
 func (pu *PlanetUpdate) SetHydrogenProdLevel(i int) *PlanetUpdate {
-	pu.hydrogen_prod_level = &i
-	pu.addhydrogen_prod_level = nil
+	pu.mutation.ResetHydrogenProdLevel()
+	pu.mutation.SetHydrogenProdLevel(i)
 	return pu
 }
 
@@ -189,18 +137,14 @@ func (pu *PlanetUpdate) SetNillableHydrogenProdLevel(i *int) *PlanetUpdate {
 
 // AddHydrogenProdLevel adds i to hydrogen_prod_level.
 func (pu *PlanetUpdate) AddHydrogenProdLevel(i int) *PlanetUpdate {
-	if pu.addhydrogen_prod_level == nil {
-		pu.addhydrogen_prod_level = &i
-	} else {
-		*pu.addhydrogen_prod_level += i
-	}
+	pu.mutation.AddHydrogenProdLevel(i)
 	return pu
 }
 
 // SetHydrogenStorageLevel sets the hydrogen_storage_level field.
 func (pu *PlanetUpdate) SetHydrogenStorageLevel(i int) *PlanetUpdate {
-	pu.hydrogen_storage_level = &i
-	pu.addhydrogen_storage_level = nil
+	pu.mutation.ResetHydrogenStorageLevel()
+	pu.mutation.SetHydrogenStorageLevel(i)
 	return pu
 }
 
@@ -214,18 +158,14 @@ func (pu *PlanetUpdate) SetNillableHydrogenStorageLevel(i *int) *PlanetUpdate {
 
 // AddHydrogenStorageLevel adds i to hydrogen_storage_level.
 func (pu *PlanetUpdate) AddHydrogenStorageLevel(i int) *PlanetUpdate {
-	if pu.addhydrogen_storage_level == nil {
-		pu.addhydrogen_storage_level = &i
-	} else {
-		*pu.addhydrogen_storage_level += i
-	}
+	pu.mutation.AddHydrogenStorageLevel(i)
 	return pu
 }
 
 // SetSilica sets the silica field.
 func (pu *PlanetUpdate) SetSilica(i int64) *PlanetUpdate {
-	pu.silica = &i
-	pu.addsilica = nil
+	pu.mutation.ResetSilica()
+	pu.mutation.SetSilica(i)
 	return pu
 }
 
@@ -239,18 +179,14 @@ func (pu *PlanetUpdate) SetNillableSilica(i *int64) *PlanetUpdate {
 
 // AddSilica adds i to silica.
 func (pu *PlanetUpdate) AddSilica(i int64) *PlanetUpdate {
-	if pu.addsilica == nil {
-		pu.addsilica = &i
-	} else {
-		*pu.addsilica += i
-	}
+	pu.mutation.AddSilica(i)
 	return pu
 }
 
 // SetSilicaProdLevel sets the silica_prod_level field.
 func (pu *PlanetUpdate) SetSilicaProdLevel(i int) *PlanetUpdate {
-	pu.silica_prod_level = &i
-	pu.addsilica_prod_level = nil
+	pu.mutation.ResetSilicaProdLevel()
+	pu.mutation.SetSilicaProdLevel(i)
 	return pu
 }
 
@@ -264,18 +200,14 @@ func (pu *PlanetUpdate) SetNillableSilicaProdLevel(i *int) *PlanetUpdate {
 
 // AddSilicaProdLevel adds i to silica_prod_level.
 func (pu *PlanetUpdate) AddSilicaProdLevel(i int) *PlanetUpdate {
-	if pu.addsilica_prod_level == nil {
-		pu.addsilica_prod_level = &i
-	} else {
-		*pu.addsilica_prod_level += i
-	}
+	pu.mutation.AddSilicaProdLevel(i)
 	return pu
 }
 
 // SetSilicaStorageLevel sets the silica_storage_level field.
 func (pu *PlanetUpdate) SetSilicaStorageLevel(i int) *PlanetUpdate {
-	pu.silica_storage_level = &i
-	pu.addsilica_storage_level = nil
+	pu.mutation.ResetSilicaStorageLevel()
+	pu.mutation.SetSilicaStorageLevel(i)
 	return pu
 }
 
@@ -289,18 +221,14 @@ func (pu *PlanetUpdate) SetNillableSilicaStorageLevel(i *int) *PlanetUpdate {
 
 // AddSilicaStorageLevel adds i to silica_storage_level.
 func (pu *PlanetUpdate) AddSilicaStorageLevel(i int) *PlanetUpdate {
-	if pu.addsilica_storage_level == nil {
-		pu.addsilica_storage_level = &i
-	} else {
-		*pu.addsilica_storage_level += i
-	}
+	pu.mutation.AddSilicaStorageLevel(i)
 	return pu
 }
 
 // SetPopulation sets the population field.
 func (pu *PlanetUpdate) SetPopulation(i int64) *PlanetUpdate {
-	pu.population = &i
-	pu.addpopulation = nil
+	pu.mutation.ResetPopulation()
+	pu.mutation.SetPopulation(i)
 	return pu
 }
 
@@ -314,18 +242,14 @@ func (pu *PlanetUpdate) SetNillablePopulation(i *int64) *PlanetUpdate {
 
 // AddPopulation adds i to population.
 func (pu *PlanetUpdate) AddPopulation(i int64) *PlanetUpdate {
-	if pu.addpopulation == nil {
-		pu.addpopulation = &i
-	} else {
-		*pu.addpopulation += i
-	}
+	pu.mutation.AddPopulation(i)
 	return pu
 }
 
 // SetPopulationProdLevel sets the population_prod_level field.
 func (pu *PlanetUpdate) SetPopulationProdLevel(i int) *PlanetUpdate {
-	pu.population_prod_level = &i
-	pu.addpopulation_prod_level = nil
+	pu.mutation.ResetPopulationProdLevel()
+	pu.mutation.SetPopulationProdLevel(i)
 	return pu
 }
 
@@ -339,18 +263,14 @@ func (pu *PlanetUpdate) SetNillablePopulationProdLevel(i *int) *PlanetUpdate {
 
 // AddPopulationProdLevel adds i to population_prod_level.
 func (pu *PlanetUpdate) AddPopulationProdLevel(i int) *PlanetUpdate {
-	if pu.addpopulation_prod_level == nil {
-		pu.addpopulation_prod_level = &i
-	} else {
-		*pu.addpopulation_prod_level += i
-	}
+	pu.mutation.AddPopulationProdLevel(i)
 	return pu
 }
 
 // SetPopulationStorageLevel sets the population_storage_level field.
 func (pu *PlanetUpdate) SetPopulationStorageLevel(i int) *PlanetUpdate {
-	pu.population_storage_level = &i
-	pu.addpopulation_storage_level = nil
+	pu.mutation.ResetPopulationStorageLevel()
+	pu.mutation.SetPopulationStorageLevel(i)
 	return pu
 }
 
@@ -364,18 +284,14 @@ func (pu *PlanetUpdate) SetNillablePopulationStorageLevel(i *int) *PlanetUpdate 
 
 // AddPopulationStorageLevel adds i to population_storage_level.
 func (pu *PlanetUpdate) AddPopulationStorageLevel(i int) *PlanetUpdate {
-	if pu.addpopulation_storage_level == nil {
-		pu.addpopulation_storage_level = &i
-	} else {
-		*pu.addpopulation_storage_level += i
-	}
+	pu.mutation.AddPopulationStorageLevel(i)
 	return pu
 }
 
 // SetSolarProdLevel sets the solar_prod_level field.
 func (pu *PlanetUpdate) SetSolarProdLevel(i int) *PlanetUpdate {
-	pu.solar_prod_level = &i
-	pu.addsolar_prod_level = nil
+	pu.mutation.ResetSolarProdLevel()
+	pu.mutation.SetSolarProdLevel(i)
 	return pu
 }
 
@@ -389,17 +305,13 @@ func (pu *PlanetUpdate) SetNillableSolarProdLevel(i *int) *PlanetUpdate {
 
 // AddSolarProdLevel adds i to solar_prod_level.
 func (pu *PlanetUpdate) AddSolarProdLevel(i int) *PlanetUpdate {
-	if pu.addsolar_prod_level == nil {
-		pu.addsolar_prod_level = &i
-	} else {
-		*pu.addsolar_prod_level += i
-	}
+	pu.mutation.AddSolarProdLevel(i)
 	return pu
 }
 
 // SetName sets the name field.
 func (pu *PlanetUpdate) SetName(s string) *PlanetUpdate {
-	pu.name = &s
+	pu.mutation.SetName(s)
 	return pu
 }
 
@@ -413,13 +325,13 @@ func (pu *PlanetUpdate) SetNillableName(s *string) *PlanetUpdate {
 
 // SetPlanetSkin sets the planet_skin field.
 func (pu *PlanetUpdate) SetPlanetSkin(s string) *PlanetUpdate {
-	pu.planet_skin = &s
+	pu.mutation.SetPlanetSkin(s)
 	return pu
 }
 
 // SetLastResourceUpdate sets the last_resource_update field.
 func (pu *PlanetUpdate) SetLastResourceUpdate(t time.Time) *PlanetUpdate {
-	pu.last_resource_update = &t
+	pu.mutation.SetLastResourceUpdate(t)
 	return pu
 }
 
@@ -433,10 +345,7 @@ func (pu *PlanetUpdate) SetNillableLastResourceUpdate(t *time.Time) *PlanetUpdat
 
 // SetOwnerID sets the owner edge to User by id.
 func (pu *PlanetUpdate) SetOwnerID(id int) *PlanetUpdate {
-	if pu.owner == nil {
-		pu.owner = make(map[int]struct{})
-	}
-	pu.owner[id] = struct{}{}
+	pu.mutation.SetOwnerID(id)
 	return pu
 }
 
@@ -455,12 +364,7 @@ func (pu *PlanetUpdate) SetOwner(u *User) *PlanetUpdate {
 
 // AddTimerIDs adds the timers edge to Timer by ids.
 func (pu *PlanetUpdate) AddTimerIDs(ids ...int) *PlanetUpdate {
-	if pu.timers == nil {
-		pu.timers = make(map[int]struct{})
-	}
-	for i := range ids {
-		pu.timers[ids[i]] = struct{}{}
-	}
+	pu.mutation.AddTimerIDs(ids...)
 	return pu
 }
 
@@ -475,18 +379,13 @@ func (pu *PlanetUpdate) AddTimers(t ...*Timer) *PlanetUpdate {
 
 // ClearOwner clears the owner edge to User.
 func (pu *PlanetUpdate) ClearOwner() *PlanetUpdate {
-	pu.clearedOwner = true
+	pu.mutation.ClearOwner()
 	return pu
 }
 
 // RemoveTimerIDs removes the timers edge to Timer by ids.
 func (pu *PlanetUpdate) RemoveTimerIDs(ids ...int) *PlanetUpdate {
-	if pu.removedTimers == nil {
-		pu.removedTimers = make(map[int]struct{})
-	}
-	for i := range ids {
-		pu.removedTimers[ids[i]] = struct{}{}
-	}
+	pu.mutation.RemoveTimerIDs(ids...)
 	return pu
 }
 
@@ -501,79 +400,100 @@ func (pu *PlanetUpdate) RemoveTimers(t ...*Timer) *PlanetUpdate {
 
 // Save executes the query and returns the number of rows/vertices matched by this operation.
 func (pu *PlanetUpdate) Save(ctx context.Context) (int, error) {
-	if pu.updated_at == nil {
+	if _, ok := pu.mutation.UpdatedAt(); !ok {
 		v := planet.UpdateDefaultUpdatedAt()
-		pu.updated_at = &v
+		pu.mutation.SetUpdatedAt(v)
 	}
-	if pu.metal != nil {
-		if err := planet.MetalValidator(*pu.metal); err != nil {
+	if v, ok := pu.mutation.Metal(); ok {
+		if err := planet.MetalValidator(v); err != nil {
 			return 0, fmt.Errorf("ent: validator failed for field \"metal\": %v", err)
 		}
 	}
-	if pu.metal_prod_level != nil {
-		if err := planet.MetalProdLevelValidator(*pu.metal_prod_level); err != nil {
+	if v, ok := pu.mutation.MetalProdLevel(); ok {
+		if err := planet.MetalProdLevelValidator(v); err != nil {
 			return 0, fmt.Errorf("ent: validator failed for field \"metal_prod_level\": %v", err)
 		}
 	}
-	if pu.metal_storage_level != nil {
-		if err := planet.MetalStorageLevelValidator(*pu.metal_storage_level); err != nil {
+	if v, ok := pu.mutation.MetalStorageLevel(); ok {
+		if err := planet.MetalStorageLevelValidator(v); err != nil {
 			return 0, fmt.Errorf("ent: validator failed for field \"metal_storage_level\": %v", err)
 		}
 	}
-	if pu.hydrogen != nil {
-		if err := planet.HydrogenValidator(*pu.hydrogen); err != nil {
+	if v, ok := pu.mutation.Hydrogen(); ok {
+		if err := planet.HydrogenValidator(v); err != nil {
 			return 0, fmt.Errorf("ent: validator failed for field \"hydrogen\": %v", err)
 		}
 	}
-	if pu.hydrogen_prod_level != nil {
-		if err := planet.HydrogenProdLevelValidator(*pu.hydrogen_prod_level); err != nil {
+	if v, ok := pu.mutation.HydrogenProdLevel(); ok {
+		if err := planet.HydrogenProdLevelValidator(v); err != nil {
 			return 0, fmt.Errorf("ent: validator failed for field \"hydrogen_prod_level\": %v", err)
 		}
 	}
-	if pu.hydrogen_storage_level != nil {
-		if err := planet.HydrogenStorageLevelValidator(*pu.hydrogen_storage_level); err != nil {
+	if v, ok := pu.mutation.HydrogenStorageLevel(); ok {
+		if err := planet.HydrogenStorageLevelValidator(v); err != nil {
 			return 0, fmt.Errorf("ent: validator failed for field \"hydrogen_storage_level\": %v", err)
 		}
 	}
-	if pu.silica != nil {
-		if err := planet.SilicaValidator(*pu.silica); err != nil {
+	if v, ok := pu.mutation.Silica(); ok {
+		if err := planet.SilicaValidator(v); err != nil {
 			return 0, fmt.Errorf("ent: validator failed for field \"silica\": %v", err)
 		}
 	}
-	if pu.silica_prod_level != nil {
-		if err := planet.SilicaProdLevelValidator(*pu.silica_prod_level); err != nil {
+	if v, ok := pu.mutation.SilicaProdLevel(); ok {
+		if err := planet.SilicaProdLevelValidator(v); err != nil {
 			return 0, fmt.Errorf("ent: validator failed for field \"silica_prod_level\": %v", err)
 		}
 	}
-	if pu.silica_storage_level != nil {
-		if err := planet.SilicaStorageLevelValidator(*pu.silica_storage_level); err != nil {
+	if v, ok := pu.mutation.SilicaStorageLevel(); ok {
+		if err := planet.SilicaStorageLevelValidator(v); err != nil {
 			return 0, fmt.Errorf("ent: validator failed for field \"silica_storage_level\": %v", err)
 		}
 	}
-	if pu.population != nil {
-		if err := planet.PopulationValidator(*pu.population); err != nil {
+	if v, ok := pu.mutation.Population(); ok {
+		if err := planet.PopulationValidator(v); err != nil {
 			return 0, fmt.Errorf("ent: validator failed for field \"population\": %v", err)
 		}
 	}
-	if pu.population_prod_level != nil {
-		if err := planet.PopulationProdLevelValidator(*pu.population_prod_level); err != nil {
+	if v, ok := pu.mutation.PopulationProdLevel(); ok {
+		if err := planet.PopulationProdLevelValidator(v); err != nil {
 			return 0, fmt.Errorf("ent: validator failed for field \"population_prod_level\": %v", err)
 		}
 	}
-	if pu.population_storage_level != nil {
-		if err := planet.PopulationStorageLevelValidator(*pu.population_storage_level); err != nil {
+	if v, ok := pu.mutation.PopulationStorageLevel(); ok {
+		if err := planet.PopulationStorageLevelValidator(v); err != nil {
 			return 0, fmt.Errorf("ent: validator failed for field \"population_storage_level\": %v", err)
 		}
 	}
-	if pu.solar_prod_level != nil {
-		if err := planet.SolarProdLevelValidator(*pu.solar_prod_level); err != nil {
+	if v, ok := pu.mutation.SolarProdLevel(); ok {
+		if err := planet.SolarProdLevelValidator(v); err != nil {
 			return 0, fmt.Errorf("ent: validator failed for field \"solar_prod_level\": %v", err)
 		}
 	}
-	if len(pu.owner) > 1 {
-		return 0, errors.New("ent: multiple assignments on a unique edge \"owner\"")
+
+	var (
+		err      error
+		affected int
+	)
+	if len(pu.hooks) == 0 {
+		affected, err = pu.sqlSave(ctx)
+	} else {
+		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
+			mutation, ok := m.(*PlanetMutation)
+			if !ok {
+				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			pu.mutation = mutation
+			affected, err = pu.sqlSave(ctx)
+			return affected, err
+		})
+		for i := len(pu.hooks) - 1; i >= 0; i-- {
+			mut = pu.hooks[i](mut)
+		}
+		if _, err := mut.Mutate(ctx, pu.mutation); err != nil {
+			return 0, err
+		}
 	}
-	return pu.sqlSave(ctx)
+	return affected, err
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -616,217 +536,217 @@ func (pu *PlanetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value := pu.updated_at; value != nil {
+	if value, ok := pu.mutation.UpdatedAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldUpdatedAt,
 		})
 	}
-	if value := pu.metal; value != nil {
+	if value, ok := pu.mutation.Metal(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldMetal,
 		})
 	}
-	if value := pu.addmetal; value != nil {
+	if value, ok := pu.mutation.AddedMetal(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldMetal,
 		})
 	}
-	if value := pu.metal_prod_level; value != nil {
+	if value, ok := pu.mutation.MetalProdLevel(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldMetalProdLevel,
 		})
 	}
-	if value := pu.addmetal_prod_level; value != nil {
+	if value, ok := pu.mutation.AddedMetalProdLevel(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldMetalProdLevel,
 		})
 	}
-	if value := pu.metal_storage_level; value != nil {
+	if value, ok := pu.mutation.MetalStorageLevel(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldMetalStorageLevel,
 		})
 	}
-	if value := pu.addmetal_storage_level; value != nil {
+	if value, ok := pu.mutation.AddedMetalStorageLevel(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldMetalStorageLevel,
 		})
 	}
-	if value := pu.hydrogen; value != nil {
+	if value, ok := pu.mutation.Hydrogen(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldHydrogen,
 		})
 	}
-	if value := pu.addhydrogen; value != nil {
+	if value, ok := pu.mutation.AddedHydrogen(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldHydrogen,
 		})
 	}
-	if value := pu.hydrogen_prod_level; value != nil {
+	if value, ok := pu.mutation.HydrogenProdLevel(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldHydrogenProdLevel,
 		})
 	}
-	if value := pu.addhydrogen_prod_level; value != nil {
+	if value, ok := pu.mutation.AddedHydrogenProdLevel(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldHydrogenProdLevel,
 		})
 	}
-	if value := pu.hydrogen_storage_level; value != nil {
+	if value, ok := pu.mutation.HydrogenStorageLevel(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldHydrogenStorageLevel,
 		})
 	}
-	if value := pu.addhydrogen_storage_level; value != nil {
+	if value, ok := pu.mutation.AddedHydrogenStorageLevel(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldHydrogenStorageLevel,
 		})
 	}
-	if value := pu.silica; value != nil {
+	if value, ok := pu.mutation.Silica(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldSilica,
 		})
 	}
-	if value := pu.addsilica; value != nil {
+	if value, ok := pu.mutation.AddedSilica(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldSilica,
 		})
 	}
-	if value := pu.silica_prod_level; value != nil {
+	if value, ok := pu.mutation.SilicaProdLevel(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldSilicaProdLevel,
 		})
 	}
-	if value := pu.addsilica_prod_level; value != nil {
+	if value, ok := pu.mutation.AddedSilicaProdLevel(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldSilicaProdLevel,
 		})
 	}
-	if value := pu.silica_storage_level; value != nil {
+	if value, ok := pu.mutation.SilicaStorageLevel(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldSilicaStorageLevel,
 		})
 	}
-	if value := pu.addsilica_storage_level; value != nil {
+	if value, ok := pu.mutation.AddedSilicaStorageLevel(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldSilicaStorageLevel,
 		})
 	}
-	if value := pu.population; value != nil {
+	if value, ok := pu.mutation.Population(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldPopulation,
 		})
 	}
-	if value := pu.addpopulation; value != nil {
+	if value, ok := pu.mutation.AddedPopulation(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldPopulation,
 		})
 	}
-	if value := pu.population_prod_level; value != nil {
+	if value, ok := pu.mutation.PopulationProdLevel(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldPopulationProdLevel,
 		})
 	}
-	if value := pu.addpopulation_prod_level; value != nil {
+	if value, ok := pu.mutation.AddedPopulationProdLevel(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldPopulationProdLevel,
 		})
 	}
-	if value := pu.population_storage_level; value != nil {
+	if value, ok := pu.mutation.PopulationStorageLevel(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldPopulationStorageLevel,
 		})
 	}
-	if value := pu.addpopulation_storage_level; value != nil {
+	if value, ok := pu.mutation.AddedPopulationStorageLevel(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldPopulationStorageLevel,
 		})
 	}
-	if value := pu.solar_prod_level; value != nil {
+	if value, ok := pu.mutation.SolarProdLevel(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldSolarProdLevel,
 		})
 	}
-	if value := pu.addsolar_prod_level; value != nil {
+	if value, ok := pu.mutation.AddedSolarProdLevel(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldSolarProdLevel,
 		})
 	}
-	if value := pu.name; value != nil {
+	if value, ok := pu.mutation.Name(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldName,
 		})
 	}
-	if value := pu.planet_skin; value != nil {
+	if value, ok := pu.mutation.PlanetSkin(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldPlanetSkin,
 		})
 	}
-	if value := pu.last_resource_update; value != nil {
+	if value, ok := pu.mutation.LastResourceUpdate(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldLastResourceUpdate,
 		})
 	}
-	if pu.clearedOwner {
+	if pu.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -842,7 +762,7 @@ func (pu *PlanetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := pu.owner; len(nodes) > 0 {
+	if nodes := pu.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -856,12 +776,12 @@ func (pu *PlanetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				},
 			},
 		}
-		for k, _ := range nodes {
+		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if nodes := pu.removedTimers; len(nodes) > 0 {
+	if nodes := pu.mutation.RemovedTimersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -875,12 +795,12 @@ func (pu *PlanetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				},
 			},
 		}
-		for k, _ := range nodes {
+		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := pu.timers; len(nodes) > 0 {
+	if nodes := pu.mutation.TimersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -894,13 +814,15 @@ func (pu *PlanetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				},
 			},
 		}
-		for k, _ := range nodes {
+		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, pu.driver, _spec); err != nil {
-		if cerr, ok := isSQLConstraintError(err); ok {
+		if _, ok := err.(*sqlgraph.NotFoundError); ok {
+			err = &NotFoundError{planet.Label}
+		} else if cerr, ok := isSQLConstraintError(err); ok {
 			err = cerr
 		}
 		return 0, err
@@ -911,56 +833,20 @@ func (pu *PlanetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 // PlanetUpdateOne is the builder for updating a single Planet entity.
 type PlanetUpdateOne struct {
 	config
-	id int
-
-	updated_at                  *time.Time
-	metal                       *int64
-	addmetal                    *int64
-	metal_prod_level            *int
-	addmetal_prod_level         *int
-	metal_storage_level         *int
-	addmetal_storage_level      *int
-	hydrogen                    *int64
-	addhydrogen                 *int64
-	hydrogen_prod_level         *int
-	addhydrogen_prod_level      *int
-	hydrogen_storage_level      *int
-	addhydrogen_storage_level   *int
-	silica                      *int64
-	addsilica                   *int64
-	silica_prod_level           *int
-	addsilica_prod_level        *int
-	silica_storage_level        *int
-	addsilica_storage_level     *int
-	population                  *int64
-	addpopulation               *int64
-	population_prod_level       *int
-	addpopulation_prod_level    *int
-	population_storage_level    *int
-	addpopulation_storage_level *int
-	solar_prod_level            *int
-	addsolar_prod_level         *int
-
-	name *string
-
-	planet_skin          *string
-	last_resource_update *time.Time
-	owner                map[int]struct{}
-	timers               map[int]struct{}
-	clearedOwner         bool
-	removedTimers        map[int]struct{}
+	hooks    []Hook
+	mutation *PlanetMutation
 }
 
 // SetUpdatedAt sets the updated_at field.
 func (puo *PlanetUpdateOne) SetUpdatedAt(t time.Time) *PlanetUpdateOne {
-	puo.updated_at = &t
+	puo.mutation.SetUpdatedAt(t)
 	return puo
 }
 
 // SetMetal sets the metal field.
 func (puo *PlanetUpdateOne) SetMetal(i int64) *PlanetUpdateOne {
-	puo.metal = &i
-	puo.addmetal = nil
+	puo.mutation.ResetMetal()
+	puo.mutation.SetMetal(i)
 	return puo
 }
 
@@ -974,18 +860,14 @@ func (puo *PlanetUpdateOne) SetNillableMetal(i *int64) *PlanetUpdateOne {
 
 // AddMetal adds i to metal.
 func (puo *PlanetUpdateOne) AddMetal(i int64) *PlanetUpdateOne {
-	if puo.addmetal == nil {
-		puo.addmetal = &i
-	} else {
-		*puo.addmetal += i
-	}
+	puo.mutation.AddMetal(i)
 	return puo
 }
 
 // SetMetalProdLevel sets the metal_prod_level field.
 func (puo *PlanetUpdateOne) SetMetalProdLevel(i int) *PlanetUpdateOne {
-	puo.metal_prod_level = &i
-	puo.addmetal_prod_level = nil
+	puo.mutation.ResetMetalProdLevel()
+	puo.mutation.SetMetalProdLevel(i)
 	return puo
 }
 
@@ -999,18 +881,14 @@ func (puo *PlanetUpdateOne) SetNillableMetalProdLevel(i *int) *PlanetUpdateOne {
 
 // AddMetalProdLevel adds i to metal_prod_level.
 func (puo *PlanetUpdateOne) AddMetalProdLevel(i int) *PlanetUpdateOne {
-	if puo.addmetal_prod_level == nil {
-		puo.addmetal_prod_level = &i
-	} else {
-		*puo.addmetal_prod_level += i
-	}
+	puo.mutation.AddMetalProdLevel(i)
 	return puo
 }
 
 // SetMetalStorageLevel sets the metal_storage_level field.
 func (puo *PlanetUpdateOne) SetMetalStorageLevel(i int) *PlanetUpdateOne {
-	puo.metal_storage_level = &i
-	puo.addmetal_storage_level = nil
+	puo.mutation.ResetMetalStorageLevel()
+	puo.mutation.SetMetalStorageLevel(i)
 	return puo
 }
 
@@ -1024,18 +902,14 @@ func (puo *PlanetUpdateOne) SetNillableMetalStorageLevel(i *int) *PlanetUpdateOn
 
 // AddMetalStorageLevel adds i to metal_storage_level.
 func (puo *PlanetUpdateOne) AddMetalStorageLevel(i int) *PlanetUpdateOne {
-	if puo.addmetal_storage_level == nil {
-		puo.addmetal_storage_level = &i
-	} else {
-		*puo.addmetal_storage_level += i
-	}
+	puo.mutation.AddMetalStorageLevel(i)
 	return puo
 }
 
 // SetHydrogen sets the hydrogen field.
 func (puo *PlanetUpdateOne) SetHydrogen(i int64) *PlanetUpdateOne {
-	puo.hydrogen = &i
-	puo.addhydrogen = nil
+	puo.mutation.ResetHydrogen()
+	puo.mutation.SetHydrogen(i)
 	return puo
 }
 
@@ -1049,18 +923,14 @@ func (puo *PlanetUpdateOne) SetNillableHydrogen(i *int64) *PlanetUpdateOne {
 
 // AddHydrogen adds i to hydrogen.
 func (puo *PlanetUpdateOne) AddHydrogen(i int64) *PlanetUpdateOne {
-	if puo.addhydrogen == nil {
-		puo.addhydrogen = &i
-	} else {
-		*puo.addhydrogen += i
-	}
+	puo.mutation.AddHydrogen(i)
 	return puo
 }
 
 // SetHydrogenProdLevel sets the hydrogen_prod_level field.
 func (puo *PlanetUpdateOne) SetHydrogenProdLevel(i int) *PlanetUpdateOne {
-	puo.hydrogen_prod_level = &i
-	puo.addhydrogen_prod_level = nil
+	puo.mutation.ResetHydrogenProdLevel()
+	puo.mutation.SetHydrogenProdLevel(i)
 	return puo
 }
 
@@ -1074,18 +944,14 @@ func (puo *PlanetUpdateOne) SetNillableHydrogenProdLevel(i *int) *PlanetUpdateOn
 
 // AddHydrogenProdLevel adds i to hydrogen_prod_level.
 func (puo *PlanetUpdateOne) AddHydrogenProdLevel(i int) *PlanetUpdateOne {
-	if puo.addhydrogen_prod_level == nil {
-		puo.addhydrogen_prod_level = &i
-	} else {
-		*puo.addhydrogen_prod_level += i
-	}
+	puo.mutation.AddHydrogenProdLevel(i)
 	return puo
 }
 
 // SetHydrogenStorageLevel sets the hydrogen_storage_level field.
 func (puo *PlanetUpdateOne) SetHydrogenStorageLevel(i int) *PlanetUpdateOne {
-	puo.hydrogen_storage_level = &i
-	puo.addhydrogen_storage_level = nil
+	puo.mutation.ResetHydrogenStorageLevel()
+	puo.mutation.SetHydrogenStorageLevel(i)
 	return puo
 }
 
@@ -1099,18 +965,14 @@ func (puo *PlanetUpdateOne) SetNillableHydrogenStorageLevel(i *int) *PlanetUpdat
 
 // AddHydrogenStorageLevel adds i to hydrogen_storage_level.
 func (puo *PlanetUpdateOne) AddHydrogenStorageLevel(i int) *PlanetUpdateOne {
-	if puo.addhydrogen_storage_level == nil {
-		puo.addhydrogen_storage_level = &i
-	} else {
-		*puo.addhydrogen_storage_level += i
-	}
+	puo.mutation.AddHydrogenStorageLevel(i)
 	return puo
 }
 
 // SetSilica sets the silica field.
 func (puo *PlanetUpdateOne) SetSilica(i int64) *PlanetUpdateOne {
-	puo.silica = &i
-	puo.addsilica = nil
+	puo.mutation.ResetSilica()
+	puo.mutation.SetSilica(i)
 	return puo
 }
 
@@ -1124,18 +986,14 @@ func (puo *PlanetUpdateOne) SetNillableSilica(i *int64) *PlanetUpdateOne {
 
 // AddSilica adds i to silica.
 func (puo *PlanetUpdateOne) AddSilica(i int64) *PlanetUpdateOne {
-	if puo.addsilica == nil {
-		puo.addsilica = &i
-	} else {
-		*puo.addsilica += i
-	}
+	puo.mutation.AddSilica(i)
 	return puo
 }
 
 // SetSilicaProdLevel sets the silica_prod_level field.
 func (puo *PlanetUpdateOne) SetSilicaProdLevel(i int) *PlanetUpdateOne {
-	puo.silica_prod_level = &i
-	puo.addsilica_prod_level = nil
+	puo.mutation.ResetSilicaProdLevel()
+	puo.mutation.SetSilicaProdLevel(i)
 	return puo
 }
 
@@ -1149,18 +1007,14 @@ func (puo *PlanetUpdateOne) SetNillableSilicaProdLevel(i *int) *PlanetUpdateOne 
 
 // AddSilicaProdLevel adds i to silica_prod_level.
 func (puo *PlanetUpdateOne) AddSilicaProdLevel(i int) *PlanetUpdateOne {
-	if puo.addsilica_prod_level == nil {
-		puo.addsilica_prod_level = &i
-	} else {
-		*puo.addsilica_prod_level += i
-	}
+	puo.mutation.AddSilicaProdLevel(i)
 	return puo
 }
 
 // SetSilicaStorageLevel sets the silica_storage_level field.
 func (puo *PlanetUpdateOne) SetSilicaStorageLevel(i int) *PlanetUpdateOne {
-	puo.silica_storage_level = &i
-	puo.addsilica_storage_level = nil
+	puo.mutation.ResetSilicaStorageLevel()
+	puo.mutation.SetSilicaStorageLevel(i)
 	return puo
 }
 
@@ -1174,18 +1028,14 @@ func (puo *PlanetUpdateOne) SetNillableSilicaStorageLevel(i *int) *PlanetUpdateO
 
 // AddSilicaStorageLevel adds i to silica_storage_level.
 func (puo *PlanetUpdateOne) AddSilicaStorageLevel(i int) *PlanetUpdateOne {
-	if puo.addsilica_storage_level == nil {
-		puo.addsilica_storage_level = &i
-	} else {
-		*puo.addsilica_storage_level += i
-	}
+	puo.mutation.AddSilicaStorageLevel(i)
 	return puo
 }
 
 // SetPopulation sets the population field.
 func (puo *PlanetUpdateOne) SetPopulation(i int64) *PlanetUpdateOne {
-	puo.population = &i
-	puo.addpopulation = nil
+	puo.mutation.ResetPopulation()
+	puo.mutation.SetPopulation(i)
 	return puo
 }
 
@@ -1199,18 +1049,14 @@ func (puo *PlanetUpdateOne) SetNillablePopulation(i *int64) *PlanetUpdateOne {
 
 // AddPopulation adds i to population.
 func (puo *PlanetUpdateOne) AddPopulation(i int64) *PlanetUpdateOne {
-	if puo.addpopulation == nil {
-		puo.addpopulation = &i
-	} else {
-		*puo.addpopulation += i
-	}
+	puo.mutation.AddPopulation(i)
 	return puo
 }
 
 // SetPopulationProdLevel sets the population_prod_level field.
 func (puo *PlanetUpdateOne) SetPopulationProdLevel(i int) *PlanetUpdateOne {
-	puo.population_prod_level = &i
-	puo.addpopulation_prod_level = nil
+	puo.mutation.ResetPopulationProdLevel()
+	puo.mutation.SetPopulationProdLevel(i)
 	return puo
 }
 
@@ -1224,18 +1070,14 @@ func (puo *PlanetUpdateOne) SetNillablePopulationProdLevel(i *int) *PlanetUpdate
 
 // AddPopulationProdLevel adds i to population_prod_level.
 func (puo *PlanetUpdateOne) AddPopulationProdLevel(i int) *PlanetUpdateOne {
-	if puo.addpopulation_prod_level == nil {
-		puo.addpopulation_prod_level = &i
-	} else {
-		*puo.addpopulation_prod_level += i
-	}
+	puo.mutation.AddPopulationProdLevel(i)
 	return puo
 }
 
 // SetPopulationStorageLevel sets the population_storage_level field.
 func (puo *PlanetUpdateOne) SetPopulationStorageLevel(i int) *PlanetUpdateOne {
-	puo.population_storage_level = &i
-	puo.addpopulation_storage_level = nil
+	puo.mutation.ResetPopulationStorageLevel()
+	puo.mutation.SetPopulationStorageLevel(i)
 	return puo
 }
 
@@ -1249,18 +1091,14 @@ func (puo *PlanetUpdateOne) SetNillablePopulationStorageLevel(i *int) *PlanetUpd
 
 // AddPopulationStorageLevel adds i to population_storage_level.
 func (puo *PlanetUpdateOne) AddPopulationStorageLevel(i int) *PlanetUpdateOne {
-	if puo.addpopulation_storage_level == nil {
-		puo.addpopulation_storage_level = &i
-	} else {
-		*puo.addpopulation_storage_level += i
-	}
+	puo.mutation.AddPopulationStorageLevel(i)
 	return puo
 }
 
 // SetSolarProdLevel sets the solar_prod_level field.
 func (puo *PlanetUpdateOne) SetSolarProdLevel(i int) *PlanetUpdateOne {
-	puo.solar_prod_level = &i
-	puo.addsolar_prod_level = nil
+	puo.mutation.ResetSolarProdLevel()
+	puo.mutation.SetSolarProdLevel(i)
 	return puo
 }
 
@@ -1274,17 +1112,13 @@ func (puo *PlanetUpdateOne) SetNillableSolarProdLevel(i *int) *PlanetUpdateOne {
 
 // AddSolarProdLevel adds i to solar_prod_level.
 func (puo *PlanetUpdateOne) AddSolarProdLevel(i int) *PlanetUpdateOne {
-	if puo.addsolar_prod_level == nil {
-		puo.addsolar_prod_level = &i
-	} else {
-		*puo.addsolar_prod_level += i
-	}
+	puo.mutation.AddSolarProdLevel(i)
 	return puo
 }
 
 // SetName sets the name field.
 func (puo *PlanetUpdateOne) SetName(s string) *PlanetUpdateOne {
-	puo.name = &s
+	puo.mutation.SetName(s)
 	return puo
 }
 
@@ -1298,13 +1132,13 @@ func (puo *PlanetUpdateOne) SetNillableName(s *string) *PlanetUpdateOne {
 
 // SetPlanetSkin sets the planet_skin field.
 func (puo *PlanetUpdateOne) SetPlanetSkin(s string) *PlanetUpdateOne {
-	puo.planet_skin = &s
+	puo.mutation.SetPlanetSkin(s)
 	return puo
 }
 
 // SetLastResourceUpdate sets the last_resource_update field.
 func (puo *PlanetUpdateOne) SetLastResourceUpdate(t time.Time) *PlanetUpdateOne {
-	puo.last_resource_update = &t
+	puo.mutation.SetLastResourceUpdate(t)
 	return puo
 }
 
@@ -1318,10 +1152,7 @@ func (puo *PlanetUpdateOne) SetNillableLastResourceUpdate(t *time.Time) *PlanetU
 
 // SetOwnerID sets the owner edge to User by id.
 func (puo *PlanetUpdateOne) SetOwnerID(id int) *PlanetUpdateOne {
-	if puo.owner == nil {
-		puo.owner = make(map[int]struct{})
-	}
-	puo.owner[id] = struct{}{}
+	puo.mutation.SetOwnerID(id)
 	return puo
 }
 
@@ -1340,12 +1171,7 @@ func (puo *PlanetUpdateOne) SetOwner(u *User) *PlanetUpdateOne {
 
 // AddTimerIDs adds the timers edge to Timer by ids.
 func (puo *PlanetUpdateOne) AddTimerIDs(ids ...int) *PlanetUpdateOne {
-	if puo.timers == nil {
-		puo.timers = make(map[int]struct{})
-	}
-	for i := range ids {
-		puo.timers[ids[i]] = struct{}{}
-	}
+	puo.mutation.AddTimerIDs(ids...)
 	return puo
 }
 
@@ -1360,18 +1186,13 @@ func (puo *PlanetUpdateOne) AddTimers(t ...*Timer) *PlanetUpdateOne {
 
 // ClearOwner clears the owner edge to User.
 func (puo *PlanetUpdateOne) ClearOwner() *PlanetUpdateOne {
-	puo.clearedOwner = true
+	puo.mutation.ClearOwner()
 	return puo
 }
 
 // RemoveTimerIDs removes the timers edge to Timer by ids.
 func (puo *PlanetUpdateOne) RemoveTimerIDs(ids ...int) *PlanetUpdateOne {
-	if puo.removedTimers == nil {
-		puo.removedTimers = make(map[int]struct{})
-	}
-	for i := range ids {
-		puo.removedTimers[ids[i]] = struct{}{}
-	}
+	puo.mutation.RemoveTimerIDs(ids...)
 	return puo
 }
 
@@ -1386,79 +1207,100 @@ func (puo *PlanetUpdateOne) RemoveTimers(t ...*Timer) *PlanetUpdateOne {
 
 // Save executes the query and returns the updated entity.
 func (puo *PlanetUpdateOne) Save(ctx context.Context) (*Planet, error) {
-	if puo.updated_at == nil {
+	if _, ok := puo.mutation.UpdatedAt(); !ok {
 		v := planet.UpdateDefaultUpdatedAt()
-		puo.updated_at = &v
+		puo.mutation.SetUpdatedAt(v)
 	}
-	if puo.metal != nil {
-		if err := planet.MetalValidator(*puo.metal); err != nil {
+	if v, ok := puo.mutation.Metal(); ok {
+		if err := planet.MetalValidator(v); err != nil {
 			return nil, fmt.Errorf("ent: validator failed for field \"metal\": %v", err)
 		}
 	}
-	if puo.metal_prod_level != nil {
-		if err := planet.MetalProdLevelValidator(*puo.metal_prod_level); err != nil {
+	if v, ok := puo.mutation.MetalProdLevel(); ok {
+		if err := planet.MetalProdLevelValidator(v); err != nil {
 			return nil, fmt.Errorf("ent: validator failed for field \"metal_prod_level\": %v", err)
 		}
 	}
-	if puo.metal_storage_level != nil {
-		if err := planet.MetalStorageLevelValidator(*puo.metal_storage_level); err != nil {
+	if v, ok := puo.mutation.MetalStorageLevel(); ok {
+		if err := planet.MetalStorageLevelValidator(v); err != nil {
 			return nil, fmt.Errorf("ent: validator failed for field \"metal_storage_level\": %v", err)
 		}
 	}
-	if puo.hydrogen != nil {
-		if err := planet.HydrogenValidator(*puo.hydrogen); err != nil {
+	if v, ok := puo.mutation.Hydrogen(); ok {
+		if err := planet.HydrogenValidator(v); err != nil {
 			return nil, fmt.Errorf("ent: validator failed for field \"hydrogen\": %v", err)
 		}
 	}
-	if puo.hydrogen_prod_level != nil {
-		if err := planet.HydrogenProdLevelValidator(*puo.hydrogen_prod_level); err != nil {
+	if v, ok := puo.mutation.HydrogenProdLevel(); ok {
+		if err := planet.HydrogenProdLevelValidator(v); err != nil {
 			return nil, fmt.Errorf("ent: validator failed for field \"hydrogen_prod_level\": %v", err)
 		}
 	}
-	if puo.hydrogen_storage_level != nil {
-		if err := planet.HydrogenStorageLevelValidator(*puo.hydrogen_storage_level); err != nil {
+	if v, ok := puo.mutation.HydrogenStorageLevel(); ok {
+		if err := planet.HydrogenStorageLevelValidator(v); err != nil {
 			return nil, fmt.Errorf("ent: validator failed for field \"hydrogen_storage_level\": %v", err)
 		}
 	}
-	if puo.silica != nil {
-		if err := planet.SilicaValidator(*puo.silica); err != nil {
+	if v, ok := puo.mutation.Silica(); ok {
+		if err := planet.SilicaValidator(v); err != nil {
 			return nil, fmt.Errorf("ent: validator failed for field \"silica\": %v", err)
 		}
 	}
-	if puo.silica_prod_level != nil {
-		if err := planet.SilicaProdLevelValidator(*puo.silica_prod_level); err != nil {
+	if v, ok := puo.mutation.SilicaProdLevel(); ok {
+		if err := planet.SilicaProdLevelValidator(v); err != nil {
 			return nil, fmt.Errorf("ent: validator failed for field \"silica_prod_level\": %v", err)
 		}
 	}
-	if puo.silica_storage_level != nil {
-		if err := planet.SilicaStorageLevelValidator(*puo.silica_storage_level); err != nil {
+	if v, ok := puo.mutation.SilicaStorageLevel(); ok {
+		if err := planet.SilicaStorageLevelValidator(v); err != nil {
 			return nil, fmt.Errorf("ent: validator failed for field \"silica_storage_level\": %v", err)
 		}
 	}
-	if puo.population != nil {
-		if err := planet.PopulationValidator(*puo.population); err != nil {
+	if v, ok := puo.mutation.Population(); ok {
+		if err := planet.PopulationValidator(v); err != nil {
 			return nil, fmt.Errorf("ent: validator failed for field \"population\": %v", err)
 		}
 	}
-	if puo.population_prod_level != nil {
-		if err := planet.PopulationProdLevelValidator(*puo.population_prod_level); err != nil {
+	if v, ok := puo.mutation.PopulationProdLevel(); ok {
+		if err := planet.PopulationProdLevelValidator(v); err != nil {
 			return nil, fmt.Errorf("ent: validator failed for field \"population_prod_level\": %v", err)
 		}
 	}
-	if puo.population_storage_level != nil {
-		if err := planet.PopulationStorageLevelValidator(*puo.population_storage_level); err != nil {
+	if v, ok := puo.mutation.PopulationStorageLevel(); ok {
+		if err := planet.PopulationStorageLevelValidator(v); err != nil {
 			return nil, fmt.Errorf("ent: validator failed for field \"population_storage_level\": %v", err)
 		}
 	}
-	if puo.solar_prod_level != nil {
-		if err := planet.SolarProdLevelValidator(*puo.solar_prod_level); err != nil {
+	if v, ok := puo.mutation.SolarProdLevel(); ok {
+		if err := planet.SolarProdLevelValidator(v); err != nil {
 			return nil, fmt.Errorf("ent: validator failed for field \"solar_prod_level\": %v", err)
 		}
 	}
-	if len(puo.owner) > 1 {
-		return nil, errors.New("ent: multiple assignments on a unique edge \"owner\"")
+
+	var (
+		err  error
+		node *Planet
+	)
+	if len(puo.hooks) == 0 {
+		node, err = puo.sqlSave(ctx)
+	} else {
+		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
+			mutation, ok := m.(*PlanetMutation)
+			if !ok {
+				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			puo.mutation = mutation
+			node, err = puo.sqlSave(ctx)
+			return node, err
+		})
+		for i := len(puo.hooks) - 1; i >= 0; i-- {
+			mut = puo.hooks[i](mut)
+		}
+		if _, err := mut.Mutate(ctx, puo.mutation); err != nil {
+			return nil, err
+		}
 	}
-	return puo.sqlSave(ctx)
+	return node, err
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -1489,223 +1331,227 @@ func (puo *PlanetUpdateOne) sqlSave(ctx context.Context) (pl *Planet, err error)
 			Table:   planet.Table,
 			Columns: planet.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Value:  puo.id,
 				Type:   field.TypeInt,
 				Column: planet.FieldID,
 			},
 		},
 	}
-	if value := puo.updated_at; value != nil {
+	id, ok := puo.mutation.ID()
+	if !ok {
+		return nil, fmt.Errorf("missing Planet.ID for update")
+	}
+	_spec.Node.ID.Value = id
+	if value, ok := puo.mutation.UpdatedAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldUpdatedAt,
 		})
 	}
-	if value := puo.metal; value != nil {
+	if value, ok := puo.mutation.Metal(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldMetal,
 		})
 	}
-	if value := puo.addmetal; value != nil {
+	if value, ok := puo.mutation.AddedMetal(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldMetal,
 		})
 	}
-	if value := puo.metal_prod_level; value != nil {
+	if value, ok := puo.mutation.MetalProdLevel(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldMetalProdLevel,
 		})
 	}
-	if value := puo.addmetal_prod_level; value != nil {
+	if value, ok := puo.mutation.AddedMetalProdLevel(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldMetalProdLevel,
 		})
 	}
-	if value := puo.metal_storage_level; value != nil {
+	if value, ok := puo.mutation.MetalStorageLevel(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldMetalStorageLevel,
 		})
 	}
-	if value := puo.addmetal_storage_level; value != nil {
+	if value, ok := puo.mutation.AddedMetalStorageLevel(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldMetalStorageLevel,
 		})
 	}
-	if value := puo.hydrogen; value != nil {
+	if value, ok := puo.mutation.Hydrogen(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldHydrogen,
 		})
 	}
-	if value := puo.addhydrogen; value != nil {
+	if value, ok := puo.mutation.AddedHydrogen(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldHydrogen,
 		})
 	}
-	if value := puo.hydrogen_prod_level; value != nil {
+	if value, ok := puo.mutation.HydrogenProdLevel(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldHydrogenProdLevel,
 		})
 	}
-	if value := puo.addhydrogen_prod_level; value != nil {
+	if value, ok := puo.mutation.AddedHydrogenProdLevel(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldHydrogenProdLevel,
 		})
 	}
-	if value := puo.hydrogen_storage_level; value != nil {
+	if value, ok := puo.mutation.HydrogenStorageLevel(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldHydrogenStorageLevel,
 		})
 	}
-	if value := puo.addhydrogen_storage_level; value != nil {
+	if value, ok := puo.mutation.AddedHydrogenStorageLevel(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldHydrogenStorageLevel,
 		})
 	}
-	if value := puo.silica; value != nil {
+	if value, ok := puo.mutation.Silica(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldSilica,
 		})
 	}
-	if value := puo.addsilica; value != nil {
+	if value, ok := puo.mutation.AddedSilica(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldSilica,
 		})
 	}
-	if value := puo.silica_prod_level; value != nil {
+	if value, ok := puo.mutation.SilicaProdLevel(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldSilicaProdLevel,
 		})
 	}
-	if value := puo.addsilica_prod_level; value != nil {
+	if value, ok := puo.mutation.AddedSilicaProdLevel(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldSilicaProdLevel,
 		})
 	}
-	if value := puo.silica_storage_level; value != nil {
+	if value, ok := puo.mutation.SilicaStorageLevel(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldSilicaStorageLevel,
 		})
 	}
-	if value := puo.addsilica_storage_level; value != nil {
+	if value, ok := puo.mutation.AddedSilicaStorageLevel(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldSilicaStorageLevel,
 		})
 	}
-	if value := puo.population; value != nil {
+	if value, ok := puo.mutation.Population(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldPopulation,
 		})
 	}
-	if value := puo.addpopulation; value != nil {
+	if value, ok := puo.mutation.AddedPopulation(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldPopulation,
 		})
 	}
-	if value := puo.population_prod_level; value != nil {
+	if value, ok := puo.mutation.PopulationProdLevel(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldPopulationProdLevel,
 		})
 	}
-	if value := puo.addpopulation_prod_level; value != nil {
+	if value, ok := puo.mutation.AddedPopulationProdLevel(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldPopulationProdLevel,
 		})
 	}
-	if value := puo.population_storage_level; value != nil {
+	if value, ok := puo.mutation.PopulationStorageLevel(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldPopulationStorageLevel,
 		})
 	}
-	if value := puo.addpopulation_storage_level; value != nil {
+	if value, ok := puo.mutation.AddedPopulationStorageLevel(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldPopulationStorageLevel,
 		})
 	}
-	if value := puo.solar_prod_level; value != nil {
+	if value, ok := puo.mutation.SolarProdLevel(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldSolarProdLevel,
 		})
 	}
-	if value := puo.addsolar_prod_level; value != nil {
+	if value, ok := puo.mutation.AddedSolarProdLevel(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldSolarProdLevel,
 		})
 	}
-	if value := puo.name; value != nil {
+	if value, ok := puo.mutation.Name(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldName,
 		})
 	}
-	if value := puo.planet_skin; value != nil {
+	if value, ok := puo.mutation.PlanetSkin(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldPlanetSkin,
 		})
 	}
-	if value := puo.last_resource_update; value != nil {
+	if value, ok := puo.mutation.LastResourceUpdate(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
-			Value:  *value,
+			Value:  value,
 			Column: planet.FieldLastResourceUpdate,
 		})
 	}
-	if puo.clearedOwner {
+	if puo.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -1721,7 +1567,7 @@ func (puo *PlanetUpdateOne) sqlSave(ctx context.Context) (pl *Planet, err error)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := puo.owner; len(nodes) > 0 {
+	if nodes := puo.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -1735,12 +1581,12 @@ func (puo *PlanetUpdateOne) sqlSave(ctx context.Context) (pl *Planet, err error)
 				},
 			},
 		}
-		for k, _ := range nodes {
+		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if nodes := puo.removedTimers; len(nodes) > 0 {
+	if nodes := puo.mutation.RemovedTimersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1754,12 +1600,12 @@ func (puo *PlanetUpdateOne) sqlSave(ctx context.Context) (pl *Planet, err error)
 				},
 			},
 		}
-		for k, _ := range nodes {
+		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := puo.timers; len(nodes) > 0 {
+	if nodes := puo.mutation.TimersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1773,7 +1619,7 @@ func (puo *PlanetUpdateOne) sqlSave(ctx context.Context) (pl *Planet, err error)
 				},
 			},
 		}
-		for k, _ := range nodes {
+		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
@@ -1782,7 +1628,9 @@ func (puo *PlanetUpdateOne) sqlSave(ctx context.Context) (pl *Planet, err error)
 	_spec.Assign = pl.assignValues
 	_spec.ScanValues = pl.scanValues()
 	if err = sqlgraph.UpdateNode(ctx, puo.driver, _spec); err != nil {
-		if cerr, ok := isSQLConstraintError(err); ok {
+		if _, ok := err.(*sqlgraph.NotFoundError); ok {
+			err = &NotFoundError{planet.Label}
+		} else if cerr, ok := isSQLConstraintError(err); ok {
 			err = cerr
 		}
 		return nil, err

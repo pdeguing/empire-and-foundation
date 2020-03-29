@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
@@ -15,6 +16,8 @@ import (
 // SessionDelete is the builder for deleting a Session entity.
 type SessionDelete struct {
 	config
+	hooks      []Hook
+	mutation   *SessionMutation
 	predicates []predicate.Session
 }
 
@@ -26,7 +29,30 @@ func (sd *SessionDelete) Where(ps ...predicate.Session) *SessionDelete {
 
 // Exec executes the deletion query and returns how many vertices were deleted.
 func (sd *SessionDelete) Exec(ctx context.Context) (int, error) {
-	return sd.sqlExec(ctx)
+	var (
+		err      error
+		affected int
+	)
+	if len(sd.hooks) == 0 {
+		affected, err = sd.sqlExec(ctx)
+	} else {
+		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
+			mutation, ok := m.(*SessionMutation)
+			if !ok {
+				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			sd.mutation = mutation
+			affected, err = sd.sqlExec(ctx)
+			return affected, err
+		})
+		for i := len(sd.hooks) - 1; i >= 0; i-- {
+			mut = sd.hooks[i](mut)
+		}
+		if _, err := mut.Mutate(ctx, sd.mutation); err != nil {
+			return 0, err
+		}
+	}
+	return affected, err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
@@ -70,7 +96,7 @@ func (sdo *SessionDeleteOne) Exec(ctx context.Context) error {
 	case err != nil:
 		return err
 	case n == 0:
-		return &ErrNotFound{session.Label}
+		return &NotFoundError{session.Label}
 	default:
 		return nil
 	}

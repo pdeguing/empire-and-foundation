@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/facebookincubator/ent/dialect/sql"
@@ -17,14 +18,9 @@ import (
 // UserUpdate is the builder for updating User entities.
 type UserUpdate struct {
 	config
-
-	updated_at     *time.Time
-	username       *string
-	email          *string
-	password       *string
-	planets        map[int]struct{}
-	removedPlanets map[int]struct{}
-	predicates     []predicate.User
+	hooks      []Hook
+	mutation   *UserMutation
+	predicates []predicate.User
 }
 
 // Where adds a new predicate for the builder.
@@ -35,36 +31,31 @@ func (uu *UserUpdate) Where(ps ...predicate.User) *UserUpdate {
 
 // SetUpdatedAt sets the updated_at field.
 func (uu *UserUpdate) SetUpdatedAt(t time.Time) *UserUpdate {
-	uu.updated_at = &t
+	uu.mutation.SetUpdatedAt(t)
 	return uu
 }
 
 // SetUsername sets the username field.
 func (uu *UserUpdate) SetUsername(s string) *UserUpdate {
-	uu.username = &s
+	uu.mutation.SetUsername(s)
 	return uu
 }
 
 // SetEmail sets the email field.
 func (uu *UserUpdate) SetEmail(s string) *UserUpdate {
-	uu.email = &s
+	uu.mutation.SetEmail(s)
 	return uu
 }
 
 // SetPassword sets the password field.
 func (uu *UserUpdate) SetPassword(s string) *UserUpdate {
-	uu.password = &s
+	uu.mutation.SetPassword(s)
 	return uu
 }
 
 // AddPlanetIDs adds the planets edge to Planet by ids.
 func (uu *UserUpdate) AddPlanetIDs(ids ...int) *UserUpdate {
-	if uu.planets == nil {
-		uu.planets = make(map[int]struct{})
-	}
-	for i := range ids {
-		uu.planets[ids[i]] = struct{}{}
-	}
+	uu.mutation.AddPlanetIDs(ids...)
 	return uu
 }
 
@@ -79,12 +70,7 @@ func (uu *UserUpdate) AddPlanets(p ...*Planet) *UserUpdate {
 
 // RemovePlanetIDs removes the planets edge to Planet by ids.
 func (uu *UserUpdate) RemovePlanetIDs(ids ...int) *UserUpdate {
-	if uu.removedPlanets == nil {
-		uu.removedPlanets = make(map[int]struct{})
-	}
-	for i := range ids {
-		uu.removedPlanets[ids[i]] = struct{}{}
-	}
+	uu.mutation.RemovePlanetIDs(ids...)
 	return uu
 }
 
@@ -99,11 +85,35 @@ func (uu *UserUpdate) RemovePlanets(p ...*Planet) *UserUpdate {
 
 // Save executes the query and returns the number of rows/vertices matched by this operation.
 func (uu *UserUpdate) Save(ctx context.Context) (int, error) {
-	if uu.updated_at == nil {
+	if _, ok := uu.mutation.UpdatedAt(); !ok {
 		v := user.UpdateDefaultUpdatedAt()
-		uu.updated_at = &v
+		uu.mutation.SetUpdatedAt(v)
 	}
-	return uu.sqlSave(ctx)
+
+	var (
+		err      error
+		affected int
+	)
+	if len(uu.hooks) == 0 {
+		affected, err = uu.sqlSave(ctx)
+	} else {
+		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
+			mutation, ok := m.(*UserMutation)
+			if !ok {
+				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			uu.mutation = mutation
+			affected, err = uu.sqlSave(ctx)
+			return affected, err
+		})
+		for i := len(uu.hooks) - 1; i >= 0; i-- {
+			mut = uu.hooks[i](mut)
+		}
+		if _, err := mut.Mutate(ctx, uu.mutation); err != nil {
+			return 0, err
+		}
+	}
+	return affected, err
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -146,35 +156,35 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value := uu.updated_at; value != nil {
+	if value, ok := uu.mutation.UpdatedAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
-			Value:  *value,
+			Value:  value,
 			Column: user.FieldUpdatedAt,
 		})
 	}
-	if value := uu.username; value != nil {
+	if value, ok := uu.mutation.Username(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
-			Value:  *value,
+			Value:  value,
 			Column: user.FieldUsername,
 		})
 	}
-	if value := uu.email; value != nil {
+	if value, ok := uu.mutation.Email(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
-			Value:  *value,
+			Value:  value,
 			Column: user.FieldEmail,
 		})
 	}
-	if value := uu.password; value != nil {
+	if value, ok := uu.mutation.Password(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
-			Value:  *value,
+			Value:  value,
 			Column: user.FieldPassword,
 		})
 	}
-	if nodes := uu.removedPlanets; len(nodes) > 0 {
+	if nodes := uu.mutation.RemovedPlanetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -188,12 +198,12 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				},
 			},
 		}
-		for k, _ := range nodes {
+		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uu.planets; len(nodes) > 0 {
+	if nodes := uu.mutation.PlanetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -207,13 +217,15 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				},
 			},
 		}
-		for k, _ := range nodes {
+		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, uu.driver, _spec); err != nil {
-		if cerr, ok := isSQLConstraintError(err); ok {
+		if _, ok := err.(*sqlgraph.NotFoundError); ok {
+			err = &NotFoundError{user.Label}
+		} else if cerr, ok := isSQLConstraintError(err); ok {
 			err = cerr
 		}
 		return 0, err
@@ -224,48 +236,37 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 // UserUpdateOne is the builder for updating a single User entity.
 type UserUpdateOne struct {
 	config
-	id int
-
-	updated_at     *time.Time
-	username       *string
-	email          *string
-	password       *string
-	planets        map[int]struct{}
-	removedPlanets map[int]struct{}
+	hooks    []Hook
+	mutation *UserMutation
 }
 
 // SetUpdatedAt sets the updated_at field.
 func (uuo *UserUpdateOne) SetUpdatedAt(t time.Time) *UserUpdateOne {
-	uuo.updated_at = &t
+	uuo.mutation.SetUpdatedAt(t)
 	return uuo
 }
 
 // SetUsername sets the username field.
 func (uuo *UserUpdateOne) SetUsername(s string) *UserUpdateOne {
-	uuo.username = &s
+	uuo.mutation.SetUsername(s)
 	return uuo
 }
 
 // SetEmail sets the email field.
 func (uuo *UserUpdateOne) SetEmail(s string) *UserUpdateOne {
-	uuo.email = &s
+	uuo.mutation.SetEmail(s)
 	return uuo
 }
 
 // SetPassword sets the password field.
 func (uuo *UserUpdateOne) SetPassword(s string) *UserUpdateOne {
-	uuo.password = &s
+	uuo.mutation.SetPassword(s)
 	return uuo
 }
 
 // AddPlanetIDs adds the planets edge to Planet by ids.
 func (uuo *UserUpdateOne) AddPlanetIDs(ids ...int) *UserUpdateOne {
-	if uuo.planets == nil {
-		uuo.planets = make(map[int]struct{})
-	}
-	for i := range ids {
-		uuo.planets[ids[i]] = struct{}{}
-	}
+	uuo.mutation.AddPlanetIDs(ids...)
 	return uuo
 }
 
@@ -280,12 +281,7 @@ func (uuo *UserUpdateOne) AddPlanets(p ...*Planet) *UserUpdateOne {
 
 // RemovePlanetIDs removes the planets edge to Planet by ids.
 func (uuo *UserUpdateOne) RemovePlanetIDs(ids ...int) *UserUpdateOne {
-	if uuo.removedPlanets == nil {
-		uuo.removedPlanets = make(map[int]struct{})
-	}
-	for i := range ids {
-		uuo.removedPlanets[ids[i]] = struct{}{}
-	}
+	uuo.mutation.RemovePlanetIDs(ids...)
 	return uuo
 }
 
@@ -300,11 +296,35 @@ func (uuo *UserUpdateOne) RemovePlanets(p ...*Planet) *UserUpdateOne {
 
 // Save executes the query and returns the updated entity.
 func (uuo *UserUpdateOne) Save(ctx context.Context) (*User, error) {
-	if uuo.updated_at == nil {
+	if _, ok := uuo.mutation.UpdatedAt(); !ok {
 		v := user.UpdateDefaultUpdatedAt()
-		uuo.updated_at = &v
+		uuo.mutation.SetUpdatedAt(v)
 	}
-	return uuo.sqlSave(ctx)
+
+	var (
+		err  error
+		node *User
+	)
+	if len(uuo.hooks) == 0 {
+		node, err = uuo.sqlSave(ctx)
+	} else {
+		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
+			mutation, ok := m.(*UserMutation)
+			if !ok {
+				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			uuo.mutation = mutation
+			node, err = uuo.sqlSave(ctx)
+			return node, err
+		})
+		for i := len(uuo.hooks) - 1; i >= 0; i-- {
+			mut = uuo.hooks[i](mut)
+		}
+		if _, err := mut.Mutate(ctx, uuo.mutation); err != nil {
+			return nil, err
+		}
+	}
+	return node, err
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -335,41 +355,45 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
 			Table:   user.Table,
 			Columns: user.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Value:  uuo.id,
 				Type:   field.TypeInt,
 				Column: user.FieldID,
 			},
 		},
 	}
-	if value := uuo.updated_at; value != nil {
+	id, ok := uuo.mutation.ID()
+	if !ok {
+		return nil, fmt.Errorf("missing User.ID for update")
+	}
+	_spec.Node.ID.Value = id
+	if value, ok := uuo.mutation.UpdatedAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
-			Value:  *value,
+			Value:  value,
 			Column: user.FieldUpdatedAt,
 		})
 	}
-	if value := uuo.username; value != nil {
+	if value, ok := uuo.mutation.Username(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
-			Value:  *value,
+			Value:  value,
 			Column: user.FieldUsername,
 		})
 	}
-	if value := uuo.email; value != nil {
+	if value, ok := uuo.mutation.Email(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
-			Value:  *value,
+			Value:  value,
 			Column: user.FieldEmail,
 		})
 	}
-	if value := uuo.password; value != nil {
+	if value, ok := uuo.mutation.Password(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
-			Value:  *value,
+			Value:  value,
 			Column: user.FieldPassword,
 		})
 	}
-	if nodes := uuo.removedPlanets; len(nodes) > 0 {
+	if nodes := uuo.mutation.RemovedPlanetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -383,12 +407,12 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
 				},
 			},
 		}
-		for k, _ := range nodes {
+		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uuo.planets; len(nodes) > 0 {
+	if nodes := uuo.mutation.PlanetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -402,7 +426,7 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
 				},
 			},
 		}
-		for k, _ := range nodes {
+		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
@@ -411,7 +435,9 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
 	_spec.Assign = u.assignValues
 	_spec.ScanValues = u.scanValues()
 	if err = sqlgraph.UpdateNode(ctx, uuo.driver, _spec); err != nil {
-		if cerr, ok := isSQLConstraintError(err); ok {
+		if _, ok := err.(*sqlgraph.NotFoundError); ok {
+			err = &NotFoundError{user.Label}
+		} else if cerr, ok := isSQLConstraintError(err); ok {
 			err = cerr
 		}
 		return nil, err

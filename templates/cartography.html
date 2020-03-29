@@ -1,168 +1,92 @@
 {{ define "dashboardBody" }}
 
-<h1 class="title">Cartography</h1>
+    <h1 class="title">Cartography</h1>
 
+    <nav class="pagination is-centered is-rounded" role="navigation" aria-label="pagination">
+        <ul class="pagination-list">
+            <li>
+                <a class="pagination-link pagination-previous {{ if eq .Data.Region 0 }} is-invisible {{ end }}"
+                   aria-label="Goto region {{ hex (sub .Data.Region 1) 2 }}"
+                   href="/dashboard/cartography/{{ hex (sub .Data.Region 1) 2}}FF">
+                    {{ hex (sub .Data.Region 1) 2 }}XX
+                </a>
+            </li>
+            <li><span class="pagination-ellipsis {{ if eq .Data.Region 0 }} is-invisible {{ end }}">&hellip;</span></li>
+            <li>
+                <a class="pagination-link pagination-previous {{ if and (eq .Data.Region 0) (eq .Data.System 0) }} is-invisible {{ end }}"
+                   aria-label="Goto previous system"
+                   href="/dashboard/cartography/{{ if eq .Data.System 0 }}{{ hex (sub .Data.Region 1) 2 }}FF{{else}}{{ hex .Data.Region 2 }}{{ hex (sub .Data.System 1) 2 }}{{end}}">
+                    Previous
+                </a>
+            </li>
+            <li>
+                <div class="select is-rounded">
+                    {{ $regionCode := hex .Data.Region 2 }}
+                    <select aria-label="System" onchange="document.location.href='/dashboard/cartography/{{ $regionCode }}' + this.value;">
+                        {{ range $i := (until 256)}}
+                            {{ $systemCode := hex $i 2 }}
+                            <option value="{{ $systemCode }}" {{ if eq $.Data.System $i }} selected {{ end }}>{{ $regionCode }}{{ $systemCode }}</option>
+                        {{ end }}
+                    </select>
+                </div>
+            </li>
+            <li>
+                <a class="pagination-link pagination-next {{ if and (eq .Data.Region 255) (eq .Data.System 255) }} is-invisible {{ end }}"
+                   aria-label="Goto next system"
+                   href="/dashboard/cartography/{{ if eq .Data.System 255 }}{{ hex (add .Data.Region 1) 2 }}00{{else}}{{ hex .Data.Region 2 }}{{ hex (add .Data.System 1) 2 }}{{end}}">
+                    Next
+                </a>
+            </li>
+            <li><span class="pagination-ellipsis {{ if eq .Data.Region 255 }} is-invisible {{ end }}">&hellip;</span>
+            </li>
+            <li>
+                <a class="pagination-link pagination-next {{ if eq .Data.Region 255 }} is-invisible {{ end }}"
+                   aria-label="Goto region {{ hex (add .Data.Region 1) 2 }}"
+                   href="/dashboard/cartography/{{ hex (add .Data.Region 1) 2}}00">
+                    {{ hex (add .Data.Region 1) 2 }}XX
+                </a>
+            </li>
+        </ul>
+    </nav>
 
-<table class="table is-striped is-fullwidth">
-	<thead>
-		<tr>
-			<th scope="col">#</th>
-			<th scope="col">Code</th>
-			<th scope="col">Moons</th>
-			<th scope="col">Orbit</th>
-			<th scope="col">Player</th>
-			<th scope="col">Actions</th>
-		</tr>
-	</thead>
-	<tbody>
-		{{ range .Data.RegionPlanets }}
-			<tr>
-				<th scope="row">
-					<figure class="image is-32x32">
-						<img src="/static/images/planet-icons/{{ .PlanetSkin }}.png" class="is-rounded" alt="planet image">
-					</figure>
-				</th>
-				<td>
-					[{{ .RegionCode }}:{{ .SystemCode }}:{{ .OrbitCode }}:{{ .SuborbitCode }}]
-				</td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
-			</tr>
-		{{ end }}
-		<tr>
-			<th scope="row">
-				<figure class="image is-32x32">
-				</figure>
-			</th>
-			<td>[0:0:1:0]</td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
-		</tr>
-		<tr>
-			<th scope="row">
-				<figure class="image is-32x32">
-				</figure>
-			</th>
-			<td>[0:0:2:0]</td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
-		</tr>
-		<tr>
-			<th scope="row">
-				<figure class="image is-32x32">
-					<img src="/static/images/planet.jpg" class="is-rounded" alt="planet image">
-				</figure>
-			</th>
-			<td>[0:0:3:0]</td>
-			<td></td>
-			<td></td>
-			<td>@drakker</td>
-			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
-		</tr>
-		<tr>
-			<th scope="row">
-				<figure class="image is-32x32">
-				</figure>
-			</th>
-			<td>[0:0:4:0]</td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
-		</tr>
-		<tr>
-			<th scope="row">
-				<figure class="image is-32x32">
-				</figure>
-			</th>
-			<td>[0:0:5:0]</td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
-		</tr>
-		<tr>
-			<th scope="row">
-				<figure class="image is-32x32">
-					<img src="/static/images/planet.jpg" class="is-rounded" alt="planet image">
-				</figure>
-			</th>
-			<td>[0:0:6:0]</td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
-		</tr>
-		<tr>
-			<th scope="row">
-				<figure class="image is-32x32">
-				</figure>
-			</th>
-			<td>[0:0:7:0]</td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
-		</tr>
-		<tr>
-			<th scope="row">
-					<figure class="image is-32x32">
-					</figure>
-			</th>
-			<td>[0:0:8:0]</td>
-			<td></td>
-			<td></td>
-			<td>@drakker</td>
-			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
-		</tr>
-		<tr>
-			<th scope="row">
-				<figure class="image is-32x32">
-					<img src="/static/images/planet.jpg" class="is-rounded" alt="planet image">
-				</figure>
-			</th>
-			<td>[0:0:9:0]</td>
-			<td></td>
-			<td></td>
-			<td>@louise</td>
-			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
-		</tr>
-		<tr>
-		<th scope="row">
-				<figure class="image is-32x32">
-				</figure>
-		</th>
-		<td>[0:0:10:0]</td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
-		</tr>
-		<tr>
-			<th scope="row">
-				<figure class="image is-32x32">
-					<img src="/static/images/planet.jpg" class="is-rounded" alt="planet image">
-				</figure>
-			</th>
-			<td>0000b0</td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td><a href="#">visit</a> / <a href="#">spy</a> / <a href="#">send</a></td>
-		</tr>
-	</tbody>
-</table>
+    <table class="table is-striped is-fullwidth">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Position</th>
+            <th scope="col">Name</th>
+            <th scope="col">Type</th>
+            <th scope="col">Player</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{ range .Data.RegionPlanets }}
+            <tr>
+                <th scope="row">
+                    <figure class="image is-32x32">
+                        <img src="/static/images/planet-icons/{{ .PlanetSkin }}.png" class="is-rounded"
+                             alt="planet image">
+                    </figure>
+                </th>
+                <td>
+                    {{ hex .RegionCode 2 }}:{{ hex .SystemCode 2}}:{{ hex .OrbitCode 1}}:{{ hex .SuborbitCode 1}}
+                </td>
+                <td>{{ .Name }}</td>
+                <td>{{ .PlanetType }}</td>
+                <td>{{ if .Edges.Owner }} {{ .Edges.Owner.Username }} {{ else }} {{ end }}</td>
+            </tr>
+        {{ end }}
+        </tbody>
+    </table>
 
-<article class="message">
-  <div class="message-body">
-	Maybe the best part, probably the hardest. Here comes the map of the universe. I guess the simplest version is a 2D grid with solar system as tile. The problem is that if tiles are squares, distance calculation will be strange. The best would then be hexagonal tiles. But that's messy to implement. We could also just go for a "per system display" at first with systems displayed one by one as a table. It's easy, and we will need this system view anyway even with a graphical map.
-  </div>
-</article>
+    <article class="message">
+        <div class="message-body">
+            Maybe the best part, probably the hardest. Here comes the map of the universe. I guess the simplest version
+            is a 2D grid with solar system as tile. The problem is that if tiles are squares, distance calculation will
+            be strange. The best would then be hexagonal tiles. But that's messy to implement. We could also just go for
+            a "per system display" at first with systems displayed one by one as a table. It's easy, and we will need
+            this system view anyway even with a graphical map.
+        </div>
+    </article>
 
 {{ end }}

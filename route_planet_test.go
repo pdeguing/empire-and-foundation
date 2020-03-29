@@ -26,7 +26,7 @@ func withTestServerAuthenticated() (*httptest.Server, *ent.User) {
 	u := data.NewUserFactory().MustCreate()
 	ts.Config.ConnContext = func(ctx context.Context, c net.Conn) context.Context {
 		var err error
-		ctx, err = sessionManager.LoadNew(ctx)
+		ctx, err = sessionManager.Load(ctx, "")
 		if err != nil {
 			panic(err)
 		}
@@ -60,7 +60,6 @@ func TestRouteDashboardPages(t *testing.T) {
 
 	routes := []string{
 		"/dashboard",
-		"/dashboard/cartography",
 		"/dashboard/fleetcontrol",
 		"/dashboard/technology",
 		"/dashboard/diplomacy",

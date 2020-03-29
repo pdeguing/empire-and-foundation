@@ -82,14 +82,14 @@ func (pq *PlanetQuery) QueryTimers() *TimerQuery {
 	return query
 }
 
-// First returns the first Planet entity in the query. Returns *ErrNotFound when no planet was found.
+// First returns the first Planet entity in the query. Returns *NotFoundError when no planet was found.
 func (pq *PlanetQuery) First(ctx context.Context) (*Planet, error) {
 	pls, err := pq.Limit(1).All(ctx)
 	if err != nil {
 		return nil, err
 	}
 	if len(pls) == 0 {
-		return nil, &ErrNotFound{planet.Label}
+		return nil, &NotFoundError{planet.Label}
 	}
 	return pls[0], nil
 }
@@ -103,14 +103,14 @@ func (pq *PlanetQuery) FirstX(ctx context.Context) *Planet {
 	return pl
 }
 
-// FirstID returns the first Planet id in the query. Returns *ErrNotFound when no id was found.
+// FirstID returns the first Planet id in the query. Returns *NotFoundError when no id was found.
 func (pq *PlanetQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
 	if ids, err = pq.Limit(1).IDs(ctx); err != nil {
 		return
 	}
 	if len(ids) == 0 {
-		err = &ErrNotFound{planet.Label}
+		err = &NotFoundError{planet.Label}
 		return
 	}
 	return ids[0], nil
@@ -135,9 +135,9 @@ func (pq *PlanetQuery) Only(ctx context.Context) (*Planet, error) {
 	case 1:
 		return pls[0], nil
 	case 0:
-		return nil, &ErrNotFound{planet.Label}
+		return nil, &NotFoundError{planet.Label}
 	default:
-		return nil, &ErrNotSingular{planet.Label}
+		return nil, &NotSingularError{planet.Label}
 	}
 }
 
@@ -160,9 +160,9 @@ func (pq *PlanetQuery) OnlyID(ctx context.Context) (id int, err error) {
 	case 1:
 		id = ids[0]
 	case 0:
-		err = &ErrNotFound{planet.Label}
+		err = &NotFoundError{planet.Label}
 	default:
-		err = &ErrNotSingular{planet.Label}
+		err = &NotSingularError{planet.Label}
 	}
 	return
 }
@@ -316,9 +316,13 @@ func (pq *PlanetQuery) Select(field string, fields ...string) *PlanetSelect {
 
 func (pq *PlanetQuery) sqlAll(ctx context.Context) ([]*Planet, error) {
 	var (
-		nodes   []*Planet
-		withFKs = pq.withFKs
-		_spec   = pq.querySpec()
+		nodes       = []*Planet{}
+		withFKs     = pq.withFKs
+		_spec       = pq.querySpec()
+		loadedTypes = [2]bool{
+			pq.withOwner != nil,
+			pq.withTimers != nil,
+		}
 	)
 	if pq.withOwner != nil {
 		withFKs = true
@@ -340,12 +344,12 @@ func (pq *PlanetQuery) sqlAll(ctx context.Context) ([]*Planet, error) {
 			return fmt.Errorf("ent: Assign called without calling ScanValues")
 		}
 		node := nodes[len(nodes)-1]
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(values...)
 	}
 	if err := sqlgraph.QueryNodes(ctx, pq.driver, _spec); err != nil {
 		return nil, err
 	}
-
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
@@ -354,7 +358,7 @@ func (pq *PlanetQuery) sqlAll(ctx context.Context) ([]*Planet, error) {
 		ids := make([]int, 0, len(nodes))
 		nodeids := make(map[int][]*Planet)
 		for i := range nodes {
-			if fk := nodes[i].owner_id; fk != nil {
+			if fk := nodes[i].user_planets; fk != nil {
 				ids = append(ids, *fk)
 				nodeids[*fk] = append(nodeids[*fk], nodes[i])
 			}
@@ -367,7 +371,7 @@ func (pq *PlanetQuery) sqlAll(ctx context.Context) ([]*Planet, error) {
 		for _, n := range neighbors {
 			nodes, ok := nodeids[n.ID]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "owner_id" returned %v`, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "user_planets" returned %v`, n.ID)
 			}
 			for i := range nodes {
 				nodes[i].Edges.Owner = n
@@ -391,13 +395,13 @@ func (pq *PlanetQuery) sqlAll(ctx context.Context) ([]*Planet, error) {
 			return nil, err
 		}
 		for _, n := range neighbors {
-			fk := n.planet_id
+			fk := n.planet_timers
 			if fk == nil {
-				return nil, fmt.Errorf(`foreign-key "planet_id" is nil for node %v`, n.ID)
+				return nil, fmt.Errorf(`foreign-key "planet_timers" is nil for node %v`, n.ID)
 			}
 			node, ok := nodeids[*fk]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "planet_id" returned %v for node %v`, *fk, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "planet_timers" returned %v for node %v`, *fk, n.ID)
 			}
 			node.Edges.Timers = append(node.Edges.Timers, n)
 		}
