@@ -35,10 +35,10 @@ func GetEnergyProd(p *ent.Planet) int64 {
 
 // GetEnergyCons calculates the current energy consumption
 func GetEnergyCons(p *ent.Planet) int64 {
-	metalCons := 500*int64(p.MetalProdLevel) + int64(math.Pow(1.1, float64(p.MetalProdLevel)))
-	hydrogenCons := 1000*int64(p.HydrogenProdLevel) + int64(math.Pow(1.1, float64(p.HydrogenProdLevel)))
-	silicaCons := 500*int64(p.SilicaProdLevel) + int64(math.Pow(1.1, float64(p.SilicaProdLevel)))
-	populationCons := 250*int64(p.PopulationProdLevel) + int64(math.Pow(1.1, float64(p.PopulationProdLevel)))
+	metalCons := 500*int64(p.MetalProdLevel) * int64(math.Pow(1.1, float64(p.MetalProdLevel)))
+	hydrogenCons := 1000*int64(p.HydrogenProdLevel) * int64(math.Pow(1.1, float64(p.HydrogenProdLevel)))
+	silicaCons := 500*int64(p.SilicaProdLevel) * int64(math.Pow(1.1, float64(p.SilicaProdLevel)))
+	populationCons := 250*int64(p.PopulationProdLevel) * int64(math.Pow(1.1, float64(p.PopulationProdLevel)))
 	return metalCons + hydrogenCons + silicaCons + populationCons
 }
 
