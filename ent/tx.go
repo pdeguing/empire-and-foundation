@@ -6,7 +6,6 @@ import (
 	"context"
 
 	"github.com/facebookincubator/ent/dialect"
-	"github.com/pdeguing/empire-and-foundation/ent/migrate"
 )
 
 // Tx is a transactional client that is created by calling Client.Tx().
@@ -34,14 +33,16 @@ func (tx *Tx) Rollback() error {
 
 // Client returns a Client that binds to current transaction.
 func (tx *Tx) Client() *Client {
-	return &Client{
-		config:  tx.config,
-		Schema:  migrate.NewSchema(tx.driver),
-		Planet:  NewPlanetClient(tx.config),
-		Session: NewSessionClient(tx.config),
-		Timer:   NewTimerClient(tx.config),
-		User:    NewUserClient(tx.config),
-	}
+	client := &Client{config: tx.config}
+	client.init()
+	return client
+}
+
+func (tx *Tx) init() {
+	tx.Planet = NewPlanetClient(tx.config)
+	tx.Session = NewSessionClient(tx.config)
+	tx.Timer = NewTimerClient(tx.config)
+	tx.User = NewUserClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.

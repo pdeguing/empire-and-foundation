@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
@@ -15,6 +16,8 @@ import (
 // PlanetDelete is the builder for deleting a Planet entity.
 type PlanetDelete struct {
 	config
+	hooks      []Hook
+	mutation   *PlanetMutation
 	predicates []predicate.Planet
 }
 
@@ -26,7 +29,30 @@ func (pd *PlanetDelete) Where(ps ...predicate.Planet) *PlanetDelete {
 
 // Exec executes the deletion query and returns how many vertices were deleted.
 func (pd *PlanetDelete) Exec(ctx context.Context) (int, error) {
-	return pd.sqlExec(ctx)
+	var (
+		err      error
+		affected int
+	)
+	if len(pd.hooks) == 0 {
+		affected, err = pd.sqlExec(ctx)
+	} else {
+		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
+			mutation, ok := m.(*PlanetMutation)
+			if !ok {
+				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			pd.mutation = mutation
+			affected, err = pd.sqlExec(ctx)
+			return affected, err
+		})
+		for i := len(pd.hooks) - 1; i >= 0; i-- {
+			mut = pd.hooks[i](mut)
+		}
+		if _, err := mut.Mutate(ctx, pd.mutation); err != nil {
+			return 0, err
+		}
+	}
+	return affected, err
 }
 
 // ExecX is like Exec, but panics if an error occurs.

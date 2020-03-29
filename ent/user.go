@@ -40,9 +40,9 @@ type UserEdges struct {
 	loadedTypes [1]bool
 }
 
-// PlanetsErr returns the Planets value or an error if the edge
+// PlanetsOrErr returns the Planets value or an error if the edge
 // was not loaded in eager-loading.
-func (e UserEdges) PlanetsErr() ([]*Planet, error) {
+func (e UserEdges) PlanetsOrErr() ([]*Planet, error) {
 	if e.loadedTypes[0] {
 		return e.Planets, nil
 	}
@@ -103,14 +103,14 @@ func (u *User) assignValues(values ...interface{}) error {
 
 // QueryPlanets queries the planets edge of the User.
 func (u *User) QueryPlanets() *PlanetQuery {
-	return (&UserClient{u.config}).QueryPlanets(u)
+	return (&UserClient{config: u.config}).QueryPlanets(u)
 }
 
 // Update returns a builder for updating this User.
 // Note that, you need to call User.Unwrap() before calling this method, if this User
 // was returned from a transaction, and the transaction was committed or rolled back.
 func (u *User) Update() *UserUpdateOne {
-	return (&UserClient{u.config}).UpdateOne(u)
+	return (&UserClient{config: u.config}).UpdateOne(u)
 }
 
 // Unwrap unwraps the entity that was returned from a transaction after it was closed,

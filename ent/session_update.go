@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/facebookincubator/ent/dialect/sql"
@@ -16,9 +17,8 @@ import (
 // SessionUpdate is the builder for updating Session entities.
 type SessionUpdate struct {
 	config
-	token      *string
-	data       *[]byte
-	expiry     *time.Time
+	hooks      []Hook
+	mutation   *SessionMutation
 	predicates []predicate.Session
 }
 
@@ -30,25 +30,48 @@ func (su *SessionUpdate) Where(ps ...predicate.Session) *SessionUpdate {
 
 // SetToken sets the token field.
 func (su *SessionUpdate) SetToken(s string) *SessionUpdate {
-	su.token = &s
+	su.mutation.SetToken(s)
 	return su
 }
 
 // SetData sets the data field.
 func (su *SessionUpdate) SetData(b []byte) *SessionUpdate {
-	su.data = &b
+	su.mutation.SetData(b)
 	return su
 }
 
 // SetExpiry sets the expiry field.
 func (su *SessionUpdate) SetExpiry(t time.Time) *SessionUpdate {
-	su.expiry = &t
+	su.mutation.SetExpiry(t)
 	return su
 }
 
 // Save executes the query and returns the number of rows/vertices matched by this operation.
 func (su *SessionUpdate) Save(ctx context.Context) (int, error) {
-	return su.sqlSave(ctx)
+	var (
+		err      error
+		affected int
+	)
+	if len(su.hooks) == 0 {
+		affected, err = su.sqlSave(ctx)
+	} else {
+		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
+			mutation, ok := m.(*SessionMutation)
+			if !ok {
+				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			su.mutation = mutation
+			affected, err = su.sqlSave(ctx)
+			return affected, err
+		})
+		for i := len(su.hooks) - 1; i >= 0; i-- {
+			mut = su.hooks[i](mut)
+		}
+		if _, err := mut.Mutate(ctx, su.mutation); err != nil {
+			return 0, err
+		}
+	}
+	return affected, err
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -91,29 +114,31 @@ func (su *SessionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value := su.token; value != nil {
+	if value, ok := su.mutation.Token(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
-			Value:  *value,
+			Value:  value,
 			Column: session.FieldToken,
 		})
 	}
-	if value := su.data; value != nil {
+	if value, ok := su.mutation.Data(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeBytes,
-			Value:  *value,
+			Value:  value,
 			Column: session.FieldData,
 		})
 	}
-	if value := su.expiry; value != nil {
+	if value, ok := su.mutation.Expiry(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
-			Value:  *value,
+			Value:  value,
 			Column: session.FieldExpiry,
 		})
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, su.driver, _spec); err != nil {
-		if cerr, ok := isSQLConstraintError(err); ok {
+		if _, ok := err.(*sqlgraph.NotFoundError); ok {
+			err = &NotFoundError{session.Label}
+		} else if cerr, ok := isSQLConstraintError(err); ok {
 			err = cerr
 		}
 		return 0, err
@@ -124,33 +149,54 @@ func (su *SessionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 // SessionUpdateOne is the builder for updating a single Session entity.
 type SessionUpdateOne struct {
 	config
-	id     int
-	token  *string
-	data   *[]byte
-	expiry *time.Time
+	hooks    []Hook
+	mutation *SessionMutation
 }
 
 // SetToken sets the token field.
 func (suo *SessionUpdateOne) SetToken(s string) *SessionUpdateOne {
-	suo.token = &s
+	suo.mutation.SetToken(s)
 	return suo
 }
 
 // SetData sets the data field.
 func (suo *SessionUpdateOne) SetData(b []byte) *SessionUpdateOne {
-	suo.data = &b
+	suo.mutation.SetData(b)
 	return suo
 }
 
 // SetExpiry sets the expiry field.
 func (suo *SessionUpdateOne) SetExpiry(t time.Time) *SessionUpdateOne {
-	suo.expiry = &t
+	suo.mutation.SetExpiry(t)
 	return suo
 }
 
 // Save executes the query and returns the updated entity.
 func (suo *SessionUpdateOne) Save(ctx context.Context) (*Session, error) {
-	return suo.sqlSave(ctx)
+	var (
+		err  error
+		node *Session
+	)
+	if len(suo.hooks) == 0 {
+		node, err = suo.sqlSave(ctx)
+	} else {
+		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
+			mutation, ok := m.(*SessionMutation)
+			if !ok {
+				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			suo.mutation = mutation
+			node, err = suo.sqlSave(ctx)
+			return node, err
+		})
+		for i := len(suo.hooks) - 1; i >= 0; i-- {
+			mut = suo.hooks[i](mut)
+		}
+		if _, err := mut.Mutate(ctx, suo.mutation); err != nil {
+			return nil, err
+		}
+	}
+	return node, err
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -181,30 +227,34 @@ func (suo *SessionUpdateOne) sqlSave(ctx context.Context) (s *Session, err error
 			Table:   session.Table,
 			Columns: session.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Value:  suo.id,
 				Type:   field.TypeInt,
 				Column: session.FieldID,
 			},
 		},
 	}
-	if value := suo.token; value != nil {
+	id, ok := suo.mutation.ID()
+	if !ok {
+		return nil, fmt.Errorf("missing Session.ID for update")
+	}
+	_spec.Node.ID.Value = id
+	if value, ok := suo.mutation.Token(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
-			Value:  *value,
+			Value:  value,
 			Column: session.FieldToken,
 		})
 	}
-	if value := suo.data; value != nil {
+	if value, ok := suo.mutation.Data(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeBytes,
-			Value:  *value,
+			Value:  value,
 			Column: session.FieldData,
 		})
 	}
-	if value := suo.expiry; value != nil {
+	if value, ok := suo.mutation.Expiry(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
-			Value:  *value,
+			Value:  value,
 			Column: session.FieldExpiry,
 		})
 	}
@@ -212,7 +262,9 @@ func (suo *SessionUpdateOne) sqlSave(ctx context.Context) (s *Session, err error
 	_spec.Assign = s.assignValues
 	_spec.ScanValues = s.scanValues()
 	if err = sqlgraph.UpdateNode(ctx, suo.driver, _spec); err != nil {
-		if cerr, ok := isSQLConstraintError(err); ok {
+		if _, ok := err.(*sqlgraph.NotFoundError); ok {
+			err = &NotFoundError{session.Label}
+		} else if cerr, ok := isSQLConstraintError(err); ok {
 			err = cerr
 		}
 		return nil, err

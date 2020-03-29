@@ -36,16 +36,19 @@ type Client struct {
 
 // NewClient creates a new client configured with the given options.
 func NewClient(opts ...Option) *Client {
-	c := config{log: log.Println}
-	c.options(opts...)
-	return &Client{
-		config:  c,
-		Schema:  migrate.NewSchema(c.driver),
-		Planet:  NewPlanetClient(c),
-		Session: NewSessionClient(c),
-		Timer:   NewTimerClient(c),
-		User:    NewUserClient(c),
-	}
+	cfg := config{log: log.Println, hooks: &hooks{}}
+	cfg.options(opts...)
+	client := &Client{config: cfg}
+	client.init()
+	return client
+}
+
+func (c *Client) init() {
+	c.Schema = migrate.NewSchema(c.driver)
+	c.Planet = NewPlanetClient(c.config)
+	c.Session = NewSessionClient(c.config)
+	c.Timer = NewTimerClient(c.config)
+	c.User = NewUserClient(c.config)
 }
 
 // Open opens a connection to the database specified by the driver name and a
@@ -73,7 +76,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	if err != nil {
 		return nil, fmt.Errorf("ent: starting a transaction: %v", err)
 	}
-	cfg := config{driver: tx, log: c.log, debug: c.debug}
+	cfg := config{driver: tx, log: c.log, debug: c.debug, hooks: c.hooks}
 	return &Tx{
 		config:  cfg,
 		Planet:  NewPlanetClient(cfg),
@@ -94,20 +97,24 @@ func (c *Client) Debug() *Client {
 	if c.debug {
 		return c
 	}
-	cfg := config{driver: dialect.Debug(c.driver, c.log), log: c.log, debug: true}
-	return &Client{
-		config:  cfg,
-		Schema:  migrate.NewSchema(cfg.driver),
-		Planet:  NewPlanetClient(cfg),
-		Session: NewSessionClient(cfg),
-		Timer:   NewTimerClient(cfg),
-		User:    NewUserClient(cfg),
-	}
+	cfg := config{driver: dialect.Debug(c.driver, c.log), log: c.log, debug: true, hooks: c.hooks}
+	client := &Client{config: cfg}
+	client.init()
+	return client
 }
 
 // Close closes the database connection and prevents new queries from starting.
 func (c *Client) Close() error {
 	return c.driver.Close()
+}
+
+// Use adds the mutation hooks to all the entity clients.
+// In order to add hooks to a specific client, call: `client.Node.Use(...)`.
+func (c *Client) Use(hooks ...Hook) {
+	c.Planet.Use(hooks...)
+	c.Session.Use(hooks...)
+	c.Timer.Use(hooks...)
+	c.User.Use(hooks...)
 }
 
 // PlanetClient is a client for the Planet schema.
@@ -120,14 +127,22 @@ func NewPlanetClient(c config) *PlanetClient {
 	return &PlanetClient{config: c}
 }
 
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `planet.Hooks(f(g(h())))`.
+func (c *PlanetClient) Use(hooks ...Hook) {
+	c.hooks.Planet = append(c.hooks.Planet, hooks...)
+}
+
 // Create returns a create builder for Planet.
 func (c *PlanetClient) Create() *PlanetCreate {
-	return &PlanetCreate{config: c.config}
+	mutation := newPlanetMutation(c.config, OpCreate)
+	return &PlanetCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // Update returns an update builder for Planet.
 func (c *PlanetClient) Update() *PlanetUpdate {
-	return &PlanetUpdate{config: c.config}
+	mutation := newPlanetMutation(c.config, OpUpdate)
+	return &PlanetUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
@@ -137,12 +152,15 @@ func (c *PlanetClient) UpdateOne(pl *Planet) *PlanetUpdateOne {
 
 // UpdateOneID returns an update builder for the given id.
 func (c *PlanetClient) UpdateOneID(id int) *PlanetUpdateOne {
-	return &PlanetUpdateOne{config: c.config, id: id}
+	mutation := newPlanetMutation(c.config, OpUpdateOne)
+	mutation.id = &id
+	return &PlanetUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // Delete returns a delete builder for Planet.
 func (c *PlanetClient) Delete() *PlanetDelete {
-	return &PlanetDelete{config: c.config}
+	mutation := newPlanetMutation(c.config, OpDelete)
+	return &PlanetDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a delete builder for the given entity.
@@ -152,7 +170,10 @@ func (c *PlanetClient) DeleteOne(pl *Planet) *PlanetDeleteOne {
 
 // DeleteOneID returns a delete builder for the given id.
 func (c *PlanetClient) DeleteOneID(id int) *PlanetDeleteOne {
-	return &PlanetDeleteOne{c.Delete().Where(planet.ID(id))}
+	builder := c.Delete().Where(planet.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &PlanetDeleteOne{builder}
 }
 
 // Create returns a query builder for Planet.
@@ -202,6 +223,11 @@ func (c *PlanetClient) QueryTimers(pl *Planet) *TimerQuery {
 	return query
 }
 
+// Hooks returns the client hooks.
+func (c *PlanetClient) Hooks() []Hook {
+	return c.hooks.Planet
+}
+
 // SessionClient is a client for the Session schema.
 type SessionClient struct {
 	config
@@ -212,14 +238,22 @@ func NewSessionClient(c config) *SessionClient {
 	return &SessionClient{config: c}
 }
 
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `session.Hooks(f(g(h())))`.
+func (c *SessionClient) Use(hooks ...Hook) {
+	c.hooks.Session = append(c.hooks.Session, hooks...)
+}
+
 // Create returns a create builder for Session.
 func (c *SessionClient) Create() *SessionCreate {
-	return &SessionCreate{config: c.config}
+	mutation := newSessionMutation(c.config, OpCreate)
+	return &SessionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // Update returns an update builder for Session.
 func (c *SessionClient) Update() *SessionUpdate {
-	return &SessionUpdate{config: c.config}
+	mutation := newSessionMutation(c.config, OpUpdate)
+	return &SessionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
@@ -229,12 +263,15 @@ func (c *SessionClient) UpdateOne(s *Session) *SessionUpdateOne {
 
 // UpdateOneID returns an update builder for the given id.
 func (c *SessionClient) UpdateOneID(id int) *SessionUpdateOne {
-	return &SessionUpdateOne{config: c.config, id: id}
+	mutation := newSessionMutation(c.config, OpUpdateOne)
+	mutation.id = &id
+	return &SessionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // Delete returns a delete builder for Session.
 func (c *SessionClient) Delete() *SessionDelete {
-	return &SessionDelete{config: c.config}
+	mutation := newSessionMutation(c.config, OpDelete)
+	return &SessionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a delete builder for the given entity.
@@ -244,7 +281,10 @@ func (c *SessionClient) DeleteOne(s *Session) *SessionDeleteOne {
 
 // DeleteOneID returns a delete builder for the given id.
 func (c *SessionClient) DeleteOneID(id int) *SessionDeleteOne {
-	return &SessionDeleteOne{c.Delete().Where(session.ID(id))}
+	builder := c.Delete().Where(session.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &SessionDeleteOne{builder}
 }
 
 // Create returns a query builder for Session.
@@ -266,6 +306,11 @@ func (c *SessionClient) GetX(ctx context.Context, id int) *Session {
 	return s
 }
 
+// Hooks returns the client hooks.
+func (c *SessionClient) Hooks() []Hook {
+	return c.hooks.Session
+}
+
 // TimerClient is a client for the Timer schema.
 type TimerClient struct {
 	config
@@ -276,14 +321,22 @@ func NewTimerClient(c config) *TimerClient {
 	return &TimerClient{config: c}
 }
 
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `timer.Hooks(f(g(h())))`.
+func (c *TimerClient) Use(hooks ...Hook) {
+	c.hooks.Timer = append(c.hooks.Timer, hooks...)
+}
+
 // Create returns a create builder for Timer.
 func (c *TimerClient) Create() *TimerCreate {
-	return &TimerCreate{config: c.config}
+	mutation := newTimerMutation(c.config, OpCreate)
+	return &TimerCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // Update returns an update builder for Timer.
 func (c *TimerClient) Update() *TimerUpdate {
-	return &TimerUpdate{config: c.config}
+	mutation := newTimerMutation(c.config, OpUpdate)
+	return &TimerUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
@@ -293,12 +346,15 @@ func (c *TimerClient) UpdateOne(t *Timer) *TimerUpdateOne {
 
 // UpdateOneID returns an update builder for the given id.
 func (c *TimerClient) UpdateOneID(id int) *TimerUpdateOne {
-	return &TimerUpdateOne{config: c.config, id: id}
+	mutation := newTimerMutation(c.config, OpUpdateOne)
+	mutation.id = &id
+	return &TimerUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // Delete returns a delete builder for Timer.
 func (c *TimerClient) Delete() *TimerDelete {
-	return &TimerDelete{config: c.config}
+	mutation := newTimerMutation(c.config, OpDelete)
+	return &TimerDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a delete builder for the given entity.
@@ -308,7 +364,10 @@ func (c *TimerClient) DeleteOne(t *Timer) *TimerDeleteOne {
 
 // DeleteOneID returns a delete builder for the given id.
 func (c *TimerClient) DeleteOneID(id int) *TimerDeleteOne {
-	return &TimerDeleteOne{c.Delete().Where(timer.ID(id))}
+	builder := c.Delete().Where(timer.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &TimerDeleteOne{builder}
 }
 
 // Create returns a query builder for Timer.
@@ -344,6 +403,11 @@ func (c *TimerClient) QueryPlanet(t *Timer) *PlanetQuery {
 	return query
 }
 
+// Hooks returns the client hooks.
+func (c *TimerClient) Hooks() []Hook {
+	return c.hooks.Timer
+}
+
 // UserClient is a client for the User schema.
 type UserClient struct {
 	config
@@ -354,14 +418,22 @@ func NewUserClient(c config) *UserClient {
 	return &UserClient{config: c}
 }
 
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `user.Hooks(f(g(h())))`.
+func (c *UserClient) Use(hooks ...Hook) {
+	c.hooks.User = append(c.hooks.User, hooks...)
+}
+
 // Create returns a create builder for User.
 func (c *UserClient) Create() *UserCreate {
-	return &UserCreate{config: c.config}
+	mutation := newUserMutation(c.config, OpCreate)
+	return &UserCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // Update returns an update builder for User.
 func (c *UserClient) Update() *UserUpdate {
-	return &UserUpdate{config: c.config}
+	mutation := newUserMutation(c.config, OpUpdate)
+	return &UserUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
@@ -371,12 +443,15 @@ func (c *UserClient) UpdateOne(u *User) *UserUpdateOne {
 
 // UpdateOneID returns an update builder for the given id.
 func (c *UserClient) UpdateOneID(id int) *UserUpdateOne {
-	return &UserUpdateOne{config: c.config, id: id}
+	mutation := newUserMutation(c.config, OpUpdateOne)
+	mutation.id = &id
+	return &UserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // Delete returns a delete builder for User.
 func (c *UserClient) Delete() *UserDelete {
-	return &UserDelete{config: c.config}
+	mutation := newUserMutation(c.config, OpDelete)
+	return &UserDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a delete builder for the given entity.
@@ -386,7 +461,10 @@ func (c *UserClient) DeleteOne(u *User) *UserDeleteOne {
 
 // DeleteOneID returns a delete builder for the given id.
 func (c *UserClient) DeleteOneID(id int) *UserDeleteOne {
-	return &UserDeleteOne{c.Delete().Where(user.ID(id))}
+	builder := c.Delete().Where(user.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &UserDeleteOne{builder}
 }
 
 // Create returns a query builder for User.
@@ -420,4 +498,9 @@ func (c *UserClient) QueryPlanets(u *User) *PlanetQuery {
 	query.sql = sqlgraph.Neighbors(u.driver.Dialect(), step)
 
 	return query
+}
+
+// Hooks returns the client hooks.
+func (c *UserClient) Hooks() []Hook {
+	return c.hooks.User
 }

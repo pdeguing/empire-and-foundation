@@ -358,7 +358,7 @@ func (pq *PlanetQuery) sqlAll(ctx context.Context) ([]*Planet, error) {
 		ids := make([]int, 0, len(nodes))
 		nodeids := make(map[int][]*Planet)
 		for i := range nodes {
-			if fk := nodes[i].owner_id; fk != nil {
+			if fk := nodes[i].user_planets; fk != nil {
 				ids = append(ids, *fk)
 				nodeids[*fk] = append(nodeids[*fk], nodes[i])
 			}
@@ -371,7 +371,7 @@ func (pq *PlanetQuery) sqlAll(ctx context.Context) ([]*Planet, error) {
 		for _, n := range neighbors {
 			nodes, ok := nodeids[n.ID]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "owner_id" returned %v`, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "user_planets" returned %v`, n.ID)
 			}
 			for i := range nodes {
 				nodes[i].Edges.Owner = n
@@ -395,13 +395,13 @@ func (pq *PlanetQuery) sqlAll(ctx context.Context) ([]*Planet, error) {
 			return nil, err
 		}
 		for _, n := range neighbors {
-			fk := n.planet_id
+			fk := n.planet_timers
 			if fk == nil {
-				return nil, fmt.Errorf(`foreign-key "planet_id" is nil for node %v`, n.ID)
+				return nil, fmt.Errorf(`foreign-key "planet_timers" is nil for node %v`, n.ID)
 			}
 			node, ok := nodeids[*fk]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "planet_id" returned %v for node %v`, *fk, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "planet_timers" returned %v for node %v`, *fk, n.ID)
 			}
 			node.Edges.Timers = append(node.Edges.Timers, n)
 		}

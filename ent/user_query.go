@@ -333,13 +333,13 @@ func (uq *UserQuery) sqlAll(ctx context.Context) ([]*User, error) {
 			return nil, err
 		}
 		for _, n := range neighbors {
-			fk := n.owner_id
+			fk := n.user_planets
 			if fk == nil {
-				return nil, fmt.Errorf(`foreign-key "owner_id" is nil for node %v`, n.ID)
+				return nil, fmt.Errorf(`foreign-key "user_planets" is nil for node %v`, n.ID)
 			}
 			node, ok := nodeids[*fk]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "owner_id" returned %v for node %v`, *fk, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "user_planets" returned %v for node %v`, *fk, n.ID)
 			}
 			node.Edges.Planets = append(node.Edges.Planets, n)
 		}

@@ -17,36 +17,31 @@ import (
 // TimerCreate is the builder for creating a Timer entity.
 type TimerCreate struct {
 	config
-	action   *timer.Action
-	group    *timer.Group
-	end_time *time.Time
-	planet   map[int]struct{}
+	mutation *TimerMutation
+	hooks    []Hook
 }
 
 // SetAction sets the action field.
 func (tc *TimerCreate) SetAction(t timer.Action) *TimerCreate {
-	tc.action = &t
+	tc.mutation.SetAction(t)
 	return tc
 }
 
 // SetGroup sets the group field.
 func (tc *TimerCreate) SetGroup(t timer.Group) *TimerCreate {
-	tc.group = &t
+	tc.mutation.SetGroup(t)
 	return tc
 }
 
 // SetEndTime sets the end_time field.
 func (tc *TimerCreate) SetEndTime(t time.Time) *TimerCreate {
-	tc.end_time = &t
+	tc.mutation.SetEndTime(t)
 	return tc
 }
 
 // SetPlanetID sets the planet edge to Planet by id.
 func (tc *TimerCreate) SetPlanetID(id int) *TimerCreate {
-	if tc.planet == nil {
-		tc.planet = make(map[int]struct{})
-	}
-	tc.planet[id] = struct{}{}
+	tc.mutation.SetPlanetID(id)
 	return tc
 }
 
@@ -65,25 +60,49 @@ func (tc *TimerCreate) SetPlanet(p *Planet) *TimerCreate {
 
 // Save creates the Timer in the database.
 func (tc *TimerCreate) Save(ctx context.Context) (*Timer, error) {
-	if tc.action == nil {
+	if _, ok := tc.mutation.Action(); !ok {
 		return nil, errors.New("ent: missing required field \"action\"")
 	}
-	if err := timer.ActionValidator(*tc.action); err != nil {
-		return nil, fmt.Errorf("ent: validator failed for field \"action\": %v", err)
+	if v, ok := tc.mutation.Action(); ok {
+		if err := timer.ActionValidator(v); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"action\": %v", err)
+		}
 	}
-	if tc.group == nil {
+	if _, ok := tc.mutation.Group(); !ok {
 		return nil, errors.New("ent: missing required field \"group\"")
 	}
-	if err := timer.GroupValidator(*tc.group); err != nil {
-		return nil, fmt.Errorf("ent: validator failed for field \"group\": %v", err)
+	if v, ok := tc.mutation.Group(); ok {
+		if err := timer.GroupValidator(v); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"group\": %v", err)
+		}
 	}
-	if tc.end_time == nil {
+	if _, ok := tc.mutation.EndTime(); !ok {
 		return nil, errors.New("ent: missing required field \"end_time\"")
 	}
-	if len(tc.planet) > 1 {
-		return nil, errors.New("ent: multiple assignments on a unique edge \"planet\"")
+	var (
+		err  error
+		node *Timer
+	)
+	if len(tc.hooks) == 0 {
+		node, err = tc.sqlSave(ctx)
+	} else {
+		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
+			mutation, ok := m.(*TimerMutation)
+			if !ok {
+				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			tc.mutation = mutation
+			node, err = tc.sqlSave(ctx)
+			return node, err
+		})
+		for i := len(tc.hooks) - 1; i >= 0; i-- {
+			mut = tc.hooks[i](mut)
+		}
+		if _, err := mut.Mutate(ctx, tc.mutation); err != nil {
+			return nil, err
+		}
 	}
-	return tc.sqlSave(ctx)
+	return node, err
 }
 
 // SaveX calls Save and panics if Save returns an error.
@@ -106,31 +125,31 @@ func (tc *TimerCreate) sqlSave(ctx context.Context) (*Timer, error) {
 			},
 		}
 	)
-	if value := tc.action; value != nil {
+	if value, ok := tc.mutation.Action(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeEnum,
-			Value:  *value,
+			Value:  value,
 			Column: timer.FieldAction,
 		})
-		t.Action = *value
+		t.Action = value
 	}
-	if value := tc.group; value != nil {
+	if value, ok := tc.mutation.Group(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeEnum,
-			Value:  *value,
+			Value:  value,
 			Column: timer.FieldGroup,
 		})
-		t.Group = *value
+		t.Group = value
 	}
-	if value := tc.end_time; value != nil {
+	if value, ok := tc.mutation.EndTime(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
-			Value:  *value,
+			Value:  value,
 			Column: timer.FieldEndTime,
 		})
-		t.EndTime = *value
+		t.EndTime = value
 	}
-	if nodes := tc.planet; len(nodes) > 0 {
+	if nodes := tc.mutation.PlanetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -144,7 +163,7 @@ func (tc *TimerCreate) sqlSave(ctx context.Context) (*Timer, error) {
 				},
 			},
 		}
-		for k, _ := range nodes {
+		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges = append(_spec.Edges, edge)

@@ -331,7 +331,7 @@ func (tq *TimerQuery) sqlAll(ctx context.Context) ([]*Timer, error) {
 		ids := make([]int, 0, len(nodes))
 		nodeids := make(map[int][]*Timer)
 		for i := range nodes {
-			if fk := nodes[i].planet_id; fk != nil {
+			if fk := nodes[i].planet_timers; fk != nil {
 				ids = append(ids, *fk)
 				nodeids[*fk] = append(nodeids[*fk], nodes[i])
 			}
@@ -344,7 +344,7 @@ func (tq *TimerQuery) sqlAll(ctx context.Context) ([]*Timer, error) {
 		for _, n := range neighbors {
 			nodes, ok := nodeids[n.ID]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "planet_id" returned %v`, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "planet_timers" returned %v`, n.ID)
 			}
 			for i := range nodes {
 				nodes[i].Edges.Planet = n

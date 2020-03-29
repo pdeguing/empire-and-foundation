@@ -23,48 +23,28 @@ type Planet struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// Metal holds the value of the "metal" field.
 	Metal int64 `json:"metal,omitempty"`
-	// MetalLastUpdate holds the value of the "metal_last_update" field.
-	MetalLastUpdate time.Time `json:"metal_last_update,omitempty"`
-	// MetalRate holds the value of the "metal_rate" field.
-	MetalRate int `json:"metal_rate,omitempty"`
 	// MetalProdLevel holds the value of the "metal_prod_level" field.
 	MetalProdLevel int `json:"metal_prod_level,omitempty"`
 	// MetalStorageLevel holds the value of the "metal_storage_level" field.
 	MetalStorageLevel int `json:"metal_storage_level,omitempty"`
 	// Hydrogen holds the value of the "hydrogen" field.
 	Hydrogen int64 `json:"hydrogen,omitempty"`
-	// HydrogenLastUpdate holds the value of the "hydrogen_last_update" field.
-	HydrogenLastUpdate time.Time `json:"hydrogen_last_update,omitempty"`
-	// HydrogenRate holds the value of the "hydrogen_rate" field.
-	HydrogenRate int `json:"hydrogen_rate,omitempty"`
 	// HydrogenProdLevel holds the value of the "hydrogen_prod_level" field.
 	HydrogenProdLevel int `json:"hydrogen_prod_level,omitempty"`
 	// HydrogenStorageLevel holds the value of the "hydrogen_storage_level" field.
 	HydrogenStorageLevel int `json:"hydrogen_storage_level,omitempty"`
 	// Silica holds the value of the "silica" field.
 	Silica int64 `json:"silica,omitempty"`
-	// SilicaLastUpdate holds the value of the "silica_last_update" field.
-	SilicaLastUpdate time.Time `json:"silica_last_update,omitempty"`
-	// SilicaRate holds the value of the "silica_rate" field.
-	SilicaRate int `json:"silica_rate,omitempty"`
 	// SilicaProdLevel holds the value of the "silica_prod_level" field.
 	SilicaProdLevel int `json:"silica_prod_level,omitempty"`
 	// SilicaStorageLevel holds the value of the "silica_storage_level" field.
 	SilicaStorageLevel int `json:"silica_storage_level,omitempty"`
 	// Population holds the value of the "population" field.
 	Population int64 `json:"population,omitempty"`
-	// PopulationLastUpdate holds the value of the "population_last_update" field.
-	PopulationLastUpdate time.Time `json:"population_last_update,omitempty"`
-	// PopulationRate holds the value of the "population_rate" field.
-	PopulationRate int `json:"population_rate,omitempty"`
 	// PopulationProdLevel holds the value of the "population_prod_level" field.
 	PopulationProdLevel int `json:"population_prod_level,omitempty"`
 	// PopulationStorageLevel holds the value of the "population_storage_level" field.
 	PopulationStorageLevel int `json:"population_storage_level,omitempty"`
-	// EnergyCons holds the value of the "energy_cons" field.
-	EnergyCons int64 `json:"energy_cons,omitempty"`
-	// EnergyProd holds the value of the "energy_prod" field.
-	EnergyProd int64 `json:"energy_prod,omitempty"`
 	// SolarProdLevel holds the value of the "solar_prod_level" field.
 	SolarProdLevel int `json:"solar_prod_level,omitempty"`
 	// RegionCode holds the value of the "region_code" field.
@@ -83,10 +63,12 @@ type Planet struct {
 	PlanetType planet.PlanetType `json:"planet_type,omitempty"`
 	// PlanetSkin holds the value of the "planet_skin" field.
 	PlanetSkin string `json:"planet_skin,omitempty"`
+	// LastResourceUpdate holds the value of the "last_resource_update" field.
+	LastResourceUpdate time.Time `json:"last_resource_update,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the PlanetQuery when eager-loading is set.
-	Edges    PlanetEdges `json:"edges"`
-	owner_id *int
+	Edges        PlanetEdges `json:"edges"`
+	user_planets *int
 }
 
 // PlanetEdges holds the relations/edges for other nodes in the graph.
@@ -100,9 +82,9 @@ type PlanetEdges struct {
 	loadedTypes [2]bool
 }
 
-// OwnerErr returns the Owner value or an error if the edge
+// OwnerOrErr returns the Owner value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e PlanetEdges) OwnerErr() (*User, error) {
+func (e PlanetEdges) OwnerOrErr() (*User, error) {
 	if e.loadedTypes[0] {
 		if e.Owner == nil {
 			// The edge owner was loaded in eager-loading,
@@ -114,9 +96,9 @@ func (e PlanetEdges) OwnerErr() (*User, error) {
 	return nil, &NotLoadedError{edge: "owner"}
 }
 
-// TimersErr returns the Timers value or an error if the edge
+// TimersOrErr returns the Timers value or an error if the edge
 // was not loaded in eager-loading.
-func (e PlanetEdges) TimersErr() ([]*Timer, error) {
+func (e PlanetEdges) TimersOrErr() ([]*Timer, error) {
 	if e.loadedTypes[1] {
 		return e.Timers, nil
 	}
@@ -130,27 +112,17 @@ func (*Planet) scanValues() []interface{} {
 		&sql.NullTime{},   // created_at
 		&sql.NullTime{},   // updated_at
 		&sql.NullInt64{},  // metal
-		&sql.NullTime{},   // metal_last_update
-		&sql.NullInt64{},  // metal_rate
 		&sql.NullInt64{},  // metal_prod_level
 		&sql.NullInt64{},  // metal_storage_level
 		&sql.NullInt64{},  // hydrogen
-		&sql.NullTime{},   // hydrogen_last_update
-		&sql.NullInt64{},  // hydrogen_rate
 		&sql.NullInt64{},  // hydrogen_prod_level
 		&sql.NullInt64{},  // hydrogen_storage_level
 		&sql.NullInt64{},  // silica
-		&sql.NullTime{},   // silica_last_update
-		&sql.NullInt64{},  // silica_rate
 		&sql.NullInt64{},  // silica_prod_level
 		&sql.NullInt64{},  // silica_storage_level
 		&sql.NullInt64{},  // population
-		&sql.NullTime{},   // population_last_update
-		&sql.NullInt64{},  // population_rate
 		&sql.NullInt64{},  // population_prod_level
 		&sql.NullInt64{},  // population_storage_level
-		&sql.NullInt64{},  // energy_cons
-		&sql.NullInt64{},  // energy_prod
 		&sql.NullInt64{},  // solar_prod_level
 		&sql.NullInt64{},  // region_code
 		&sql.NullInt64{},  // system_code
@@ -160,13 +132,14 @@ func (*Planet) scanValues() []interface{} {
 		&sql.NullString{}, // name
 		&sql.NullString{}, // planet_type
 		&sql.NullString{}, // planet_skin
+		&sql.NullTime{},   // last_resource_update
 	}
 }
 
 // fkValues returns the types for scanning foreign-keys values from sql.Rows.
 func (*Planet) fkValues() []interface{} {
 	return []interface{}{
-		&sql.NullInt64{}, // owner_id
+		&sql.NullInt64{}, // user_planets
 	}
 }
 
@@ -197,163 +170,118 @@ func (pl *Planet) assignValues(values ...interface{}) error {
 	} else if value.Valid {
 		pl.Metal = value.Int64
 	}
-	if value, ok := values[3].(*sql.NullTime); !ok {
-		return fmt.Errorf("unexpected type %T for field metal_last_update", values[3])
-	} else if value.Valid {
-		pl.MetalLastUpdate = value.Time
-	}
-	if value, ok := values[4].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field metal_rate", values[4])
-	} else if value.Valid {
-		pl.MetalRate = int(value.Int64)
-	}
-	if value, ok := values[5].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field metal_prod_level", values[5])
+	if value, ok := values[3].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field metal_prod_level", values[3])
 	} else if value.Valid {
 		pl.MetalProdLevel = int(value.Int64)
 	}
-	if value, ok := values[6].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field metal_storage_level", values[6])
+	if value, ok := values[4].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field metal_storage_level", values[4])
 	} else if value.Valid {
 		pl.MetalStorageLevel = int(value.Int64)
 	}
-	if value, ok := values[7].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field hydrogen", values[7])
+	if value, ok := values[5].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field hydrogen", values[5])
 	} else if value.Valid {
 		pl.Hydrogen = value.Int64
 	}
-	if value, ok := values[8].(*sql.NullTime); !ok {
-		return fmt.Errorf("unexpected type %T for field hydrogen_last_update", values[8])
-	} else if value.Valid {
-		pl.HydrogenLastUpdate = value.Time
-	}
-	if value, ok := values[9].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field hydrogen_rate", values[9])
-	} else if value.Valid {
-		pl.HydrogenRate = int(value.Int64)
-	}
-	if value, ok := values[10].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field hydrogen_prod_level", values[10])
+	if value, ok := values[6].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field hydrogen_prod_level", values[6])
 	} else if value.Valid {
 		pl.HydrogenProdLevel = int(value.Int64)
 	}
-	if value, ok := values[11].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field hydrogen_storage_level", values[11])
+	if value, ok := values[7].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field hydrogen_storage_level", values[7])
 	} else if value.Valid {
 		pl.HydrogenStorageLevel = int(value.Int64)
 	}
-	if value, ok := values[12].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field silica", values[12])
+	if value, ok := values[8].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field silica", values[8])
 	} else if value.Valid {
 		pl.Silica = value.Int64
 	}
-	if value, ok := values[13].(*sql.NullTime); !ok {
-		return fmt.Errorf("unexpected type %T for field silica_last_update", values[13])
-	} else if value.Valid {
-		pl.SilicaLastUpdate = value.Time
-	}
-	if value, ok := values[14].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field silica_rate", values[14])
-	} else if value.Valid {
-		pl.SilicaRate = int(value.Int64)
-	}
-	if value, ok := values[15].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field silica_prod_level", values[15])
+	if value, ok := values[9].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field silica_prod_level", values[9])
 	} else if value.Valid {
 		pl.SilicaProdLevel = int(value.Int64)
 	}
-	if value, ok := values[16].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field silica_storage_level", values[16])
+	if value, ok := values[10].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field silica_storage_level", values[10])
 	} else if value.Valid {
 		pl.SilicaStorageLevel = int(value.Int64)
 	}
-	if value, ok := values[17].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field population", values[17])
+	if value, ok := values[11].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field population", values[11])
 	} else if value.Valid {
 		pl.Population = value.Int64
 	}
-	if value, ok := values[18].(*sql.NullTime); !ok {
-		return fmt.Errorf("unexpected type %T for field population_last_update", values[18])
-	} else if value.Valid {
-		pl.PopulationLastUpdate = value.Time
-	}
-	if value, ok := values[19].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field population_rate", values[19])
-	} else if value.Valid {
-		pl.PopulationRate = int(value.Int64)
-	}
-	if value, ok := values[20].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field population_prod_level", values[20])
+	if value, ok := values[12].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field population_prod_level", values[12])
 	} else if value.Valid {
 		pl.PopulationProdLevel = int(value.Int64)
 	}
-	if value, ok := values[21].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field population_storage_level", values[21])
+	if value, ok := values[13].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field population_storage_level", values[13])
 	} else if value.Valid {
 		pl.PopulationStorageLevel = int(value.Int64)
 	}
-	if value, ok := values[22].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field energy_cons", values[22])
-	} else if value.Valid {
-		pl.EnergyCons = value.Int64
-	}
-	if value, ok := values[23].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field energy_prod", values[23])
-	} else if value.Valid {
-		pl.EnergyProd = value.Int64
-	}
-	if value, ok := values[24].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field solar_prod_level", values[24])
+	if value, ok := values[14].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field solar_prod_level", values[14])
 	} else if value.Valid {
 		pl.SolarProdLevel = int(value.Int64)
 	}
-	if value, ok := values[25].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field region_code", values[25])
+	if value, ok := values[15].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field region_code", values[15])
 	} else if value.Valid {
 		pl.RegionCode = int(value.Int64)
 	}
-	if value, ok := values[26].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field system_code", values[26])
+	if value, ok := values[16].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field system_code", values[16])
 	} else if value.Valid {
 		pl.SystemCode = int(value.Int64)
 	}
-	if value, ok := values[27].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field orbit_code", values[27])
+	if value, ok := values[17].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field orbit_code", values[17])
 	} else if value.Valid {
 		pl.OrbitCode = int(value.Int64)
 	}
-	if value, ok := values[28].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field suborbit_code", values[28])
+	if value, ok := values[18].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field suborbit_code", values[18])
 	} else if value.Valid {
 		pl.SuborbitCode = int(value.Int64)
 	}
-	if value, ok := values[29].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field position_code", values[29])
+	if value, ok := values[19].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field position_code", values[19])
 	} else if value.Valid {
 		pl.PositionCode = int(value.Int64)
 	}
-	if value, ok := values[30].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field name", values[30])
+	if value, ok := values[20].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field name", values[20])
 	} else if value.Valid {
 		pl.Name = value.String
 	}
-	if value, ok := values[31].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field planet_type", values[31])
+	if value, ok := values[21].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field planet_type", values[21])
 	} else if value.Valid {
 		pl.PlanetType = planet.PlanetType(value.String)
 	}
-	if value, ok := values[32].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field planet_skin", values[32])
+	if value, ok := values[22].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field planet_skin", values[22])
 	} else if value.Valid {
 		pl.PlanetSkin = value.String
 	}
-	values = values[33:]
+	if value, ok := values[23].(*sql.NullTime); !ok {
+		return fmt.Errorf("unexpected type %T for field last_resource_update", values[23])
+	} else if value.Valid {
+		pl.LastResourceUpdate = value.Time
+	}
+	values = values[24:]
 	if len(values) == len(planet.ForeignKeys) {
 		if value, ok := values[0].(*sql.NullInt64); !ok {
-			return fmt.Errorf("unexpected type %T for edge-field owner_id", value)
+			return fmt.Errorf("unexpected type %T for edge-field user_planets", value)
 		} else if value.Valid {
-			pl.owner_id = new(int)
-			*pl.owner_id = int(value.Int64)
+			pl.user_planets = new(int)
+			*pl.user_planets = int(value.Int64)
 		}
 	}
 	return nil
@@ -361,19 +289,19 @@ func (pl *Planet) assignValues(values ...interface{}) error {
 
 // QueryOwner queries the owner edge of the Planet.
 func (pl *Planet) QueryOwner() *UserQuery {
-	return (&PlanetClient{pl.config}).QueryOwner(pl)
+	return (&PlanetClient{config: pl.config}).QueryOwner(pl)
 }
 
 // QueryTimers queries the timers edge of the Planet.
 func (pl *Planet) QueryTimers() *TimerQuery {
-	return (&PlanetClient{pl.config}).QueryTimers(pl)
+	return (&PlanetClient{config: pl.config}).QueryTimers(pl)
 }
 
 // Update returns a builder for updating this Planet.
 // Note that, you need to call Planet.Unwrap() before calling this method, if this Planet
 // was returned from a transaction, and the transaction was committed or rolled back.
 func (pl *Planet) Update() *PlanetUpdateOne {
-	return (&PlanetClient{pl.config}).UpdateOne(pl)
+	return (&PlanetClient{config: pl.config}).UpdateOne(pl)
 }
 
 // Unwrap unwraps the entity that was returned from a transaction after it was closed,
@@ -398,48 +326,28 @@ func (pl *Planet) String() string {
 	builder.WriteString(pl.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", metal=")
 	builder.WriteString(fmt.Sprintf("%v", pl.Metal))
-	builder.WriteString(", metal_last_update=")
-	builder.WriteString(pl.MetalLastUpdate.Format(time.ANSIC))
-	builder.WriteString(", metal_rate=")
-	builder.WriteString(fmt.Sprintf("%v", pl.MetalRate))
 	builder.WriteString(", metal_prod_level=")
 	builder.WriteString(fmt.Sprintf("%v", pl.MetalProdLevel))
 	builder.WriteString(", metal_storage_level=")
 	builder.WriteString(fmt.Sprintf("%v", pl.MetalStorageLevel))
 	builder.WriteString(", hydrogen=")
 	builder.WriteString(fmt.Sprintf("%v", pl.Hydrogen))
-	builder.WriteString(", hydrogen_last_update=")
-	builder.WriteString(pl.HydrogenLastUpdate.Format(time.ANSIC))
-	builder.WriteString(", hydrogen_rate=")
-	builder.WriteString(fmt.Sprintf("%v", pl.HydrogenRate))
 	builder.WriteString(", hydrogen_prod_level=")
 	builder.WriteString(fmt.Sprintf("%v", pl.HydrogenProdLevel))
 	builder.WriteString(", hydrogen_storage_level=")
 	builder.WriteString(fmt.Sprintf("%v", pl.HydrogenStorageLevel))
 	builder.WriteString(", silica=")
 	builder.WriteString(fmt.Sprintf("%v", pl.Silica))
-	builder.WriteString(", silica_last_update=")
-	builder.WriteString(pl.SilicaLastUpdate.Format(time.ANSIC))
-	builder.WriteString(", silica_rate=")
-	builder.WriteString(fmt.Sprintf("%v", pl.SilicaRate))
 	builder.WriteString(", silica_prod_level=")
 	builder.WriteString(fmt.Sprintf("%v", pl.SilicaProdLevel))
 	builder.WriteString(", silica_storage_level=")
 	builder.WriteString(fmt.Sprintf("%v", pl.SilicaStorageLevel))
 	builder.WriteString(", population=")
 	builder.WriteString(fmt.Sprintf("%v", pl.Population))
-	builder.WriteString(", population_last_update=")
-	builder.WriteString(pl.PopulationLastUpdate.Format(time.ANSIC))
-	builder.WriteString(", population_rate=")
-	builder.WriteString(fmt.Sprintf("%v", pl.PopulationRate))
 	builder.WriteString(", population_prod_level=")
 	builder.WriteString(fmt.Sprintf("%v", pl.PopulationProdLevel))
 	builder.WriteString(", population_storage_level=")
 	builder.WriteString(fmt.Sprintf("%v", pl.PopulationStorageLevel))
-	builder.WriteString(", energy_cons=")
-	builder.WriteString(fmt.Sprintf("%v", pl.EnergyCons))
-	builder.WriteString(", energy_prod=")
-	builder.WriteString(fmt.Sprintf("%v", pl.EnergyProd))
 	builder.WriteString(", solar_prod_level=")
 	builder.WriteString(fmt.Sprintf("%v", pl.SolarProdLevel))
 	builder.WriteString(", region_code=")
@@ -458,6 +366,8 @@ func (pl *Planet) String() string {
 	builder.WriteString(fmt.Sprintf("%v", pl.PlanetType))
 	builder.WriteString(", planet_skin=")
 	builder.WriteString(pl.PlanetSkin)
+	builder.WriteString(", last_resource_update=")
+	builder.WriteString(pl.LastResourceUpdate.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

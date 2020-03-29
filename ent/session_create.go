@@ -5,6 +5,7 @@ package ent
 import (
 	"context"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
@@ -15,41 +16,63 @@ import (
 // SessionCreate is the builder for creating a Session entity.
 type SessionCreate struct {
 	config
-	token  *string
-	data   *[]byte
-	expiry *time.Time
+	mutation *SessionMutation
+	hooks    []Hook
 }
 
 // SetToken sets the token field.
 func (sc *SessionCreate) SetToken(s string) *SessionCreate {
-	sc.token = &s
+	sc.mutation.SetToken(s)
 	return sc
 }
 
 // SetData sets the data field.
 func (sc *SessionCreate) SetData(b []byte) *SessionCreate {
-	sc.data = &b
+	sc.mutation.SetData(b)
 	return sc
 }
 
 // SetExpiry sets the expiry field.
 func (sc *SessionCreate) SetExpiry(t time.Time) *SessionCreate {
-	sc.expiry = &t
+	sc.mutation.SetExpiry(t)
 	return sc
 }
 
 // Save creates the Session in the database.
 func (sc *SessionCreate) Save(ctx context.Context) (*Session, error) {
-	if sc.token == nil {
+	if _, ok := sc.mutation.Token(); !ok {
 		return nil, errors.New("ent: missing required field \"token\"")
 	}
-	if sc.data == nil {
+	if _, ok := sc.mutation.Data(); !ok {
 		return nil, errors.New("ent: missing required field \"data\"")
 	}
-	if sc.expiry == nil {
+	if _, ok := sc.mutation.Expiry(); !ok {
 		return nil, errors.New("ent: missing required field \"expiry\"")
 	}
-	return sc.sqlSave(ctx)
+	var (
+		err  error
+		node *Session
+	)
+	if len(sc.hooks) == 0 {
+		node, err = sc.sqlSave(ctx)
+	} else {
+		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
+			mutation, ok := m.(*SessionMutation)
+			if !ok {
+				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			sc.mutation = mutation
+			node, err = sc.sqlSave(ctx)
+			return node, err
+		})
+		for i := len(sc.hooks) - 1; i >= 0; i-- {
+			mut = sc.hooks[i](mut)
+		}
+		if _, err := mut.Mutate(ctx, sc.mutation); err != nil {
+			return nil, err
+		}
+	}
+	return node, err
 }
 
 // SaveX calls Save and panics if Save returns an error.
@@ -72,29 +95,29 @@ func (sc *SessionCreate) sqlSave(ctx context.Context) (*Session, error) {
 			},
 		}
 	)
-	if value := sc.token; value != nil {
+	if value, ok := sc.mutation.Token(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
-			Value:  *value,
+			Value:  value,
 			Column: session.FieldToken,
 		})
-		s.Token = *value
+		s.Token = value
 	}
-	if value := sc.data; value != nil {
+	if value, ok := sc.mutation.Data(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeBytes,
-			Value:  *value,
+			Value:  value,
 			Column: session.FieldData,
 		})
-		s.Data = *value
+		s.Data = value
 	}
-	if value := sc.expiry; value != nil {
+	if value, ok := sc.mutation.Expiry(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
-			Value:  *value,
+			Value:  value,
 			Column: session.FieldExpiry,
 		})
-		s.Expiry = *value
+		s.Expiry = value
 	}
 	if err := sqlgraph.CreateNode(ctx, sc.driver, _spec); err != nil {
 		if cerr, ok := isSQLConstraintError(err); ok {

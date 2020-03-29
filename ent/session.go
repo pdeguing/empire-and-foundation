@@ -68,7 +68,7 @@ func (s *Session) assignValues(values ...interface{}) error {
 // Note that, you need to call Session.Unwrap() before calling this method, if this Session
 // was returned from a transaction, and the transaction was committed or rolled back.
 func (s *Session) Update() *SessionUpdateOne {
-	return (&SessionClient{s.config}).UpdateOne(s)
+	return (&SessionClient{config: s.config}).UpdateOne(s)
 }
 
 // Unwrap unwraps the entity that was returned from a transaction after it was closed,

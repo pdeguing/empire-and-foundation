@@ -6,12 +6,9 @@ const (
 	// Label holds the string label denoting the session type in the database.
 	Label = "session"
 	// FieldID holds the string denoting the id field in the database.
-	FieldID = "id"
-	// FieldToken holds the string denoting the token vertex property in the database.
-	FieldToken = "token"
-	// FieldData holds the string denoting the data vertex property in the database.
-	FieldData = "data"
-	// FieldExpiry holds the string denoting the expiry vertex property in the database.
+	FieldID     = "id"    // FieldToken holds the string denoting the token vertex property in the database.
+	FieldToken  = "token" // FieldData holds the string denoting the data vertex property in the database.
+	FieldData   = "data"  // FieldExpiry holds the string denoting the expiry vertex property in the database.
 	FieldExpiry = "expiry"
 
 	// Table holds the table name of the session in the database.

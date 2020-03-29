@@ -11,18 +11,22 @@ import (
 	"github.com/pdeguing/empire-and-foundation/ent/timer"
 )
 
+// timeNow aliases the time.Now() function but can be overwritten to allow
+// testing of time sensitive methods.
+var timeNow = time.Now
+
 // ErrActionPrerequisitesNotMet is returned when a action's Valid()
 // method returns false. The timer for the action cannot be started.
-var ErrActionPrerequisitesNotMet = errors.New("Cannot start the timer because the action's prerequisites (`! t.Valid()`) were not met")
+var ErrActionPrerequisitesNotMet = errors.New("cannot start the timer because the action's prerequisites (`! t.Valid()`) were not met")
 
 // ErrTimerBusy is returned when another timer for the same planet
 // and in the same group is already running. Only one timer can be
 // running at a time.
-var ErrTimerBusy = errors.New("Another timer is already running for this planet and group")
+var ErrTimerBusy = errors.New("another timer is already running for this planet and group")
 
 // ErrTimerNotRunning is returned when trying to cancel a timer that
 // is not currently running.
-var ErrTimerNotRunning = errors.New("The timer cannot be cancelled because it is not running")
+var ErrTimerNotRunning = errors.New("the timer cannot be cancelled because it is not running")
 
 type action struct {
 	// Group specifies the group the action belongs to. For each planet
@@ -36,17 +40,14 @@ type action struct {
 	Valid func(p *ent.Planet) bool
 
 	// Start is triggered when the action is scheduled using a timer.
-	Start func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error
+	Start func(p *ent.Planet) error
 
-	// Complete is triggered when the timer is done. Make sure that any update
-	// to the planet is also updated in the passed in model and not only in
-	// the database. If not, the update won't be visible in the view until
-	// after a reload.
-	Complete func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error
+	// Complete is triggered when the timer is done.
+	Complete func(p *ent.Planet) error
 
 	// Cancel is triggered when the timer is canceled before
 	// it finished.
-	Cancel func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error
+	Cancel func(p *ent.Planet) error
 }
 
 // Timer contains information about a single running timer.
@@ -57,14 +58,14 @@ type Timer struct {
 
 // Duration returns the time left until the timer completes.
 func (t *Timer) Duration() time.Duration {
-	return time.Until(t.EndTime)
+	return t.EndTime.Sub(timeNow())
 }
 
 // actions contains a map of actions that can be executed using a timer.
 // All types should be defined using the enum fields in the Timer ent schema
 // and, vice versa, all enum values should exist in this map.
 var actions = map[timer.Action]action{
-	timer.ActionUpgradeMetalProd: action{
+	timer.ActionUpgradeMetalProd: {
 		Group: timer.GroupBuilding,
 		Duration: func(p *ent.Planet) time.Duration {
 			return getMetalProdUpgradeDuration(p.MetalProdLevel + 1)
@@ -73,26 +74,22 @@ var actions = map[timer.Action]action{
 			c := GetMetalProdUpgradeCost(p.MetalProdLevel + 1)
 			return hasResources(p, c)
 		},
-		Start: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+		Start: func(p *ent.Planet) error {
 			c := GetMetalProdUpgradeCost(p.MetalProdLevel + 1)
-			return subStock(ctx, p, c)
+			subStock(p, c)
+			return nil
 		},
-		Complete: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+		Complete: func(p *ent.Planet) error {
 			p.MetalProdLevel++
-			p.MetalRate = getNewMetalRate(p)
-			_, err := p.Update().
-				SetMetalProdLevel(p.MetalProdLevel).
-				SetMetalRate(p.MetalRate).
-				SetMetalLastUpdate(p.MetalLastUpdate).
-				Save(ctx)
-			return err
+			return nil
 		},
-		Cancel: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+		Cancel: func(p *ent.Planet) error {
 			c := GetMetalProdUpgradeCost(p.MetalProdLevel + 1)
-			return addStock(ctx, p, c)
+			addStock(p, c)
+			return nil
 		},
 	},
-	timer.ActionUpgradeHydrogenProd: action{
+	timer.ActionUpgradeHydrogenProd: {
 		Group: timer.GroupBuilding,
 		Duration: func(p *ent.Planet) time.Duration {
 			return getHydrogenProdUpgradeDuration(p.HydrogenProdLevel + 1)
@@ -101,26 +98,22 @@ var actions = map[timer.Action]action{
 			c := GetHydrogenProdUpgradeCost(p.HydrogenProdLevel + 1)
 			return hasResources(p, c)
 		},
-		Start: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+		Start: func(p *ent.Planet) error {
 			c := GetHydrogenProdUpgradeCost(p.HydrogenProdLevel + 1)
-			return subStock(ctx, p, c)
+			subStock(p, c)
+			return nil
 		},
-		Complete: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+		Complete: func(p *ent.Planet) error {
 			p.HydrogenProdLevel++
-			p.HydrogenRate = getNewHydrogenRate(p)
-			_, err := p.Update().
-				SetHydrogenProdLevel(p.HydrogenProdLevel).
-				SetHydrogenRate(p.HydrogenRate).
-				SetHydrogenLastUpdate(p.HydrogenLastUpdate).
-				Save(ctx)
-			return err
+			return nil
 		},
-		Cancel: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+		Cancel: func(p *ent.Planet) error {
 			c := GetHydrogenProdUpgradeCost(p.HydrogenProdLevel + 1)
-			return addStock(ctx, p, c)
+			addStock(p, c)
+			return nil
 		},
 	},
-	timer.ActionUpgradeSilicaProd: action{
+	timer.ActionUpgradeSilicaProd: {
 		Group: timer.GroupBuilding,
 		Duration: func(p *ent.Planet) time.Duration {
 			return getSilicaProdUpgradeDuration(p.SilicaProdLevel + 1)
@@ -129,26 +122,22 @@ var actions = map[timer.Action]action{
 			c := GetSilicaProdUpgradeCost(p.SilicaProdLevel + 1)
 			return hasResources(p, c)
 		},
-		Start: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+		Start: func(p *ent.Planet) error {
 			c := GetSilicaProdUpgradeCost(p.SilicaProdLevel + 1)
-			return subStock(ctx, p, c)
+			subStock(p, c)
+			return nil
 		},
-		Complete: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+		Complete: func(p *ent.Planet) error {
 			p.SilicaProdLevel++
-			p.SilicaRate = getNewSilicaRate(p)
-			_, err := p.Update().
-				SetSilicaProdLevel(p.SilicaProdLevel).
-				SetSilicaRate(p.SilicaRate).
-				SetSilicaLastUpdate(p.SilicaLastUpdate).
-				Save(ctx)
-			return err
+			return nil
 		},
-		Cancel: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+		Cancel: func(p *ent.Planet) error {
 			c := GetSilicaProdUpgradeCost(p.SilicaProdLevel + 1)
-			return addStock(ctx, p, c)
+			addStock(p, c)
+			return nil
 		},
 	},
-	timer.ActionUpgradeSolarProd: action{
+	timer.ActionUpgradeSolarProd: {
 		Group: timer.GroupBuilding,
 		Duration: func(p *ent.Planet) time.Duration {
 			return getSolarProdUpgradeDuration(p.SolarProdLevel + 1)
@@ -157,23 +146,22 @@ var actions = map[timer.Action]action{
 			c := GetSolarProdUpgradeCost(p.SolarProdLevel + 1)
 			return hasResources(p, c)
 		},
-		Start: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+		Start: func(p *ent.Planet) error {
 			c := GetSolarProdUpgradeCost(p.SolarProdLevel + 1)
-			return subStock(ctx, p, c)
+			subStock(p, c)
+			return nil
 		},
-		Complete: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+		Complete: func(p *ent.Planet) error {
 			p.SolarProdLevel++
-			_, err := p.Update().
-				SetSolarProdLevel(p.SolarProdLevel).
-				Save(ctx)
-			return err
+			return nil
 		},
-		Cancel: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+		Cancel: func(p *ent.Planet) error {
 			c := GetSolarProdUpgradeCost(p.SolarProdLevel + 1)
-			return addStock(ctx, p, c)
+			addStock(p, c)
+			return nil
 		},
 	},
-	timer.ActionUpgradeUrbanism: action{
+	timer.ActionUpgradeUrbanism: {
 		Group: timer.GroupBuilding,
 		Duration: func(p *ent.Planet) time.Duration {
 			return getUrbanismUpgradeDuration(p.PopulationStorageLevel + 1)
@@ -182,28 +170,23 @@ var actions = map[timer.Action]action{
 			c := GetUrbanismUpgradeCost(p.PopulationStorageLevel + 1)
 			return hasResources(p, c)
 		},
-		Start: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+		Start: func(p *ent.Planet) error {
 			c := GetUrbanismUpgradeCost(p.PopulationStorageLevel + 1)
-			return subStock(ctx, p, c)
+			subStock(p, c)
+			return nil
 		},
-		Complete: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
-			p.PopulationStorageLevel++
-			p.PopulationProdLevel = p.PopulationStorageLevel
-			p.PopulationRate = getNewPopulationRate(p)
-			_, err := p.Update().
-				SetPopulationStorageLevel(p.PopulationStorageLevel).
-				SetPopulationProdLevel(p.PopulationProdLevel).
-				SetPopulationRate(p.PopulationRate).
-				SetPopulationLastUpdate(p.PopulationLastUpdate).
-				Save(ctx)
-			return err
+		Complete: func(p *ent.Planet) error {
+			p.PopulationProdLevel++
+			p.PopulationStorageLevel = p.PopulationProdLevel
+			return nil
 		},
-		Cancel: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+		Cancel: func(p *ent.Planet) error {
 			c := GetUrbanismUpgradeCost(p.PopulationStorageLevel + 1)
-			return addStock(ctx, p, c)
+			addStock(p, c)
+			return nil
 		},
 	},
-	timer.ActionUpgradeMetalStorage: action{
+	timer.ActionUpgradeMetalStorage: {
 		Group: timer.GroupBuilding,
 		Duration: func(p *ent.Planet) time.Duration {
 			return getMetalStorageUpgradeDuration(p.MetalStorageLevel + 1)
@@ -212,23 +195,22 @@ var actions = map[timer.Action]action{
 			c := GetMetalStorageUpgradeCost(p.MetalStorageLevel + 1)
 			return hasResources(p, c)
 		},
-		Start: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+		Start: func(p *ent.Planet) error {
 			c := GetMetalStorageUpgradeCost(p.MetalStorageLevel + 1)
-			return subStock(ctx, p, c)
+			subStock(p, c)
+			return nil
 		},
-		Complete: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+		Complete: func(p *ent.Planet) error {
 			p.MetalStorageLevel++
-			_, err := p.Update().
-				SetMetalStorageLevel(p.MetalStorageLevel).
-				Save(ctx)
-			return err
+			return nil
 		},
-		Cancel: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+		Cancel: func(p *ent.Planet) error {
 			c := GetMetalStorageUpgradeCost(p.MetalStorageLevel + 1)
-			return addStock(ctx, p, c)
+			addStock(p, c)
+			return nil
 		},
 	},
-	timer.ActionUpgradeHydrogenStorage: action{
+	timer.ActionUpgradeHydrogenStorage: {
 		Group: timer.GroupBuilding,
 		Duration: func(p *ent.Planet) time.Duration {
 			return getHydrogenStorageUpgradeDuration(p.HydrogenStorageLevel + 1)
@@ -237,23 +219,22 @@ var actions = map[timer.Action]action{
 			c := GetHydrogenStorageUpgradeCost(p.HydrogenStorageLevel + 1)
 			return hasResources(p, c)
 		},
-		Start: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+		Start: func(p *ent.Planet) error {
 			c := GetHydrogenStorageUpgradeCost(p.HydrogenStorageLevel + 1)
-			return subStock(ctx, p, c)
+			subStock(p, c)
+			return nil
 		},
-		Complete: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+		Complete: func(p *ent.Planet) error {
 			p.HydrogenStorageLevel++
-			_, err := p.Update().
-				SetHydrogenStorageLevel(p.HydrogenStorageLevel).
-				Save(ctx)
-			return err
+			return nil
 		},
-		Cancel: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+		Cancel: func(p *ent.Planet) error {
 			c := GetHydrogenStorageUpgradeCost(p.HydrogenStorageLevel + 1)
-			return addStock(ctx, p, c)
+			addStock(p, c)
+			return nil
 		},
 	},
-	timer.ActionUpgradeSilicaStorage: action{
+	timer.ActionUpgradeSilicaStorage: {
 		Group: timer.GroupBuilding,
 		Duration: func(p *ent.Planet) time.Duration {
 			return getSilicaStorageUpgradeDuration(p.SilicaStorageLevel + 1)
@@ -262,22 +243,22 @@ var actions = map[timer.Action]action{
 			c := GetSilicaStorageUpgradeCost(p.SilicaStorageLevel + 1)
 			return hasResources(p, c)
 		},
-		Start: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+		Start: func(p *ent.Planet) error {
 			c := GetSilicaStorageUpgradeCost(p.SilicaStorageLevel + 1)
-			return subStock(ctx, p, c)
+			subStock(p, c)
+			return nil
 		},
-		Complete: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+		Complete: func(p *ent.Planet) error {
 			p.SilicaStorageLevel++
-			_, err := p.Update().
-				SetSilicaStorageLevel(p.SilicaStorageLevel).
-				Save(ctx)
-			return err
+			return nil
 		},
-		Cancel: func(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+		Cancel: func(p *ent.Planet) error {
 			c := GetSilicaStorageUpgradeCost(p.SilicaStorageLevel + 1)
-			return addStock(ctx, p, c)
+			addStock(p, c)
+			return nil
 		},
 	},
+	timer.ActionTest: {}, // Overwritten in some tests
 }
 
 // IsBusy checks if there is currently a timer in progress for the group.
@@ -350,16 +331,20 @@ func StartTimer(ctx context.Context, tx *ent.Tx, p *ent.Planet, action timer.Act
 		return ErrActionPrerequisitesNotMet
 	}
 	d := a.Duration(p)
-	err = a.Start(ctx, tx, p)
+	err = a.Start(p)
 	if err != nil {
-		return fmt.Errorf("error while calling \"Start\" function for action %q: %v", action, err)
+		return fmt.Errorf("error while calling \"Start\" function for action %q: %w", action, err)
+	}
+	_, err = SavePlanetResources(ctx, p)
+	if err != nil {
+		return err
 	}
 	_, err = tx.Timer.
 		Create().
 		SetPlanet(p).
 		SetAction(action).
 		SetGroup(a.Group).
-		SetEndTime(time.Now().Add(d)).
+		SetEndTime(timeNow().Add(d)).
 		Save(ctx)
 	if err != nil {
 		return fmt.Errorf("unable to create timer entry: %v", err)
@@ -381,7 +366,11 @@ func CancelTimer(ctx context.Context, tx *ent.Tx, p *ent.Planet, a timer.Action)
 	if n == 0 {
 		return ErrTimerNotRunning
 	}
-	err = actions[a].Cancel(ctx, tx, p)
+	err = actions[a].Cancel(p)
+	if err != nil {
+		return fmt.Errorf("error while calling \"Cancel\" function for action %q: %w", a, err)
+	}
+	_, err = SavePlanetResources(ctx, p)
 	return err
 }
 
@@ -392,8 +381,9 @@ func CancelTimer(ctx context.Context, tx *ent.Tx, p *ent.Planet, a timer.Action)
 // state *NOT* to be updated. UpdateTimers makes use of the old state of the
 // planet to calculate durations and update the state in steps.
 func UpdateTimers(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
+	now := timeNow()
 	timers, err := p.QueryTimers().
-		Where(timer.EndTimeLTE(time.Now())).
+		Where(timer.EndTimeLTE(now)).
 		Order(ent.Asc(timer.FieldEndTime)).
 		All(ctx)
 	if err != nil {
@@ -403,15 +393,19 @@ func UpdateTimers(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
 		return nil // Fast path
 	}
 	for _, t := range timers {
-		UpdatePlanetState(p, t.EndTime)
-		err = actions[t.Action].Complete(ctx, tx, p)
+		UpdatePlanetResources(p, t.EndTime)
+		err = actions[t.Action].Complete(p)
 		if err != nil {
-			return fmt.Errorf("error while calling \"Complete\" function for action %q: %v", t.Action, err)
+			return fmt.Errorf("error while calling \"Complete\" function for action %q: %w", t.Action, err)
 		}
+	}
+	p, err = SavePlanetResources(ctx, p)
+	if err != nil {
+		return err
 	}
 	_, err = tx.Timer.
 		Delete().
-		Where(timer.EndTimeLTE(time.Now())).
+		Where(timer.EndTimeLTE(now)).
 		Where(timer.HasPlanetWith(planet.IDEQ(p.ID))).
 		Exec(ctx)
 	if err != nil {
