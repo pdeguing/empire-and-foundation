@@ -1,1 +1,1 @@
-web: ./empire-and-foundation serve
+web: bin/empire-and-foundation serve
