@@ -18,10 +18,10 @@ import (
 
 func main() {
 	err := godotenv.Load()
-	if err != nil {
-		danger("Error loading .env file")
-		os.Exit(1)
-	}
+	// if err != nil {
+	// 	danger("Error loading .env file")
+	// 	os.Exit(1)
+	// }
 
 	app := &cli.App{
 		Name:  "empire-and-foundation",
