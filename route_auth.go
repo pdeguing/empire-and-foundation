@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"net/url"
 	"time"
 
 	"github.com/go-playground/validator/v10"
@@ -139,7 +140,9 @@ func serveSignupAccount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	flash(r, flashSuccess, "Your account has been created. You can log in now.")
+	// TODO: Move this to a separate page so the user isn't tempted to try to
+	//       log in even through they haven't activated their account yet.
+	flash(r, flashSuccess, "We have send you an email with a confirmation link")
 	http.Redirect(w, r, "/", 303)
 }
 
@@ -148,13 +151,17 @@ func sendSignupEmail(u *ent.User) error {
 	if err != nil {
 		return fmt.Errorf("could not parse signup email template: %w", err)
 	}
+	confirmUrl, err := absoluteUrl(fmt.Sprintf("confirm_email?email=%v&token=%v", url.QueryEscape(u.Email), u.VerifyToken))
+	if err != nil {
+		return fmt.Errorf("could not get confirmation url: %w", err)
+	}
 	var contents bytes.Buffer
 	err = tmpl.Execute(&contents, struct {
 		Username string
 		Url      string
 	}{
 		Username: u.Username,
-		Url:      fmt.Sprintf("https://example.com/?token=%v", u.VerifyToken),
+		Url:      confirmUrl,
 	})
 	if err != nil {
 		return fmt.Errorf("could not execute signup email template: %w", err)
@@ -166,6 +173,53 @@ func sendSignupEmail(u *ent.User) error {
 		"Welcome to Empire and Foundation",
 		&contents,
 	)
+}
+
+type confirmEmailRequest struct {
+	Email string `json:"email" name:"email" validate:"required"`
+	Token string `json:"token" name:"token" validate:"required"`
+}
+
+// GET /confirm_email
+// Activate an account and redirect to the login page
+func serveConfirmEmail(w http.ResponseWriter, r *http.Request) {
+	var input confirmEmailRequest
+	if err := r.ParseForm(); err != nil {
+		serveError(w, r, newInternalServerError(fmt.Errorf("unable to parse form: %v", err)))
+		return
+	}
+	if err := decoder.Decode(&input, r.Form); err != nil {
+		serveError(w, r, newInternalServerError(fmt.Errorf("unable to decode form: %v", err)))
+		return
+	}
+	if err := validate.StructCtx(r.Context(), input); err != nil {
+		var valErrs validator.ValidationErrors
+		if errors.As(err, &valErrs) {
+			// Ignore errors
+			http.Redirect(w, r, "/", 303)
+			return
+		}
+		serveError(w, r, newInternalServerError(fmt.Errorf("could not validate the form: %v", err)))
+		return
+	}
+
+	n, err := data.Client.User.
+		Update().
+		Where(user.Email(input.Email)).
+		Where(user.VerifyToken(input.Token)).
+		SetVerifyToken("").
+		Save(r.Context())
+	if err != nil {
+		serveError(w, r, newInternalServerError(fmt.Errorf("could not update the user's verification token: %v", err)))
+		return
+	}
+	if n == 0 {
+		flash(r, flashDanger, "This link is not valid anymore. Either your account has already been verified or the token expired.")
+		http.Redirect(w, r, "/", 303)
+		return
+	}
+	flash(r, flashDanger, "Your account has been activated. You can now log in.")
+	http.Redirect(w, r, "/", 303)
 }
 
 // POST /authenticate

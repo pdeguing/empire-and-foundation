@@ -10,6 +10,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 
 	"golang.org/x/text/language"
@@ -198,4 +199,20 @@ func generateRandomBytes(n int) ([]byte, error) {
 func generateRandomString(s int) (string, error) {
 	b, err := generateRandomBytes(s)
 	return base64.URLEncoding.EncodeToString(b), err
+}
+
+func absoluteUrl(uri string) (string, error) {
+	serverUrl, ok := os.LookupEnv("SERVER_URL")
+	if !ok {
+		return "", errors.New("environment variable SERVER_URL not set")
+	}
+	base, err := url.Parse(serverUrl)
+	if err != nil {
+		return "", err
+	}
+	u, err := url.Parse(uri)
+	if err != nil {
+		return "", err
+	}
+	return base.ResolveReference(u).String(), nil
 }

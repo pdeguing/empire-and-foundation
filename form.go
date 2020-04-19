@@ -43,7 +43,7 @@ func init() {
 			Query().
 			Where(user.UsernameEQ(fl.Field().String())).
 			Count(ctx)
-		return err != nil && n == 0
+		return err == nil && n == 0
 	}, false)
 	if err != nil {
 		panic(err)

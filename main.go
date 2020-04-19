@@ -166,6 +166,7 @@ func routes() *mux.Router {
 	r.HandleFunc("/logout", serveLogout)
 	r.HandleFunc("/signup", serveSignup)
 	r.HandleFunc("/signup_account", serveSignupAccount).Methods("POST")
+	r.HandleFunc("/confirm_email", serveConfirmEmail)
 	r.HandleFunc("/authenticate", serveAuthenticate).Methods("POST")
 
 	// Routes that require authentication
