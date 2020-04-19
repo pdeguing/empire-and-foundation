@@ -82,7 +82,7 @@ func serveSignupAccount(w http.ResponseWriter, r *http.Request) {
 		//       if it wasn't them.
 		n, err := tx.User.
 			Query().
-			Where(user.EmailEQ(r.PostFormValue("email"))).
+			Where(user.EmailEQ(input.Email)).
 			Count(r.Context())
 		if n > 0 {
 			return nil
@@ -90,8 +90,8 @@ func serveSignupAccount(w http.ResponseWriter, r *http.Request) {
 
 		u, err := tx.User.
 			Create().
-			SetUsername(r.PostFormValue("name")).
-			SetEmail(r.PostFormValue("email")).
+			SetUsername(input.Username).
+			SetEmail(input.Email).
 			SetPassword(string(hashedPassword)).
 			SetVerifyToken(verifyToken).
 			Save(r.Context())
@@ -232,6 +232,7 @@ func serveAuthenticate(w http.ResponseWriter, r *http.Request) {
 	u, err := data.Client.User.
 		Query().
 		Where(user.Email(r.PostFormValue("email"))).
+		Where(user.VerifyTokenEQ("")).
 		Only(r.Context())
 	var nferr *ent.NotFoundError
 	if errors.As(err, &nferr) {
