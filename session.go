@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/gob"
 	"fmt"
+	"github.com/go-playground/validator/v10"
 	"net/http"
 	"net/url"
 	"time"
@@ -21,7 +22,8 @@ func init() {
 	// Register all types that can be stored in the session
 	// so they can be serialized.
 	gob.Register(&flashMessage{})
-	gob.Register(&url.Values{}) // Form fields
+	gob.Register(&url.Values{})       // Form fields
+	gob.Register(map[string]string{}) // Form errors
 }
 
 var sessionManager *scs.SessionManager
@@ -61,6 +63,7 @@ var userKey key
 const (
 	flashMessageKey = "flash_message"
 	formFieldsKey   = "form_fields"
+	formErrorsKey   = "form_errors"
 	userIDKey       = "user_id"
 )
 
@@ -153,6 +156,8 @@ func getFlash(r *http.Request) *flashMessage {
 // rememberForm stores the values of the form fields in the session
 // so that they can be pre-filled when the form is rendered again
 func rememberForm(r *http.Request) {
+	r.PostForm.Del("password")
+	r.PostForm.Del("password-repeat")
 	sessionManager.Put(r.Context(), formFieldsKey, &r.PostForm)
 }
 
@@ -174,6 +179,33 @@ func oldFormValue(r *http.Request, field string) string {
 		panic("Could not cast the form fields to the url.Values type")
 	}
 	return f.Get(field)
+}
+
+func storeFormErrors(r *http.Request, errs validator.ValidationErrors) {
+	m := make(map[string]string)
+	for _, err := range errs {
+		m[err.StructField()] = err.Translate(translator)
+	}
+	sessionManager.Put(r.Context(), formErrorsKey, m)
+}
+
+func forgetFormErrors(r *http.Request) {
+	sessionManager.Remove(r.Context(), formErrorsKey)
+}
+
+func formError(r *http.Request, field string) string {
+	val := sessionManager.Get(r.Context(), formErrorsKey)
+	if val == nil {
+		return ""
+	}
+	m, ok := val.(map[string]string)
+	if !ok {
+		panic("Could not cast the form errors to a string map")
+	}
+	if err, ok := m[field]; ok {
+		return err
+	}
+	return ""
 }
 
 // authenticate sets user as the currently logged in user.

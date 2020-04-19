@@ -1,16 +1,20 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
-	"net/http"
-	"math/rand"
+	"time"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/pdeguing/empire-and-foundation/data"
 	"github.com/pdeguing/empire-and-foundation/ent"
-	"github.com/pdeguing/empire-and-foundation/ent/user"
 	"github.com/pdeguing/empire-and-foundation/ent/planet"
+	"github.com/pdeguing/empire-and-foundation/ent/user"
 	"golang.org/x/crypto/bcrypt"
+	"html/template"
+	"math/rand"
+	"net/http"
 )
 
 // GET /signup
@@ -18,66 +22,115 @@ import (
 func serveSignup(w http.ResponseWriter, r *http.Request) {
 	generateHTML(w, r, "signup", nil, "layout", "public.navbar", "flash", "signup")
 	forgetForm(r)
+	forgetFormErrors(r)
+}
+
+type signupAccountRequest struct {
+	Email          string `json:"email" name:"email" validate:"required,email"`
+	Username       string `json:"username" name:"username" validate:"required,min=2,max=30,unique_username"`
+	Password       string `json:"password" name:"password" validate:"required,min=8"`
+	PasswordRepeat string `json:"password_confirm" name:"confirm password" validate:"required,eqfield=Password"`
 }
 
 // POST /signup
 // Create the user account
 func serveSignupAccount(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseForm()
-	if err != nil {
+	forgetFormErrors(r)
+	var input signupAccountRequest
+	if err := r.ParseForm(); err != nil {
 		serveError(w, r, newInternalServerError(fmt.Errorf("unable to parse form: %v", err)))
 		return
 	}
-	password, err := bcrypt.GenerateFromPassword([]byte(r.PostFormValue("password")), 14)
+	if err := decoder.Decode(&input, r.PostForm); err != nil {
+		serveError(w, r, newInternalServerError(fmt.Errorf("unable to decode form: %v", err)))
+		return
+	}
+	if err := validate.StructCtx(r.Context(), input); err != nil {
+		var valErrs validator.ValidationErrors
+		if errors.As(err, &valErrs) {
+			storeFormErrors(r, valErrs)
+			rememberForm(r)
+			http.Redirect(w, r, "/signup", 303)
+			return
+		}
+		serveError(w, r, newInternalServerError(fmt.Errorf("could not validate the form: %v", err)))
+		return
+	}
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), 14)
 	if err != nil {
 		serveError(w, r, newInternalServerError(fmt.Errorf("unable to encrypt password: %v", err)))
 		return
 	}
 
-	err = data.WithTx(r.Context(), data.Client, func(tx *ent.Tx) error {
-		u, err := tx.User. // UserClient.
-					Create().                             // User create builder.
-					SetUsername(r.PostFormValue("name")). // Set field value.
-					SetEmail(r.PostFormValue("email")).
-					SetPassword(string(password)).
-					Save(r.Context()) // Create and return.
+	verifyToken, err := generateRandomString(20)
+	if err != nil {
+		serveError(w, r, newInternalServerError(fmt.Errorf("unable to generate verify token: %v", err)))
+		return
+	}
 
-		// TODO: Check availability of email address.
-		// TODO: Validate inputs.
+	err = data.WithTx(r.Context(), data.Client, func(tx *ent.Tx) error {
+		// Don't create an account for the user if an account with this email already exists.
+		// For privacy reasons we can't respond with a form error because that would disclose
+		// who registered to the game and who didn't. Instead we can e-mail the user a link
+		// to reset their password.
+		// TODO: first implement a password reset. Then send a modified password reset email
+		//       when the user tries to register with an email that is already used. But
+		//       change the message a bit so that it is clear why they received a password
+		//       reset instead of an activation email and that they can ignore the email
+		//       if it wasn't them.
+		n, err := tx.User.
+			Query().
+			Where(user.EmailEQ(r.PostFormValue("email"))).
+			Count(r.Context())
+		if n > 0 {
+			return nil
+		}
+
+		u, err := tx.User.
+			Create().
+			SetUsername(r.PostFormValue("name")).
+			SetEmail(r.PostFormValue("email")).
+			SetPassword(string(hashedPassword)).
+			SetVerifyToken(verifyToken).
+			Save(r.Context())
 		if err != nil {
 			return err
 		}
 
 		c, err := tx.Planet.Query().
-				Where(
-					planet.And(
-						planet.PlanetTypeEQ(planet.PlanetTypeHabitable),
-						planet.Not(planet.HasOwner()),
-					),
-				).
-				Count(r.Context())
+			Where(
+				planet.And(
+					planet.PlanetTypeEQ(planet.PlanetTypeHabitable),
+					planet.Not(planet.HasOwner()),
+				),
+			).
+			Count(r.Context())
 
 		if err != nil {
 			return err
 		}
 
-		ra := rand.New(rand.NewSource(42))
-
-		n := ra.Intn(c)
+		ra := rand.New(rand.NewSource(time.Now().UnixNano()))
+		rn := ra.Intn(c)
 
 		p, err := tx.Planet.Query().
-				Where(
-					planet.And(
-						planet.PlanetTypeEQ(planet.PlanetTypeHabitable),
-						planet.Not(planet.HasOwner()),
-					),
-				).
-				Offset(n).
-				First(r.Context())
+			Where(
+				planet.And(
+					planet.PlanetTypeEQ(planet.PlanetTypeHabitable),
+					planet.Not(planet.HasOwner()),
+				),
+			).
+			Offset(rn).
+			First(r.Context())
 
 		_, err = p.Update().
 			SetOwner(u).
 			Save(r.Context())
+
+		if err := sendSignupEmail(u); err != nil {
+			return err
+		}
 
 		return err
 	})
@@ -87,13 +140,41 @@ func serveSignupAccount(w http.ResponseWriter, r *http.Request) {
 	}
 
 	flash(r, flashSuccess, "Your account has been created. You can log in now.")
-	http.Redirect(w, r, "/", 302)
+	http.Redirect(w, r, "/", 303)
+}
+
+func sendSignupEmail(u *ent.User) error {
+	tmpl, err := template.New("signup.html").ParseFiles("resources/emails/signup.html")
+	if err != nil {
+		return fmt.Errorf("could not parse signup email template: %w", err)
+	}
+	var contents bytes.Buffer
+	err = tmpl.Execute(&contents, struct {
+		Username string
+		Url      string
+	}{
+		Username: u.Username,
+		Url:      fmt.Sprintf("https://example.com/?token=%v", u.VerifyToken),
+	})
+	if err != nil {
+		return fmt.Errorf("could not execute signup email template: %w", err)
+	}
+
+	return sendEmail(
+		u.Email,
+		u.Username,
+		"Welcome to Empire and Foundation",
+		&contents,
+	)
 }
 
 // POST /authenticate
 // Authenticate the user given the email and password
 func serveAuthenticate(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
+	if err := r.ParseForm(); err != nil {
+		serveError(w, r, newInternalServerError(fmt.Errorf("unable to parse form: %v", err)))
+		return
+	}
 	u, err := data.Client.User.
 		Query().
 		Where(user.Email(r.PostFormValue("email"))).

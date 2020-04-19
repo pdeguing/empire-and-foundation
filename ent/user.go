@@ -26,6 +26,8 @@ type User struct {
 	Email string `json:"email,omitempty"`
 	// Password holds the value of the "password" field.
 	Password string `json:"-"`
+	// VerifyToken holds the value of the "verify_token" field.
+	VerifyToken string `json:"-"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserQuery when eager-loading is set.
 	Edges UserEdges `json:"edges"`
@@ -58,6 +60,7 @@ func (*User) scanValues() []interface{} {
 		&sql.NullString{}, // username
 		&sql.NullString{}, // email
 		&sql.NullString{}, // password
+		&sql.NullString{}, // verify_token
 	}
 }
 
@@ -97,6 +100,11 @@ func (u *User) assignValues(values ...interface{}) error {
 		return fmt.Errorf("unexpected type %T for field password", values[4])
 	} else if value.Valid {
 		u.Password = value.String
+	}
+	if value, ok := values[5].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field verify_token", values[5])
+	} else if value.Valid {
+		u.VerifyToken = value.String
 	}
 	return nil
 }
@@ -138,6 +146,7 @@ func (u *User) String() string {
 	builder.WriteString(", email=")
 	builder.WriteString(u.Email)
 	builder.WriteString(", password=<sensitive>")
+	builder.WriteString(", verify_token=<sensitive>")
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -9,7 +9,7 @@ import (
 )
 
 type dashboardViewData struct {
-	UserPlanets	[]*ent.Planet
+	UserPlanets []*ent.Planet
 }
 
 func getUserPlanets(r *http.Request) ([]*ent.Planet, error) {
@@ -67,13 +67,13 @@ func serveCartography(w http.ResponseWriter, r *http.Request) {
 
 	d := struct {
 		Region, System int
-		RegionPlanets	[]*ent.Planet
-		UserPlanets	[]*ent.Planet
+		RegionPlanets  []*ent.Planet
+		UserPlanets    []*ent.Planet
 	}{
-		Region: region,
-		System: system,
+		Region:        region,
+		System:        system,
 		RegionPlanets: regionPlanets,
-		UserPlanets: userPlanets,
+		UserPlanets:   userPlanets,
 	}
 	generateHTML(w, r, "cartography", d, "layout", "private.navbar", "dashboard", "leftbar", "cartography")
 }
@@ -86,7 +86,7 @@ func serveFleetControl(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	d := struct {
-		UserPlanets	[]*ent.Planet
+		UserPlanets []*ent.Planet
 	}{
 		userPlanets,
 	}
@@ -101,7 +101,7 @@ func serveTechnology(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	d := struct {
-		UserPlanets	[]*ent.Planet
+		UserPlanets []*ent.Planet
 	}{
 		userPlanets,
 	}
@@ -116,7 +116,7 @@ func serveDiplomacy(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	d := struct {
-		UserPlanets	[]*ent.Planet
+		UserPlanets []*ent.Planet
 	}{
 		userPlanets,
 	}
@@ -131,7 +131,7 @@ func serveStory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	d := struct {
-		UserPlanets	[]*ent.Planet
+		UserPlanets []*ent.Planet
 	}{
 		userPlanets,
 	}
@@ -146,7 +146,7 @@ func serveWiki(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	d := struct {
-		UserPlanets	[]*ent.Planet
+		UserPlanets []*ent.Planet
 	}{
 		userPlanets,
 	}
@@ -161,7 +161,7 @@ func serveNews(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	d := struct {
-		UserPlanets	[]*ent.Planet
+		UserPlanets []*ent.Planet
 	}{
 		userPlanets,
 	}

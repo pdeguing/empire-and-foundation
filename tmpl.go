@@ -5,6 +5,8 @@ import (
 	"html/template"
 	"net/http"
 	"time"
+	"unicode"
+	"unicode/utf8"
 
 	"github.com/gorilla/csrf"
 	"github.com/pdeguing/empire-and-foundation/data"
@@ -17,12 +19,15 @@ func templateFuncs(r *http.Request) template.FuncMap {
 		"csrf":             tmplCsrfTag(r),
 		"hasFlash":         tmplHasFlash(r),
 		"flash":            tmplFlash(r),
+		"hasFormError":     tmplHasFormError(r),
+		"formError":        tmplFormError(r),
 		"bootrapAlertType": tmplBootstrapAlertType,
 		"old":              tmplOld(r),
 		"quantity":         tmplQuantity,
 		"duration":         tmplDuration,
 		"byTimerGroup":     tmplByTimerGroup,
 		"hex":              tmplHex,
+		"ucfirst":          tmplUcFirst,
 	}
 }
 
@@ -44,6 +49,21 @@ func tmplHasFlash(r *http.Request) func() bool {
 func tmplFlash(r *http.Request) func() *flashMessage {
 	return func() *flashMessage {
 		return getFlash(r)
+	}
+}
+
+// tmplHasFormError returns whether the given field has any validation errors
+func tmplHasFormError(r *http.Request) func(string) bool {
+	return func(field string) bool {
+		return formError(r, field) != ""
+	}
+}
+
+// tmplFormError returns the error message for a given field or an empty string
+// if the field is filled in correctly
+func tmplFormError(r *http.Request) func(string) string {
+	return func(field string) string {
+		return formError(r, field)
 	}
 }
 
@@ -97,4 +117,13 @@ func tmplByTimerGroup(m map[timer.Group]*data.Timer, g string) *data.Timer {
 // tmplHex converts i to a hex number with (minimally) a given number of hexadecimal digits.
 func tmplHex(i interface{}, digits int) string {
 	return fmt.Sprintf("%0*X", digits, i)
+}
+
+// tmplUcFirst capitalizes the first letter of the string.
+func tmplUcFirst(s string) string {
+	if len(s) == 0 {
+		return ""
+	}
+	r, size := utf8.DecodeRuneInString(s)
+	return string(unicode.ToUpper(r)) + s[size:]
 }
