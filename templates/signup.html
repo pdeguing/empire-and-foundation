@@ -51,7 +51,7 @@
 	<div class="field">
 		<label class="label">Password</label>
 		<div class="control {{ if hasFormError "Password" }} has-icons-right {{ end }}">
-			<input type="password" name="password" class="input {{ if hasFormError "Password" }} is-danger {{ end }}" placeholder="Password" required value="{{ old "password" }}">
+			<input type="password" name="password" class="input {{ if hasFormError "Password" }} is-danger {{ end }}" placeholder="Password" required>
 			{{ if hasFormError "Password" }}
 				<span class="icon is-small is-right">
 				  <i class="fas fa-exclamation-triangle"></i>
@@ -66,7 +66,7 @@
     <div class="field">
         <label class="label">Confirm password</label>
         <div class="control {{ if hasFormError "PasswordRepeat" }} has-icons-right {{ end }}">
-            <input type="password" name="password_confirm" class="input {{ if hasFormError "PasswordRepeat" }} is-danger {{ end }}" placeholder="Password" required value="{{ old "password_repeat" }}">
+            <input type="password" name="password_confirm" class="input {{ if hasFormError "PasswordRepeat" }} is-danger {{ end }}" placeholder="Password" required>
             {{ if hasFormError "PasswordRepeat" }}
                 <span class="icon is-small is-right">
 				  <i class="fas fa-exclamation-triangle"></i>

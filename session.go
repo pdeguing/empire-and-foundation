@@ -157,7 +157,7 @@ func getFlash(r *http.Request) *flashMessage {
 // so that they can be pre-filled when the form is rendered again
 func rememberForm(r *http.Request) {
 	r.PostForm.Del("password")
-	r.PostForm.Del("password-repeat")
+	r.PostForm.Del("password_confirm")
 	sessionManager.Put(r.Context(), formFieldsKey, &r.PostForm)
 }
 
