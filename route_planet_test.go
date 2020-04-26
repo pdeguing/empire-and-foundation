@@ -9,6 +9,7 @@ import (
 	"net"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -17,7 +18,10 @@ import (
 func withTestServer() *httptest.Server {
 	data.WithTestDatabase()
 	initSessionManager("sqlite3")
-	ts := httptest.NewServer(routes())
+	ts := httptest.NewServer(routes(false))
+	if err := os.Setenv("SERVER_URL", ts.URL); err != nil {
+		panic(err)
+	}
 	return ts
 }
 

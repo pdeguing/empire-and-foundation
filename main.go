@@ -111,7 +111,7 @@ func main() {
 					initSessionManager(c.String("db-driver"))
 					server := &http.Server{
 						Addr:    ":" + strconv.Itoa(port),
-						Handler: routes(),
+						Handler: routes(true),
 					}
 					return server.ListenAndServe()
 				},
@@ -155,7 +155,7 @@ func main() {
 	}
 }
 
-func routes() *mux.Router {
+func routes(csrfEnabled bool) *mux.Router {
 	// Public routes
 	r := mux.NewRouter()
 	files := http.FileServer(http.Dir("public"))
@@ -205,16 +205,18 @@ func routes() *mux.Router {
 	rPlanet.HandleFunc("/silica-storage/cancel", serveCancelSilicaStorage).Methods("POST")
 
 	// Middleware
-	csrfMiddleware := csrf.Protect(
-		securecookie.GenerateRandomKey(32),
-		csrf.FieldName("csrf_token"),
-		csrf.CookieName("csrf_cookie"),
-		csrf.Secure(false), // TODO: Remove this part once we support HTTPS.
-		csrf.ErrorHandler(http.HandlerFunc(serveInvalidCsrfToken)),
-	)
+	if csrfEnabled {
+		csrfMiddleware := csrf.Protect(
+			securecookie.GenerateRandomKey(32),
+			csrf.FieldName("csrf_token"),
+			csrf.CookieName("csrf_cookie"),
+			csrf.Secure(false), // TODO: Remove this part once we support HTTPS.
+			csrf.ErrorHandler(http.HandlerFunc(serveInvalidCsrfToken)),
+		)
+		r.Use(csrfMiddleware)
+	}
 	sessionMiddleware := sessionManager.LoadAndSave
 	r.Use(
-		csrfMiddleware,
 		sessionMiddleware,
 		loadUserMiddleware,
 	)

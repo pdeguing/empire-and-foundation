@@ -10,7 +10,9 @@ import (
 	"strconv"
 )
 
-func sendEmail(toAddress, toName, subject string, contents io.Reader) error {
+var sendEmail = sendEmailSmtp
+
+func sendEmailSmtp(toAddress, toName, subject string, contents io.Reader) error {
 	host, ok := os.LookupEnv("MAIL_HOST")
 	if !ok {
 		return errors.New("environment variable MAIL_HOST not set")

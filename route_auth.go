@@ -33,7 +33,7 @@ type signupAccountRequest struct {
 	PasswordRepeat string `json:"password_confirm" name:"confirm password" validate:"required,eqfield=Password"`
 }
 
-// POST /signup
+// POST /signup_account
 // Create the user account
 func serveSignupAccount(w http.ResponseWriter, r *http.Request) {
 	forgetFormErrors(r)
@@ -64,7 +64,7 @@ func serveSignupAccount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	verifyToken, err := generateRandomString(20)
+	verifyToken, err := generateVerifyToken()
 	if err != nil {
 		serveError(w, r, newInternalServerError(fmt.Errorf("unable to generate verify token: %v", err)))
 		return
@@ -144,6 +144,10 @@ func serveSignupAccount(w http.ResponseWriter, r *http.Request) {
 	//       log in even through they haven't activated their account yet.
 	flash(r, flashSuccess, "We have send you an email with a confirmation link")
 	http.Redirect(w, r, "/", 303)
+}
+
+var generateVerifyToken = func() (string, error) {
+	return generateRandomString(20)
 }
 
 func sendSignupEmail(u *ent.User) error {
