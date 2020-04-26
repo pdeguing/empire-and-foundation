@@ -84,6 +84,7 @@ func main() {
 			default:
 				return fmt.Errorf("%q is not a supported driver", d)
 			}
+			fmt.Println("connStr:", connStr)
 			err := data.InitDatabaseConnection(d, connStr, c.Bool("db-debug"))
 			if err != nil {
 				return err
