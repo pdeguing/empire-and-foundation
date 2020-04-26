@@ -87,3 +87,45 @@ func TestSendSignupEmail(t *testing.T) {
 
 	assert.NoError(t, sendSignupEmail(u))
 }
+
+func TestConfirmEmail(t *testing.T) {
+	ts := withTestServer()
+	defer ts.Close()
+
+	uf := data.NewUserFactory()
+	uf.Email = "john@example.com"
+	uf.VerifyToken = "some_token"
+	u := uf.MustCreate()
+
+	res, err := http.Get(ts.URL+"/confirm_email?email=john%40example.com&token=some_token")
+	assert.NoError(t, err)
+	assert.Equal(t, 200, res.StatusCode)
+
+	u, err = data.Client.User.Get(context.Background(), u.ID)
+	assert.NoError(t, err)
+	assert.Empty(t, u.VerifyToken)
+}
+
+func TestAuthenticate_cannotAuthenticateIfAccountIsNotVerified(t *testing.T) {
+	ts := withTestServer()
+	defer ts.Close()
+
+	uf := data.NewUserFactory()
+	uf.Email = "john@example.com"
+	uf.Password = "secret01"
+	uf.VerifyToken = "some_token"
+	uf.MustCreate()
+
+	v := url.Values{}
+	v.Add("csrf_token", "some_token")
+	v.Add("email", "john@example.com")
+	v.Add("password", "secret01")
+
+	res, err := newTestClient().Post(ts.URL+"/authenticate", "application/x-www-form-urlencoded", strings.NewReader(v.Encode()))
+	assert.NoError(t, err)
+	assert.Equal(t, 200, res.StatusCode)
+	assert.Equal(t, res.Request.URL.Path,"/")
+	c, err := ioutil.ReadAll(res.Body)
+	assert.NoError(t, err)
+	assert.Contains(t, string(c), "The username or password you have entered is invalid.")
+}
