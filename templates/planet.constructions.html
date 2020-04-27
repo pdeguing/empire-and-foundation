@@ -12,8 +12,8 @@
 		<div class="column is-flex is-3">
 			<div class="card card-growing">
 				<div class="card-image">
-					<figure class="image is-4by-3">
-						<img src="/static/images/buildings/test2.png" class="card-img-top" alt="...">
+					<figure class="image">
+						<img src="/static/images/buildings/metal-prod.png" class="card-img-top" alt="...">
 					</figure>
 				</div>
 				<div class="card-content is-growing">
@@ -23,7 +23,15 @@
 					</div>
 					<div class="content">
 						<p>
-							Produces metal.
+							Mining infrastructures extracting metal.
+						</p>
+						<p>
+							Upgrade cost:
+							<ul>
+								<li>Metal: {{ quantity .Data.MetalProdUpgradeCost.Metal }}</li>
+								<li>Hydrogen: {{ quantity .Data.MetalProdUpgradeCost.Hydrogen }}</li>
+								<li>Silica: {{ quantity .Data.MetalProdUpgradeCost.Silica }}</li>
+							</ul>
 						</p>
 					</div>
 				</div>
@@ -40,8 +48,7 @@
 					{{ else }}
 					<button formaction="/planet/{{ .Data.Planet.ID }}/metal-mine/upgrade"
 						class="is-paddingless Planet-card__button" {{ if .Data.Timer }}disabled{{ end }}>
-						<span class="card-footer-item"
-								title="Metal: {{ quantity .Data.MetalProdUpgradeCost.Metal }} / Hydrogen: {{ quantity .Data.MetalProdUpgradeCost.Hydrogen }} / Silica: {{ quantity .Data.MetalProdUpgradeCost.Silica }}">
+						<span class="card-footer-item">
 							Upgrade
 						</span>
 					</button>
@@ -53,8 +60,8 @@
 		<div class="column is-flex is-3">
 			<div class="card card-growing">
 				<div class="card-image">
-					<figure class="image is-4by-3">
-						<img src="/static/images/buildings/test1.png" class="card-img-top" alt="...">
+					<figure class="image">
+						<img src="/static/images/buildings/hydrogen-prod.png" class="card-img-top" alt="...">
 					</figure>
 				</div>
 				<div class="card-content is-growing">
@@ -64,7 +71,15 @@
 					</div>
 					<div class="content">
 						<p>
-							Produces hydrogen.
+							Enrichment infrastructures collecting hydrogen.
+						</p>
+						<p>
+							Upgrade cost:
+							<ul>
+								<li>Metal: {{ quantity .Data.HydrogenProdUpgradeCost.Metal }}</li>
+								<li>Hydrogen: {{ quantity .Data.HydrogenProdUpgradeCost.Hydrogen }}</li>
+								<li>Silica: {{ quantity .Data.HydrogenProdUpgradeCost.Silica }}</li>
+							</ul>
 						</p>
 					</div>
 				</div>
@@ -80,8 +95,7 @@
 					{{ else }}
 					<button formaction="/planet/{{ .Data.Planet.ID }}/hydrogen-extractor/upgrade"
 						class="is-paddingless Planet-card__button" {{ if .Data.Timer }}disabled{{ end }}>
-						<span class="card-footer-item"
-								title="Metal: {{ quantity .Data.HydrogenProdUpgradeCost.Metal }} / Hydrogen: {{ quantity .Data.HydrogenProdUpgradeCost.Hydrogen }} / Silica: {{ quantity .Data.HydrogenProdUpgradeCost.Silica }}">
+						<span class="card-footer-item">
 							Upgrade
 						</span>
 					</button>
@@ -93,8 +107,8 @@
 		<div class="column is-flex is-3">
 			<div class="card card-growing">
 				<div class="card-image">
-					<figure class="image is-4by-3">
-						<img src="/static/images/buildings/test3.png" class="card-img-top" alt="...">
+					<figure class="image">
+						<img src="/static/images/buildings/silica-prod.png" class="card-img-top" alt="...">
 					</figure>
 				</div>
 				<div class="card-content is-growing">
@@ -104,7 +118,15 @@
 					</div>
 					<div class="content">
 						<p>
-						Produces silica.
+						Mining infrastructures extracting silica.
+						</p>
+						<p>
+							Upgrade cost:
+							<ul>
+								<li>Metal: {{ quantity .Data.SilicaProdUpgradeCost.Metal }}</li>
+								<li>Hydrogen: {{ quantity .Data.SilicaProdUpgradeCost.Hydrogen }}</li>
+								<li>Silica: {{ quantity .Data.SilicaProdUpgradeCost.Silica }}</li>
+							</ul>
 						</p>
 					</div>
 				</div>
@@ -120,8 +142,7 @@
 					{{ else }}
 					<button formaction="/planet/{{ .Data.Planet.ID }}/silica-quarry/upgrade"
 						class="is-paddingless Planet-card__button" {{ if .Data.Timer }}disabled{{ end }}>
-						<span class="card-footer-item"
-								title="Metal: {{ quantity .Data.SilicaProdUpgradeCost.Metal }} / Hydrogen: {{ quantity .Data.SilicaProdUpgradeCost.Hydrogen }} / Silica: {{ quantity .Data.SilicaProdUpgradeCost.Silica }}">
+						<span class="card-footer-item">
 							Upgrade
 						</span>
 					</button>
@@ -133,8 +154,8 @@
 		<div class="column is-flex is-3">
 			<div class="card card-growing">
 				<div class="card-image">
-					<figure class="image is-4by-3">
-						<img src="/static/images/buildings/test4.png" class="card-img-top" alt="...">
+					<figure class="image">
+						<img src="/static/images/buildings/solar-prod.png" class="card-img-top" alt="...">
 					</figure>
 				</div>
 				<div class="card-content is-growing">
@@ -144,7 +165,15 @@
 					</div>
 					<div class="content">
 						<p>
-							Produces energy.
+							Looking up to the stars, the solar plant captures energy from its sun.
+						</p>
+						<p>
+							Upgrade cost:
+							<ul>
+								<li>Metal: {{ quantity .Data.SolarProdUpgradeCost.Metal }}</li>
+								<li>Hydrogen: {{ quantity .Data.SolarProdUpgradeCost.Hydrogen }}</li>
+								<li>Silica: {{ quantity .Data.SolarProdUpgradeCost.Silica }}</li>
+							</ul>
 						</p>
 					</div>
 				</div>
@@ -160,8 +189,7 @@
 					{{ else }}
 					<button formaction="/planet/{{ .Data.Planet.ID }}/solar-plant/upgrade"
 						class="is-paddingless Planet-card__button" {{ if .Data.Timer }}disabled{{ end }}>
-						<span class="card-footer-item"
-								title="Metal: {{ quantity .Data.SolarProdUpgradeCost.Metal }} / Hydrogen: {{ quantity .Data.SolarProdUpgradeCost.Hydrogen }} / Silica: {{ quantity .Data.SolarProdUpgradeCost.Silica }}">
+						<span class="card-footer-item">
 							Upgrade
 						</span>
 					</button>
@@ -173,8 +201,8 @@
 		<div class="column is-flex is-3">
 			<div class="card card-growing">
 				<div class="card-image">
-					<figure class="image is-4by-3">
-						<img src="/static/images/buildings/test5.png" class="card-img-top" alt="...">
+					<figure class="image">
+						<img src="/static/images/buildings/urbanism.png" class="card-img-top" alt="...">
 					</figure>
 				</div>
 				<div class="card-content is-growing">
@@ -184,7 +212,15 @@
 					</div>
 					<div class="content">
 						<p>
-							Living accomodations for the population.
+							Living accomodations for the population, allowing it to grow naturally.
+						</p>
+						<p>
+							Upgrade cost:
+							<ul>
+								<li>Metal: {{ quantity .Data.UrbanismUpgradeCost.Metal }}</li>
+								<li>Hydrogen: {{ quantity .Data.UrbanismUpgradeCost.Hydrogen }}</li>
+								<li>Silica: {{ quantity .Data.UrbanismUpgradeCost.Silica }}</li>
+							</ul>
 						</p>
 					</div>
 				</div>
@@ -200,8 +236,7 @@
 					{{ else }}
 					<button formaction="/planet/{{ .Data.Planet.ID }}/housing-facilities/upgrade"
 						class="is-paddingless Planet-card__button" {{ if .Data.Timer }}disabled{{ end }}>
-						<span class="card-footer-item"
-								title="Metal: {{ quantity .Data.UrbanismUpgradeCost.Metal }} / Hydrogen: {{ quantity .Data.UrbanismUpgradeCost.Hydrogen }} / Silica: {{ quantity .Data.UrbanismUpgradeCost.Silica }}">
+						<span class="card-footer-item">
 							Upgrade
 						</span>
 					</button>
@@ -213,8 +248,8 @@
 		<div class="column is-flex is-3">
 			<div class="card card-growing">
 				<div class="card-image">
-					<figure class="image is-4by-3">
-						<img src="/static/images/buildings/building-metal-storage.png" class="card-img-top" alt="...">
+					<figure class="image">
+						<img src="/static/images/buildings/metal-storage.png" class="card-img-top" alt="...">
 					</figure>
 				</div>
 				<div class="card-content is-growing">
@@ -225,6 +260,14 @@
 					<div class="content">
 						<p>
 							Increases metal storage capacity.
+						</p>
+						<p>
+							Upgrade cost:
+							<ul>
+								<li>Metal: {{ quantity .Data.MetalStorageUpgradeCost.Metal }}</li>
+								<li>Hydrogen: {{ quantity .Data.MetalStorageUpgradeCost.Hydrogen }}</li>
+								<li>Silica: {{ quantity .Data.MetalStorageUpgradeCost.Silica }}</li>
+							</ul>
 						</p>
 					</div>
 				</div>
@@ -240,8 +283,7 @@
 					{{ else }}
 					<button formaction="/planet/{{ .Data.Planet.ID }}/metal-storage/upgrade"
 						class="is-paddingless Planet-card__button" {{ if .Data.Timer }}disabled{{ end }}>
-						<span class="card-footer-item"
-								title="Metal: {{ quantity .Data.MetalStorageUpgradeCost.Metal }} / Hydrogen: {{ quantity .Data.MetalStorageUpgradeCost.Hydrogen }} / Silica: {{ quantity .Data.MetalStorageUpgradeCost.Silica }}">
+						<span class="card-footer-item">
 							Upgrade
 						</span>
 					</button>
@@ -253,8 +295,8 @@
 		<div class="column is-flex is-3">
 			<div class="card card-growing">
 				<div class="card-image">
-					<figure class="image is-4by-3">
-						<img src="/static/images/buildings/building-hydrogen-storage.png" class="card-img-top" alt="...">
+					<figure class="image">
+						<img src="/static/images/buildings/hydrogen-storage.png" class="card-img-top" alt="...">
 					</figure>
 				</div>
 				<div class="card-content is-growing">
@@ -265,6 +307,14 @@
 					<div class="content">
 						<p>
 							Increases hydrogen storage capacity.
+						</p>
+						<p>
+							Upgrade cost:
+							<ul>
+								<li>Metal: {{ quantity .Data.HydrogenStorageUpgradeCost.Metal }}</li>
+								<li>Hydrogen: {{ quantity .Data.HydrogenStorageUpgradeCost.Hydrogen }}</li>
+								<li>Silica: {{ quantity .Data.HydrogenStorageUpgradeCost.Silica }}</li>
+							</ul>
 						</p>
 					</div>
 				</div>
@@ -280,8 +330,7 @@
 					{{ else }}
 					<button formaction="/planet/{{ .Data.Planet.ID }}/hydrogen-storage/upgrade"
 						class="is-paddingless Planet-card__button" {{ if .Data.Timer }}disabled{{ end }}>
-						<span class="card-footer-item"
-								title="Metal: {{ quantity .Data.HydrogenStorageUpgradeCost.Metal }} / Hydrogen: {{ quantity .Data.HydrogenStorageUpgradeCost.Hydrogen }} / Silica: {{ quantity .Data.HydrogenStorageUpgradeCost.Silica }}">
+						<span class="card-footer-item">
 							Upgrade
 						</span>
 					</button>
@@ -293,8 +342,8 @@
 		<div class="column is-flex is-3">
 			<div class="card card-growing">
 				<div class="card-image">
-					<figure class="image is-4by-3">
-						<img src="/static/images/buildings/building-silica-storage.png" class="card-img-top" alt="...">
+					<figure class="image">
+						<img src="/static/images/buildings/silica-storage.png" class="card-img-top" alt="...">
 					</figure>
 				</div>
 				<div class="card-content is-growing">
@@ -305,6 +354,14 @@
 					<div class="content">
 						<p>
 							Increases silica storage capacity.
+						</p>
+						<p>
+							Upgrade cost:
+							<ul>
+								<li>Metal: {{ quantity .Data.SilicaStorageUpgradeCost.Metal }}</li>
+								<li>Hydrogen: {{ quantity .Data.SilicaStorageUpgradeCost.Hydrogen }}</li>
+								<li>Silica: {{ quantity .Data.SilicaStorageUpgradeCost.Silica }}</li>
+							</ul>
 						</p>
 					</div>
 				</div>
@@ -320,8 +377,7 @@
 					{{ else }}
 					<button formaction="/planet/{{ .Data.Planet.ID }}/silica-storage/upgrade"
 						class="is-paddingless Planet-card__button" {{ if .Data.Timer }}disabled{{ end }}>
-						<span class="card-footer-item"
-								title="Metal: {{ quantity .Data.SilicaStorageUpgradeCost.Metal }} / Hydrogen: {{ quantity .Data.SilicaStorageUpgradeCost.Hydrogen }} / Silica: {{ quantity .Data.SilicaStorageUpgradeCost.Silica }}">
+						<span class="card-footer-item">
 							Upgrade
 						</span>
 					</button>
