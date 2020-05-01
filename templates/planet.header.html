@@ -64,7 +64,7 @@
 		<li {{ if eq .PageName "planet-constructions" }} class="is-active" {{end}}>
 			<a href="/planet/{{ .Data.Planet.ID }}/constructions">Constructions</a>
 		</li>
-		<!-- <li {{ if eq .PageName "planet-factories" }} class="is-active" {{end}}>
+		<li {{ if eq .PageName "planet-factories" }} class="is-active" {{end}}>
 			<a href="/planet/{{ .Data.Planet.ID }}/factories">Factories</a>
 		</li>
 		<li {{ if eq .PageName "planet-research" }} class="is-active" {{end}}>
@@ -73,6 +73,7 @@
 		<li {{ if eq .PageName "planet-fleets" }} class="is-active" {{end}}>
 			<a href="/planet/{{ .Data.Planet.ID }}/fleets">Fleets</a>
 		</li>
+		<!--
 		<li {{ if eq .PageName "planet-defenses" }} class="is-active" {{end}}>
 			<a href="/planet/{{ .Data.Planet.ID }}/defenses">Defenses</a>
 		</li> -->
