@@ -25,7 +25,10 @@ func TestSignUpAccount(t *testing.T) {
 		return "some_token", nil
 	}
 
-	data.GenerateEntity(0, 1, 2, 0, planet.PlanetTypeHabitable, "earth", "Earth")
+	pf := data.NewPlanetFactory()
+	pf.PlanetType = planet.PlanetTypeHabitable
+	pf.Name = "Earth"
+	pf.MustCreate()
 
 	sent := false
 	sendEmail = func(toAddress, toName, subject string, contents io.Reader) error {

@@ -43,7 +43,7 @@ func randomPlanetSkin(r *rand.Rand, planetSkins []os.FileInfo) string {
 	return planetSkin
 }
 
-func GenerateEntity(region, system, orbit, suborbit int, planetType planet.PlanetType, planetSkin, planetName string) {
+func generateEntity(region, system, orbit, suborbit int, planetType planet.PlanetType, planetSkin, planetName string) {
 	positionCode := GetPositionCode(region, system, orbit, suborbit)
 
 	log.Println("create planet:", planetName, planetType, positionCode, planetSkin, "(with:", region, system, orbit, suborbit, ")")
@@ -69,7 +69,7 @@ func generatePlanet(r *rand.Rand, planetSkins []os.FileInfo, region int, system 
 		planetType := randomPlanetType(r)
 		planetSkin := randomPlanetSkin(r, planetSkins)
 		planetName := randomPlanetName(r)
-		GenerateEntity(region, system, orbit, suborbit, planetType, planetSkin, planetName)
+		generateEntity(region, system, orbit, suborbit, planetType, planetSkin, planetName)
 		return true
 	}
 	return false
