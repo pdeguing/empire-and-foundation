@@ -1,13 +1,18 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"gopkg.in/gomail.v2"
+	"html/template"
 	"io"
 	"io/ioutil"
+	"net/url"
 	"os"
 	"strconv"
+
+	"github.com/pdeguing/empire-and-foundation/ent"
 )
 
 var sendEmail = sendEmailSmtp
@@ -54,4 +59,33 @@ func sendEmailSmtp(toAddress, toName, subject string, contents io.Reader) error 
 
 	d := gomail.NewDialer(host, port, username, password)
 	return d.DialAndSend(m)
+}
+
+func sendSignupEmail(u *ent.User) error {
+	tmpl, err := template.New("signup.html").ParseFiles("resources/emails/signup.html")
+	if err != nil {
+		return fmt.Errorf("could not parse signup email template: %w", err)
+	}
+	confirmUrl, err := absoluteUrl(fmt.Sprintf("confirm_email?email=%v&token=%v", url.QueryEscape(u.Email), u.VerifyToken))
+	if err != nil {
+		return fmt.Errorf("could not get confirmation url: %w", err)
+	}
+	var contents bytes.Buffer
+	err = tmpl.Execute(&contents, struct {
+		Username string
+		Url      string
+	}{
+		Username: u.Username,
+		Url:      confirmUrl,
+	})
+	if err != nil {
+		return fmt.Errorf("could not execute signup email template: %w", err)
+	}
+
+	return sendEmail(
+		u.Email,
+		u.Username,
+		"Welcome to Empire and Foundation",
+		&contents,
+	)
 }
