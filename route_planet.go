@@ -10,7 +10,7 @@ import (
 
 type planetOverviewViewData struct {
 	UserPlanets []*ent.Planet
-	Planet      *ent.Planet
+	Planet      *data.PlanetWithResourceInfo
 	EnergyProd  int64
 	EnergyCons  int64
 	Timers      map[timer.Group]*data.Timer
@@ -20,7 +20,7 @@ type planetOverviewViewData struct {
 // Show the dashboard page for a planet
 func servePlanet(w http.ResponseWriter, r *http.Request) {
 	var plist []*ent.Planet
-	var p *ent.Planet
+	var p *data.PlanetWithResourceInfo
 	var t map[timer.Group]*data.Timer
 	err := data.WithTx(r.Context(), data.Client, func(tx *ent.Tx) error {
 		var err error
@@ -32,7 +32,7 @@ func servePlanet(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			return err
 		}
-		t, err = data.GetTimers(r.Context(), p)
+		t, err = data.GetTimers(r.Context(), p.Planet)
 		if err != nil {
 			return newInternalServerError(err)
 		}
@@ -45,8 +45,6 @@ func servePlanet(w http.ResponseWriter, r *http.Request) {
 	pv := planetOverviewViewData{
 		UserPlanets: plist,
 		Planet:      p,
-		EnergyProd:  data.GetEnergyProd(p),
-		EnergyCons:  data.GetEnergyCons(p),
 		Timers:      t,
 	}
 	generateHTML(w, r, "planet-dashboard", pv, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "flash", "planet.overview")
@@ -70,14 +68,14 @@ type constructionsViewData struct {
 
 func getBuildingsUpgradeCost(planet *ent.Planet) buildingsUpgradeCost {
 	return buildingsUpgradeCost{
-		MetalProdUpgradeCost:       data.GetMetalProdUpgradeCost(planet.MetalProdLevel + 1),
-		HydrogenProdUpgradeCost:    data.GetHydrogenProdUpgradeCost(planet.HydrogenProdLevel + 1),
-		SilicaProdUpgradeCost:      data.GetSilicaProdUpgradeCost(planet.SilicaProdLevel + 1),
-		SolarProdUpgradeCost:       data.GetSolarProdUpgradeCost(planet.SolarProdLevel + 1),
-		UrbanismUpgradeCost:        data.GetUrbanismUpgradeCost(planet.PopulationProdLevel + 1),
-		MetalStorageUpgradeCost:    data.GetMetalStorageUpgradeCost(planet.MetalStorageLevel + 1),
-		HydrogenStorageUpgradeCost: data.GetHydrogenStorageUpgradeCost(planet.HydrogenStorageLevel + 1),
-		SilicaStorageUpgradeCost:   data.GetSilicaStorageUpgradeCost(planet.SilicaStorageLevel + 1),
+		MetalProdUpgradeCost:       data.MetalMineCost(planet.MetalProdLevel + 1),
+		HydrogenProdUpgradeCost:    data.HydrogenExtractorCost(planet.HydrogenProdLevel + 1),
+		SilicaProdUpgradeCost:      data.SilicaQuarryCost(planet.SilicaProdLevel + 1),
+		SolarProdUpgradeCost:       data.SolarPlantCost(planet.SolarProdLevel + 1),
+		UrbanismUpgradeCost:        data.UrbanismCost(planet.PopulationProdLevel + 1),
+		MetalStorageUpgradeCost:    data.MetalStorageCost(planet.MetalStorageLevel + 1),
+		HydrogenStorageUpgradeCost: data.HydrogenStorageCost(planet.HydrogenStorageLevel + 1),
+		SilicaStorageUpgradeCost:   data.SilicaStorageCost(planet.SilicaStorageLevel + 1),
 	}
 }
 
@@ -89,7 +87,7 @@ func serveConstructions(w http.ResponseWriter, r *http.Request) {
 		serveError(w, r, err)
 		return
 	}
-	b := getBuildingsUpgradeCost(p.Planet)
+	b := getBuildingsUpgradeCost(p.Planet.Planet)
 	vd := constructionsViewData{
 		*p,
 		b,

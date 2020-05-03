@@ -56,16 +56,16 @@ func (f *planetFactory) ForOwner(u *ent.User) *planetFactory {
 func (f *planetFactory) WithBeginnerResources() *planetFactory {
 	f.MetalProdLevel = 2
 	f.MetalStorageLevel = 1
-	f.Metal = getMaxStorage(f.MetalStorageLevel) / 2
+	f.Metal = MetalStorageCapacity(f.MetalStorageLevel) / 2
 	f.SilicaProdLevel = 2
 	f.SilicaStorageLevel = 1
-	f.Silica = getMaxStorage(f.SilicaStorageLevel) * 3 / 4
+	f.Silica = SilicaStorageCapacity(f.SilicaStorageLevel) * 3 / 4
 	f.HydrogenProdLevel = 1
 	f.HydrogenStorageLevel = 1
-	f.Hydrogen = getMaxStorage(f.HydrogenStorageLevel)
+	f.Hydrogen = HydrogenStorageCapacity(f.HydrogenStorageLevel)
 	f.PopulationProdLevel = 2
 	f.PopulationStorageLevel = f.PopulationProdLevel
-	f.Population = getMaxStorage(f.PopulationStorageLevel)
+	f.Population = PopulationStorageCapacity(f.PopulationStorageLevel)
 	f.SolarProdLevel = 5
 	return f
 }
@@ -141,7 +141,7 @@ func (f *planetFactory) Create() (*ent.Planet, error) {
 	}
 
 	if f.updatedResources {
-		UpdatePlanetResources(&f.Planet, timeNow())
+		NewPlanetWithResourceInfo(&f.Planet).Update(timeNow())
 	}
 
 	return p, nil

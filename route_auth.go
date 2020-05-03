@@ -3,13 +3,14 @@ package main
 import (
 	"errors"
 	"fmt"
-	"net/http"
 	"math/rand"
+	"net/http"
+	"time"
 
 	"github.com/pdeguing/empire-and-foundation/data"
 	"github.com/pdeguing/empire-and-foundation/ent"
-	"github.com/pdeguing/empire-and-foundation/ent/user"
 	"github.com/pdeguing/empire-and-foundation/ent/planet"
+	"github.com/pdeguing/empire-and-foundation/ent/user"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -49,13 +50,13 @@ func serveSignupAccount(w http.ResponseWriter, r *http.Request) {
 		}
 
 		c, err := tx.Planet.Query().
-				Where(
-					planet.And(
-						planet.PlanetTypeEQ(planet.PlanetTypeHabitable),
-						planet.Not(planet.HasOwner()),
-					),
-				).
-				Count(r.Context())
+			Where(
+				planet.And(
+					planet.PlanetTypeEQ(planet.PlanetTypeHabitable),
+					planet.Not(planet.HasOwner()),
+				),
+			).
+			Count(r.Context())
 
 		if err != nil {
 			return err
@@ -66,17 +67,21 @@ func serveSignupAccount(w http.ResponseWriter, r *http.Request) {
 		n := ra.Intn(c)
 
 		p, err := tx.Planet.Query().
-				Where(
-					planet.And(
-						planet.PlanetTypeEQ(planet.PlanetTypeHabitable),
-						planet.Not(planet.HasOwner()),
-					),
-				).
-				Offset(n).
-				First(r.Context())
+			Where(
+				planet.And(
+					planet.PlanetTypeEQ(planet.PlanetTypeHabitable),
+					planet.Not(planet.HasOwner()),
+				),
+			).
+			Offset(n).
+			First(r.Context())
 
 		_, err = p.Update().
 			SetOwner(u).
+			SetMetal(800).
+			SetHydrogen(400).
+			SetSilica(600).
+			SetLastResourceUpdate(time.Now()).
 			Save(r.Context())
 
 		return err

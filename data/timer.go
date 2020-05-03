@@ -68,14 +68,14 @@ var actions = map[timer.Action]action{
 	timer.ActionUpgradeMetalProd: {
 		Group: timer.GroupBuilding,
 		Duration: func(p *ent.Planet) time.Duration {
-			return getMetalProdUpgradeDuration(p.MetalProdLevel + 1)
+			return MetalMineUpgradeDuration(p.MetalProdLevel + 1)
 		},
 		Valid: func(p *ent.Planet) bool {
-			c := GetMetalProdUpgradeCost(p.MetalProdLevel + 1)
+			c := MetalMineCost(p.MetalProdLevel + 1)
 			return hasResources(p, c)
 		},
 		Start: func(p *ent.Planet) error {
-			c := GetMetalProdUpgradeCost(p.MetalProdLevel + 1)
+			c := MetalMineCost(p.MetalProdLevel + 1)
 			subStock(p, c)
 			return nil
 		},
@@ -84,7 +84,7 @@ var actions = map[timer.Action]action{
 			return nil
 		},
 		Cancel: func(p *ent.Planet) error {
-			c := GetMetalProdUpgradeCost(p.MetalProdLevel + 1)
+			c := MetalMineCost(p.MetalProdLevel + 1)
 			addStock(p, c)
 			return nil
 		},
@@ -92,14 +92,14 @@ var actions = map[timer.Action]action{
 	timer.ActionUpgradeHydrogenProd: {
 		Group: timer.GroupBuilding,
 		Duration: func(p *ent.Planet) time.Duration {
-			return getHydrogenProdUpgradeDuration(p.HydrogenProdLevel + 1)
+			return HydrogenExtractorUpgradeDuration(p.HydrogenProdLevel + 1)
 		},
 		Valid: func(p *ent.Planet) bool {
-			c := GetHydrogenProdUpgradeCost(p.HydrogenProdLevel + 1)
+			c := HydrogenExtractorCost(p.HydrogenProdLevel + 1)
 			return hasResources(p, c)
 		},
 		Start: func(p *ent.Planet) error {
-			c := GetHydrogenProdUpgradeCost(p.HydrogenProdLevel + 1)
+			c := HydrogenExtractorCost(p.HydrogenProdLevel + 1)
 			subStock(p, c)
 			return nil
 		},
@@ -108,7 +108,7 @@ var actions = map[timer.Action]action{
 			return nil
 		},
 		Cancel: func(p *ent.Planet) error {
-			c := GetHydrogenProdUpgradeCost(p.HydrogenProdLevel + 1)
+			c := HydrogenExtractorCost(p.HydrogenProdLevel + 1)
 			addStock(p, c)
 			return nil
 		},
@@ -116,14 +116,14 @@ var actions = map[timer.Action]action{
 	timer.ActionUpgradeSilicaProd: {
 		Group: timer.GroupBuilding,
 		Duration: func(p *ent.Planet) time.Duration {
-			return getSilicaProdUpgradeDuration(p.SilicaProdLevel + 1)
+			return SilicaQuarryUpgradeDuration(p.SilicaProdLevel + 1)
 		},
 		Valid: func(p *ent.Planet) bool {
-			c := GetSilicaProdUpgradeCost(p.SilicaProdLevel + 1)
+			c := SilicaQuarryCost(p.SilicaProdLevel + 1)
 			return hasResources(p, c)
 		},
 		Start: func(p *ent.Planet) error {
-			c := GetSilicaProdUpgradeCost(p.SilicaProdLevel + 1)
+			c := SilicaQuarryCost(p.SilicaProdLevel + 1)
 			subStock(p, c)
 			return nil
 		},
@@ -132,7 +132,7 @@ var actions = map[timer.Action]action{
 			return nil
 		},
 		Cancel: func(p *ent.Planet) error {
-			c := GetSilicaProdUpgradeCost(p.SilicaProdLevel + 1)
+			c := SilicaQuarryCost(p.SilicaProdLevel + 1)
 			addStock(p, c)
 			return nil
 		},
@@ -140,14 +140,14 @@ var actions = map[timer.Action]action{
 	timer.ActionUpgradeSolarProd: {
 		Group: timer.GroupBuilding,
 		Duration: func(p *ent.Planet) time.Duration {
-			return getSolarProdUpgradeDuration(p.SolarProdLevel + 1)
+			return SolarPlantUpgradeDuration(p.SolarProdLevel + 1)
 		},
 		Valid: func(p *ent.Planet) bool {
-			c := GetSolarProdUpgradeCost(p.SolarProdLevel + 1)
+			c := SolarPlantCost(p.SolarProdLevel + 1)
 			return hasResources(p, c)
 		},
 		Start: func(p *ent.Planet) error {
-			c := GetSolarProdUpgradeCost(p.SolarProdLevel + 1)
+			c := SolarPlantCost(p.SolarProdLevel + 1)
 			subStock(p, c)
 			return nil
 		},
@@ -156,7 +156,7 @@ var actions = map[timer.Action]action{
 			return nil
 		},
 		Cancel: func(p *ent.Planet) error {
-			c := GetSolarProdUpgradeCost(p.SolarProdLevel + 1)
+			c := SolarPlantCost(p.SolarProdLevel + 1)
 			addStock(p, c)
 			return nil
 		},
@@ -164,14 +164,14 @@ var actions = map[timer.Action]action{
 	timer.ActionUpgradeUrbanism: {
 		Group: timer.GroupBuilding,
 		Duration: func(p *ent.Planet) time.Duration {
-			return getUrbanismUpgradeDuration(p.PopulationStorageLevel + 1)
+			return UrbanismUpgradeDuration(p.PopulationStorageLevel + 1)
 		},
 		Valid: func(p *ent.Planet) bool {
-			c := GetUrbanismUpgradeCost(p.PopulationStorageLevel + 1)
+			c := UrbanismCost(p.PopulationStorageLevel + 1)
 			return hasResources(p, c)
 		},
 		Start: func(p *ent.Planet) error {
-			c := GetUrbanismUpgradeCost(p.PopulationStorageLevel + 1)
+			c := UrbanismCost(p.PopulationStorageLevel + 1)
 			subStock(p, c)
 			return nil
 		},
@@ -181,7 +181,7 @@ var actions = map[timer.Action]action{
 			return nil
 		},
 		Cancel: func(p *ent.Planet) error {
-			c := GetUrbanismUpgradeCost(p.PopulationStorageLevel + 1)
+			c := UrbanismCost(p.PopulationStorageLevel + 1)
 			addStock(p, c)
 			return nil
 		},
@@ -189,14 +189,14 @@ var actions = map[timer.Action]action{
 	timer.ActionUpgradeMetalStorage: {
 		Group: timer.GroupBuilding,
 		Duration: func(p *ent.Planet) time.Duration {
-			return getMetalStorageUpgradeDuration(p.MetalStorageLevel + 1)
+			return MetalStorageUpgradeDuration(p.MetalStorageLevel + 1)
 		},
 		Valid: func(p *ent.Planet) bool {
-			c := GetMetalStorageUpgradeCost(p.MetalStorageLevel + 1)
+			c := MetalStorageCost(p.MetalStorageLevel + 1)
 			return hasResources(p, c)
 		},
 		Start: func(p *ent.Planet) error {
-			c := GetMetalStorageUpgradeCost(p.MetalStorageLevel + 1)
+			c := MetalStorageCost(p.MetalStorageLevel + 1)
 			subStock(p, c)
 			return nil
 		},
@@ -205,7 +205,7 @@ var actions = map[timer.Action]action{
 			return nil
 		},
 		Cancel: func(p *ent.Planet) error {
-			c := GetMetalStorageUpgradeCost(p.MetalStorageLevel + 1)
+			c := MetalStorageCost(p.MetalStorageLevel + 1)
 			addStock(p, c)
 			return nil
 		},
@@ -213,14 +213,14 @@ var actions = map[timer.Action]action{
 	timer.ActionUpgradeHydrogenStorage: {
 		Group: timer.GroupBuilding,
 		Duration: func(p *ent.Planet) time.Duration {
-			return getHydrogenStorageUpgradeDuration(p.HydrogenStorageLevel + 1)
+			return HydrogenStorageUpgradeDuration(p.HydrogenStorageLevel + 1)
 		},
 		Valid: func(p *ent.Planet) bool {
-			c := GetHydrogenStorageUpgradeCost(p.HydrogenStorageLevel + 1)
+			c := HydrogenStorageCost(p.HydrogenStorageLevel + 1)
 			return hasResources(p, c)
 		},
 		Start: func(p *ent.Planet) error {
-			c := GetHydrogenStorageUpgradeCost(p.HydrogenStorageLevel + 1)
+			c := HydrogenStorageCost(p.HydrogenStorageLevel + 1)
 			subStock(p, c)
 			return nil
 		},
@@ -229,7 +229,7 @@ var actions = map[timer.Action]action{
 			return nil
 		},
 		Cancel: func(p *ent.Planet) error {
-			c := GetHydrogenStorageUpgradeCost(p.HydrogenStorageLevel + 1)
+			c := HydrogenStorageCost(p.HydrogenStorageLevel + 1)
 			addStock(p, c)
 			return nil
 		},
@@ -237,14 +237,14 @@ var actions = map[timer.Action]action{
 	timer.ActionUpgradeSilicaStorage: {
 		Group: timer.GroupBuilding,
 		Duration: func(p *ent.Planet) time.Duration {
-			return getSilicaStorageUpgradeDuration(p.SilicaStorageLevel + 1)
+			return SilicaStorageUpgradeDuration(p.SilicaStorageLevel + 1)
 		},
 		Valid: func(p *ent.Planet) bool {
-			c := GetSilicaStorageUpgradeCost(p.SilicaStorageLevel + 1)
+			c := SilicaStorageCost(p.SilicaStorageLevel + 1)
 			return hasResources(p, c)
 		},
 		Start: func(p *ent.Planet) error {
-			c := GetSilicaStorageUpgradeCost(p.SilicaStorageLevel + 1)
+			c := SilicaStorageCost(p.SilicaStorageLevel + 1)
 			subStock(p, c)
 			return nil
 		},
@@ -253,7 +253,7 @@ var actions = map[timer.Action]action{
 			return nil
 		},
 		Cancel: func(p *ent.Planet) error {
-			c := GetSilicaStorageUpgradeCost(p.SilicaStorageLevel + 1)
+			c := SilicaStorageCost(p.SilicaStorageLevel + 1)
 			addStock(p, c)
 			return nil
 		},
@@ -392,9 +392,10 @@ func UpdateTimers(ctx context.Context, tx *ent.Tx, p *ent.Planet) error {
 	if len(timers) == 0 {
 		return nil // Fast path
 	}
+	pwr := NewPlanetWithResourceInfo(p)
 	for _, t := range timers {
-		UpdatePlanetResources(p, t.EndTime)
-		err = actions[t.Action].Complete(p)
+		pwr.Update(t.EndTime)
+		err = actions[t.Action].Complete(pwr.Planet)
 		if err != nil {
 			return fmt.Errorf("error while calling \"Complete\" function for action %q: %w", t.Action, err)
 		}
