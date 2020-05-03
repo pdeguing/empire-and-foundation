@@ -53,6 +53,26 @@ func (uu *UserUpdate) SetPassword(s string) *UserUpdate {
 	return uu
 }
 
+// SetVerifyToken sets the verify_token field.
+func (uu *UserUpdate) SetVerifyToken(s string) *UserUpdate {
+	uu.mutation.SetVerifyToken(s)
+	return uu
+}
+
+// SetNillableVerifyToken sets the verify_token field if the given value is not nil.
+func (uu *UserUpdate) SetNillableVerifyToken(s *string) *UserUpdate {
+	if s != nil {
+		uu.SetVerifyToken(*s)
+	}
+	return uu
+}
+
+// ClearVerifyToken clears the value of verify_token.
+func (uu *UserUpdate) ClearVerifyToken() *UserUpdate {
+	uu.mutation.ClearVerifyToken()
+	return uu
+}
+
 // AddPlanetIDs adds the planets edge to Planet by ids.
 func (uu *UserUpdate) AddPlanetIDs(ids ...int) *UserUpdate {
 	uu.mutation.AddPlanetIDs(ids...)
@@ -184,6 +204,19 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: user.FieldPassword,
 		})
 	}
+	if value, ok := uu.mutation.VerifyToken(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: user.FieldVerifyToken,
+		})
+	}
+	if uu.mutation.VerifyTokenCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: user.FieldVerifyToken,
+		})
+	}
 	if nodes := uu.mutation.RemovedPlanetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -261,6 +294,26 @@ func (uuo *UserUpdateOne) SetEmail(s string) *UserUpdateOne {
 // SetPassword sets the password field.
 func (uuo *UserUpdateOne) SetPassword(s string) *UserUpdateOne {
 	uuo.mutation.SetPassword(s)
+	return uuo
+}
+
+// SetVerifyToken sets the verify_token field.
+func (uuo *UserUpdateOne) SetVerifyToken(s string) *UserUpdateOne {
+	uuo.mutation.SetVerifyToken(s)
+	return uuo
+}
+
+// SetNillableVerifyToken sets the verify_token field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableVerifyToken(s *string) *UserUpdateOne {
+	if s != nil {
+		uuo.SetVerifyToken(*s)
+	}
+	return uuo
+}
+
+// ClearVerifyToken clears the value of verify_token.
+func (uuo *UserUpdateOne) ClearVerifyToken() *UserUpdateOne {
+	uuo.mutation.ClearVerifyToken()
 	return uuo
 }
 
@@ -391,6 +444,19 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
 			Type:   field.TypeString,
 			Value:  value,
 			Column: user.FieldPassword,
+		})
+	}
+	if value, ok := uuo.mutation.VerifyToken(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: user.FieldVerifyToken,
+		})
+	}
+	if uuo.mutation.VerifyTokenCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: user.FieldVerifyToken,
 		})
 	}
 	if nodes := uuo.mutation.RemovedPlanetsIDs(); len(nodes) > 0 {

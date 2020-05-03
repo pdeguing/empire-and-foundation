@@ -61,10 +61,14 @@ func (f *userFactory) InContext(ctx context.Context) *userFactory {
 
 // Create returns the user struct, which is saved to the database.
 func (f *userFactory) Create() (*ent.User, error) {
+	pw, err := bcrypt.GenerateFromPassword([]byte(f.Password), bcrypt.MinCost)
+	if err != nil {
+		return nil, err
+	}
 	return f.client.User.Create().
 		SetEmail(f.Email).
 		SetUsername(f.Username).
-		SetPassword(f.Password).
+		SetPassword(string(pw)).
 		SetCreatedAt(f.CreatedAt).
 		SetUpdatedAt(f.UpdatedAt).
 		AddPlanets(f.Edges.Planets...).

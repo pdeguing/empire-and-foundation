@@ -9,6 +9,9 @@ import (
 	"net"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
+	"os"
+	"sync"
 	"testing"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -17,8 +20,38 @@ import (
 func withTestServer() *httptest.Server {
 	data.WithTestDatabase()
 	initSessionManager("sqlite3")
-	ts := httptest.NewServer(routes())
+	ts := httptest.NewServer(routes(false))
+	if err := os.Setenv("SERVER_URL", ts.URL); err != nil {
+		panic(err)
+	}
 	return ts
+}
+
+func newTestClient() *http.Client {
+	return &http.Client{
+		Jar: &TestJar{},
+	}
+}
+
+// Copied from net/http/jar.go
+type TestJar struct {
+	m      sync.Mutex
+	perURL map[string][]*http.Cookie
+}
+
+func (j *TestJar) SetCookies(u *url.URL, cookies []*http.Cookie) {
+	j.m.Lock()
+	defer j.m.Unlock()
+	if j.perURL == nil {
+		j.perURL = make(map[string][]*http.Cookie)
+	}
+	j.perURL[u.Host] = cookies
+}
+
+func (j *TestJar) Cookies(u *url.URL) []*http.Cookie {
+	j.m.Lock()
+	defer j.m.Unlock()
+	return j.perURL[u.Host]
 }
 
 func withTestServerAuthenticated() (*httptest.Server, *ent.User) {

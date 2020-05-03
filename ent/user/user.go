@@ -10,12 +10,13 @@ const (
 	// Label holds the string label denoting the user type in the database.
 	Label = "user"
 	// FieldID holds the string denoting the id field in the database.
-	FieldID        = "id"         // FieldCreatedAt holds the string denoting the created_at vertex property in the database.
-	FieldCreatedAt = "created_at" // FieldUpdatedAt holds the string denoting the updated_at vertex property in the database.
-	FieldUpdatedAt = "updated_at" // FieldUsername holds the string denoting the username vertex property in the database.
-	FieldUsername  = "username"   // FieldEmail holds the string denoting the email vertex property in the database.
-	FieldEmail     = "email"      // FieldPassword holds the string denoting the password vertex property in the database.
-	FieldPassword  = "password"
+	FieldID          = "id"         // FieldCreatedAt holds the string denoting the created_at vertex property in the database.
+	FieldCreatedAt   = "created_at" // FieldUpdatedAt holds the string denoting the updated_at vertex property in the database.
+	FieldUpdatedAt   = "updated_at" // FieldUsername holds the string denoting the username vertex property in the database.
+	FieldUsername    = "username"   // FieldEmail holds the string denoting the email vertex property in the database.
+	FieldEmail       = "email"      // FieldPassword holds the string denoting the password vertex property in the database.
+	FieldPassword    = "password"   // FieldVerifyToken holds the string denoting the verify_token vertex property in the database.
+	FieldVerifyToken = "verify_token"
 
 	// EdgePlanets holds the string denoting the planets edge name in mutations.
 	EdgePlanets = "planets"
@@ -39,6 +40,7 @@ var Columns = []string{
 	FieldUsername,
 	FieldEmail,
 	FieldPassword,
+	FieldVerifyToken,
 }
 
 var (
