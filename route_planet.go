@@ -50,32 +50,123 @@ func servePlanet(w http.ResponseWriter, r *http.Request) {
 	generateHTML(w, r, "planet-dashboard", pv, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "flash", "planet.overview")
 }
 
-type buildingsUpgradeCost struct {
-	MetalProdUpgradeCost       data.Amounts
-	HydrogenProdUpgradeCost    data.Amounts
-	SilicaProdUpgradeCost      data.Amounts
-	SolarProdUpgradeCost       data.Amounts
-	UrbanismUpgradeCost        data.Amounts
-	MetalStorageUpgradeCost    data.Amounts
-	HydrogenStorageUpgradeCost data.Amounts
-	SilicaStorageUpgradeCost   data.Amounts
+type constructionCost struct {
+	data.Amounts
+	EnergyConsumption    int64
+	EnergyDelta          int64
+	PopulationEmployment int64
+	PopulationDelta      int64
+}
+
+type constructionCard struct {
+	Level                int
+	EnergyConsumption    int64
+	PopulationEmployment int64
+	Cost                 constructionCost
+	Upgradable           bool
+}
+
+type constructionCards struct {
+	MetalMine         constructionCard
+	HydrogenExtractor constructionCard
+	SilicaQuarry      constructionCard
+	SolarPlant        constructionCard
+	Urbanism          constructionCard
+	MetalStorage      constructionCard
+	HydrogenStorage   constructionCard
+	SilicaStorage     constructionCard
+	ResearchCenter    constructionCard
+	ShipFactory       constructionCard
 }
 
 type constructionsViewData struct {
 	planetViewData
-	buildingsUpgradeCost
+	constructionCards
 }
 
-func getBuildingsUpgradeCost(planet *ent.Planet) buildingsUpgradeCost {
-	return buildingsUpgradeCost{
-		MetalProdUpgradeCost:       data.MetalMineCost(planet.MetalProdLevel + 1),
-		HydrogenProdUpgradeCost:    data.HydrogenExtractorCost(planet.HydrogenProdLevel + 1),
-		SilicaProdUpgradeCost:      data.SilicaQuarryCost(planet.SilicaProdLevel + 1),
-		SolarProdUpgradeCost:       data.SolarPlantCost(planet.SolarProdLevel + 1),
-		UrbanismUpgradeCost:        data.UrbanismCost(planet.PopulationProdLevel + 1),
-		MetalStorageUpgradeCost:    data.MetalStorageCost(planet.MetalStorageLevel + 1),
-		HydrogenStorageUpgradeCost: data.HydrogenStorageCost(planet.HydrogenStorageLevel + 1),
-		SilicaStorageUpgradeCost:   data.SilicaStorageCost(planet.SilicaStorageLevel + 1),
+func getConstructionCards(planet *ent.Planet) constructionCards {
+	metalMineCost := data.MetalMineCost(planet.MetalProdLevel + 1)
+	hydrogenExtractorCost := data.HydrogenExtractorCost(planet.HydrogenProdLevel + 1)
+	silicaQuarryCost := data.SilicaQuarryCost(planet.SilicaProdLevel + 1)
+	solarPlantCost := data.SolarPlantCost(planet.SolarProdLevel + 1)
+	urbanismCost := data.UrbanismCost(planet.PopulationProdLevel + 1)
+	metalStorageCost := data.MetalStorageCost(planet.MetalStorageLevel + 1)
+	hydrogenStorageCost := data.HydrogenStorageCost(planet.HydrogenStorageLevel + 1)
+	silicaStorageCost := data.SilicaStorageCost(planet.SilicaStorageLevel + 1)
+	researchCenterCost := data.ResearchCenterCost(planet.ResearchCenterLevel + 1)
+	shipFactoryCost := data.ShipFactoryCost(planet.ShipFactoryLevel + 1)
+
+	return constructionCards{
+		MetalMine: constructionCard{
+			Level: planet.MetalProdLevel,
+			Cost: constructionCost{
+				Amounts: metalMineCost,
+			},
+			Upgradable: data.HasResources(planet, metalMineCost),
+		},
+		HydrogenExtractor: constructionCard{
+			Level: planet.HydrogenProdLevel,
+			Cost: constructionCost{
+				Amounts: hydrogenExtractorCost,
+			},
+			Upgradable: data.HasResources(planet, hydrogenExtractorCost),
+		},
+		SilicaQuarry: constructionCard{
+			Level: planet.SilicaProdLevel,
+			Cost: constructionCost{
+				Amounts: silicaQuarryCost,
+			},
+			Upgradable: data.HasResources(planet, silicaQuarryCost),
+		},
+		SolarPlant: constructionCard{
+			Level: planet.SolarProdLevel,
+			Cost: constructionCost{
+				Amounts: solarPlantCost,
+			},
+			Upgradable: data.HasResources(planet, solarPlantCost),
+		},
+		Urbanism: constructionCard{
+			Level: planet.PopulationProdLevel,
+			Cost: constructionCost{
+				Amounts: urbanismCost,
+			},
+			Upgradable: data.HasResources(planet, urbanismCost),
+		},
+		MetalStorage: constructionCard{
+			Level: planet.MetalStorageLevel,
+			Cost: constructionCost{
+				Amounts: metalStorageCost,
+			},
+			Upgradable: data.HasResources(planet, metalStorageCost),
+		},
+		HydrogenStorage: constructionCard{
+			Level: planet.HydrogenStorageLevel,
+			Cost: constructionCost{
+				Amounts: hydrogenStorageCost,
+			},
+			Upgradable: data.HasResources(planet, hydrogenStorageCost),
+		},
+		SilicaStorage: constructionCard{
+			Level: planet.SilicaStorageLevel,
+			Cost: constructionCost{
+				Amounts: silicaStorageCost,
+			},
+			Upgradable: data.HasResources(planet, silicaStorageCost),
+		},
+		ResearchCenter: constructionCard{
+			Level: planet.ResearchCenterLevel,
+			Cost: constructionCost{
+				Amounts: researchCenterCost,
+			},
+			Upgradable: data.HasResources(planet, researchCenterCost),
+		},
+		ShipFactory: constructionCard{
+			Level: planet.ShipFactoryLevel,
+			Cost: constructionCost{
+				Amounts: shipFactoryCost,
+			},
+			Upgradable: data.HasResources(planet, shipFactoryCost),
+		},
 	}
 }
 
@@ -87,7 +178,7 @@ func serveConstructions(w http.ResponseWriter, r *http.Request) {
 		serveError(w, r, err)
 		return
 	}
-	b := getBuildingsUpgradeCost(p.Planet.Planet)
+	b := getConstructionCards(p.Planet.Planet)
 	vd := constructionsViewData{
 		*p,
 		b,
@@ -233,4 +324,28 @@ func serveUpgradeSilicaStorage(w http.ResponseWriter, r *http.Request) {
 // Cancel the upgrade of the silica storage
 func serveCancelSilicaStorage(w http.ResponseWriter, r *http.Request) {
 	serveCancelBuilding(w, r, timer.ActionUpgradeSilicaStorage)
+}
+
+// POST /planet/{id}/research-center/upgrade
+// Upgrade the research center to the next level
+func serveUpgradeResearchCenter(w http.ResponseWriter, r *http.Request) {
+	serveUpgradeBuilding(w, r, timer.ActionUpgradeResearchCenter)
+}
+
+// POST /planet/{id}/research-center/cancel
+// Cancel the upgrade of the research center
+func serveCancelResearchCenter(w http.ResponseWriter, r *http.Request) {
+	serveCancelBuilding(w, r, timer.ActionUpgradeResearchCenter)
+}
+
+// POST /planet/{id}/ship-factory/upgrade
+// Upgrade the ship factory to the next level
+func serveUpgradeShipFactory(w http.ResponseWriter, r *http.Request) {
+	serveUpgradeBuilding(w, r, timer.ActionUpgradeShipFactory)
+}
+
+// POST /planet/{id}/ship-factory/cancel
+// Cancel the upgrade of the ship factory
+func serveCancelShipFactory(w http.ResponseWriter, r *http.Request) {
+	serveCancelBuilding(w, r, timer.ActionUpgradeShipFactory)
 }

@@ -53,7 +53,9 @@ func (p *PlanetWithResourceInfo) calcEnergyConsumption() {
 	hydro := genericEnergyUsage(p.HydrogenProdLevel, 15, 1.255)
 	silic := genericEnergyUsage(p.SilicaProdLevel, 8, 1.25)
 	urban := genericEnergyUsage(p.PopulationProdLevel, 10, 1.2)
-	p.EnergyConsumption = metal + hydro + silic + urban
+	rsrch := genericEnergyUsage(p.ResearchCenterLevel, 40, 1.25)
+	shipf := genericEnergyUsage(p.ShipFactoryLevel, 15, 1.25)
+	p.EnergyConsumption = metal + hydro + silic + urban + rsrch + shipf
 }
 
 func (p *PlanetWithResourceInfo) calcEnergyProduction() {
@@ -67,11 +69,13 @@ func (p *PlanetWithResourceInfo) calcPopulationSize() {
 }
 
 func (p *PlanetWithResourceInfo) calcPopulationEmployment() {
-	metal := genericPopulationEmployment(p.MetalProdLevel, 6, 1.8)
+	metal := genericPopulationEmployment(p.MetalProdLevel, 6, 1.75)
 	hydro := genericPopulationEmployment(p.HydrogenProdLevel, 5, 1.6)
-	silic := genericPopulationEmployment(p.SilicaProdLevel, 6, 1.8)
+	silic := genericPopulationEmployment(p.SilicaProdLevel, 6, 1.75)
 	solar := genericPopulationEmployment(p.SolarProdLevel, 2, 1.6)
-	p.PopulationEmployment = metal + hydro + silic + solar
+	rsrch := genericPopulationEmployment(p.ResearchCenterLevel, 40, 1.7)
+	shipf := genericPopulationEmployment(p.ShipFactoryLevel, 30, 1.7)
+	p.PopulationEmployment = metal + hydro + silic + solar + rsrch + shipf
 }
 
 func (p *PlanetWithResourceInfo) calcMetalMineProduction() {
@@ -173,15 +177,15 @@ func genericHourlyProductionRate(level int, initial, base float64) int64 {
 }
 
 func MetalHourlyProductionRate(level int) int64 {
-	return genericHourlyProductionRate(level, 160, 1.05)
+	return genericHourlyProductionRate(level, 120, 1.05)
 }
 
 func HydrogenHourlyProductionRate(level int) int64 {
-	return genericHourlyProductionRate(level, 200, 1.08)
+	return genericHourlyProductionRate(level, 160, 1.08)
 }
 
 func SilicaHourlyProductionRate(level int) int64 {
-	return genericHourlyProductionRate(level, 200, 1.05)
+	return genericHourlyProductionRate(level, 160, 1.05)
 }
 
 func genericStorageCapacity(level int, initial, base float64) int64 {
@@ -191,15 +195,15 @@ func genericStorageCapacity(level int, initial, base float64) int64 {
 }
 
 func MetalStorageCapacity(level int) int64 {
-	return genericStorageCapacity(level, 2000, 1500)
+	return genericStorageCapacity(level, 1000, 1000)
 }
 
 func HydrogenStorageCapacity(level int) int64 {
-	return genericStorageCapacity(level, 1500, 2500)
+	return genericStorageCapacity(level, 1000, 1200)
 }
 
 func SilicaStorageCapacity(level int) int64 {
-	return genericStorageCapacity(level, 2000, 2000)
+	return genericStorageCapacity(level, 1000, 1100)
 }
 
 func genericConstructionCost(level int, initial, base float64) int64 {
@@ -289,6 +293,22 @@ func SilicaStorageCost(level int) Amounts {
 	}
 }
 
+func ResearchCenterCost(level int) Amounts {
+	return Amounts{
+		Metal:    genericConstructionCost(level, 115, 1.5),
+		Hydrogen: genericConstructionCost(level, 450, 1.5),
+		Silica:   genericConstructionCost(level, 700, 1.5),
+	}
+}
+
+func ShipFactoryCost(level int) Amounts {
+	return Amounts{
+		Metal:    genericConstructionCost(level, 600, 1.5),
+		Hydrogen: genericConstructionCost(level, 100, 1.5),
+		Silica:   genericConstructionCost(level, 350, 1.5),
+	}
+}
+
 func genericUpgradeDuration(level int, initial time.Duration, base float64) time.Duration {
 	l := float64(level)
 	i := float64(initial)
@@ -296,35 +316,43 @@ func genericUpgradeDuration(level int, initial time.Duration, base float64) time
 }
 
 func MetalMineUpgradeDuration(level int) time.Duration {
-	return genericUpgradeDuration(level, 52*time.Second, 1.4)
+	return genericUpgradeDuration(level, 104*time.Second, 1.4)
 }
 
 func HydrogenExtractorUpgradeDuration(level int) time.Duration {
-	return genericUpgradeDuration(level, 43*time.Second, 1.4)
+	return genericUpgradeDuration(level, 86*time.Second, 1.4)
 }
 
 func SilicaQuarryUpgradeDuration(level int) time.Duration {
-	return genericUpgradeDuration(level, 39*time.Second, 1.4)
+	return genericUpgradeDuration(level, 78*time.Second, 1.4)
 }
 
 func UrbanismUpgradeDuration(level int) time.Duration {
-	return genericUpgradeDuration(level, 26*time.Second, 1.4)
+	return genericUpgradeDuration(level, 52*time.Second, 1.4)
 }
 
 func SolarPlantUpgradeDuration(level int) time.Duration {
-	return genericUpgradeDuration(level, 17*time.Second, 1.6)
+	return genericUpgradeDuration(level, 35*time.Second, 1.6)
 }
 
 func MetalStorageUpgradeDuration(level int) time.Duration {
-	return genericUpgradeDuration(level, 22*time.Second, 2.0)
+	return genericUpgradeDuration(level, 43*time.Second, 2.0)
 }
 
 func HydrogenStorageUpgradeDuration(level int) time.Duration {
-	return genericUpgradeDuration(level, 26*time.Second, 2.0)
+	return genericUpgradeDuration(level, 52*time.Second, 2.0)
 }
 
 func SilicaStorageUpgradeDuration(level int) time.Duration {
-	return genericUpgradeDuration(level, 17*time.Second, 2.0)
+	return genericUpgradeDuration(level, 35*time.Second, 2.0)
+}
+
+func ResearchCenterUpgradeDuration(level int) time.Duration {
+	return genericUpgradeDuration(level, 21*time.Minute+36*time.Second, 1.6)
+}
+
+func ShipFactoryUpgradeDuration(level int) time.Duration {
+	return genericUpgradeDuration(level, 7*time.Minute+12*time.Second, 1.5)
 }
 
 // SavePlanetResources saves all fields related to the resources to the database.
@@ -343,6 +371,8 @@ func SavePlanetResources(ctx context.Context, p *ent.Planet) (*ent.Planet, error
 		SetPopulationProdLevel(p.PopulationProdLevel).
 		SetPopulationStorageLevel(p.PopulationStorageLevel).
 		SetSolarProdLevel(p.SolarProdLevel).
+		SetResearchCenterLevel(p.ResearchCenterLevel).
+		SetShipFactoryLevel(p.ShipFactoryLevel).
 		SetLastResourceUpdate(p.LastResourceUpdate).
 		Save(ctx)
 	if err != nil {

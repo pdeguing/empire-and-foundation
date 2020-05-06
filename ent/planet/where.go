@@ -198,6 +198,20 @@ func SolarProdLevel(v int) predicate.Planet {
 	})
 }
 
+// ShipFactoryLevel applies equality check predicate on the "ship_factory_level" field. It's identical to ShipFactoryLevelEQ.
+func ShipFactoryLevel(v int) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldShipFactoryLevel), v))
+	})
+}
+
+// ResearchCenterLevel applies equality check predicate on the "research_center_level" field. It's identical to ResearchCenterLevelEQ.
+func ResearchCenterLevel(v int) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldResearchCenterLevel), v))
+	})
+}
+
 // RegionCode applies equality check predicate on the "region_code" field. It's identical to RegionCodeEQ.
 func RegionCode(v int) predicate.Planet {
 	return predicate.Planet(func(s *sql.Selector) {
@@ -1391,6 +1405,158 @@ func SolarProdLevelLT(v int) predicate.Planet {
 func SolarProdLevelLTE(v int) predicate.Planet {
 	return predicate.Planet(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldSolarProdLevel), v))
+	})
+}
+
+// ShipFactoryLevelEQ applies the EQ predicate on the "ship_factory_level" field.
+func ShipFactoryLevelEQ(v int) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldShipFactoryLevel), v))
+	})
+}
+
+// ShipFactoryLevelNEQ applies the NEQ predicate on the "ship_factory_level" field.
+func ShipFactoryLevelNEQ(v int) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldShipFactoryLevel), v))
+	})
+}
+
+// ShipFactoryLevelIn applies the In predicate on the "ship_factory_level" field.
+func ShipFactoryLevelIn(vs ...int) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldShipFactoryLevel), v...))
+	})
+}
+
+// ShipFactoryLevelNotIn applies the NotIn predicate on the "ship_factory_level" field.
+func ShipFactoryLevelNotIn(vs ...int) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldShipFactoryLevel), v...))
+	})
+}
+
+// ShipFactoryLevelGT applies the GT predicate on the "ship_factory_level" field.
+func ShipFactoryLevelGT(v int) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldShipFactoryLevel), v))
+	})
+}
+
+// ShipFactoryLevelGTE applies the GTE predicate on the "ship_factory_level" field.
+func ShipFactoryLevelGTE(v int) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldShipFactoryLevel), v))
+	})
+}
+
+// ShipFactoryLevelLT applies the LT predicate on the "ship_factory_level" field.
+func ShipFactoryLevelLT(v int) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldShipFactoryLevel), v))
+	})
+}
+
+// ShipFactoryLevelLTE applies the LTE predicate on the "ship_factory_level" field.
+func ShipFactoryLevelLTE(v int) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldShipFactoryLevel), v))
+	})
+}
+
+// ResearchCenterLevelEQ applies the EQ predicate on the "research_center_level" field.
+func ResearchCenterLevelEQ(v int) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldResearchCenterLevel), v))
+	})
+}
+
+// ResearchCenterLevelNEQ applies the NEQ predicate on the "research_center_level" field.
+func ResearchCenterLevelNEQ(v int) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldResearchCenterLevel), v))
+	})
+}
+
+// ResearchCenterLevelIn applies the In predicate on the "research_center_level" field.
+func ResearchCenterLevelIn(vs ...int) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldResearchCenterLevel), v...))
+	})
+}
+
+// ResearchCenterLevelNotIn applies the NotIn predicate on the "research_center_level" field.
+func ResearchCenterLevelNotIn(vs ...int) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldResearchCenterLevel), v...))
+	})
+}
+
+// ResearchCenterLevelGT applies the GT predicate on the "research_center_level" field.
+func ResearchCenterLevelGT(v int) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldResearchCenterLevel), v))
+	})
+}
+
+// ResearchCenterLevelGTE applies the GTE predicate on the "research_center_level" field.
+func ResearchCenterLevelGTE(v int) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldResearchCenterLevel), v))
+	})
+}
+
+// ResearchCenterLevelLT applies the LT predicate on the "research_center_level" field.
+func ResearchCenterLevelLT(v int) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldResearchCenterLevel), v))
+	})
+}
+
+// ResearchCenterLevelLTE applies the LTE predicate on the "research_center_level" field.
+func ResearchCenterLevelLTE(v int) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldResearchCenterLevel), v))
 	})
 }
 

@@ -26,7 +26,9 @@ const (
 	FieldPopulation             = "population"               // FieldPopulationProdLevel holds the string denoting the population_prod_level vertex property in the database.
 	FieldPopulationProdLevel    = "population_prod_level"    // FieldPopulationStorageLevel holds the string denoting the population_storage_level vertex property in the database.
 	FieldPopulationStorageLevel = "population_storage_level" // FieldSolarProdLevel holds the string denoting the solar_prod_level vertex property in the database.
-	FieldSolarProdLevel         = "solar_prod_level"         // FieldRegionCode holds the string denoting the region_code vertex property in the database.
+	FieldSolarProdLevel         = "solar_prod_level"         // FieldShipFactoryLevel holds the string denoting the ship_factory_level vertex property in the database.
+	FieldShipFactoryLevel       = "ship_factory_level"       // FieldResearchCenterLevel holds the string denoting the research_center_level vertex property in the database.
+	FieldResearchCenterLevel    = "research_center_level"    // FieldRegionCode holds the string denoting the region_code vertex property in the database.
 	FieldRegionCode             = "region_code"              // FieldSystemCode holds the string denoting the system_code vertex property in the database.
 	FieldSystemCode             = "system_code"              // FieldOrbitCode holds the string denoting the orbit_code vertex property in the database.
 	FieldOrbitCode              = "orbit_code"               // FieldSuborbitCode holds the string denoting the suborbit_code vertex property in the database.
@@ -78,6 +80,8 @@ var Columns = []string{
 	FieldPopulationProdLevel,
 	FieldPopulationStorageLevel,
 	FieldSolarProdLevel,
+	FieldShipFactoryLevel,
+	FieldResearchCenterLevel,
 	FieldRegionCode,
 	FieldSystemCode,
 	FieldOrbitCode,
@@ -153,6 +157,14 @@ var (
 	DefaultSolarProdLevel int
 	// SolarProdLevelValidator is a validator for the "solar_prod_level" field. It is called by the builders before save.
 	SolarProdLevelValidator func(int) error
+	// DefaultShipFactoryLevel holds the default value on creation for the ship_factory_level field.
+	DefaultShipFactoryLevel int
+	// ShipFactoryLevelValidator is a validator for the "ship_factory_level" field. It is called by the builders before save.
+	ShipFactoryLevelValidator func(int) error
+	// DefaultResearchCenterLevel holds the default value on creation for the research_center_level field.
+	DefaultResearchCenterLevel int
+	// ResearchCenterLevelValidator is a validator for the "research_center_level" field. It is called by the builders before save.
+	ResearchCenterLevelValidator func(int) error
 	// RegionCodeValidator is a validator for the "region_code" field. It is called by the builders before save.
 	RegionCodeValidator func(int) error
 	// SystemCodeValidator is a validator for the "system_code" field. It is called by the builders before save.

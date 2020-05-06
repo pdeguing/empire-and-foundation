@@ -79,7 +79,7 @@ func serveSignupAccount(w http.ResponseWriter, r *http.Request) {
 		_, err = p.Update().
 			SetOwner(u).
 			SetMetal(800).
-			SetHydrogen(400).
+			SetHydrogen(500).
 			SetSilica(600).
 			SetLastResourceUpdate(time.Now()).
 			Save(r.Context())

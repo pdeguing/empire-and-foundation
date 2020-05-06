@@ -4,7 +4,7 @@ import (
 	"github.com/pdeguing/empire-and-foundation/ent"
 )
 
-func hasResources(p *ent.Planet, s Amounts) bool {
+func HasResources(p *ent.Planet, s Amounts) bool {
 	return p.Metal >= s.Metal &&
 		p.Hydrogen >= s.Hydrogen &&
 		p.Silica >= s.Silica

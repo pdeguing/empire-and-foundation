@@ -47,6 +47,10 @@ type Planet struct {
 	PopulationStorageLevel int `json:"population_storage_level,omitempty"`
 	// SolarProdLevel holds the value of the "solar_prod_level" field.
 	SolarProdLevel int `json:"solar_prod_level,omitempty"`
+	// ShipFactoryLevel holds the value of the "ship_factory_level" field.
+	ShipFactoryLevel int `json:"ship_factory_level,omitempty"`
+	// ResearchCenterLevel holds the value of the "research_center_level" field.
+	ResearchCenterLevel int `json:"research_center_level,omitempty"`
 	// RegionCode holds the value of the "region_code" field.
 	RegionCode int `json:"region_code,omitempty"`
 	// SystemCode holds the value of the "system_code" field.
@@ -124,6 +128,8 @@ func (*Planet) scanValues() []interface{} {
 		&sql.NullInt64{},  // population_prod_level
 		&sql.NullInt64{},  // population_storage_level
 		&sql.NullInt64{},  // solar_prod_level
+		&sql.NullInt64{},  // ship_factory_level
+		&sql.NullInt64{},  // research_center_level
 		&sql.NullInt64{},  // region_code
 		&sql.NullInt64{},  // system_code
 		&sql.NullInt64{},  // orbit_code
@@ -231,51 +237,61 @@ func (pl *Planet) assignValues(values ...interface{}) error {
 		pl.SolarProdLevel = int(value.Int64)
 	}
 	if value, ok := values[15].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field region_code", values[15])
+		return fmt.Errorf("unexpected type %T for field ship_factory_level", values[15])
+	} else if value.Valid {
+		pl.ShipFactoryLevel = int(value.Int64)
+	}
+	if value, ok := values[16].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field research_center_level", values[16])
+	} else if value.Valid {
+		pl.ResearchCenterLevel = int(value.Int64)
+	}
+	if value, ok := values[17].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field region_code", values[17])
 	} else if value.Valid {
 		pl.RegionCode = int(value.Int64)
 	}
-	if value, ok := values[16].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field system_code", values[16])
+	if value, ok := values[18].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field system_code", values[18])
 	} else if value.Valid {
 		pl.SystemCode = int(value.Int64)
 	}
-	if value, ok := values[17].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field orbit_code", values[17])
+	if value, ok := values[19].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field orbit_code", values[19])
 	} else if value.Valid {
 		pl.OrbitCode = int(value.Int64)
 	}
-	if value, ok := values[18].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field suborbit_code", values[18])
+	if value, ok := values[20].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field suborbit_code", values[20])
 	} else if value.Valid {
 		pl.SuborbitCode = int(value.Int64)
 	}
-	if value, ok := values[19].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field position_code", values[19])
+	if value, ok := values[21].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field position_code", values[21])
 	} else if value.Valid {
 		pl.PositionCode = int(value.Int64)
 	}
-	if value, ok := values[20].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field name", values[20])
+	if value, ok := values[22].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field name", values[22])
 	} else if value.Valid {
 		pl.Name = value.String
 	}
-	if value, ok := values[21].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field planet_type", values[21])
+	if value, ok := values[23].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field planet_type", values[23])
 	} else if value.Valid {
 		pl.PlanetType = planet.PlanetType(value.String)
 	}
-	if value, ok := values[22].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field planet_skin", values[22])
+	if value, ok := values[24].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field planet_skin", values[24])
 	} else if value.Valid {
 		pl.PlanetSkin = value.String
 	}
-	if value, ok := values[23].(*sql.NullTime); !ok {
-		return fmt.Errorf("unexpected type %T for field last_resource_update", values[23])
+	if value, ok := values[25].(*sql.NullTime); !ok {
+		return fmt.Errorf("unexpected type %T for field last_resource_update", values[25])
 	} else if value.Valid {
 		pl.LastResourceUpdate = value.Time
 	}
-	values = values[24:]
+	values = values[26:]
 	if len(values) == len(planet.ForeignKeys) {
 		if value, ok := values[0].(*sql.NullInt64); !ok {
 			return fmt.Errorf("unexpected type %T for edge-field user_planets", value)
@@ -350,6 +366,10 @@ func (pl *Planet) String() string {
 	builder.WriteString(fmt.Sprintf("%v", pl.PopulationStorageLevel))
 	builder.WriteString(", solar_prod_level=")
 	builder.WriteString(fmt.Sprintf("%v", pl.SolarProdLevel))
+	builder.WriteString(", ship_factory_level=")
+	builder.WriteString(fmt.Sprintf("%v", pl.ShipFactoryLevel))
+	builder.WriteString(", research_center_level=")
+	builder.WriteString(fmt.Sprintf("%v", pl.ResearchCenterLevel))
 	builder.WriteString(", region_code=")
 	builder.WriteString(fmt.Sprintf("%v", pl.RegionCode))
 	builder.WriteString(", system_code=")

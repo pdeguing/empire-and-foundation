@@ -26,6 +26,8 @@ var (
 		{Name: "population_prod_level", Type: field.TypeInt},
 		{Name: "population_storage_level", Type: field.TypeInt},
 		{Name: "solar_prod_level", Type: field.TypeInt},
+		{Name: "ship_factory_level", Type: field.TypeInt},
+		{Name: "research_center_level", Type: field.TypeInt},
 		{Name: "region_code", Type: field.TypeInt},
 		{Name: "system_code", Type: field.TypeInt},
 		{Name: "orbit_code", Type: field.TypeInt},
@@ -45,7 +47,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:  "planets_users_planets",
-				Columns: []*schema.Column{PlanetsColumns[25]},
+				Columns: []*schema.Column{PlanetsColumns[27]},
 
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,
@@ -69,7 +71,7 @@ var (
 	// TimersColumns holds the columns for the "timers" table.
 	TimersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "action", Type: field.TypeEnum, Enums: []string{"upgrade_metal_prod", "upgrade_hydrogen_prod", "upgrade_silica_prod", "upgrade_solar_prod", "upgrade_urbanism", "upgrade_metal_storage", "upgrade_hydrogen_storage", "upgrade_silica_storage", "test"}},
+		{Name: "action", Type: field.TypeEnum, Enums: []string{"upgrade_metal_prod", "upgrade_hydrogen_prod", "upgrade_silica_prod", "upgrade_solar_prod", "upgrade_urbanism", "upgrade_metal_storage", "upgrade_hydrogen_storage", "upgrade_silica_storage", "upgrade_research_center", "upgrade_ship_factory", "test"}},
 		{Name: "group", Type: field.TypeEnum, Enums: []string{"building"}},
 		{Name: "end_time", Type: field.TypeTime},
 		{Name: "planet_timers", Type: field.TypeInt, Nullable: true},

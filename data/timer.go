@@ -72,7 +72,7 @@ var actions = map[timer.Action]action{
 		},
 		Valid: func(p *ent.Planet) bool {
 			c := MetalMineCost(p.MetalProdLevel + 1)
-			return hasResources(p, c)
+			return HasResources(p, c)
 		},
 		Start: func(p *ent.Planet) error {
 			c := MetalMineCost(p.MetalProdLevel + 1)
@@ -96,7 +96,7 @@ var actions = map[timer.Action]action{
 		},
 		Valid: func(p *ent.Planet) bool {
 			c := HydrogenExtractorCost(p.HydrogenProdLevel + 1)
-			return hasResources(p, c)
+			return HasResources(p, c)
 		},
 		Start: func(p *ent.Planet) error {
 			c := HydrogenExtractorCost(p.HydrogenProdLevel + 1)
@@ -120,7 +120,7 @@ var actions = map[timer.Action]action{
 		},
 		Valid: func(p *ent.Planet) bool {
 			c := SilicaQuarryCost(p.SilicaProdLevel + 1)
-			return hasResources(p, c)
+			return HasResources(p, c)
 		},
 		Start: func(p *ent.Planet) error {
 			c := SilicaQuarryCost(p.SilicaProdLevel + 1)
@@ -144,7 +144,7 @@ var actions = map[timer.Action]action{
 		},
 		Valid: func(p *ent.Planet) bool {
 			c := SolarPlantCost(p.SolarProdLevel + 1)
-			return hasResources(p, c)
+			return HasResources(p, c)
 		},
 		Start: func(p *ent.Planet) error {
 			c := SolarPlantCost(p.SolarProdLevel + 1)
@@ -168,7 +168,7 @@ var actions = map[timer.Action]action{
 		},
 		Valid: func(p *ent.Planet) bool {
 			c := UrbanismCost(p.PopulationStorageLevel + 1)
-			return hasResources(p, c)
+			return HasResources(p, c)
 		},
 		Start: func(p *ent.Planet) error {
 			c := UrbanismCost(p.PopulationStorageLevel + 1)
@@ -193,7 +193,7 @@ var actions = map[timer.Action]action{
 		},
 		Valid: func(p *ent.Planet) bool {
 			c := MetalStorageCost(p.MetalStorageLevel + 1)
-			return hasResources(p, c)
+			return HasResources(p, c)
 		},
 		Start: func(p *ent.Planet) error {
 			c := MetalStorageCost(p.MetalStorageLevel + 1)
@@ -217,7 +217,7 @@ var actions = map[timer.Action]action{
 		},
 		Valid: func(p *ent.Planet) bool {
 			c := HydrogenStorageCost(p.HydrogenStorageLevel + 1)
-			return hasResources(p, c)
+			return HasResources(p, c)
 		},
 		Start: func(p *ent.Planet) error {
 			c := HydrogenStorageCost(p.HydrogenStorageLevel + 1)
@@ -241,7 +241,7 @@ var actions = map[timer.Action]action{
 		},
 		Valid: func(p *ent.Planet) bool {
 			c := SilicaStorageCost(p.SilicaStorageLevel + 1)
-			return hasResources(p, c)
+			return HasResources(p, c)
 		},
 		Start: func(p *ent.Planet) error {
 			c := SilicaStorageCost(p.SilicaStorageLevel + 1)
@@ -254,6 +254,54 @@ var actions = map[timer.Action]action{
 		},
 		Cancel: func(p *ent.Planet) error {
 			c := SilicaStorageCost(p.SilicaStorageLevel + 1)
+			addStock(p, c)
+			return nil
+		},
+	},
+	timer.ActionUpgradeResearchCenter: {
+		Group: timer.GroupBuilding,
+		Duration: func(p *ent.Planet) time.Duration {
+			return ResearchCenterUpgradeDuration(p.ResearchCenterLevel + 1)
+		},
+		Valid: func(p *ent.Planet) bool {
+			c := ResearchCenterCost(p.ResearchCenterLevel + 1)
+			return HasResources(p, c)
+		},
+		Start: func(p *ent.Planet) error {
+			c := ResearchCenterCost(p.ResearchCenterLevel + 1)
+			subStock(p, c)
+			return nil
+		},
+		Complete: func(p *ent.Planet) error {
+			p.ResearchCenterLevel++
+			return nil
+		},
+		Cancel: func(p *ent.Planet) error {
+			c := ResearchCenterCost(p.ResearchCenterLevel + 1)
+			addStock(p, c)
+			return nil
+		},
+	},
+	timer.ActionUpgradeShipFactory: {
+		Group: timer.GroupBuilding,
+		Duration: func(p *ent.Planet) time.Duration {
+			return ShipFactoryUpgradeDuration(p.ShipFactoryLevel + 1)
+		},
+		Valid: func(p *ent.Planet) bool {
+			c := ShipFactoryCost(p.ShipFactoryLevel + 1)
+			return HasResources(p, c)
+		},
+		Start: func(p *ent.Planet) error {
+			c := ShipFactoryCost(p.ShipFactoryLevel + 1)
+			subStock(p, c)
+			return nil
+		},
+		Complete: func(p *ent.Planet) error {
+			p.ShipFactoryLevel++
+			return nil
+		},
+		Cancel: func(p *ent.Planet) error {
+			c := ShipFactoryCost(p.ShipFactoryLevel + 1)
 			addStock(p, c)
 			return nil
 		},

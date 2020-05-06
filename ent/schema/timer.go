@@ -25,6 +25,8 @@ func (Timer) Fields() []ent.Field {
 				"upgrade_metal_storage",
 				"upgrade_hydrogen_storage",
 				"upgrade_silica_storage",
+				"upgrade_research_center",
+				"upgrade_ship_factory",
 				"test", // Used in the tests
 			).
 			Immutable(),
