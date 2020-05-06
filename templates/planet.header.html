@@ -16,7 +16,7 @@
 			<p>
 				<span class="is-size-7">Metal</span>
 				<span class="is-size-6 has-text-weight-bold">
-					{{ quantity .Data.Planet.Metal }} / {{ quantity .Data.Planet.MetalStorageCapacity }}
+					{{ quantity .Data.Planet.Metal }} / {{ quantity .Data.Planet.Capacity.Metal }}
 				</span>
 			</p>
 		</div>
@@ -26,7 +26,7 @@
 			<p>
 				<span class="is-size-7">Hydrogen</span>
 				<span class="is-size-6 has-text-weight-bold">
-					{{ quantity .Data.Planet.Hydrogen }} / {{ quantity .Data.Planet.HydrogenStorageCapacity }}
+					{{ quantity .Data.Planet.Hydrogen }} / {{ quantity .Data.Planet.Capacity.Hydrogen }}
 				</span>
 			</p>
 		</div>
@@ -36,7 +36,7 @@
 			<p>
 				<span class="is-size-7">Silica</span>
 				<span class="is-size-6 has-text-weight-bold">
-					{{ quantity .Data.Planet.Silica }} / {{ quantity .Data.Planet.SilicaStorageCapacity }}
+					{{ quantity .Data.Planet.Silica }} / {{ quantity .Data.Planet.Capacity.Silica }}
 				</span>
 			</p>
 		</div>
