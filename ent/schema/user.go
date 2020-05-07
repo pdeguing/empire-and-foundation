@@ -11,9 +11,9 @@ type User struct {
 }
 
 func (User) Mixin() []ent.Mixin {
-    return []ent.Mixin{
-        TimeMixin{},
-    }
+	return []ent.Mixin{
+		TimeMixin{},
+	}
 }
 
 func (User) Fields() []ent.Field {
@@ -24,6 +24,9 @@ func (User) Fields() []ent.Field {
 			Unique(),
 		field.String("password").
 			Sensitive(),
+		field.String("verify_token").
+			Sensitive().
+			Optional(),
 	}
 }
 
