@@ -10,7 +10,7 @@ import (
 
 type planetOverviewViewData struct {
 	UserPlanets []*ent.Planet
-	Planet      *ent.Planet
+	Planet      *data.PlanetWithResourceInfo
 	EnergyProd  int64
 	EnergyCons  int64
 	Timers      map[timer.Group]*data.Timer
@@ -20,7 +20,7 @@ type planetOverviewViewData struct {
 // Show the dashboard page for a planet
 func servePlanet(w http.ResponseWriter, r *http.Request) {
 	var plist []*ent.Planet
-	var p *ent.Planet
+	var p *data.PlanetWithResourceInfo
 	var t map[timer.Group]*data.Timer
 	err := data.WithTx(r.Context(), data.Client, func(tx *ent.Tx) error {
 		var err error
@@ -32,7 +32,7 @@ func servePlanet(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			return err
 		}
-		t, err = data.GetTimers(r.Context(), p)
+		t, err = data.GetTimers(r.Context(), p.Planet)
 		if err != nil {
 			return newInternalServerError(err)
 		}
@@ -45,40 +45,141 @@ func servePlanet(w http.ResponseWriter, r *http.Request) {
 	pv := planetOverviewViewData{
 		UserPlanets: plist,
 		Planet:      p,
-		EnergyProd:  data.GetEnergyProd(p),
-		EnergyCons:  data.GetEnergyCons(p),
 		Timers:      t,
 	}
 	generateHTML(w, r, "planet-dashboard", pv, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "flash", "planet.overview")
 }
 
-type buildingsUpgradeCost struct {
-	MetalProdUpgradeCost       data.Amounts
-	HydrogenProdUpgradeCost    data.Amounts
-	SilicaProdUpgradeCost      data.Amounts
-	SolarProdUpgradeCost       data.Amounts
-	UrbanismUpgradeCost        data.Amounts
-	MetalStorageUpgradeCost    data.Amounts
-	HydrogenStorageUpgradeCost data.Amounts
-	SilicaStorageUpgradeCost   data.Amounts
+type constructionCard struct {
+	Name         string
+	Uri          string
+	Image        string
+	Description  string
+	Level        int
+	UpgradeCost  data.Amounts
+	UpgradeUsage data.Levels
+	DeltaUsage   data.Levels
+	Upgradable   bool
+	Timer        *data.Timer
+}
+
+func newConstructionCard(planet *ent.Planet, timer *data.Timer, info buildingInfo) constructionCard {
+	building := info.Building.ForPlanet(planet)
+	cost := building.NextLevel().Cost()
+	usage := building.NextLevel().Usage()
+	deltaUsage := usage.Sub(building.Usage())
+
+	var buildingTimer *data.Timer
+	if timer != nil && timer.Action == building.UpgradeAction() {
+		buildingTimer = timer
+	}
+
+	return constructionCard{
+		Name:         info.Name,
+		Uri:          info.Uri,
+		Image:        info.Image,
+		Description:  info.Description,
+		Level:        building.LevelOnPlanet(planet),
+		UpgradeCost:  cost,
+		UpgradeUsage: usage,
+		DeltaUsage:   deltaUsage,
+		Upgradable:   data.HasResources(planet, cost) && timer == nil,
+		Timer:        buildingTimer,
+	}
 }
 
 type constructionsViewData struct {
 	planetViewData
-	buildingsUpgradeCost
+	Cards []constructionCard
 }
 
-func getBuildingsUpgradeCost(planet *ent.Planet) buildingsUpgradeCost {
-	return buildingsUpgradeCost{
-		MetalProdUpgradeCost:       data.GetMetalProdUpgradeCost(planet.MetalProdLevel + 1),
-		HydrogenProdUpgradeCost:    data.GetHydrogenProdUpgradeCost(planet.HydrogenProdLevel + 1),
-		SilicaProdUpgradeCost:      data.GetSilicaProdUpgradeCost(planet.SilicaProdLevel + 1),
-		SolarProdUpgradeCost:       data.GetSolarProdUpgradeCost(planet.SolarProdLevel + 1),
-		UrbanismUpgradeCost:        data.GetUrbanismUpgradeCost(planet.PopulationProdLevel + 1),
-		MetalStorageUpgradeCost:    data.GetMetalStorageUpgradeCost(planet.MetalStorageLevel + 1),
-		HydrogenStorageUpgradeCost: data.GetHydrogenStorageUpgradeCost(planet.HydrogenStorageLevel + 1),
-		SilicaStorageUpgradeCost:   data.GetSilicaStorageUpgradeCost(planet.SilicaStorageLevel + 1),
+type buildingInfo struct {
+	Building    data.Building
+	Name        string
+	Uri         string
+	Image       string
+	Description string
+}
+
+var buildingInfos = []buildingInfo{
+	{
+		Building:    data.MetalMine{},
+		Name:        "Metal Mine",
+		Uri:         "metal-mine",
+		Image:       "metal-prod.png",
+		Description: "Mining infrastructures extracting metal.",
+	},
+	{
+		Building:    data.HydrogenExtractor{},
+		Name:        "Hydrogen Extractor",
+		Uri:         "hydrogen-extractor",
+		Image:       "hydrogen-prod.png",
+		Description: "Enrichment infrastructures collecting hydrogen.",
+	},
+	{
+		Building:    data.SilicaQuarry{},
+		Name:        "Silica Quarry",
+		Uri:         "silica-quarry",
+		Image:       "silica-prod.png",
+		Description: "Mining infrastructures extracting silica.",
+	},
+	{
+		Building:    data.SolarPlant{},
+		Name:        "Solar Plant",
+		Uri:         "solar-plant",
+		Image:       "solar-prod.png",
+		Description: "Looking up to the stars, the solar plant captures energy from its sun.",
+	},
+	{
+		Building:    data.Urbanism{},
+		Name:        "Urbanism",
+		Uri:         "housing-facilities",
+		Image:       "urbanism.png",
+		Description: "Living accommodations for the population, allowing it to grow naturally.",
+	},
+	{
+		Building:    data.MetalStorage{},
+		Name:        "Metal Storage",
+		Uri:         "metal-storage",
+		Image:       "metal-storage.png",
+		Description: "Increases metal storage capacity.",
+	},
+	{
+		Building:    data.HydrogenStorage{},
+		Name:        "Hydrogen Storage",
+		Uri:         "hydrogen-storage",
+		Image:       "hydrogen-storage.png",
+		Description: "Increases hydrogen storage capacity.",
+	},
+	{
+		Building:    data.SilicaStorage{},
+		Name:        "Silica Storage",
+		Uri:         "silica-storage",
+		Image:       "silica-storage.png",
+		Description: "Increases silica storage capacity.",
+	},
+	{
+		Building:    data.ResearchCenter{},
+		Name:        "Research Center",
+		Uri:         "research-center",
+		Image:       "solar-prod.png",
+		Description: "Research new technologies.",
+	},
+	{
+		Building:    data.ShipFactory{},
+		Name:        "Ship Factory",
+		Uri:         "ship-factory",
+		Image:       "solar-prod.png",
+		Description: "Build spaceships.",
+	},
+}
+
+func getConstructionCards(planet *ent.Planet, timer *data.Timer) []constructionCard {
+	var cards []constructionCard
+	for _, info := range buildingInfos {
+		cards = append(cards, newConstructionCard(planet, timer, info))
 	}
+	return cards
 }
 
 // GET /planet/{id}/constructions
@@ -89,7 +190,7 @@ func serveConstructions(w http.ResponseWriter, r *http.Request) {
 		serveError(w, r, err)
 		return
 	}
-	b := getBuildingsUpgradeCost(p.Planet)
+	b := getConstructionCards(p.Planet.Planet, p.Timer)
 	vd := constructionsViewData{
 		*p,
 		b,
@@ -235,4 +336,28 @@ func serveUpgradeSilicaStorage(w http.ResponseWriter, r *http.Request) {
 // Cancel the upgrade of the silica storage
 func serveCancelSilicaStorage(w http.ResponseWriter, r *http.Request) {
 	serveCancelBuilding(w, r, timer.ActionUpgradeSilicaStorage)
+}
+
+// POST /planet/{id}/research-center/upgrade
+// Upgrade the research center to the next level
+func serveUpgradeResearchCenter(w http.ResponseWriter, r *http.Request) {
+	serveUpgradeBuilding(w, r, timer.ActionUpgradeResearchCenter)
+}
+
+// POST /planet/{id}/research-center/cancel
+// Cancel the upgrade of the research center
+func serveCancelResearchCenter(w http.ResponseWriter, r *http.Request) {
+	serveCancelBuilding(w, r, timer.ActionUpgradeResearchCenter)
+}
+
+// POST /planet/{id}/ship-factory/upgrade
+// Upgrade the ship factory to the next level
+func serveUpgradeShipFactory(w http.ResponseWriter, r *http.Request) {
+	serveUpgradeBuilding(w, r, timer.ActionUpgradeShipFactory)
+}
+
+// POST /planet/{id}/ship-factory/cancel
+// Cancel the upgrade of the ship factory
+func serveCancelShipFactory(w http.ResponseWriter, r *http.Request) {
+	serveCancelBuilding(w, r, timer.ActionUpgradeShipFactory)
 }

@@ -203,6 +203,10 @@ func routes(csrfEnabled bool) *mux.Router {
 	rPlanet.HandleFunc("/hydrogen-storage/cancel", serveCancelHydrogenStorage).Methods("POST")
 	rPlanet.HandleFunc("/silica-storage/upgrade", serveUpgradeSilicaStorage).Methods("POST")
 	rPlanet.HandleFunc("/silica-storage/cancel", serveCancelSilicaStorage).Methods("POST")
+	rPlanet.HandleFunc("/research-center/upgrade", serveUpgradeResearchCenter).Methods("POST")
+	rPlanet.HandleFunc("/research-center/cancel", serveCancelResearchCenter).Methods("POST")
+	rPlanet.HandleFunc("/ship-factory/upgrade", serveUpgradeShipFactory).Methods("POST")
+	rPlanet.HandleFunc("/ship-factory/cancel", serveCancelShipFactory).Methods("POST")
 
 	// Middleware
 	if csrfEnabled {

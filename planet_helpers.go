@@ -16,7 +16,7 @@ import (
 )
 
 // userPlanet retrieves the planet requested for the logged in user
-func userPlanet(r *http.Request, tx *ent.Tx) (*ent.Planet, error) {
+func userPlanet(r *http.Request, tx *ent.Tx) (*data.PlanetWithResourceInfo, error) {
 	n, err := strconv.Atoi(mux.Vars(r)["planetNumber"])
 	if err != nil {
 		return nil, newInternalServerError(fmt.Errorf("unable to parse url parameter \"planetNumber\": %v", err))
@@ -45,8 +45,9 @@ func userPlanet(r *http.Request, tx *ent.Tx) (*ent.Planet, error) {
 	if err != nil {
 		return nil, newInternalServerError(fmt.Errorf("unable to update planet timers: %v", err))
 	}
-	data.UpdatePlanetResources(p, time.Now())
-	return p, nil
+	pwr := data.NewPlanetWithResourceInfo(p)
+	pwr.Update(time.Now())
+	return pwr, nil
 }
 
 // userPlanets retrieves all planets for the logged in user
@@ -86,9 +87,7 @@ func regionPlanets(w http.ResponseWriter, r *http.Request, region, system int) (
 // items like constructions or research.
 type planetViewData struct {
 	UserPlanets []*ent.Planet
-	Planet      *ent.Planet
-	EnergyProd  int64
-	EnergyCons  int64
+	Planet      *data.PlanetWithResourceInfo
 	Timer       *data.Timer
 }
 
@@ -96,7 +95,7 @@ type planetViewData struct {
 // views with upgrade mechanisms.
 func newPlanetViewData(r *http.Request, g timer.Group) (*planetViewData, error) {
 	var plist []*ent.Planet
-	var p *ent.Planet
+	var p *data.PlanetWithResourceInfo
 	var t *data.Timer
 	err := data.WithTx(r.Context(), data.Client, func(tx *ent.Tx) error {
 		var err error
@@ -111,7 +110,7 @@ func newPlanetViewData(r *http.Request, g timer.Group) (*planetViewData, error) 
 		// TODO: Remove wrapping if statement once all planet views have a group
 		// they want to get the timers for.
 		if g != "" {
-			t, err = data.GetTimer(r.Context(), p, g)
+			t, err = data.GetTimer(r.Context(), p.Planet, g)
 			if err != nil {
 				return newInternalServerError(err)
 			}
@@ -124,22 +123,20 @@ func newPlanetViewData(r *http.Request, g timer.Group) (*planetViewData, error) 
 	return &planetViewData{
 		UserPlanets: plist,
 		Planet:      p,
-		EnergyProd:  data.GetEnergyProd(p),
-		EnergyCons:  data.GetEnergyCons(p),
 		Timer:       t,
 	}, nil
 }
 
 // serveUpgradeBuilding progresses the request to start an upgrade timer.
 func serveUpgradeBuilding(w http.ResponseWriter, r *http.Request, a timer.Action) {
-	var p *ent.Planet
+	var p *data.PlanetWithResourceInfo
 	err := data.WithTx(r.Context(), data.Client, func(tx *ent.Tx) error {
 		var err error
 		p, err = userPlanet(r, tx)
 		if err != nil {
 			return err
 		}
-		err = data.StartTimer(r.Context(), tx, p, a)
+		err = data.StartTimer(r.Context(), tx, p.Planet, a)
 		if err != nil {
 			return newInternalServerError(fmt.Errorf("unable to start timer to upgrade building: %w", err))
 		}
@@ -164,14 +161,14 @@ func serveUpgradeBuilding(w http.ResponseWriter, r *http.Request, a timer.Action
 
 // serveCancelBuilding progresses the request to cancel a timer.
 func serveCancelBuilding(w http.ResponseWriter, r *http.Request, a timer.Action) {
-	var p *ent.Planet
+	var p *data.PlanetWithResourceInfo
 	err := data.WithTx(r.Context(), data.Client, func(tx *ent.Tx) error {
 		var err error
 		p, err = userPlanet(r, tx)
 		if err != nil {
 			return err
 		}
-		err = data.CancelTimer(r.Context(), tx, p, a)
+		err = data.CancelTimer(r.Context(), tx, p.Planet, a)
 		if err != nil {
 			return newInternalServerError(fmt.Errorf("unable to cancel timer to upgrade building: %w", err))
 		}

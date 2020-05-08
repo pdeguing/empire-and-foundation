@@ -36,6 +36,27 @@ func (EnergyMixin) Fields() []ent.Field {
 	}
 }
 
+type ShipFactoryMixin struct {}
+
+func (ShipFactoryMixin) Fields() []ent.Field {
+	return []ent.Field{
+		field.Int("ship_factory_level").
+			NonNegative().
+			Default(0),
+	}
+}
+
+
+type ResearchCenterMixin struct {}
+
+func (ResearchCenterMixin) Fields() []ent.Field {
+	return []ent.Field{
+		field.Int("research_center_level").
+			NonNegative().
+			Default(0),
+	}
+}
+
 type PositionMixin struct{}
 
 func (PositionMixin) Fields() []ent.Field {
@@ -72,6 +93,8 @@ func (Planet) Mixin() []ent.Mixin {
 		ResourceMixin{Type: "silica"},
 		ResourceMixin{Type: "population"},
 		EnergyMixin{},
+		ShipFactoryMixin{},
+		ResearchCenterMixin{},
 		PositionMixin{},
 	}
 }

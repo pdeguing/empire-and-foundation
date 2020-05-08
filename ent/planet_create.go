@@ -232,6 +232,34 @@ func (pc *PlanetCreate) SetNillableSolarProdLevel(i *int) *PlanetCreate {
 	return pc
 }
 
+// SetShipFactoryLevel sets the ship_factory_level field.
+func (pc *PlanetCreate) SetShipFactoryLevel(i int) *PlanetCreate {
+	pc.mutation.SetShipFactoryLevel(i)
+	return pc
+}
+
+// SetNillableShipFactoryLevel sets the ship_factory_level field if the given value is not nil.
+func (pc *PlanetCreate) SetNillableShipFactoryLevel(i *int) *PlanetCreate {
+	if i != nil {
+		pc.SetShipFactoryLevel(*i)
+	}
+	return pc
+}
+
+// SetResearchCenterLevel sets the research_center_level field.
+func (pc *PlanetCreate) SetResearchCenterLevel(i int) *PlanetCreate {
+	pc.mutation.SetResearchCenterLevel(i)
+	return pc
+}
+
+// SetNillableResearchCenterLevel sets the research_center_level field if the given value is not nil.
+func (pc *PlanetCreate) SetNillableResearchCenterLevel(i *int) *PlanetCreate {
+	if i != nil {
+		pc.SetResearchCenterLevel(*i)
+	}
+	return pc
+}
+
 // SetRegionCode sets the region_code field.
 func (pc *PlanetCreate) SetRegionCode(i int) *PlanetCreate {
 	pc.mutation.SetRegionCode(i)
@@ -463,6 +491,24 @@ func (pc *PlanetCreate) Save(ctx context.Context) (*Planet, error) {
 			return nil, fmt.Errorf("ent: validator failed for field \"solar_prod_level\": %v", err)
 		}
 	}
+	if _, ok := pc.mutation.ShipFactoryLevel(); !ok {
+		v := planet.DefaultShipFactoryLevel
+		pc.mutation.SetShipFactoryLevel(v)
+	}
+	if v, ok := pc.mutation.ShipFactoryLevel(); ok {
+		if err := planet.ShipFactoryLevelValidator(v); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"ship_factory_level\": %v", err)
+		}
+	}
+	if _, ok := pc.mutation.ResearchCenterLevel(); !ok {
+		v := planet.DefaultResearchCenterLevel
+		pc.mutation.SetResearchCenterLevel(v)
+	}
+	if v, ok := pc.mutation.ResearchCenterLevel(); ok {
+		if err := planet.ResearchCenterLevelValidator(v); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"research_center_level\": %v", err)
+		}
+	}
 	if _, ok := pc.mutation.RegionCode(); !ok {
 		return nil, errors.New("ent: missing required field \"region_code\"")
 	}
@@ -687,6 +733,22 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 			Column: planet.FieldSolarProdLevel,
 		})
 		pl.SolarProdLevel = value
+	}
+	if value, ok := pc.mutation.ShipFactoryLevel(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: planet.FieldShipFactoryLevel,
+		})
+		pl.ShipFactoryLevel = value
+	}
+	if value, ok := pc.mutation.ResearchCenterLevel(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: planet.FieldResearchCenterLevel,
+		})
+		pl.ResearchCenterLevel = value
 	}
 	if value, ok := pc.mutation.RegionCode(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

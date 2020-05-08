@@ -3,6 +3,8 @@ package main
 import (
 	"errors"
 	"fmt"
+	"math/rand"
+	"net/http"
 	"time"
 
 	"github.com/go-playground/validator/v10"
@@ -11,8 +13,6 @@ import (
 	"github.com/pdeguing/empire-and-foundation/ent/planet"
 	"github.com/pdeguing/empire-and-foundation/ent/user"
 	"golang.org/x/crypto/bcrypt"
-	"math/rand"
-	"net/http"
 )
 
 // GET /signup
@@ -124,6 +124,10 @@ func serveSignupAccount(w http.ResponseWriter, r *http.Request) {
 
 		_, err = p.Update().
 			SetOwner(u).
+			SetMetal(800).
+			SetHydrogen(500).
+			SetSilica(600).
+			SetLastResourceUpdate(time.Now()).
 			Save(r.Context())
 
 		if err := sendSignupEmail(u); err != nil {

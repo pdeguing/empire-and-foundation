@@ -11,44 +11,52 @@
 		</div>
 	</div>
 
-	<div class="level-item has-text-centered">
+	<div class="level-item has-text-centered {{ if .Data.Planet.MetalStorageFull }} has-text-danger {{ else }} has-text-grey-light {{ end }}">
 		<div>
 			<p>
 				<span class="is-size-7">Metal</span>
-				<span class="title is-6">{{ quantity .Data.Planet.Metal }}</span>
+				<span class="is-size-6 has-text-weight-bold">
+					{{ quantity .Data.Planet.Metal }} / {{ quantity .Data.Planet.Capacity.Metal }}
+				</span>
 			</p>
 		</div>
 	</div>
-	<div class="level-item has-text-centered">
+	<div class="level-item has-text-centered {{ if .Data.Planet.HydrogenStorageFull }} has-text-danger {{ else }} has-text-grey-light {{ end }}">
 		<div>
 			<p>
 				<span class="is-size-7">Hydrogen</span>
-				<span class="title is-6">{{ quantity .Data.Planet.Hydrogen }}</span>
+				<span class="is-size-6 has-text-weight-bold">
+					{{ quantity .Data.Planet.Hydrogen }} / {{ quantity .Data.Planet.Capacity.Hydrogen }}
+				</span>
 			</p>
 		</div>
 	</div>
-	<div class="level-item has-text-centered">
+	<div class="level-item has-text-centered {{ if .Data.Planet.SilicaStorageFull }} has-text-danger {{ else }} has-text-grey-light {{ end }}">
 		<div>
 			<p>
 				<span class="is-size-7">Silica</span>
-				<span class="title is-6">{{ quantity .Data.Planet.Silica }}</span>
+				<span class="is-size-6 has-text-weight-bold">
+					{{ quantity .Data.Planet.Silica }} / {{ quantity .Data.Planet.Capacity.Silica }}
+				</span>
 			</p>
 		</div>
 	</div>
-	<div class="level-item has-text-centered">
+	<div class="level-item has-text-centered {{ if .Data.Planet.PopulationPenalty }} has-text-danger {{ else }} has-text-grey-light {{ end }}">
 		<div>
 			<p>
 				<span class="is-size-7">Population</span>
-				<span class="title is-6">{{ quantity .Data.Planet.Population }}</span>
+				<span class="is-size-6 has-text-weight-bold">
+					{{ quantity .Data.Planet.PopulationEmployment }} / {{ quantity .Data.Planet.PopulationSize }}
+				</span>
 			</p>
 		</div>
 	</div>
-	<div class="level-item has-text-centered">
+	<div class="level-item has-text-centered {{ if .Data.Planet.EnergyPenalty }} has-text-danger {{ else }} has-text-grey-light {{ end }}">
 		<div>
 			<p>
 				<span class="is-size-7">Energy</span>
-				<span class="title is-6">
-					{{ quantity .Data.EnergyCons }}/{{ quantity .Data.EnergyProd }}
+				<span class="is-size-6 has-text-weight-bold">
+					{{ quantity .Data.Planet.EnergyConsumption }} / {{ quantity .Data.Planet.EnergyProduction }}
 				</span>
 			</p>
 		</div>

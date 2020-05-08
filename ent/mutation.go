@@ -64,6 +64,10 @@ type PlanetMutation struct {
 	addpopulation_storage_level *int
 	solar_prod_level            *int
 	addsolar_prod_level         *int
+	ship_factory_level          *int
+	addship_factory_level       *int
+	research_center_level       *int
+	addresearch_center_level    *int
 	region_code                 *int
 	addregion_code              *int
 	system_code                 *int
@@ -670,6 +674,84 @@ func (m *PlanetMutation) ResetSolarProdLevel() {
 	m.addsolar_prod_level = nil
 }
 
+// SetShipFactoryLevel sets the ship_factory_level field.
+func (m *PlanetMutation) SetShipFactoryLevel(i int) {
+	m.ship_factory_level = &i
+	m.addship_factory_level = nil
+}
+
+// ShipFactoryLevel returns the ship_factory_level value in the mutation.
+func (m *PlanetMutation) ShipFactoryLevel() (r int, exists bool) {
+	v := m.ship_factory_level
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// AddShipFactoryLevel adds i to ship_factory_level.
+func (m *PlanetMutation) AddShipFactoryLevel(i int) {
+	if m.addship_factory_level != nil {
+		*m.addship_factory_level += i
+	} else {
+		m.addship_factory_level = &i
+	}
+}
+
+// AddedShipFactoryLevel returns the value that was added to the ship_factory_level field in this mutation.
+func (m *PlanetMutation) AddedShipFactoryLevel() (r int, exists bool) {
+	v := m.addship_factory_level
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetShipFactoryLevel reset all changes of the ship_factory_level field.
+func (m *PlanetMutation) ResetShipFactoryLevel() {
+	m.ship_factory_level = nil
+	m.addship_factory_level = nil
+}
+
+// SetResearchCenterLevel sets the research_center_level field.
+func (m *PlanetMutation) SetResearchCenterLevel(i int) {
+	m.research_center_level = &i
+	m.addresearch_center_level = nil
+}
+
+// ResearchCenterLevel returns the research_center_level value in the mutation.
+func (m *PlanetMutation) ResearchCenterLevel() (r int, exists bool) {
+	v := m.research_center_level
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// AddResearchCenterLevel adds i to research_center_level.
+func (m *PlanetMutation) AddResearchCenterLevel(i int) {
+	if m.addresearch_center_level != nil {
+		*m.addresearch_center_level += i
+	} else {
+		m.addresearch_center_level = &i
+	}
+}
+
+// AddedResearchCenterLevel returns the value that was added to the research_center_level field in this mutation.
+func (m *PlanetMutation) AddedResearchCenterLevel() (r int, exists bool) {
+	v := m.addresearch_center_level
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetResearchCenterLevel reset all changes of the research_center_level field.
+func (m *PlanetMutation) ResetResearchCenterLevel() {
+	m.research_center_level = nil
+	m.addresearch_center_level = nil
+}
+
 // SetRegionCode sets the region_code field.
 func (m *PlanetMutation) SetRegionCode(i int) {
 	m.region_code = &i
@@ -1036,7 +1118,7 @@ func (m *PlanetMutation) Type() string {
 // this mutation. Note that, in order to get all numeric
 // fields that were in/decremented, call AddedFields().
 func (m *PlanetMutation) Fields() []string {
-	fields := make([]string, 0, 24)
+	fields := make([]string, 0, 26)
 	if m.created_at != nil {
 		fields = append(fields, planet.FieldCreatedAt)
 	}
@@ -1081,6 +1163,12 @@ func (m *PlanetMutation) Fields() []string {
 	}
 	if m.solar_prod_level != nil {
 		fields = append(fields, planet.FieldSolarProdLevel)
+	}
+	if m.ship_factory_level != nil {
+		fields = append(fields, planet.FieldShipFactoryLevel)
+	}
+	if m.research_center_level != nil {
+		fields = append(fields, planet.FieldResearchCenterLevel)
 	}
 	if m.region_code != nil {
 		fields = append(fields, planet.FieldRegionCode)
@@ -1147,6 +1235,10 @@ func (m *PlanetMutation) Field(name string) (ent.Value, bool) {
 		return m.PopulationStorageLevel()
 	case planet.FieldSolarProdLevel:
 		return m.SolarProdLevel()
+	case planet.FieldShipFactoryLevel:
+		return m.ShipFactoryLevel()
+	case planet.FieldResearchCenterLevel:
+		return m.ResearchCenterLevel()
 	case planet.FieldRegionCode:
 		return m.RegionCode()
 	case planet.FieldSystemCode:
@@ -1279,6 +1371,20 @@ func (m *PlanetMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetSolarProdLevel(v)
 		return nil
+	case planet.FieldShipFactoryLevel:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetShipFactoryLevel(v)
+		return nil
+	case planet.FieldResearchCenterLevel:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetResearchCenterLevel(v)
+		return nil
 	case planet.FieldRegionCode:
 		v, ok := value.(int)
 		if !ok {
@@ -1389,6 +1495,12 @@ func (m *PlanetMutation) AddedFields() []string {
 	if m.addsolar_prod_level != nil {
 		fields = append(fields, planet.FieldSolarProdLevel)
 	}
+	if m.addship_factory_level != nil {
+		fields = append(fields, planet.FieldShipFactoryLevel)
+	}
+	if m.addresearch_center_level != nil {
+		fields = append(fields, planet.FieldResearchCenterLevel)
+	}
 	if m.addregion_code != nil {
 		fields = append(fields, planet.FieldRegionCode)
 	}
@@ -1438,6 +1550,10 @@ func (m *PlanetMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedPopulationStorageLevel()
 	case planet.FieldSolarProdLevel:
 		return m.AddedSolarProdLevel()
+	case planet.FieldShipFactoryLevel:
+		return m.AddedShipFactoryLevel()
+	case planet.FieldResearchCenterLevel:
+		return m.AddedResearchCenterLevel()
 	case planet.FieldRegionCode:
 		return m.AddedRegionCode()
 	case planet.FieldSystemCode:
@@ -1548,6 +1664,20 @@ func (m *PlanetMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddSolarProdLevel(v)
 		return nil
+	case planet.FieldShipFactoryLevel:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddShipFactoryLevel(v)
+		return nil
+	case planet.FieldResearchCenterLevel:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddResearchCenterLevel(v)
+		return nil
 	case planet.FieldRegionCode:
 		v, ok := value.(int)
 		if !ok {
@@ -1655,6 +1785,12 @@ func (m *PlanetMutation) ResetField(name string) error {
 		return nil
 	case planet.FieldSolarProdLevel:
 		m.ResetSolarProdLevel()
+		return nil
+	case planet.FieldShipFactoryLevel:
+		m.ResetShipFactoryLevel()
+		return nil
+	case planet.FieldResearchCenterLevel:
+		m.ResetResearchCenterLevel()
 		return nil
 	case planet.FieldRegionCode:
 		m.ResetRegionCode()

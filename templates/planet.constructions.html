@@ -1,393 +1,68 @@
 {{ define "planetBody" }}
 
-<form method="POST">
-	{{ csrf }}
+    <form method="POST">
+        {{ csrf }}
 
-	{{ $action := "" }}
-	{{ if .Data.Timer }}
-	{{ $action = .Data.Timer.Action }}
-	{{ end }}
+        <div class="columns is-multiline">
 
-	<div class="columns is-multiline">
-		<div class="column is-flex is-3">
-			<div class="card card-growing">
-				<div class="card-image">
-					<figure class="image">
-						<img src="/static/images/buildings/metal-prod.png" class="card-img-top" alt="...">
-					</figure>
-				</div>
-				<div class="card-content is-growing">
-					<div class="has-text-right Planet-card__header">
-						<h2 class="title is-5 is-marginless">Metal Mine</h2>
-						<span class="subtitle is-7">Level...{{ .Data.Planet.MetalProdLevel }}</span>
-					</div>
-					<div class="content">
-						<p>
-							Mining infrastructures extracting metal.
-						</p>
-						<p>
-							Upgrade cost:
-							<ul>
-								<li>Metal: {{ quantity .Data.MetalProdUpgradeCost.Metal }}</li>
-								<li>Hydrogen: {{ quantity .Data.MetalProdUpgradeCost.Hydrogen }}</li>
-								<li>Silica: {{ quantity .Data.MetalProdUpgradeCost.Silica }}</li>
-							</ul>
-						</p>
-					</div>
-				</div>
+            {{ $planet := .Data.Planet }}
+            {{ range $index, $building := .Data.Cards }}
 
-				<footer class="card-footer">
-					{{ if eq $action "upgrade_metal_prod"}}
-					<div class="card-footer-item has-text-white has-text-weight-semibold Planet-card__duration">
-						{{ duration .Data.Timer.Duration }}
-					</div>
-					<button formaction="/planet/{{ .Data.Planet.ID }}/metal-mine/cancel"
-						class="is-paddingless Planet-card__button Planet-card__button--cancel">
-						<span class="card-footer-item">Cancel</span>
-					</button>
-					{{ else }}
-					<button formaction="/planet/{{ .Data.Planet.ID }}/metal-mine/upgrade"
-						class="is-paddingless Planet-card__button" {{ if .Data.Timer }}disabled{{ end }}>
-						<span class="card-footer-item">
-							Upgrade
-						</span>
-					</button>
-					{{ end }}
-				</footer>
-			</div>
-		</div>
+                <div class="column is-flex is-3">
+                    <div class="card card-growing">
+                        <div class="card-image">
+                            <figure class="image">
+                                <img src="/static/images/buildings/{{ $building.Image }}" class="card-img-top" alt="">
+                            </figure>
+                        </div>
+                        <div class="card-content is-growing">
+                            <div class="has-text-right Planet-card__header">
+                                <h2 class="title is-5 is-marginless">{{ $building.Name }}</h2>
+                                <span class="subtitle is-7">Level...{{ $building.Level }}</span>
+                            </div>
+                            <div class="content">
+                                <p>
+                                    {{ $building.Description }}
+                                </p>
+                                <p>
+                                    Upgrade cost:
+                                <ul>
+                                    <li>Metal: {{ quantity $building.UpgradeCost.Metal }}</li>
+                                    <li>Hydrogen: {{ quantity $building.UpgradeCost.Hydrogen }}</li>
+                                    <li>Silica: {{ quantity $building.UpgradeCost.Silica }}</li>
+                                    <li>Population: {{ quantity $building.UpgradeUsage.Population }} (+{{quantity $building.DeltaUsage.Population}})</li>
+                                    <li>Energy: {{ quantity $building.UpgradeUsage.Energy }} (+{{quantity $building.DeltaUsage.Energy}})</li>
+                                </ul>
+                                </p>
+                            </div>
+                        </div>
 
-		<div class="column is-flex is-3">
-			<div class="card card-growing">
-				<div class="card-image">
-					<figure class="image">
-						<img src="/static/images/buildings/hydrogen-prod.png" class="card-img-top" alt="...">
-					</figure>
-				</div>
-				<div class="card-content is-growing">
-					<div class="has-text-right Planet-card__header">
-						<h2 class="title is-5 is-marginless">Hydrogen Extractor</h2>
-						<span class="subtitle is-7">Level...{{ .Data.Planet.HydrogenProdLevel }}</span>
-					</div>
-					<div class="content">
-						<p>
-							Enrichment infrastructures collecting hydrogen.
-						</p>
-						<p>
-							Upgrade cost:
-							<ul>
-								<li>Metal: {{ quantity .Data.HydrogenProdUpgradeCost.Metal }}</li>
-								<li>Hydrogen: {{ quantity .Data.HydrogenProdUpgradeCost.Hydrogen }}</li>
-								<li>Silica: {{ quantity .Data.HydrogenProdUpgradeCost.Silica }}</li>
-							</ul>
-						</p>
-					</div>
-				</div>
-				<footer class="card-footer">
-					{{ if eq $action "upgrade_hydrogen_prod"}}
-					<div class="card-footer-item has-text-white has-text-weight-semibold Planet-card__duration">
-						{{ duration .Data.Timer.Duration }}
-					</div>
-					<button formaction="/planet/{{ .Data.Planet.ID }}/hydrogen-extractor/cancel"
-						class="is-paddingless Planet-card__button Planet-card__button--cancel">
-						<span class="card-footer-item">Cancel</span>
-					</button>
-					{{ else }}
-					<button formaction="/planet/{{ .Data.Planet.ID }}/hydrogen-extractor/upgrade"
-						class="is-paddingless Planet-card__button" {{ if .Data.Timer }}disabled{{ end }}>
-						<span class="card-footer-item">
-							Upgrade
-						</span>
-					</button>
-					{{ end }}
-				</footer>
-			</div>
-		</div>
+                        <footer class="card-footer">
+                            {{ if $building.Timer }}
+                                <div class="card-footer-item has-text-white has-text-weight-semibold Planet-card__duration">
+                                    {{ duration $building.Timer.Duration }}
+                                </div>
+                                <button formaction="/planet/{{ $planet.ID }}/{{ $building.Uri }}/cancel"
+                                        class="is-paddingless Planet-card__button Planet-card__button--cancel">
+                                    <span class="card-footer-item">Cancel</span>
+                                </button>
+                            {{ else }}
+                                <button formaction="/planet/{{ $planet.ID }}/{{ $building.Uri }}/upgrade"
+                                        class="is-paddingless Planet-card__button"
+                                        {{ if not $building.Upgradable }}disabled{{ end }}>
+							<span class="card-footer-item">
+								Upgrade
+							</span>
+                                </button>
+                            {{ end }}
+                        </footer>
+                    </div>
+                </div>
 
-		<div class="column is-flex is-3">
-			<div class="card card-growing">
-				<div class="card-image">
-					<figure class="image">
-						<img src="/static/images/buildings/silica-prod.png" class="card-img-top" alt="...">
-					</figure>
-				</div>
-				<div class="card-content is-growing">
-					<div class="has-text-right Planet-card__header">
-						<h2 class="title is-5 is-marginless">Silica Quarry</h2>
-						<span class="subtitle is-7">Level...{{ .Data.Planet.SilicaProdLevel }}</span>
-					</div>
-					<div class="content">
-						<p>
-						Mining infrastructures extracting silica.
-						</p>
-						<p>
-							Upgrade cost:
-							<ul>
-								<li>Metal: {{ quantity .Data.SilicaProdUpgradeCost.Metal }}</li>
-								<li>Hydrogen: {{ quantity .Data.SilicaProdUpgradeCost.Hydrogen }}</li>
-								<li>Silica: {{ quantity .Data.SilicaProdUpgradeCost.Silica }}</li>
-							</ul>
-						</p>
-					</div>
-				</div>
-				<footer class="card-footer">
-					{{ if eq $action "upgrade_silica_prod"}}
-					<div class="card-footer-item has-text-white has-text-weight-semibold Planet-card__duration">
-						{{ duration .Data.Timer.Duration }}
-					</div>
-					<button formaction="/planet/{{ .Data.Planet.ID }}/silica-quarry/cancel"
-						class="is-paddingless Planet-card__button Planet-card__button--cancel">
-						<span class="card-footer-item">Cancel</span>
-					</button>
-					{{ else }}
-					<button formaction="/planet/{{ .Data.Planet.ID }}/silica-quarry/upgrade"
-						class="is-paddingless Planet-card__button" {{ if .Data.Timer }}disabled{{ end }}>
-						<span class="card-footer-item">
-							Upgrade
-						</span>
-					</button>
-					{{ end }}
-				</footer>
-			</div>
-		</div>
+            {{ end }}
 
-		<div class="column is-flex is-3">
-			<div class="card card-growing">
-				<div class="card-image">
-					<figure class="image">
-						<img src="/static/images/buildings/solar-prod.png" class="card-img-top" alt="...">
-					</figure>
-				</div>
-				<div class="card-content is-growing">
-					<div class="has-text-right Planet-card__header">
-						<h2 class="title is-5 is-marginless">Solar Plant</h2>
-						<span class="subtitle is-7">Level...{{ .Data.Planet.SolarProdLevel }}</span>
-					</div>
-					<div class="content">
-						<p>
-							Looking up to the stars, the solar plant captures energy from its sun.
-						</p>
-						<p>
-							Upgrade cost:
-							<ul>
-								<li>Metal: {{ quantity .Data.SolarProdUpgradeCost.Metal }}</li>
-								<li>Hydrogen: {{ quantity .Data.SolarProdUpgradeCost.Hydrogen }}</li>
-								<li>Silica: {{ quantity .Data.SolarProdUpgradeCost.Silica }}</li>
-							</ul>
-						</p>
-					</div>
-				</div>
-				<footer class="card-footer">
-					{{ if eq $action "upgrade_solar_prod"}}
-					<div class="card-footer-item has-text-white has-text-weight-semibold Planet-card__duration">
-						{{ duration .Data.Timer.Duration }}
-					</div>
-					<button formaction="/planet/{{ .Data.Planet.ID }}/solar-plant/cancel"
-						class="is-paddingless Planet-card__button Planet-card__button--cancel">
-						<span class="card-footer-item">Cancel</span>
-					</button>
-					{{ else }}
-					<button formaction="/planet/{{ .Data.Planet.ID }}/solar-plant/upgrade"
-						class="is-paddingless Planet-card__button" {{ if .Data.Timer }}disabled{{ end }}>
-						<span class="card-footer-item">
-							Upgrade
-						</span>
-					</button>
-					{{ end }}
-				</footer>
-			</div>
-		</div>
+        </div>
 
-		<div class="column is-flex is-3">
-			<div class="card card-growing">
-				<div class="card-image">
-					<figure class="image">
-						<img src="/static/images/buildings/urbanism.png" class="card-img-top" alt="...">
-					</figure>
-				</div>
-				<div class="card-content is-growing">
-					<div class="has-text-right Planet-card__header">
-						<h2 class="title is-5 is-marginless">Urbanism</h2>
-						<span class="subtitle is-7">Level...{{ .Data.Planet.PopulationStorageLevel }}</span>
-					</div>
-					<div class="content">
-						<p>
-							Living accomodations for the population, allowing it to grow naturally.
-						</p>
-						<p>
-							Upgrade cost:
-							<ul>
-								<li>Metal: {{ quantity .Data.UrbanismUpgradeCost.Metal }}</li>
-								<li>Hydrogen: {{ quantity .Data.UrbanismUpgradeCost.Hydrogen }}</li>
-								<li>Silica: {{ quantity .Data.UrbanismUpgradeCost.Silica }}</li>
-							</ul>
-						</p>
-					</div>
-				</div>
-				<footer class="card-footer">
-					{{ if eq $action "upgrade_urbanism"}}
-					<div class="card-footer-item has-text-white has-text-weight-semibold Planet-card__duration">
-						{{ duration .Data.Timer.Duration }}
-					</div>
-					<button formaction="/planet/{{ .Data.Planet.ID }}/housing-facilities/cancel"
-						class="is-paddingless Planet-card__button Planet-card__button--cancel">
-						<span class="card-footer-item">Cancel</span>
-					</button>
-					{{ else }}
-					<button formaction="/planet/{{ .Data.Planet.ID }}/housing-facilities/upgrade"
-						class="is-paddingless Planet-card__button" {{ if .Data.Timer }}disabled{{ end }}>
-						<span class="card-footer-item">
-							Upgrade
-						</span>
-					</button>
-					{{ end }}
-				</footer>
-			</div>
-		</div>
-		
-		<div class="column is-flex is-3">
-			<div class="card card-growing">
-				<div class="card-image">
-					<figure class="image">
-						<img src="/static/images/buildings/metal-storage.png" class="card-img-top" alt="...">
-					</figure>
-				</div>
-				<div class="card-content is-growing">
-					<div class="has-text-right Planet-card__header">
-						<h2 class="title is-5 is-marginless">Metal Storage</h2>
-						<span class="subtitle is-7">Level...{{ .Data.Planet.MetalStorageLevel }}</span>
-					</div>
-					<div class="content">
-						<p>
-							Increases metal storage capacity.
-						</p>
-						<p>
-							Upgrade cost:
-							<ul>
-								<li>Metal: {{ quantity .Data.MetalStorageUpgradeCost.Metal }}</li>
-								<li>Hydrogen: {{ quantity .Data.MetalStorageUpgradeCost.Hydrogen }}</li>
-								<li>Silica: {{ quantity .Data.MetalStorageUpgradeCost.Silica }}</li>
-							</ul>
-						</p>
-					</div>
-				</div>
-				<footer class="card-footer">
-					{{ if eq $action "upgrade_metal_storage"}}
-					<div class="card-footer-item has-text-white has-text-weight-semibold Planet-card__duration">
-						{{ duration .Data.Timer.Duration }}
-					</div>
-					<button formaction="/planet/{{ .Data.Planet.ID }}/metal-storage/cancel"
-						class="is-paddingless Planet-card__button Planet-card__button--cancel">
-						<span class="card-footer-item">Cancel</span>
-					</button>
-					{{ else }}
-					<button formaction="/planet/{{ .Data.Planet.ID }}/metal-storage/upgrade"
-						class="is-paddingless Planet-card__button" {{ if .Data.Timer }}disabled{{ end }}>
-						<span class="card-footer-item">
-							Upgrade
-						</span>
-					</button>
-					{{ end }}
-				</footer>
-			</div>
-		</div>
-
-		<div class="column is-flex is-3">
-			<div class="card card-growing">
-				<div class="card-image">
-					<figure class="image">
-						<img src="/static/images/buildings/hydrogen-storage.png" class="card-img-top" alt="...">
-					</figure>
-				</div>
-				<div class="card-content is-growing">
-					<div class="has-text-right Planet-card__header">
-						<h2 class="title is-5 is-marginless">Hydrogen Storage</h2>
-						<span class="subtitle is-7">Level...{{ .Data.Planet.HydrogenStorageLevel }}</span>
-					</div>
-					<div class="content">
-						<p>
-							Increases hydrogen storage capacity.
-						</p>
-						<p>
-							Upgrade cost:
-							<ul>
-								<li>Metal: {{ quantity .Data.HydrogenStorageUpgradeCost.Metal }}</li>
-								<li>Hydrogen: {{ quantity .Data.HydrogenStorageUpgradeCost.Hydrogen }}</li>
-								<li>Silica: {{ quantity .Data.HydrogenStorageUpgradeCost.Silica }}</li>
-							</ul>
-						</p>
-					</div>
-				</div>
-				<footer class="card-footer">
-					{{ if eq $action "upgrade_hydrogen_storage"}}
-					<div class="card-footer-item has-text-white has-text-weight-semibold Planet-card__duration">
-						{{ duration .Data.Timer.Duration }}
-					</div>
-					<button formaction="/planet/{{ .Data.Planet.ID }}/hydrogen-storage/cancel"
-						class="is-paddingless Planet-card__button Planet-card__button--cancel">
-						<span class="card-footer-item">Cancel</span>
-					</button>
-					{{ else }}
-					<button formaction="/planet/{{ .Data.Planet.ID }}/hydrogen-storage/upgrade"
-						class="is-paddingless Planet-card__button" {{ if .Data.Timer }}disabled{{ end }}>
-						<span class="card-footer-item">
-							Upgrade
-						</span>
-					</button>
-					{{ end }}
-				</footer>
-			</div>
-		</div>
-
-		<div class="column is-flex is-3">
-			<div class="card card-growing">
-				<div class="card-image">
-					<figure class="image">
-						<img src="/static/images/buildings/silica-storage.png" class="card-img-top" alt="...">
-					</figure>
-				</div>
-				<div class="card-content is-growing">
-					<div class="has-text-right Planet-card__header">
-						<h2 class="title is-5 is-marginless">Silica Storage</h2>
-						<span class="subtitle is-7">Level...{{ .Data.Planet.SilicaStorageLevel }}</span>
-					</div>
-					<div class="content">
-						<p>
-							Increases silica storage capacity.
-						</p>
-						<p>
-							Upgrade cost:
-							<ul>
-								<li>Metal: {{ quantity .Data.SilicaStorageUpgradeCost.Metal }}</li>
-								<li>Hydrogen: {{ quantity .Data.SilicaStorageUpgradeCost.Hydrogen }}</li>
-								<li>Silica: {{ quantity .Data.SilicaStorageUpgradeCost.Silica }}</li>
-							</ul>
-						</p>
-					</div>
-				</div>
-				<footer class="card-footer">
-					{{ if eq $action "upgrade_silica_storage"}}
-					<div class="card-footer-item has-text-white has-text-weight-semibold Planet-card__duration">
-						{{ duration .Data.Timer.Duration }}
-					</div>
-					<button formaction="/planet/{{ .Data.Planet.ID }}/silica-storage/cancel"
-						class="is-paddingless Planet-card__button Planet-card__button--cancel">
-						<span class="card-footer-item">Cancel</span>
-					</button>
-					{{ else }}
-					<button formaction="/planet/{{ .Data.Planet.ID }}/silica-storage/upgrade"
-						class="is-paddingless Planet-card__button" {{ if .Data.Timer }}disabled{{ end }}>
-						<span class="card-footer-item">
-							Upgrade
-						</span>
-					</button>
-					{{ end }}
-				</footer>
-			</div>
-		</div>
-
-	</div>
-
-</form>
+    </form>
 
 {{ end }}

@@ -309,6 +309,48 @@ func (pu *PlanetUpdate) AddSolarProdLevel(i int) *PlanetUpdate {
 	return pu
 }
 
+// SetShipFactoryLevel sets the ship_factory_level field.
+func (pu *PlanetUpdate) SetShipFactoryLevel(i int) *PlanetUpdate {
+	pu.mutation.ResetShipFactoryLevel()
+	pu.mutation.SetShipFactoryLevel(i)
+	return pu
+}
+
+// SetNillableShipFactoryLevel sets the ship_factory_level field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableShipFactoryLevel(i *int) *PlanetUpdate {
+	if i != nil {
+		pu.SetShipFactoryLevel(*i)
+	}
+	return pu
+}
+
+// AddShipFactoryLevel adds i to ship_factory_level.
+func (pu *PlanetUpdate) AddShipFactoryLevel(i int) *PlanetUpdate {
+	pu.mutation.AddShipFactoryLevel(i)
+	return pu
+}
+
+// SetResearchCenterLevel sets the research_center_level field.
+func (pu *PlanetUpdate) SetResearchCenterLevel(i int) *PlanetUpdate {
+	pu.mutation.ResetResearchCenterLevel()
+	pu.mutation.SetResearchCenterLevel(i)
+	return pu
+}
+
+// SetNillableResearchCenterLevel sets the research_center_level field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableResearchCenterLevel(i *int) *PlanetUpdate {
+	if i != nil {
+		pu.SetResearchCenterLevel(*i)
+	}
+	return pu
+}
+
+// AddResearchCenterLevel adds i to research_center_level.
+func (pu *PlanetUpdate) AddResearchCenterLevel(i int) *PlanetUpdate {
+	pu.mutation.AddResearchCenterLevel(i)
+	return pu
+}
+
 // SetName sets the name field.
 func (pu *PlanetUpdate) SetName(s string) *PlanetUpdate {
 	pu.mutation.SetName(s)
@@ -467,6 +509,16 @@ func (pu *PlanetUpdate) Save(ctx context.Context) (int, error) {
 	if v, ok := pu.mutation.SolarProdLevel(); ok {
 		if err := planet.SolarProdLevelValidator(v); err != nil {
 			return 0, fmt.Errorf("ent: validator failed for field \"solar_prod_level\": %v", err)
+		}
+	}
+	if v, ok := pu.mutation.ShipFactoryLevel(); ok {
+		if err := planet.ShipFactoryLevelValidator(v); err != nil {
+			return 0, fmt.Errorf("ent: validator failed for field \"ship_factory_level\": %v", err)
+		}
+	}
+	if v, ok := pu.mutation.ResearchCenterLevel(); ok {
+		if err := planet.ResearchCenterLevelValidator(v); err != nil {
+			return 0, fmt.Errorf("ent: validator failed for field \"research_center_level\": %v", err)
 		}
 	}
 
@@ -723,6 +775,34 @@ func (pu *PlanetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Type:   field.TypeInt,
 			Value:  value,
 			Column: planet.FieldSolarProdLevel,
+		})
+	}
+	if value, ok := pu.mutation.ShipFactoryLevel(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: planet.FieldShipFactoryLevel,
+		})
+	}
+	if value, ok := pu.mutation.AddedShipFactoryLevel(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: planet.FieldShipFactoryLevel,
+		})
+	}
+	if value, ok := pu.mutation.ResearchCenterLevel(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: planet.FieldResearchCenterLevel,
+		})
+	}
+	if value, ok := pu.mutation.AddedResearchCenterLevel(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: planet.FieldResearchCenterLevel,
 		})
 	}
 	if value, ok := pu.mutation.Name(); ok {
@@ -1116,6 +1196,48 @@ func (puo *PlanetUpdateOne) AddSolarProdLevel(i int) *PlanetUpdateOne {
 	return puo
 }
 
+// SetShipFactoryLevel sets the ship_factory_level field.
+func (puo *PlanetUpdateOne) SetShipFactoryLevel(i int) *PlanetUpdateOne {
+	puo.mutation.ResetShipFactoryLevel()
+	puo.mutation.SetShipFactoryLevel(i)
+	return puo
+}
+
+// SetNillableShipFactoryLevel sets the ship_factory_level field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableShipFactoryLevel(i *int) *PlanetUpdateOne {
+	if i != nil {
+		puo.SetShipFactoryLevel(*i)
+	}
+	return puo
+}
+
+// AddShipFactoryLevel adds i to ship_factory_level.
+func (puo *PlanetUpdateOne) AddShipFactoryLevel(i int) *PlanetUpdateOne {
+	puo.mutation.AddShipFactoryLevel(i)
+	return puo
+}
+
+// SetResearchCenterLevel sets the research_center_level field.
+func (puo *PlanetUpdateOne) SetResearchCenterLevel(i int) *PlanetUpdateOne {
+	puo.mutation.ResetResearchCenterLevel()
+	puo.mutation.SetResearchCenterLevel(i)
+	return puo
+}
+
+// SetNillableResearchCenterLevel sets the research_center_level field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableResearchCenterLevel(i *int) *PlanetUpdateOne {
+	if i != nil {
+		puo.SetResearchCenterLevel(*i)
+	}
+	return puo
+}
+
+// AddResearchCenterLevel adds i to research_center_level.
+func (puo *PlanetUpdateOne) AddResearchCenterLevel(i int) *PlanetUpdateOne {
+	puo.mutation.AddResearchCenterLevel(i)
+	return puo
+}
+
 // SetName sets the name field.
 func (puo *PlanetUpdateOne) SetName(s string) *PlanetUpdateOne {
 	puo.mutation.SetName(s)
@@ -1274,6 +1396,16 @@ func (puo *PlanetUpdateOne) Save(ctx context.Context) (*Planet, error) {
 	if v, ok := puo.mutation.SolarProdLevel(); ok {
 		if err := planet.SolarProdLevelValidator(v); err != nil {
 			return nil, fmt.Errorf("ent: validator failed for field \"solar_prod_level\": %v", err)
+		}
+	}
+	if v, ok := puo.mutation.ShipFactoryLevel(); ok {
+		if err := planet.ShipFactoryLevelValidator(v); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"ship_factory_level\": %v", err)
+		}
+	}
+	if v, ok := puo.mutation.ResearchCenterLevel(); ok {
+		if err := planet.ResearchCenterLevelValidator(v); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"research_center_level\": %v", err)
 		}
 	}
 
@@ -1528,6 +1660,34 @@ func (puo *PlanetUpdateOne) sqlSave(ctx context.Context) (pl *Planet, err error)
 			Type:   field.TypeInt,
 			Value:  value,
 			Column: planet.FieldSolarProdLevel,
+		})
+	}
+	if value, ok := puo.mutation.ShipFactoryLevel(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: planet.FieldShipFactoryLevel,
+		})
+	}
+	if value, ok := puo.mutation.AddedShipFactoryLevel(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: planet.FieldShipFactoryLevel,
+		})
+	}
+	if value, ok := puo.mutation.ResearchCenterLevel(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: planet.FieldResearchCenterLevel,
+		})
+	}
+	if value, ok := puo.mutation.AddedResearchCenterLevel(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: planet.FieldResearchCenterLevel,
 		})
 	}
 	if value, ok := puo.mutation.Name(); ok {
