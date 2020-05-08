@@ -20,32 +20,72 @@
 
 	<div class="field">
 		<label class="label">Username</label>
-		<div class="control">
-			<input id="name" type="text" name="name" class="input" placeholder="Username" required autofocus>
+		<div class="control {{ if hasFormError "Username" }} has-icons-right {{ end }}">
+			<input id="username" type="text" name="username" class="input {{ if hasFormError "Username" }} is-danger {{ end }}" placeholder="Username" required autofocus value="{{ old "username" }}">
+			{{ if hasFormError "Username" }}
+				<span class="icon is-small is-right">
+				  <i class="fas fa-exclamation-triangle"></i>
+				</span>
+			{{ end }}
 		</div>
+		{{ if hasFormError "Username" }}
+			<p class="help is-danger">{{ formError "Username" | ucfirst }}</p>
+		{{ end }}
 	</div>
 
 	<div class="field">
 		<label class="label">Email</label>
-		<div class="control">
-			<input type="email" name="email" class="input" placeholder="Email address" required>
+		<div class="control {{ if hasFormError "Email" }} has-icons-right {{ end }}">
+			<input type="email" name="email" class="input {{ if hasFormError "Email" }} is-danger {{ end }}" placeholder="Email address" required value="{{ old "email" }}">
+			{{ if hasFormError "Email" }}
+				<span class="icon is-small is-right">
+				  <i class="fas fa-exclamation-triangle"></i>
+				</span>
+			{{ end }}
 		</div>
+		{{ if hasFormError "Email" }}
+			<p class="help is-danger">{{ formError "Email" | ucfirst }}</p>
+		{{ end }}
 	</div>
 
 	<div class="field">
 		<label class="label">Password</label>
-		<div class="control">
-			<input type="password" name="password" class="input" placeholder="Password" required>
+		<div class="control {{ if hasFormError "Password" }} has-icons-right {{ end }}">
+			<input type="password" name="password" class="input {{ if hasFormError "Password" }} is-danger {{ end }}" placeholder="Password" required>
+			{{ if hasFormError "Password" }}
+				<span class="icon is-small is-right">
+				  <i class="fas fa-exclamation-triangle"></i>
+				</span>
+			{{ end }}
 		</div>
+		{{ if hasFormError "Password" }}
+			<p class="help is-danger">{{ formError "Password" | ucfirst }}</p>
+		{{ end }}
 	</div>
+
+    <div class="field">
+        <label class="label">Confirm password</label>
+        <div class="control {{ if hasFormError "PasswordRepeat" }} has-icons-right {{ end }}">
+            <input type="password" name="password_confirm" class="input {{ if hasFormError "PasswordRepeat" }} is-danger {{ end }}" placeholder="Password" required>
+            {{ if hasFormError "PasswordRepeat" }}
+                <span class="icon is-small is-right">
+				  <i class="fas fa-exclamation-triangle"></i>
+				</span>
+            {{ end }}
+        </div>
+        {{ if hasFormError "PasswordRepeat" }}
+            <p class="help is-danger">{{ formError "PasswordRepeat" | ucfirst}}</p>
+        {{ end }}
+    </div>
 
 	<div class="field is-grouped">
 		<div class="control">
 			<button class="button is-white is-outlined" type="submit">Sign up</button>
 		</div>
-		<div class="control">
-			<a class="button is-text">Forgotten password</a>
-		</div>
+{{/* TODO */}}
+{{/*		<div class="control">*/}}
+{{/*			<a class="button is-text">Forgotten password</a>*/}}
+{{/*		</div>*/}}
 	</div>
 </form>
 

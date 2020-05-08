@@ -128,6 +128,13 @@ func Password(v string) predicate.User {
 	})
 }
 
+// VerifyToken applies equality check predicate on the "verify_token" field. It's identical to VerifyTokenEQ.
+func VerifyToken(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldVerifyToken), v))
+	})
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
@@ -610,6 +617,131 @@ func PasswordEqualFold(v string) predicate.User {
 func PasswordContainsFold(v string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldPassword), v))
+	})
+}
+
+// VerifyTokenEQ applies the EQ predicate on the "verify_token" field.
+func VerifyTokenEQ(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldVerifyToken), v))
+	})
+}
+
+// VerifyTokenNEQ applies the NEQ predicate on the "verify_token" field.
+func VerifyTokenNEQ(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldVerifyToken), v))
+	})
+}
+
+// VerifyTokenIn applies the In predicate on the "verify_token" field.
+func VerifyTokenIn(vs ...string) predicate.User {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.User(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldVerifyToken), v...))
+	})
+}
+
+// VerifyTokenNotIn applies the NotIn predicate on the "verify_token" field.
+func VerifyTokenNotIn(vs ...string) predicate.User {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.User(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldVerifyToken), v...))
+	})
+}
+
+// VerifyTokenGT applies the GT predicate on the "verify_token" field.
+func VerifyTokenGT(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldVerifyToken), v))
+	})
+}
+
+// VerifyTokenGTE applies the GTE predicate on the "verify_token" field.
+func VerifyTokenGTE(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldVerifyToken), v))
+	})
+}
+
+// VerifyTokenLT applies the LT predicate on the "verify_token" field.
+func VerifyTokenLT(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldVerifyToken), v))
+	})
+}
+
+// VerifyTokenLTE applies the LTE predicate on the "verify_token" field.
+func VerifyTokenLTE(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldVerifyToken), v))
+	})
+}
+
+// VerifyTokenContains applies the Contains predicate on the "verify_token" field.
+func VerifyTokenContains(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldVerifyToken), v))
+	})
+}
+
+// VerifyTokenHasPrefix applies the HasPrefix predicate on the "verify_token" field.
+func VerifyTokenHasPrefix(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldVerifyToken), v))
+	})
+}
+
+// VerifyTokenHasSuffix applies the HasSuffix predicate on the "verify_token" field.
+func VerifyTokenHasSuffix(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldVerifyToken), v))
+	})
+}
+
+// VerifyTokenIsNil applies the IsNil predicate on the "verify_token" field.
+func VerifyTokenIsNil() predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldVerifyToken)))
+	})
+}
+
+// VerifyTokenNotNil applies the NotNil predicate on the "verify_token" field.
+func VerifyTokenNotNil() predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldVerifyToken)))
+	})
+}
+
+// VerifyTokenEqualFold applies the EqualFold predicate on the "verify_token" field.
+func VerifyTokenEqualFold(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldVerifyToken), v))
+	})
+}
+
+// VerifyTokenContainsFold applies the ContainsFold predicate on the "verify_token" field.
+func VerifyTokenContainsFold(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldVerifyToken), v))
 	})
 }
 

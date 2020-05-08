@@ -55,6 +55,8 @@ const (
 	ActionUpgradeMetalStorage    Action = "upgrade_metal_storage"
 	ActionUpgradeHydrogenStorage Action = "upgrade_hydrogen_storage"
 	ActionUpgradeSilicaStorage   Action = "upgrade_silica_storage"
+	ActionUpgradeResearchCenter  Action = "upgrade_research_center"
+	ActionUpgradeShipFactory     Action = "upgrade_ship_factory"
 	ActionTest                   Action = "test"
 )
 
@@ -65,7 +67,7 @@ func (s Action) String() string {
 // ActionValidator is a validator for the "a" field enum values. It is called by the builders before save.
 func ActionValidator(a Action) error {
 	switch a {
-	case ActionUpgradeMetalProd, ActionUpgradeHydrogenProd, ActionUpgradeSilicaProd, ActionUpgradeSolarProd, ActionUpgradeUrbanism, ActionUpgradeMetalStorage, ActionUpgradeHydrogenStorage, ActionUpgradeSilicaStorage, ActionTest:
+	case ActionUpgradeMetalProd, ActionUpgradeHydrogenProd, ActionUpgradeSilicaProd, ActionUpgradeSolarProd, ActionUpgradeUrbanism, ActionUpgradeMetalStorage, ActionUpgradeHydrogenStorage, ActionUpgradeSilicaStorage, ActionUpgradeResearchCenter, ActionUpgradeShipFactory, ActionTest:
 		return nil
 	default:
 		return fmt.Errorf("timer: invalid enum value for action field: %q", a)

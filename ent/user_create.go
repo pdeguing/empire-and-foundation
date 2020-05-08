@@ -67,6 +67,20 @@ func (uc *UserCreate) SetPassword(s string) *UserCreate {
 	return uc
 }
 
+// SetVerifyToken sets the verify_token field.
+func (uc *UserCreate) SetVerifyToken(s string) *UserCreate {
+	uc.mutation.SetVerifyToken(s)
+	return uc
+}
+
+// SetNillableVerifyToken sets the verify_token field if the given value is not nil.
+func (uc *UserCreate) SetNillableVerifyToken(s *string) *UserCreate {
+	if s != nil {
+		uc.SetVerifyToken(*s)
+	}
+	return uc
+}
+
 // AddPlanetIDs adds the planets edge to Planet by ids.
 func (uc *UserCreate) AddPlanetIDs(ids ...int) *UserCreate {
 	uc.mutation.AddPlanetIDs(ids...)
@@ -186,6 +200,14 @@ func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
 			Column: user.FieldPassword,
 		})
 		u.Password = value
+	}
+	if value, ok := uc.mutation.VerifyToken(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: user.FieldVerifyToken,
+		})
+		u.VerifyToken = value
 	}
 	if nodes := uc.mutation.PlanetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

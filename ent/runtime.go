@@ -25,6 +25,8 @@ func init() {
 		planetMixin[4].Fields(),
 		planetMixin[5].Fields(),
 		planetMixin[6].Fields(),
+		planetMixin[7].Fields(),
+		planetMixin[8].Fields(),
 	}
 	planetFields := schema.Planet{}.Fields()
 	_ = planetFields
@@ -116,24 +118,36 @@ func init() {
 	planet.DefaultSolarProdLevel = planetDescSolarProdLevel.Default.(int)
 	// planet.SolarProdLevelValidator is a validator for the "solar_prod_level" field. It is called by the builders before save.
 	planet.SolarProdLevelValidator = planetDescSolarProdLevel.Validators[0].(func(int) error)
+	// planetDescShipFactoryLevel is the schema descriptor for ship_factory_level field.
+	planetDescShipFactoryLevel := planetMixinFields[6][0].Descriptor()
+	// planet.DefaultShipFactoryLevel holds the default value on creation for the ship_factory_level field.
+	planet.DefaultShipFactoryLevel = planetDescShipFactoryLevel.Default.(int)
+	// planet.ShipFactoryLevelValidator is a validator for the "ship_factory_level" field. It is called by the builders before save.
+	planet.ShipFactoryLevelValidator = planetDescShipFactoryLevel.Validators[0].(func(int) error)
+	// planetDescResearchCenterLevel is the schema descriptor for research_center_level field.
+	planetDescResearchCenterLevel := planetMixinFields[7][0].Descriptor()
+	// planet.DefaultResearchCenterLevel holds the default value on creation for the research_center_level field.
+	planet.DefaultResearchCenterLevel = planetDescResearchCenterLevel.Default.(int)
+	// planet.ResearchCenterLevelValidator is a validator for the "research_center_level" field. It is called by the builders before save.
+	planet.ResearchCenterLevelValidator = planetDescResearchCenterLevel.Validators[0].(func(int) error)
 	// planetDescRegionCode is the schema descriptor for region_code field.
-	planetDescRegionCode := planetMixinFields[6][0].Descriptor()
+	planetDescRegionCode := planetMixinFields[8][0].Descriptor()
 	// planet.RegionCodeValidator is a validator for the "region_code" field. It is called by the builders before save.
 	planet.RegionCodeValidator = planetDescRegionCode.Validators[0].(func(int) error)
 	// planetDescSystemCode is the schema descriptor for system_code field.
-	planetDescSystemCode := planetMixinFields[6][1].Descriptor()
+	planetDescSystemCode := planetMixinFields[8][1].Descriptor()
 	// planet.SystemCodeValidator is a validator for the "system_code" field. It is called by the builders before save.
 	planet.SystemCodeValidator = planetDescSystemCode.Validators[0].(func(int) error)
 	// planetDescOrbitCode is the schema descriptor for orbit_code field.
-	planetDescOrbitCode := planetMixinFields[6][2].Descriptor()
+	planetDescOrbitCode := planetMixinFields[8][2].Descriptor()
 	// planet.OrbitCodeValidator is a validator for the "orbit_code" field. It is called by the builders before save.
 	planet.OrbitCodeValidator = planetDescOrbitCode.Validators[0].(func(int) error)
 	// planetDescSuborbitCode is the schema descriptor for suborbit_code field.
-	planetDescSuborbitCode := planetMixinFields[6][3].Descriptor()
+	planetDescSuborbitCode := planetMixinFields[8][3].Descriptor()
 	// planet.SuborbitCodeValidator is a validator for the "suborbit_code" field. It is called by the builders before save.
 	planet.SuborbitCodeValidator = planetDescSuborbitCode.Validators[0].(func(int) error)
 	// planetDescPositionCode is the schema descriptor for position_code field.
-	planetDescPositionCode := planetMixinFields[6][4].Descriptor()
+	planetDescPositionCode := planetMixinFields[8][4].Descriptor()
 	// planet.PositionCodeValidator is a validator for the "position_code" field. It is called by the builders before save.
 	planet.PositionCodeValidator = planetDescPositionCode.Validators[0].(func(int) error)
 	// planetDescName is the schema descriptor for name field.

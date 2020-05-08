@@ -70,6 +70,10 @@
             Hydrogen storage upgrade
             {{ else if eq $timer.Action "upgrade_silica_storage" }}
             Silica storage upgrade
+            {{ else if eq $timer.Action "upgrade_research_center" }}
+            Research center upgrade
+            {{ else if eq $timer.Action "upgrade_ship_factory" }}
+            Ship factory upgrade
             {{ end }}
           </span>
           <span class="column is-narrow dashboard-item-value">{{ duration $timer.Duration }}</span>

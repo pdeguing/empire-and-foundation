@@ -188,6 +188,8 @@ func TestStartTimer_PersistsResourcesToDatabase(t *testing.T) {
 			p.PopulationProdLevel = 11
 			p.PopulationStorageLevel = 12
 			p.SolarProdLevel = 13
+			p.ResearchCenterLevel = 14
+			p.ShipFactoryLevel = 15
 			return nil
 		},
 	}
@@ -209,6 +211,8 @@ func TestStartTimer_PersistsResourcesToDatabase(t *testing.T) {
 	assert.EqualValues(t, 11, pDatabase.PopulationProdLevel)
 	assert.EqualValues(t, 12, pDatabase.PopulationStorageLevel)
 	assert.EqualValues(t, 13, pDatabase.SolarProdLevel)
+	assert.EqualValues(t, 14, pDatabase.ResearchCenterLevel)
+	assert.EqualValues(t, 15, pDatabase.ShipFactoryLevel)
 	assert.WithinDuration(t, timeNow(), pDatabase.LastResourceUpdate, time.Millisecond)
 }
 
@@ -357,6 +361,8 @@ func TestCancelTimer_PersistsResourcesToDatabase(t *testing.T) {
 			p.PopulationProdLevel = 11
 			p.PopulationStorageLevel = 12
 			p.SolarProdLevel = 13
+			p.ResearchCenterLevel = 14
+			p.ShipFactoryLevel = 15
 			return nil
 		},
 	}
@@ -380,6 +386,8 @@ func TestCancelTimer_PersistsResourcesToDatabase(t *testing.T) {
 	assert.EqualValues(t, 11, pDatabase.PopulationProdLevel)
 	assert.EqualValues(t, 12, pDatabase.PopulationStorageLevel)
 	assert.EqualValues(t, 13, pDatabase.SolarProdLevel)
+	assert.EqualValues(t, 14, pDatabase.ResearchCenterLevel)
+	assert.EqualValues(t, 15, pDatabase.ShipFactoryLevel)
 	assert.WithinDuration(t, timeNow(), pDatabase.LastResourceUpdate, time.Millisecond)
 }
 
@@ -483,6 +491,8 @@ func TestUpdateTimers_PersistsResourcesToDatabase(t *testing.T) {
 			p.PopulationProdLevel = 11
 			p.PopulationStorageLevel = 12
 			p.SolarProdLevel = 13
+			p.ResearchCenterLevel = 14
+			p.ShipFactoryLevel = 15
 			return nil
 		},
 	}
@@ -506,6 +516,8 @@ func TestUpdateTimers_PersistsResourcesToDatabase(t *testing.T) {
 	assert.EqualValues(t, 11, pDatabase.PopulationProdLevel)
 	assert.EqualValues(t, 12, pDatabase.PopulationStorageLevel)
 	assert.EqualValues(t, 13, pDatabase.SolarProdLevel)
+	assert.EqualValues(t, 14, pDatabase.ResearchCenterLevel)
+	assert.EqualValues(t, 15, pDatabase.ShipFactoryLevel)
 	assert.WithinDuration(t, timeNow().Add(-time.Minute), pDatabase.LastResourceUpdate, time.Millisecond)
 }
 

@@ -2,7 +2,7 @@ package data
 
 // GetPositionCode converts the individual components of a position to a single number.
 func GetPositionCode(region, system, orbit, suborbit int) int {
-	return suborbit + orbit << 4 + system << 8 + region << 16
+	return suborbit + orbit<<4 + system<<8 + region<<16
 }
 
 // ParsePositionCode extracts the individual components from the position code.

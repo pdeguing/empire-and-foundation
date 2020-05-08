@@ -111,7 +111,7 @@ func main() {
 					initSessionManager(c.String("db-driver"))
 					server := &http.Server{
 						Addr:    ":" + strconv.Itoa(port),
-						Handler: routes(),
+						Handler: routes(true),
 					}
 					return server.ListenAndServe()
 				},
@@ -155,7 +155,7 @@ func main() {
 	}
 }
 
-func routes() *mux.Router {
+func routes(csrfEnabled bool) *mux.Router {
 	// Public routes
 	r := mux.NewRouter()
 	files := http.FileServer(http.Dir("public"))
@@ -166,6 +166,7 @@ func routes() *mux.Router {
 	r.HandleFunc("/logout", serveLogout)
 	r.HandleFunc("/signup", serveSignup)
 	r.HandleFunc("/signup_account", serveSignupAccount).Methods("POST")
+	r.HandleFunc("/confirm_email", serveConfirmEmail)
 	r.HandleFunc("/authenticate", serveAuthenticate).Methods("POST")
 
 	// Routes that require authentication
@@ -202,18 +203,24 @@ func routes() *mux.Router {
 	rPlanet.HandleFunc("/hydrogen-storage/cancel", serveCancelHydrogenStorage).Methods("POST")
 	rPlanet.HandleFunc("/silica-storage/upgrade", serveUpgradeSilicaStorage).Methods("POST")
 	rPlanet.HandleFunc("/silica-storage/cancel", serveCancelSilicaStorage).Methods("POST")
+	rPlanet.HandleFunc("/research-center/upgrade", serveUpgradeResearchCenter).Methods("POST")
+	rPlanet.HandleFunc("/research-center/cancel", serveCancelResearchCenter).Methods("POST")
+	rPlanet.HandleFunc("/ship-factory/upgrade", serveUpgradeShipFactory).Methods("POST")
+	rPlanet.HandleFunc("/ship-factory/cancel", serveCancelShipFactory).Methods("POST")
 
 	// Middleware
-	csrfMiddleware := csrf.Protect(
-		securecookie.GenerateRandomKey(32),
-		csrf.FieldName("csrf_token"),
-		csrf.CookieName("csrf_cookie"),
-		csrf.Secure(false), // TODO: Remove this part once we support HTTPS.
-		csrf.ErrorHandler(http.HandlerFunc(serveInvalidCsrfToken)),
-	)
+	if csrfEnabled {
+		csrfMiddleware := csrf.Protect(
+			securecookie.GenerateRandomKey(32),
+			csrf.FieldName("csrf_token"),
+			csrf.CookieName("csrf_cookie"),
+			csrf.Secure(false), // TODO: Remove this part once we support HTTPS.
+			csrf.ErrorHandler(http.HandlerFunc(serveInvalidCsrfToken)),
+		)
+		r.Use(csrfMiddleware)
+	}
 	sessionMiddleware := sessionManager.LoadAndSave
 	r.Use(
-		csrfMiddleware,
 		sessionMiddleware,
 		loadUserMiddleware,
 	)
