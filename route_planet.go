@@ -110,6 +110,13 @@ var buildingInfos = []buildingInfo{
 		Description: "Mining infrastructures extracting metal.",
 	},
 	{
+		Building:    data.MetalStorage{},
+		Name:        "Metal Storage",
+		Uri:         "metal-storage",
+		Image:       "metal-storage.png",
+		Description: "Increases metal storage capacity.",
+	},
+	{
 		Building:    data.HydrogenExtractor{},
 		Name:        "Hydrogen Extractor",
 		Uri:         "hydrogen-extractor",
@@ -117,11 +124,25 @@ var buildingInfos = []buildingInfo{
 		Description: "Enrichment infrastructures collecting hydrogen.",
 	},
 	{
+		Building:    data.HydrogenStorage{},
+		Name:        "Hydrogen Storage",
+		Uri:         "hydrogen-storage",
+		Image:       "hydrogen-storage.png",
+		Description: "Increases hydrogen storage capacity.",
+	},
+	{
 		Building:    data.SilicaQuarry{},
 		Name:        "Silica Quarry",
 		Uri:         "silica-quarry",
 		Image:       "silica-prod.png",
 		Description: "Mining infrastructures extracting silica.",
+	},
+	{
+		Building:    data.SilicaStorage{},
+		Name:        "Silica Storage",
+		Uri:         "silica-storage",
+		Image:       "silica-storage.png",
+		Description: "Increases silica storage capacity.",
 	},
 	{
 		Building:    data.SolarPlant{},
@@ -136,27 +157,6 @@ var buildingInfos = []buildingInfo{
 		Uri:         "housing-facilities",
 		Image:       "urbanism.png",
 		Description: "Living accommodations for the population, allowing it to grow naturally.",
-	},
-	{
-		Building:    data.MetalStorage{},
-		Name:        "Metal Storage",
-		Uri:         "metal-storage",
-		Image:       "metal-storage.png",
-		Description: "Increases metal storage capacity.",
-	},
-	{
-		Building:    data.HydrogenStorage{},
-		Name:        "Hydrogen Storage",
-		Uri:         "hydrogen-storage",
-		Image:       "hydrogen-storage.png",
-		Description: "Increases hydrogen storage capacity.",
-	},
-	{
-		Building:    data.SilicaStorage{},
-		Name:        "Silica Storage",
-		Uri:         "silica-storage",
-		Image:       "silica-storage.png",
-		Description: "Increases silica storage capacity.",
 	},
 	{
 		Building:    data.ResearchCenter{},
