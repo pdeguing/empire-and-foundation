@@ -76,7 +76,7 @@ func TestConfirmEmail(t *testing.T) {
 	uf.VerifyToken = "some_token"
 	u := uf.MustCreate()
 
-	res, err := http.Get(ts.URL+"/confirm_email?email=john%40example.com&token=some_token")
+	res, err := http.Get(ts.URL + "/confirm_email?email=john%40example.com&token=some_token")
 	assert.NoError(t, err)
 	assert.Equal(t, 200, res.StatusCode)
 
@@ -103,7 +103,7 @@ func TestAuthenticate_cannotAuthenticateIfAccountIsNotVerified(t *testing.T) {
 	res, err := newTestClient().Post(ts.URL+"/authenticate", "application/x-www-form-urlencoded", strings.NewReader(v.Encode()))
 	assert.NoError(t, err)
 	assert.Equal(t, 200, res.StatusCode)
-	assert.Equal(t, res.Request.URL.Path,"/")
+	assert.Equal(t, res.Request.URL.Path, "/")
 	c, err := ioutil.ReadAll(res.Body)
 	assert.NoError(t, err)
 	assert.Contains(t, string(c), "The username or password you have entered is invalid.")

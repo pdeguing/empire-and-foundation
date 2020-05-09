@@ -198,17 +198,6 @@ func serveConstructions(w http.ResponseWriter, r *http.Request) {
 	generateHTML(w, r, "planet-constructions", vd, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "flash", "planet.constructions")
 }
 
-// GET /planet/{id}/factories
-// Show the factories page for a planet
-func serveFactories(w http.ResponseWriter, r *http.Request) {
-	p, err := newPlanetViewData(r, "")
-	if err != nil {
-		serveError(w, r, err)
-		return
-	}
-	generateHTML(w, r, "planet-factories", p, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "flash", "planet.factories")
-}
-
 // GET /planet/{id}/research
 // Show the research page for a planet
 func serveResearch(w http.ResponseWriter, r *http.Request) {
