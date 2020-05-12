@@ -266,6 +266,14 @@ func SavePlanetResources(ctx context.Context, p *ent.Planet) (*ent.Planet, error
 		SetSolarProdLevel(p.SolarProdLevel).
 		SetResearchCenterLevel(p.ResearchCenterLevel).
 		SetShipFactoryLevel(p.ShipFactoryLevel).
+		SetNumCaravel(p.NumCaravel).
+		SetNumLightFighter(p.NumLightFighter).
+		SetNumCorvette(p.NumCorvette).
+		SetNumFrigate(p.NumFrigate).
+		SetNumProbe(p.NumProbe).
+		SetNumSmallCargo(p.NumSmallCargo).
+		SetNumMediumCargo(p.NumMediumCargo).
+		SetNumColonizationArk(p.NumColonizationArk).
 		SetLastResourceUpdate(p.LastResourceUpdate).
 		Save(ctx)
 	if err != nil {

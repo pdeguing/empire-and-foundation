@@ -82,6 +82,37 @@
     </ul>
     {{ end }}
 
+    {{ if $timer := byTimerGroup .Data.Timers "ship" }}
+      <h2 class="subtitle dashboard-subtitle">Factories</h2>
+      <ul class="dashboard-info">
+        <li>
+          <a href="/planet/{{ .Data.Planet.ID }}/factories"
+             class="columns is-inline-flex is-gapless dashboard-item dashboard-item-link">
+          <span class="column is-half is-growing dashboard-item-name">
+            {{ if eq $timer.Action "build_caravel" }}
+              Building caravel
+            {{ else if eq $timer.Action "build_light_fighter" }}
+              Building light fighter
+            {{ else if eq $timer.Action "build_corvette" }}
+              Building corvette
+            {{ else if eq $timer.Action "build_frigate" }}
+              Building frigate
+            {{ else if eq $timer.Action "build_probe" }}
+              Building probe
+            {{ else if eq $timer.Action "build_small_cargo" }}
+              Building small cargo
+            {{ else if eq $timer.Action "build_medium_cargo" }}
+              Building medium cargo
+            {{ else if eq $timer.Action "build_colonization_ark" }}
+              Building colonization ark
+            {{ end }}
+          </span>
+            <span class="column is-narrow dashboard-item-value">{{ duration $timer.Duration }}</span>
+          </a>
+        </li>
+      </ul>
+    {{ end }}
+
   </div>
 </article>
 

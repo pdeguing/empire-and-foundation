@@ -290,6 +290,118 @@ func (pc *PlanetCreate) SetPositionCode(i int) *PlanetCreate {
 	return pc
 }
 
+// SetNumCaravel sets the num_caravel field.
+func (pc *PlanetCreate) SetNumCaravel(i int64) *PlanetCreate {
+	pc.mutation.SetNumCaravel(i)
+	return pc
+}
+
+// SetNillableNumCaravel sets the num_caravel field if the given value is not nil.
+func (pc *PlanetCreate) SetNillableNumCaravel(i *int64) *PlanetCreate {
+	if i != nil {
+		pc.SetNumCaravel(*i)
+	}
+	return pc
+}
+
+// SetNumLightFighter sets the num_light_fighter field.
+func (pc *PlanetCreate) SetNumLightFighter(i int64) *PlanetCreate {
+	pc.mutation.SetNumLightFighter(i)
+	return pc
+}
+
+// SetNillableNumLightFighter sets the num_light_fighter field if the given value is not nil.
+func (pc *PlanetCreate) SetNillableNumLightFighter(i *int64) *PlanetCreate {
+	if i != nil {
+		pc.SetNumLightFighter(*i)
+	}
+	return pc
+}
+
+// SetNumCorvette sets the num_corvette field.
+func (pc *PlanetCreate) SetNumCorvette(i int64) *PlanetCreate {
+	pc.mutation.SetNumCorvette(i)
+	return pc
+}
+
+// SetNillableNumCorvette sets the num_corvette field if the given value is not nil.
+func (pc *PlanetCreate) SetNillableNumCorvette(i *int64) *PlanetCreate {
+	if i != nil {
+		pc.SetNumCorvette(*i)
+	}
+	return pc
+}
+
+// SetNumFrigate sets the num_frigate field.
+func (pc *PlanetCreate) SetNumFrigate(i int64) *PlanetCreate {
+	pc.mutation.SetNumFrigate(i)
+	return pc
+}
+
+// SetNillableNumFrigate sets the num_frigate field if the given value is not nil.
+func (pc *PlanetCreate) SetNillableNumFrigate(i *int64) *PlanetCreate {
+	if i != nil {
+		pc.SetNumFrigate(*i)
+	}
+	return pc
+}
+
+// SetNumProbe sets the num_probe field.
+func (pc *PlanetCreate) SetNumProbe(i int64) *PlanetCreate {
+	pc.mutation.SetNumProbe(i)
+	return pc
+}
+
+// SetNillableNumProbe sets the num_probe field if the given value is not nil.
+func (pc *PlanetCreate) SetNillableNumProbe(i *int64) *PlanetCreate {
+	if i != nil {
+		pc.SetNumProbe(*i)
+	}
+	return pc
+}
+
+// SetNumSmallCargo sets the num_small_cargo field.
+func (pc *PlanetCreate) SetNumSmallCargo(i int64) *PlanetCreate {
+	pc.mutation.SetNumSmallCargo(i)
+	return pc
+}
+
+// SetNillableNumSmallCargo sets the num_small_cargo field if the given value is not nil.
+func (pc *PlanetCreate) SetNillableNumSmallCargo(i *int64) *PlanetCreate {
+	if i != nil {
+		pc.SetNumSmallCargo(*i)
+	}
+	return pc
+}
+
+// SetNumMediumCargo sets the num_medium_cargo field.
+func (pc *PlanetCreate) SetNumMediumCargo(i int64) *PlanetCreate {
+	pc.mutation.SetNumMediumCargo(i)
+	return pc
+}
+
+// SetNillableNumMediumCargo sets the num_medium_cargo field if the given value is not nil.
+func (pc *PlanetCreate) SetNillableNumMediumCargo(i *int64) *PlanetCreate {
+	if i != nil {
+		pc.SetNumMediumCargo(*i)
+	}
+	return pc
+}
+
+// SetNumColonizationArk sets the num_colonization_ark field.
+func (pc *PlanetCreate) SetNumColonizationArk(i int64) *PlanetCreate {
+	pc.mutation.SetNumColonizationArk(i)
+	return pc
+}
+
+// SetNillableNumColonizationArk sets the num_colonization_ark field if the given value is not nil.
+func (pc *PlanetCreate) SetNillableNumColonizationArk(i *int64) *PlanetCreate {
+	if i != nil {
+		pc.SetNumColonizationArk(*i)
+	}
+	return pc
+}
+
 // SetName sets the name field.
 func (pc *PlanetCreate) SetName(s string) *PlanetCreate {
 	pc.mutation.SetName(s)
@@ -549,6 +661,78 @@ func (pc *PlanetCreate) Save(ctx context.Context) (*Planet, error) {
 			return nil, fmt.Errorf("ent: validator failed for field \"position_code\": %v", err)
 		}
 	}
+	if _, ok := pc.mutation.NumCaravel(); !ok {
+		v := planet.DefaultNumCaravel
+		pc.mutation.SetNumCaravel(v)
+	}
+	if v, ok := pc.mutation.NumCaravel(); ok {
+		if err := planet.NumCaravelValidator(v); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"num_caravel\": %v", err)
+		}
+	}
+	if _, ok := pc.mutation.NumLightFighter(); !ok {
+		v := planet.DefaultNumLightFighter
+		pc.mutation.SetNumLightFighter(v)
+	}
+	if v, ok := pc.mutation.NumLightFighter(); ok {
+		if err := planet.NumLightFighterValidator(v); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"num_light_fighter\": %v", err)
+		}
+	}
+	if _, ok := pc.mutation.NumCorvette(); !ok {
+		v := planet.DefaultNumCorvette
+		pc.mutation.SetNumCorvette(v)
+	}
+	if v, ok := pc.mutation.NumCorvette(); ok {
+		if err := planet.NumCorvetteValidator(v); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"num_corvette\": %v", err)
+		}
+	}
+	if _, ok := pc.mutation.NumFrigate(); !ok {
+		v := planet.DefaultNumFrigate
+		pc.mutation.SetNumFrigate(v)
+	}
+	if v, ok := pc.mutation.NumFrigate(); ok {
+		if err := planet.NumFrigateValidator(v); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"num_frigate\": %v", err)
+		}
+	}
+	if _, ok := pc.mutation.NumProbe(); !ok {
+		v := planet.DefaultNumProbe
+		pc.mutation.SetNumProbe(v)
+	}
+	if v, ok := pc.mutation.NumProbe(); ok {
+		if err := planet.NumProbeValidator(v); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"num_probe\": %v", err)
+		}
+	}
+	if _, ok := pc.mutation.NumSmallCargo(); !ok {
+		v := planet.DefaultNumSmallCargo
+		pc.mutation.SetNumSmallCargo(v)
+	}
+	if v, ok := pc.mutation.NumSmallCargo(); ok {
+		if err := planet.NumSmallCargoValidator(v); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"num_small_cargo\": %v", err)
+		}
+	}
+	if _, ok := pc.mutation.NumMediumCargo(); !ok {
+		v := planet.DefaultNumMediumCargo
+		pc.mutation.SetNumMediumCargo(v)
+	}
+	if v, ok := pc.mutation.NumMediumCargo(); ok {
+		if err := planet.NumMediumCargoValidator(v); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"num_medium_cargo\": %v", err)
+		}
+	}
+	if _, ok := pc.mutation.NumColonizationArk(); !ok {
+		v := planet.DefaultNumColonizationArk
+		pc.mutation.SetNumColonizationArk(v)
+	}
+	if v, ok := pc.mutation.NumColonizationArk(); ok {
+		if err := planet.NumColonizationArkValidator(v); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"num_colonization_ark\": %v", err)
+		}
+	}
 	if _, ok := pc.mutation.Name(); !ok {
 		v := planet.DefaultName
 		pc.mutation.SetName(v)
@@ -789,6 +973,70 @@ func (pc *PlanetCreate) sqlSave(ctx context.Context) (*Planet, error) {
 			Column: planet.FieldPositionCode,
 		})
 		pl.PositionCode = value
+	}
+	if value, ok := pc.mutation.NumCaravel(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumCaravel,
+		})
+		pl.NumCaravel = value
+	}
+	if value, ok := pc.mutation.NumLightFighter(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumLightFighter,
+		})
+		pl.NumLightFighter = value
+	}
+	if value, ok := pc.mutation.NumCorvette(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumCorvette,
+		})
+		pl.NumCorvette = value
+	}
+	if value, ok := pc.mutation.NumFrigate(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumFrigate,
+		})
+		pl.NumFrigate = value
+	}
+	if value, ok := pc.mutation.NumProbe(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumProbe,
+		})
+		pl.NumProbe = value
+	}
+	if value, ok := pc.mutation.NumSmallCargo(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumSmallCargo,
+		})
+		pl.NumSmallCargo = value
+	}
+	if value, ok := pc.mutation.NumMediumCargo(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumMediumCargo,
+		})
+		pl.NumMediumCargo = value
+	}
+	if value, ok := pc.mutation.NumColonizationArk(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumColonizationArk,
+		})
+		pl.NumColonizationArk = value
 	}
 	if value, ok := pc.mutation.Name(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

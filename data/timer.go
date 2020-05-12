@@ -72,6 +72,9 @@ func init() {
 	for _, b := range Buildings {
 		actions[b.UpgradeAction()] = newActionFromBuilding(b)
 	}
+	for _, s := range Ships {
+		actions[s.BuildAction()] = newActionFromShip(s)
+	}
 }
 
 func newActionFromBuilding(b Building) action {
@@ -96,6 +99,35 @@ func newActionFromBuilding(b Building) action {
 		Cancel: func(p *ent.Planet) error {
 			c := b.ForPlanet(p).NextLevel().Cost()
 			const refundFraction = 0.7
+			refund := c.MulFloat64(refundFraction)
+			addStock(p, refund)
+			return nil
+		},
+	}
+}
+
+func newActionFromShip(s Ship) action {
+	return action{
+		Group: timer.GroupShip,
+		Duration: func(p *ent.Planet) time.Duration {
+			return s.BuildDuration()
+		},
+		Valid: func(p *ent.Planet) bool {
+			c := s.Cost()
+			return HasResources(p, c)
+		},
+		Start: func(p *ent.Planet) error {
+			c := s.Cost()
+			subStock(p, c)
+			return nil
+		},
+		Complete: func(p *ent.Planet) error {
+			s.IncreaseNumberOnPlanet(p)
+			return nil
+		},
+		Cancel: func(p *ent.Planet) error {
+			c := s.Cost()
+			const refundFraction = 0.8
 			refund := c.MulFloat64(refundFraction)
 			addStock(p, refund)
 			return nil

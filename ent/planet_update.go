@@ -351,6 +351,174 @@ func (pu *PlanetUpdate) AddResearchCenterLevel(i int) *PlanetUpdate {
 	return pu
 }
 
+// SetNumCaravel sets the num_caravel field.
+func (pu *PlanetUpdate) SetNumCaravel(i int64) *PlanetUpdate {
+	pu.mutation.ResetNumCaravel()
+	pu.mutation.SetNumCaravel(i)
+	return pu
+}
+
+// SetNillableNumCaravel sets the num_caravel field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableNumCaravel(i *int64) *PlanetUpdate {
+	if i != nil {
+		pu.SetNumCaravel(*i)
+	}
+	return pu
+}
+
+// AddNumCaravel adds i to num_caravel.
+func (pu *PlanetUpdate) AddNumCaravel(i int64) *PlanetUpdate {
+	pu.mutation.AddNumCaravel(i)
+	return pu
+}
+
+// SetNumLightFighter sets the num_light_fighter field.
+func (pu *PlanetUpdate) SetNumLightFighter(i int64) *PlanetUpdate {
+	pu.mutation.ResetNumLightFighter()
+	pu.mutation.SetNumLightFighter(i)
+	return pu
+}
+
+// SetNillableNumLightFighter sets the num_light_fighter field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableNumLightFighter(i *int64) *PlanetUpdate {
+	if i != nil {
+		pu.SetNumLightFighter(*i)
+	}
+	return pu
+}
+
+// AddNumLightFighter adds i to num_light_fighter.
+func (pu *PlanetUpdate) AddNumLightFighter(i int64) *PlanetUpdate {
+	pu.mutation.AddNumLightFighter(i)
+	return pu
+}
+
+// SetNumCorvette sets the num_corvette field.
+func (pu *PlanetUpdate) SetNumCorvette(i int64) *PlanetUpdate {
+	pu.mutation.ResetNumCorvette()
+	pu.mutation.SetNumCorvette(i)
+	return pu
+}
+
+// SetNillableNumCorvette sets the num_corvette field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableNumCorvette(i *int64) *PlanetUpdate {
+	if i != nil {
+		pu.SetNumCorvette(*i)
+	}
+	return pu
+}
+
+// AddNumCorvette adds i to num_corvette.
+func (pu *PlanetUpdate) AddNumCorvette(i int64) *PlanetUpdate {
+	pu.mutation.AddNumCorvette(i)
+	return pu
+}
+
+// SetNumFrigate sets the num_frigate field.
+func (pu *PlanetUpdate) SetNumFrigate(i int64) *PlanetUpdate {
+	pu.mutation.ResetNumFrigate()
+	pu.mutation.SetNumFrigate(i)
+	return pu
+}
+
+// SetNillableNumFrigate sets the num_frigate field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableNumFrigate(i *int64) *PlanetUpdate {
+	if i != nil {
+		pu.SetNumFrigate(*i)
+	}
+	return pu
+}
+
+// AddNumFrigate adds i to num_frigate.
+func (pu *PlanetUpdate) AddNumFrigate(i int64) *PlanetUpdate {
+	pu.mutation.AddNumFrigate(i)
+	return pu
+}
+
+// SetNumProbe sets the num_probe field.
+func (pu *PlanetUpdate) SetNumProbe(i int64) *PlanetUpdate {
+	pu.mutation.ResetNumProbe()
+	pu.mutation.SetNumProbe(i)
+	return pu
+}
+
+// SetNillableNumProbe sets the num_probe field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableNumProbe(i *int64) *PlanetUpdate {
+	if i != nil {
+		pu.SetNumProbe(*i)
+	}
+	return pu
+}
+
+// AddNumProbe adds i to num_probe.
+func (pu *PlanetUpdate) AddNumProbe(i int64) *PlanetUpdate {
+	pu.mutation.AddNumProbe(i)
+	return pu
+}
+
+// SetNumSmallCargo sets the num_small_cargo field.
+func (pu *PlanetUpdate) SetNumSmallCargo(i int64) *PlanetUpdate {
+	pu.mutation.ResetNumSmallCargo()
+	pu.mutation.SetNumSmallCargo(i)
+	return pu
+}
+
+// SetNillableNumSmallCargo sets the num_small_cargo field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableNumSmallCargo(i *int64) *PlanetUpdate {
+	if i != nil {
+		pu.SetNumSmallCargo(*i)
+	}
+	return pu
+}
+
+// AddNumSmallCargo adds i to num_small_cargo.
+func (pu *PlanetUpdate) AddNumSmallCargo(i int64) *PlanetUpdate {
+	pu.mutation.AddNumSmallCargo(i)
+	return pu
+}
+
+// SetNumMediumCargo sets the num_medium_cargo field.
+func (pu *PlanetUpdate) SetNumMediumCargo(i int64) *PlanetUpdate {
+	pu.mutation.ResetNumMediumCargo()
+	pu.mutation.SetNumMediumCargo(i)
+	return pu
+}
+
+// SetNillableNumMediumCargo sets the num_medium_cargo field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableNumMediumCargo(i *int64) *PlanetUpdate {
+	if i != nil {
+		pu.SetNumMediumCargo(*i)
+	}
+	return pu
+}
+
+// AddNumMediumCargo adds i to num_medium_cargo.
+func (pu *PlanetUpdate) AddNumMediumCargo(i int64) *PlanetUpdate {
+	pu.mutation.AddNumMediumCargo(i)
+	return pu
+}
+
+// SetNumColonizationArk sets the num_colonization_ark field.
+func (pu *PlanetUpdate) SetNumColonizationArk(i int64) *PlanetUpdate {
+	pu.mutation.ResetNumColonizationArk()
+	pu.mutation.SetNumColonizationArk(i)
+	return pu
+}
+
+// SetNillableNumColonizationArk sets the num_colonization_ark field if the given value is not nil.
+func (pu *PlanetUpdate) SetNillableNumColonizationArk(i *int64) *PlanetUpdate {
+	if i != nil {
+		pu.SetNumColonizationArk(*i)
+	}
+	return pu
+}
+
+// AddNumColonizationArk adds i to num_colonization_ark.
+func (pu *PlanetUpdate) AddNumColonizationArk(i int64) *PlanetUpdate {
+	pu.mutation.AddNumColonizationArk(i)
+	return pu
+}
+
 // SetName sets the name field.
 func (pu *PlanetUpdate) SetName(s string) *PlanetUpdate {
 	pu.mutation.SetName(s)
@@ -519,6 +687,46 @@ func (pu *PlanetUpdate) Save(ctx context.Context) (int, error) {
 	if v, ok := pu.mutation.ResearchCenterLevel(); ok {
 		if err := planet.ResearchCenterLevelValidator(v); err != nil {
 			return 0, fmt.Errorf("ent: validator failed for field \"research_center_level\": %v", err)
+		}
+	}
+	if v, ok := pu.mutation.NumCaravel(); ok {
+		if err := planet.NumCaravelValidator(v); err != nil {
+			return 0, fmt.Errorf("ent: validator failed for field \"num_caravel\": %v", err)
+		}
+	}
+	if v, ok := pu.mutation.NumLightFighter(); ok {
+		if err := planet.NumLightFighterValidator(v); err != nil {
+			return 0, fmt.Errorf("ent: validator failed for field \"num_light_fighter\": %v", err)
+		}
+	}
+	if v, ok := pu.mutation.NumCorvette(); ok {
+		if err := planet.NumCorvetteValidator(v); err != nil {
+			return 0, fmt.Errorf("ent: validator failed for field \"num_corvette\": %v", err)
+		}
+	}
+	if v, ok := pu.mutation.NumFrigate(); ok {
+		if err := planet.NumFrigateValidator(v); err != nil {
+			return 0, fmt.Errorf("ent: validator failed for field \"num_frigate\": %v", err)
+		}
+	}
+	if v, ok := pu.mutation.NumProbe(); ok {
+		if err := planet.NumProbeValidator(v); err != nil {
+			return 0, fmt.Errorf("ent: validator failed for field \"num_probe\": %v", err)
+		}
+	}
+	if v, ok := pu.mutation.NumSmallCargo(); ok {
+		if err := planet.NumSmallCargoValidator(v); err != nil {
+			return 0, fmt.Errorf("ent: validator failed for field \"num_small_cargo\": %v", err)
+		}
+	}
+	if v, ok := pu.mutation.NumMediumCargo(); ok {
+		if err := planet.NumMediumCargoValidator(v); err != nil {
+			return 0, fmt.Errorf("ent: validator failed for field \"num_medium_cargo\": %v", err)
+		}
+	}
+	if v, ok := pu.mutation.NumColonizationArk(); ok {
+		if err := planet.NumColonizationArkValidator(v); err != nil {
+			return 0, fmt.Errorf("ent: validator failed for field \"num_colonization_ark\": %v", err)
 		}
 	}
 
@@ -803,6 +1011,118 @@ func (pu *PlanetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Type:   field.TypeInt,
 			Value:  value,
 			Column: planet.FieldResearchCenterLevel,
+		})
+	}
+	if value, ok := pu.mutation.NumCaravel(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumCaravel,
+		})
+	}
+	if value, ok := pu.mutation.AddedNumCaravel(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumCaravel,
+		})
+	}
+	if value, ok := pu.mutation.NumLightFighter(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumLightFighter,
+		})
+	}
+	if value, ok := pu.mutation.AddedNumLightFighter(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumLightFighter,
+		})
+	}
+	if value, ok := pu.mutation.NumCorvette(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumCorvette,
+		})
+	}
+	if value, ok := pu.mutation.AddedNumCorvette(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumCorvette,
+		})
+	}
+	if value, ok := pu.mutation.NumFrigate(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumFrigate,
+		})
+	}
+	if value, ok := pu.mutation.AddedNumFrigate(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumFrigate,
+		})
+	}
+	if value, ok := pu.mutation.NumProbe(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumProbe,
+		})
+	}
+	if value, ok := pu.mutation.AddedNumProbe(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumProbe,
+		})
+	}
+	if value, ok := pu.mutation.NumSmallCargo(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumSmallCargo,
+		})
+	}
+	if value, ok := pu.mutation.AddedNumSmallCargo(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumSmallCargo,
+		})
+	}
+	if value, ok := pu.mutation.NumMediumCargo(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumMediumCargo,
+		})
+	}
+	if value, ok := pu.mutation.AddedNumMediumCargo(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumMediumCargo,
+		})
+	}
+	if value, ok := pu.mutation.NumColonizationArk(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumColonizationArk,
+		})
+	}
+	if value, ok := pu.mutation.AddedNumColonizationArk(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumColonizationArk,
 		})
 	}
 	if value, ok := pu.mutation.Name(); ok {
@@ -1238,6 +1558,174 @@ func (puo *PlanetUpdateOne) AddResearchCenterLevel(i int) *PlanetUpdateOne {
 	return puo
 }
 
+// SetNumCaravel sets the num_caravel field.
+func (puo *PlanetUpdateOne) SetNumCaravel(i int64) *PlanetUpdateOne {
+	puo.mutation.ResetNumCaravel()
+	puo.mutation.SetNumCaravel(i)
+	return puo
+}
+
+// SetNillableNumCaravel sets the num_caravel field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableNumCaravel(i *int64) *PlanetUpdateOne {
+	if i != nil {
+		puo.SetNumCaravel(*i)
+	}
+	return puo
+}
+
+// AddNumCaravel adds i to num_caravel.
+func (puo *PlanetUpdateOne) AddNumCaravel(i int64) *PlanetUpdateOne {
+	puo.mutation.AddNumCaravel(i)
+	return puo
+}
+
+// SetNumLightFighter sets the num_light_fighter field.
+func (puo *PlanetUpdateOne) SetNumLightFighter(i int64) *PlanetUpdateOne {
+	puo.mutation.ResetNumLightFighter()
+	puo.mutation.SetNumLightFighter(i)
+	return puo
+}
+
+// SetNillableNumLightFighter sets the num_light_fighter field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableNumLightFighter(i *int64) *PlanetUpdateOne {
+	if i != nil {
+		puo.SetNumLightFighter(*i)
+	}
+	return puo
+}
+
+// AddNumLightFighter adds i to num_light_fighter.
+func (puo *PlanetUpdateOne) AddNumLightFighter(i int64) *PlanetUpdateOne {
+	puo.mutation.AddNumLightFighter(i)
+	return puo
+}
+
+// SetNumCorvette sets the num_corvette field.
+func (puo *PlanetUpdateOne) SetNumCorvette(i int64) *PlanetUpdateOne {
+	puo.mutation.ResetNumCorvette()
+	puo.mutation.SetNumCorvette(i)
+	return puo
+}
+
+// SetNillableNumCorvette sets the num_corvette field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableNumCorvette(i *int64) *PlanetUpdateOne {
+	if i != nil {
+		puo.SetNumCorvette(*i)
+	}
+	return puo
+}
+
+// AddNumCorvette adds i to num_corvette.
+func (puo *PlanetUpdateOne) AddNumCorvette(i int64) *PlanetUpdateOne {
+	puo.mutation.AddNumCorvette(i)
+	return puo
+}
+
+// SetNumFrigate sets the num_frigate field.
+func (puo *PlanetUpdateOne) SetNumFrigate(i int64) *PlanetUpdateOne {
+	puo.mutation.ResetNumFrigate()
+	puo.mutation.SetNumFrigate(i)
+	return puo
+}
+
+// SetNillableNumFrigate sets the num_frigate field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableNumFrigate(i *int64) *PlanetUpdateOne {
+	if i != nil {
+		puo.SetNumFrigate(*i)
+	}
+	return puo
+}
+
+// AddNumFrigate adds i to num_frigate.
+func (puo *PlanetUpdateOne) AddNumFrigate(i int64) *PlanetUpdateOne {
+	puo.mutation.AddNumFrigate(i)
+	return puo
+}
+
+// SetNumProbe sets the num_probe field.
+func (puo *PlanetUpdateOne) SetNumProbe(i int64) *PlanetUpdateOne {
+	puo.mutation.ResetNumProbe()
+	puo.mutation.SetNumProbe(i)
+	return puo
+}
+
+// SetNillableNumProbe sets the num_probe field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableNumProbe(i *int64) *PlanetUpdateOne {
+	if i != nil {
+		puo.SetNumProbe(*i)
+	}
+	return puo
+}
+
+// AddNumProbe adds i to num_probe.
+func (puo *PlanetUpdateOne) AddNumProbe(i int64) *PlanetUpdateOne {
+	puo.mutation.AddNumProbe(i)
+	return puo
+}
+
+// SetNumSmallCargo sets the num_small_cargo field.
+func (puo *PlanetUpdateOne) SetNumSmallCargo(i int64) *PlanetUpdateOne {
+	puo.mutation.ResetNumSmallCargo()
+	puo.mutation.SetNumSmallCargo(i)
+	return puo
+}
+
+// SetNillableNumSmallCargo sets the num_small_cargo field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableNumSmallCargo(i *int64) *PlanetUpdateOne {
+	if i != nil {
+		puo.SetNumSmallCargo(*i)
+	}
+	return puo
+}
+
+// AddNumSmallCargo adds i to num_small_cargo.
+func (puo *PlanetUpdateOne) AddNumSmallCargo(i int64) *PlanetUpdateOne {
+	puo.mutation.AddNumSmallCargo(i)
+	return puo
+}
+
+// SetNumMediumCargo sets the num_medium_cargo field.
+func (puo *PlanetUpdateOne) SetNumMediumCargo(i int64) *PlanetUpdateOne {
+	puo.mutation.ResetNumMediumCargo()
+	puo.mutation.SetNumMediumCargo(i)
+	return puo
+}
+
+// SetNillableNumMediumCargo sets the num_medium_cargo field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableNumMediumCargo(i *int64) *PlanetUpdateOne {
+	if i != nil {
+		puo.SetNumMediumCargo(*i)
+	}
+	return puo
+}
+
+// AddNumMediumCargo adds i to num_medium_cargo.
+func (puo *PlanetUpdateOne) AddNumMediumCargo(i int64) *PlanetUpdateOne {
+	puo.mutation.AddNumMediumCargo(i)
+	return puo
+}
+
+// SetNumColonizationArk sets the num_colonization_ark field.
+func (puo *PlanetUpdateOne) SetNumColonizationArk(i int64) *PlanetUpdateOne {
+	puo.mutation.ResetNumColonizationArk()
+	puo.mutation.SetNumColonizationArk(i)
+	return puo
+}
+
+// SetNillableNumColonizationArk sets the num_colonization_ark field if the given value is not nil.
+func (puo *PlanetUpdateOne) SetNillableNumColonizationArk(i *int64) *PlanetUpdateOne {
+	if i != nil {
+		puo.SetNumColonizationArk(*i)
+	}
+	return puo
+}
+
+// AddNumColonizationArk adds i to num_colonization_ark.
+func (puo *PlanetUpdateOne) AddNumColonizationArk(i int64) *PlanetUpdateOne {
+	puo.mutation.AddNumColonizationArk(i)
+	return puo
+}
+
 // SetName sets the name field.
 func (puo *PlanetUpdateOne) SetName(s string) *PlanetUpdateOne {
 	puo.mutation.SetName(s)
@@ -1406,6 +1894,46 @@ func (puo *PlanetUpdateOne) Save(ctx context.Context) (*Planet, error) {
 	if v, ok := puo.mutation.ResearchCenterLevel(); ok {
 		if err := planet.ResearchCenterLevelValidator(v); err != nil {
 			return nil, fmt.Errorf("ent: validator failed for field \"research_center_level\": %v", err)
+		}
+	}
+	if v, ok := puo.mutation.NumCaravel(); ok {
+		if err := planet.NumCaravelValidator(v); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"num_caravel\": %v", err)
+		}
+	}
+	if v, ok := puo.mutation.NumLightFighter(); ok {
+		if err := planet.NumLightFighterValidator(v); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"num_light_fighter\": %v", err)
+		}
+	}
+	if v, ok := puo.mutation.NumCorvette(); ok {
+		if err := planet.NumCorvetteValidator(v); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"num_corvette\": %v", err)
+		}
+	}
+	if v, ok := puo.mutation.NumFrigate(); ok {
+		if err := planet.NumFrigateValidator(v); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"num_frigate\": %v", err)
+		}
+	}
+	if v, ok := puo.mutation.NumProbe(); ok {
+		if err := planet.NumProbeValidator(v); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"num_probe\": %v", err)
+		}
+	}
+	if v, ok := puo.mutation.NumSmallCargo(); ok {
+		if err := planet.NumSmallCargoValidator(v); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"num_small_cargo\": %v", err)
+		}
+	}
+	if v, ok := puo.mutation.NumMediumCargo(); ok {
+		if err := planet.NumMediumCargoValidator(v); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"num_medium_cargo\": %v", err)
+		}
+	}
+	if v, ok := puo.mutation.NumColonizationArk(); ok {
+		if err := planet.NumColonizationArkValidator(v); err != nil {
+			return nil, fmt.Errorf("ent: validator failed for field \"num_colonization_ark\": %v", err)
 		}
 	}
 
@@ -1688,6 +2216,118 @@ func (puo *PlanetUpdateOne) sqlSave(ctx context.Context) (pl *Planet, err error)
 			Type:   field.TypeInt,
 			Value:  value,
 			Column: planet.FieldResearchCenterLevel,
+		})
+	}
+	if value, ok := puo.mutation.NumCaravel(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumCaravel,
+		})
+	}
+	if value, ok := puo.mutation.AddedNumCaravel(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumCaravel,
+		})
+	}
+	if value, ok := puo.mutation.NumLightFighter(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumLightFighter,
+		})
+	}
+	if value, ok := puo.mutation.AddedNumLightFighter(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumLightFighter,
+		})
+	}
+	if value, ok := puo.mutation.NumCorvette(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumCorvette,
+		})
+	}
+	if value, ok := puo.mutation.AddedNumCorvette(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumCorvette,
+		})
+	}
+	if value, ok := puo.mutation.NumFrigate(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumFrigate,
+		})
+	}
+	if value, ok := puo.mutation.AddedNumFrigate(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumFrigate,
+		})
+	}
+	if value, ok := puo.mutation.NumProbe(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumProbe,
+		})
+	}
+	if value, ok := puo.mutation.AddedNumProbe(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumProbe,
+		})
+	}
+	if value, ok := puo.mutation.NumSmallCargo(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumSmallCargo,
+		})
+	}
+	if value, ok := puo.mutation.AddedNumSmallCargo(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumSmallCargo,
+		})
+	}
+	if value, ok := puo.mutation.NumMediumCargo(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumMediumCargo,
+		})
+	}
+	if value, ok := puo.mutation.AddedNumMediumCargo(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumMediumCargo,
+		})
+	}
+	if value, ok := puo.mutation.NumColonizationArk(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumColonizationArk,
+		})
+	}
+	if value, ok := puo.mutation.AddedNumColonizationArk(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: planet.FieldNumColonizationArk,
 		})
 	}
 	if value, ok := puo.mutation.Name(); ok {

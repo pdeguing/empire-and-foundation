@@ -42,12 +42,12 @@
                                 <div class="card-footer-item has-text-white has-text-weight-semibold Planet-card__duration">
                                     {{ duration $building.Timer.Duration }}
                                 </div>
-                                <button formaction="/planet/{{ $planet.ID }}/{{ $building.Uri }}/cancel"
+                                <button formaction="/planet/{{ $planet.ID }}/construction/{{ $building.Uri }}/cancel"
                                         class="is-paddingless Planet-card__button Planet-card__button--cancel">
                                     <span class="card-footer-item">Cancel</span>
                                 </button>
                             {{ else }}
-                                <button formaction="/planet/{{ $planet.ID }}/{{ $building.Uri }}/upgrade"
+                                <button formaction="/planet/{{ $planet.ID }}/construction/{{ $building.Uri }}/build"
                                         class="is-paddingless Planet-card__button"
                                         {{ if not $building.Upgradable }}disabled{{ end }}>
 							<span class="card-footer-item">

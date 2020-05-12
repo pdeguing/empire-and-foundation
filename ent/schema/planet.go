@@ -96,6 +96,7 @@ func (Planet) Mixin() []ent.Mixin {
 		ShipFactoryMixin{},
 		ResearchCenterMixin{},
 		PositionMixin{},
+		FleetMixin{},
 	}
 }
 

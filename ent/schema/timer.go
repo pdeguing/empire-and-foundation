@@ -27,11 +27,22 @@ func (Timer) Fields() []ent.Field {
 				"upgrade_silica_storage",
 				"upgrade_research_center",
 				"upgrade_ship_factory",
+				"build_caravel",
+				"build_light_fighter",
+				"build_corvette",
+				"build_frigate",
+				"build_probe",
+				"build_small_cargo",
+				"build_medium_cargo",
+				"build_colonization_ark",
 				"test", // Used in the tests
 			).
 			Immutable(),
 		field.Enum("group").
-			Values("building").
+			Values(
+				"building",
+				"ship",
+			).
 			Immutable(),
 		field.Time("end_time").
 			Immutable(),

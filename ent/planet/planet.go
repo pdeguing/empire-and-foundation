@@ -33,7 +33,15 @@ const (
 	FieldSystemCode             = "system_code"              // FieldOrbitCode holds the string denoting the orbit_code vertex property in the database.
 	FieldOrbitCode              = "orbit_code"               // FieldSuborbitCode holds the string denoting the suborbit_code vertex property in the database.
 	FieldSuborbitCode           = "suborbit_code"            // FieldPositionCode holds the string denoting the position_code vertex property in the database.
-	FieldPositionCode           = "position_code"            // FieldName holds the string denoting the name vertex property in the database.
+	FieldPositionCode           = "position_code"            // FieldNumCaravel holds the string denoting the num_caravel vertex property in the database.
+	FieldNumCaravel             = "num_caravel"              // FieldNumLightFighter holds the string denoting the num_light_fighter vertex property in the database.
+	FieldNumLightFighter        = "num_light_fighter"        // FieldNumCorvette holds the string denoting the num_corvette vertex property in the database.
+	FieldNumCorvette            = "num_corvette"             // FieldNumFrigate holds the string denoting the num_frigate vertex property in the database.
+	FieldNumFrigate             = "num_frigate"              // FieldNumProbe holds the string denoting the num_probe vertex property in the database.
+	FieldNumProbe               = "num_probe"                // FieldNumSmallCargo holds the string denoting the num_small_cargo vertex property in the database.
+	FieldNumSmallCargo          = "num_small_cargo"          // FieldNumMediumCargo holds the string denoting the num_medium_cargo vertex property in the database.
+	FieldNumMediumCargo         = "num_medium_cargo"         // FieldNumColonizationArk holds the string denoting the num_colonization_ark vertex property in the database.
+	FieldNumColonizationArk     = "num_colonization_ark"     // FieldName holds the string denoting the name vertex property in the database.
 	FieldName                   = "name"                     // FieldPlanetType holds the string denoting the planet_type vertex property in the database.
 	FieldPlanetType             = "planet_type"              // FieldPlanetSkin holds the string denoting the planet_skin vertex property in the database.
 	FieldPlanetSkin             = "planet_skin"              // FieldLastResourceUpdate holds the string denoting the last_resource_update vertex property in the database.
@@ -87,6 +95,14 @@ var Columns = []string{
 	FieldOrbitCode,
 	FieldSuborbitCode,
 	FieldPositionCode,
+	FieldNumCaravel,
+	FieldNumLightFighter,
+	FieldNumCorvette,
+	FieldNumFrigate,
+	FieldNumProbe,
+	FieldNumSmallCargo,
+	FieldNumMediumCargo,
+	FieldNumColonizationArk,
 	FieldName,
 	FieldPlanetType,
 	FieldPlanetSkin,
@@ -175,6 +191,38 @@ var (
 	SuborbitCodeValidator func(int) error
 	// PositionCodeValidator is a validator for the "position_code" field. It is called by the builders before save.
 	PositionCodeValidator func(int) error
+	// DefaultNumCaravel holds the default value on creation for the num_caravel field.
+	DefaultNumCaravel int64
+	// NumCaravelValidator is a validator for the "num_caravel" field. It is called by the builders before save.
+	NumCaravelValidator func(int64) error
+	// DefaultNumLightFighter holds the default value on creation for the num_light_fighter field.
+	DefaultNumLightFighter int64
+	// NumLightFighterValidator is a validator for the "num_light_fighter" field. It is called by the builders before save.
+	NumLightFighterValidator func(int64) error
+	// DefaultNumCorvette holds the default value on creation for the num_corvette field.
+	DefaultNumCorvette int64
+	// NumCorvetteValidator is a validator for the "num_corvette" field. It is called by the builders before save.
+	NumCorvetteValidator func(int64) error
+	// DefaultNumFrigate holds the default value on creation for the num_frigate field.
+	DefaultNumFrigate int64
+	// NumFrigateValidator is a validator for the "num_frigate" field. It is called by the builders before save.
+	NumFrigateValidator func(int64) error
+	// DefaultNumProbe holds the default value on creation for the num_probe field.
+	DefaultNumProbe int64
+	// NumProbeValidator is a validator for the "num_probe" field. It is called by the builders before save.
+	NumProbeValidator func(int64) error
+	// DefaultNumSmallCargo holds the default value on creation for the num_small_cargo field.
+	DefaultNumSmallCargo int64
+	// NumSmallCargoValidator is a validator for the "num_small_cargo" field. It is called by the builders before save.
+	NumSmallCargoValidator func(int64) error
+	// DefaultNumMediumCargo holds the default value on creation for the num_medium_cargo field.
+	DefaultNumMediumCargo int64
+	// NumMediumCargoValidator is a validator for the "num_medium_cargo" field. It is called by the builders before save.
+	NumMediumCargoValidator func(int64) error
+	// DefaultNumColonizationArk holds the default value on creation for the num_colonization_ark field.
+	DefaultNumColonizationArk int64
+	// NumColonizationArkValidator is a validator for the "num_colonization_ark" field. It is called by the builders before save.
+	NumColonizationArkValidator func(int64) error
 	// DefaultName holds the default value on creation for the name field.
 	DefaultName string
 	// DefaultLastResourceUpdate holds the default value on creation for the last_resource_update field.
