@@ -7,6 +7,14 @@ import (
 	"net/http"
 )
 
+var constructionRouteActionMap = map[string]timer.Action{}
+
+func init() {
+	for _, building := range buildingInfos {
+		constructionRouteActionMap[building.Uri] = building.Building.UpgradeAction()
+	}
+}
+
 type buildingInfo struct {
 	Building    data.Building
 	Name        string
@@ -147,10 +155,19 @@ func serveConstructions(w http.ResponseWriter, r *http.Request) {
 		serveError(w, r, err)
 		return
 	}
-	b := getConstructionCards(p.Planet.Planet, p.Timer)
 	vd := constructionsViewData{
 		*p,
-		b,
+		getConstructionCards(p.Planet.Planet, p.Timer),
 	}
 	generateHTML(w, r, "planet-constructions", vd, "layout", "private.navbar", "dashboard", "leftbar", "planet.layout", "planet.header", "flash", "planet.constructions")
+}
+
+// POST /planet/{id}/construction/{action}/build
+func servePlanetStartConstruction(w http.ResponseWriter, r *http.Request) {
+	servePlanetStartAction(w, r, constructionRouteActionMap, "constructions")
+}
+
+// POST /planet/{id}/construction/{action}/cancel
+func servePlanetCancelConstruction(w http.ResponseWriter, r *http.Request) {
+	servePlanetCancelAction(w, r, constructionRouteActionMap, "constructions")
 }

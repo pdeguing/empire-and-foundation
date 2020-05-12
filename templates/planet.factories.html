@@ -1,48 +1,72 @@
 {{ define "planetBody" }}
 
-<div class="columns is-multiline">
+    <form method="POST">
+        {{ csrf }}
 
-	{{ $planet := .Data.Planet }}
-	{{ range $index, $ship := .Data.Cards }}
+        <div class="columns is-multiline">
 
-		<div class="column is-flex is-3">
-			<div class="card card-growing">
-				<div class="card-image">
-					<figure class="image">
-						<img src="/static/images/ships/{{ $ship.Image }}" class="card-img-top" alt="">
-					</figure>
-				</div>
-				<div class="card-content is-growing">
-					<div class="has-text-right Planet-card__header">
-						<h2 class="title is-5 is-marginless">{{ $ship.Name }}</h2>
-					</div>
-					<div class="content">
-						<p>
-							{{ $ship.Description }}
-						</p>
-						<hr>
-						<p>
-							Build:<br>
-							10k metal, 10k hydrogen, 5k silica
-						</p>
-					</div>
-				</div>
-				<footer class="card-footer">
-					<a href="#" class="card-footer-item">Build</a>
-					<a href="#" class="card-footer-item">Details</a>
-				</footer>
-			</div>
-		</div>
+            {{ $planet := .Data.Planet }}
+            {{ range $index, $ship := .Data.Cards }}
 
-	{{ end }}
+                <div class="column is-flex is-3">
+                    <div class="card card-growing">
+                        <div class="card-image">
+                            <figure class="image">
+                                <img src="/static/images/ships/{{ $ship.Image }}" class="card-img-top" alt="">
+                            </figure>
+                        </div>
+                        <div class="card-content is-growing">
+                            <div class="has-text-right Planet-card__header">
+                                <h2 class="title is-5 is-marginless">{{ $ship.Name }}</h2>
+                                <span class="subtitle is-7">On planet...{{ $ship.Count }}</span>
+                            </div>
+                            <div class="content">
+                                <p>
+                                    {{ $ship.Description }}
+                                </p>
+                                <hr>
+                                <p>
+                                    Build:<br>
+                                    {{ quantity $ship.BuildCost.Metal }} metal,
+                                    {{ quantity $ship.BuildCost.Hydrogen }} hydrogen,
+                                    {{ quantity $ship.BuildCost.Silica }} silica
+                                </p>
+                            </div>
+                        </div>
+                        <footer class="card-footer">
+                            {{ if $ship.Timer }}
+                                <div class="card-footer-item has-text-white has-text-weight-semibold Planet-card__duration">
+                                    {{ duration $ship.Timer.Duration }}
+                                </div>
+                                <button formaction="/planet/{{ $planet.ID }}/factory/{{ $ship.Uri }}/cancel"
+                                        class="is-paddingless Planet-card__button Planet-card__button--cancel">
+                                    <span class="card-footer-item">Cancel</span>
+                                </button>
+                            {{ else }}
+                                <button formaction="/planet/{{ $planet.ID }}/factory/{{ $ship.Uri }}/build"
+                                        class="is-paddingless Planet-card__button"
+                                        {{ if not $ship.Buildable }}disabled{{ end }}>
+							<span class="card-footer-item">
+								Build
+							</span>
+                                </button>
+                            {{ end }}
+                        </footer>
+                    </div>
+                </div>
 
-</div>
+            {{ end }}
 
+        </div>
 
-<article class="message">
-  <div class="message-body">
-Here we want to give the player the ability to build stuff. Probably only ships at the beginning, but later we would have multiple factories allowing to build different things. Materials for research, spaceship parts, space stations parts, artefacts etc.
-  </div>
-</article>
+    </form>
+
+    <article class="message">
+        <div class="message-body">
+            Here we want to give the player the ability to build stuff. Probably only ships at the beginning, but later
+            we would have multiple factories allowing to build different things. Materials for research, spaceship
+            parts, space stations parts, artefacts etc.
+        </div>
+    </article>
 
 {{ end }}

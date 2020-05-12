@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -124,4 +125,72 @@ func newPlanetViewData(r *http.Request, g timer.Group) (*planetViewData, error) 
 		Planet:      p,
 		Timer:       t,
 	}, nil
+}
+
+// servePlanetStartAction progresses the request to start an upgrade or build timer.
+func servePlanetStartAction(w http.ResponseWriter, r *http.Request, routeActionMap map[string]timer.Action, redirect string) {
+	uri := mux.Vars(r)["action"]
+	a, ok := routeActionMap[uri]
+	if !ok {
+		http.NotFound(w, r)
+		return
+	}
+
+	var p *data.PlanetWithResourceInfo
+	err := data.WithTx(r.Context(), data.Client, func(tx *ent.Tx) error {
+		var err error
+		p, err = userPlanet(r, tx)
+		if err != nil {
+			return err
+		}
+		err = data.StartTimer(r.Context(), tx, p.Planet, a)
+		if err != nil {
+			return newInternalServerError(fmt.Errorf("unable to start timer to upgrade building: %w", err))
+		}
+		return nil
+	})
+	if err != nil {
+		if errors.Is(err, data.ErrActionPrerequisitesNotMet) {
+			flash(r, flashDanger, "There are not enough resources on this planet.")
+			http.Redirect(w, r, "/planet/"+strconv.Itoa(p.ID)+"/"+redirect, 302)
+			return
+		}
+		if errors.Is(err, data.ErrTimerBusy) {
+			flash(r, flashWarning, "Something is already being upgraded.")
+			http.Redirect(w, r, "/planet/"+strconv.Itoa(p.ID)+"/"+redirect, 302)
+			return
+		}
+		serveError(w, r, err)
+		return
+	}
+	http.Redirect(w, r, "/planet/"+strconv.Itoa(p.ID)+"/"+redirect, 302)
+}
+
+// servePlanetCancelAction progresses the request to cancel a timer.
+func servePlanetCancelAction(w http.ResponseWriter, r *http.Request, routeActionMap map[string]timer.Action, redirect string) {
+	uri := mux.Vars(r)["action"]
+	a, ok := routeActionMap[uri]
+	if !ok {
+		http.NotFound(w, r)
+		return
+	}
+
+	var p *data.PlanetWithResourceInfo
+	err := data.WithTx(r.Context(), data.Client, func(tx *ent.Tx) error {
+		var err error
+		p, err = userPlanet(r, tx)
+		if err != nil {
+			return err
+		}
+		err = data.CancelTimer(r.Context(), tx, p.Planet, a)
+		if err != nil {
+			return newInternalServerError(fmt.Errorf("unable to cancel timer to upgrade building: %w", err))
+		}
+		return nil
+	})
+	if err != nil && !errors.Is(err, data.ErrTimerNotRunning) {
+		serveError(w, r, err)
+		return
+	}
+	http.Redirect(w, r, "/planet/"+strconv.Itoa(p.ID)+"/"+redirect, 302)
 }

@@ -57,6 +57,14 @@ const (
 	ActionUpgradeSilicaStorage   Action = "upgrade_silica_storage"
 	ActionUpgradeResearchCenter  Action = "upgrade_research_center"
 	ActionUpgradeShipFactory     Action = "upgrade_ship_factory"
+	ActionBuildCaravel           Action = "build_caravel"
+	ActionBuildLightFighter      Action = "build_light_fighter"
+	ActionBuildCorvette          Action = "build_corvette"
+	ActionBuildFrigate           Action = "build_frigate"
+	ActionBuildProbe             Action = "build_probe"
+	ActionBuildSmallCargo        Action = "build_small_cargo"
+	ActionBuildMediumCargo       Action = "build_medium_cargo"
+	ActionBuildColonizationArk   Action = "build_colonization_ark"
 	ActionTest                   Action = "test"
 )
 
@@ -67,7 +75,7 @@ func (s Action) String() string {
 // ActionValidator is a validator for the "a" field enum values. It is called by the builders before save.
 func ActionValidator(a Action) error {
 	switch a {
-	case ActionUpgradeMetalProd, ActionUpgradeHydrogenProd, ActionUpgradeSilicaProd, ActionUpgradeSolarProd, ActionUpgradeUrbanism, ActionUpgradeMetalStorage, ActionUpgradeHydrogenStorage, ActionUpgradeSilicaStorage, ActionUpgradeResearchCenter, ActionUpgradeShipFactory, ActionTest:
+	case ActionUpgradeMetalProd, ActionUpgradeHydrogenProd, ActionUpgradeSilicaProd, ActionUpgradeSolarProd, ActionUpgradeUrbanism, ActionUpgradeMetalStorage, ActionUpgradeHydrogenStorage, ActionUpgradeSilicaStorage, ActionUpgradeResearchCenter, ActionUpgradeShipFactory, ActionBuildCaravel, ActionBuildLightFighter, ActionBuildCorvette, ActionBuildFrigate, ActionBuildProbe, ActionBuildSmallCargo, ActionBuildMediumCargo, ActionBuildColonizationArk, ActionTest:
 		return nil
 	default:
 		return fmt.Errorf("timer: invalid enum value for action field: %q", a)
@@ -80,6 +88,7 @@ type Group string
 // Group values.
 const (
 	GroupBuilding Group = "building"
+	GroupShip     Group = "ship"
 )
 
 func (s Group) String() string {
@@ -89,7 +98,7 @@ func (s Group) String() string {
 // GroupValidator is a validator for the "gr" field enum values. It is called by the builders before save.
 func GroupValidator(gr Group) error {
 	switch gr {
-	case GroupBuilding:
+	case GroupBuilding, GroupShip:
 		return nil
 	default:
 		return fmt.Errorf("timer: invalid enum value for group field: %q", gr)

@@ -183,12 +183,14 @@ func routes(csrfEnabled bool) *mux.Router {
 	rPlanet := rAuth.PathPrefix("/planet/{planetNumber:[0-9]+}").Subrouter()
 	rPlanet.HandleFunc("/", servePlanet)
 	rPlanet.HandleFunc("/constructions", serveConstructions)
+	rPlanet.HandleFunc("/construction/{action}/build", servePlanetStartConstruction).Methods("POST")
+	rPlanet.HandleFunc("/construction/{action}/cancel", servePlanetCancelConstruction).Methods("POST")
 	rPlanet.HandleFunc("/factories", serveFactories)
+	rPlanet.HandleFunc("/factory/{action}/build", servePlanetStartFactory).Methods("POST")
+	rPlanet.HandleFunc("/factory/{action}/cancel", servePlanetCancelFactory).Methods("POST")
 	rPlanet.HandleFunc("/research", serveResearch)
 	rPlanet.HandleFunc("/fleets", serveFleets)
 	rPlanet.HandleFunc("/defenses", serveDefenses)
-	rPlanet.HandleFunc("/{action}/build", servePlanetStartAction).Methods("POST")
-	rPlanet.HandleFunc("/{action}/cancel", servePlanetCancelAction).Methods("POST")
 
 	// Middleware
 	if csrfEnabled {
