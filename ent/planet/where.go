@@ -247,6 +247,62 @@ func PositionCode(v int) predicate.Planet {
 	})
 }
 
+// NumCaravel applies equality check predicate on the "num_caravel" field. It's identical to NumCaravelEQ.
+func NumCaravel(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldNumCaravel), v))
+	})
+}
+
+// NumLightFighter applies equality check predicate on the "num_light_fighter" field. It's identical to NumLightFighterEQ.
+func NumLightFighter(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldNumLightFighter), v))
+	})
+}
+
+// NumCorvette applies equality check predicate on the "num_corvette" field. It's identical to NumCorvetteEQ.
+func NumCorvette(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldNumCorvette), v))
+	})
+}
+
+// NumFrigate applies equality check predicate on the "num_frigate" field. It's identical to NumFrigateEQ.
+func NumFrigate(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldNumFrigate), v))
+	})
+}
+
+// NumProbe applies equality check predicate on the "num_probe" field. It's identical to NumProbeEQ.
+func NumProbe(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldNumProbe), v))
+	})
+}
+
+// NumSmallCargo applies equality check predicate on the "num_small_cargo" field. It's identical to NumSmallCargoEQ.
+func NumSmallCargo(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldNumSmallCargo), v))
+	})
+}
+
+// NumMediumCargo applies equality check predicate on the "num_medium_cargo" field. It's identical to NumMediumCargoEQ.
+func NumMediumCargo(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldNumMediumCargo), v))
+	})
+}
+
+// NumColonizationArk applies equality check predicate on the "num_colonization_ark" field. It's identical to NumColonizationArkEQ.
+func NumColonizationArk(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldNumColonizationArk), v))
+	})
+}
+
 // Name applies equality check predicate on the "name" field. It's identical to NameEQ.
 func Name(v string) predicate.Planet {
 	return predicate.Planet(func(s *sql.Selector) {
@@ -1937,6 +1993,614 @@ func PositionCodeLT(v int) predicate.Planet {
 func PositionCodeLTE(v int) predicate.Planet {
 	return predicate.Planet(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldPositionCode), v))
+	})
+}
+
+// NumCaravelEQ applies the EQ predicate on the "num_caravel" field.
+func NumCaravelEQ(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldNumCaravel), v))
+	})
+}
+
+// NumCaravelNEQ applies the NEQ predicate on the "num_caravel" field.
+func NumCaravelNEQ(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldNumCaravel), v))
+	})
+}
+
+// NumCaravelIn applies the In predicate on the "num_caravel" field.
+func NumCaravelIn(vs ...int64) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldNumCaravel), v...))
+	})
+}
+
+// NumCaravelNotIn applies the NotIn predicate on the "num_caravel" field.
+func NumCaravelNotIn(vs ...int64) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldNumCaravel), v...))
+	})
+}
+
+// NumCaravelGT applies the GT predicate on the "num_caravel" field.
+func NumCaravelGT(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldNumCaravel), v))
+	})
+}
+
+// NumCaravelGTE applies the GTE predicate on the "num_caravel" field.
+func NumCaravelGTE(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldNumCaravel), v))
+	})
+}
+
+// NumCaravelLT applies the LT predicate on the "num_caravel" field.
+func NumCaravelLT(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldNumCaravel), v))
+	})
+}
+
+// NumCaravelLTE applies the LTE predicate on the "num_caravel" field.
+func NumCaravelLTE(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldNumCaravel), v))
+	})
+}
+
+// NumLightFighterEQ applies the EQ predicate on the "num_light_fighter" field.
+func NumLightFighterEQ(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldNumLightFighter), v))
+	})
+}
+
+// NumLightFighterNEQ applies the NEQ predicate on the "num_light_fighter" field.
+func NumLightFighterNEQ(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldNumLightFighter), v))
+	})
+}
+
+// NumLightFighterIn applies the In predicate on the "num_light_fighter" field.
+func NumLightFighterIn(vs ...int64) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldNumLightFighter), v...))
+	})
+}
+
+// NumLightFighterNotIn applies the NotIn predicate on the "num_light_fighter" field.
+func NumLightFighterNotIn(vs ...int64) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldNumLightFighter), v...))
+	})
+}
+
+// NumLightFighterGT applies the GT predicate on the "num_light_fighter" field.
+func NumLightFighterGT(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldNumLightFighter), v))
+	})
+}
+
+// NumLightFighterGTE applies the GTE predicate on the "num_light_fighter" field.
+func NumLightFighterGTE(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldNumLightFighter), v))
+	})
+}
+
+// NumLightFighterLT applies the LT predicate on the "num_light_fighter" field.
+func NumLightFighterLT(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldNumLightFighter), v))
+	})
+}
+
+// NumLightFighterLTE applies the LTE predicate on the "num_light_fighter" field.
+func NumLightFighterLTE(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldNumLightFighter), v))
+	})
+}
+
+// NumCorvetteEQ applies the EQ predicate on the "num_corvette" field.
+func NumCorvetteEQ(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldNumCorvette), v))
+	})
+}
+
+// NumCorvetteNEQ applies the NEQ predicate on the "num_corvette" field.
+func NumCorvetteNEQ(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldNumCorvette), v))
+	})
+}
+
+// NumCorvetteIn applies the In predicate on the "num_corvette" field.
+func NumCorvetteIn(vs ...int64) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldNumCorvette), v...))
+	})
+}
+
+// NumCorvetteNotIn applies the NotIn predicate on the "num_corvette" field.
+func NumCorvetteNotIn(vs ...int64) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldNumCorvette), v...))
+	})
+}
+
+// NumCorvetteGT applies the GT predicate on the "num_corvette" field.
+func NumCorvetteGT(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldNumCorvette), v))
+	})
+}
+
+// NumCorvetteGTE applies the GTE predicate on the "num_corvette" field.
+func NumCorvetteGTE(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldNumCorvette), v))
+	})
+}
+
+// NumCorvetteLT applies the LT predicate on the "num_corvette" field.
+func NumCorvetteLT(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldNumCorvette), v))
+	})
+}
+
+// NumCorvetteLTE applies the LTE predicate on the "num_corvette" field.
+func NumCorvetteLTE(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldNumCorvette), v))
+	})
+}
+
+// NumFrigateEQ applies the EQ predicate on the "num_frigate" field.
+func NumFrigateEQ(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldNumFrigate), v))
+	})
+}
+
+// NumFrigateNEQ applies the NEQ predicate on the "num_frigate" field.
+func NumFrigateNEQ(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldNumFrigate), v))
+	})
+}
+
+// NumFrigateIn applies the In predicate on the "num_frigate" field.
+func NumFrigateIn(vs ...int64) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldNumFrigate), v...))
+	})
+}
+
+// NumFrigateNotIn applies the NotIn predicate on the "num_frigate" field.
+func NumFrigateNotIn(vs ...int64) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldNumFrigate), v...))
+	})
+}
+
+// NumFrigateGT applies the GT predicate on the "num_frigate" field.
+func NumFrigateGT(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldNumFrigate), v))
+	})
+}
+
+// NumFrigateGTE applies the GTE predicate on the "num_frigate" field.
+func NumFrigateGTE(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldNumFrigate), v))
+	})
+}
+
+// NumFrigateLT applies the LT predicate on the "num_frigate" field.
+func NumFrigateLT(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldNumFrigate), v))
+	})
+}
+
+// NumFrigateLTE applies the LTE predicate on the "num_frigate" field.
+func NumFrigateLTE(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldNumFrigate), v))
+	})
+}
+
+// NumProbeEQ applies the EQ predicate on the "num_probe" field.
+func NumProbeEQ(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldNumProbe), v))
+	})
+}
+
+// NumProbeNEQ applies the NEQ predicate on the "num_probe" field.
+func NumProbeNEQ(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldNumProbe), v))
+	})
+}
+
+// NumProbeIn applies the In predicate on the "num_probe" field.
+func NumProbeIn(vs ...int64) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldNumProbe), v...))
+	})
+}
+
+// NumProbeNotIn applies the NotIn predicate on the "num_probe" field.
+func NumProbeNotIn(vs ...int64) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldNumProbe), v...))
+	})
+}
+
+// NumProbeGT applies the GT predicate on the "num_probe" field.
+func NumProbeGT(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldNumProbe), v))
+	})
+}
+
+// NumProbeGTE applies the GTE predicate on the "num_probe" field.
+func NumProbeGTE(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldNumProbe), v))
+	})
+}
+
+// NumProbeLT applies the LT predicate on the "num_probe" field.
+func NumProbeLT(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldNumProbe), v))
+	})
+}
+
+// NumProbeLTE applies the LTE predicate on the "num_probe" field.
+func NumProbeLTE(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldNumProbe), v))
+	})
+}
+
+// NumSmallCargoEQ applies the EQ predicate on the "num_small_cargo" field.
+func NumSmallCargoEQ(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldNumSmallCargo), v))
+	})
+}
+
+// NumSmallCargoNEQ applies the NEQ predicate on the "num_small_cargo" field.
+func NumSmallCargoNEQ(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldNumSmallCargo), v))
+	})
+}
+
+// NumSmallCargoIn applies the In predicate on the "num_small_cargo" field.
+func NumSmallCargoIn(vs ...int64) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldNumSmallCargo), v...))
+	})
+}
+
+// NumSmallCargoNotIn applies the NotIn predicate on the "num_small_cargo" field.
+func NumSmallCargoNotIn(vs ...int64) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldNumSmallCargo), v...))
+	})
+}
+
+// NumSmallCargoGT applies the GT predicate on the "num_small_cargo" field.
+func NumSmallCargoGT(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldNumSmallCargo), v))
+	})
+}
+
+// NumSmallCargoGTE applies the GTE predicate on the "num_small_cargo" field.
+func NumSmallCargoGTE(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldNumSmallCargo), v))
+	})
+}
+
+// NumSmallCargoLT applies the LT predicate on the "num_small_cargo" field.
+func NumSmallCargoLT(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldNumSmallCargo), v))
+	})
+}
+
+// NumSmallCargoLTE applies the LTE predicate on the "num_small_cargo" field.
+func NumSmallCargoLTE(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldNumSmallCargo), v))
+	})
+}
+
+// NumMediumCargoEQ applies the EQ predicate on the "num_medium_cargo" field.
+func NumMediumCargoEQ(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldNumMediumCargo), v))
+	})
+}
+
+// NumMediumCargoNEQ applies the NEQ predicate on the "num_medium_cargo" field.
+func NumMediumCargoNEQ(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldNumMediumCargo), v))
+	})
+}
+
+// NumMediumCargoIn applies the In predicate on the "num_medium_cargo" field.
+func NumMediumCargoIn(vs ...int64) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldNumMediumCargo), v...))
+	})
+}
+
+// NumMediumCargoNotIn applies the NotIn predicate on the "num_medium_cargo" field.
+func NumMediumCargoNotIn(vs ...int64) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldNumMediumCargo), v...))
+	})
+}
+
+// NumMediumCargoGT applies the GT predicate on the "num_medium_cargo" field.
+func NumMediumCargoGT(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldNumMediumCargo), v))
+	})
+}
+
+// NumMediumCargoGTE applies the GTE predicate on the "num_medium_cargo" field.
+func NumMediumCargoGTE(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldNumMediumCargo), v))
+	})
+}
+
+// NumMediumCargoLT applies the LT predicate on the "num_medium_cargo" field.
+func NumMediumCargoLT(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldNumMediumCargo), v))
+	})
+}
+
+// NumMediumCargoLTE applies the LTE predicate on the "num_medium_cargo" field.
+func NumMediumCargoLTE(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldNumMediumCargo), v))
+	})
+}
+
+// NumColonizationArkEQ applies the EQ predicate on the "num_colonization_ark" field.
+func NumColonizationArkEQ(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldNumColonizationArk), v))
+	})
+}
+
+// NumColonizationArkNEQ applies the NEQ predicate on the "num_colonization_ark" field.
+func NumColonizationArkNEQ(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldNumColonizationArk), v))
+	})
+}
+
+// NumColonizationArkIn applies the In predicate on the "num_colonization_ark" field.
+func NumColonizationArkIn(vs ...int64) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldNumColonizationArk), v...))
+	})
+}
+
+// NumColonizationArkNotIn applies the NotIn predicate on the "num_colonization_ark" field.
+func NumColonizationArkNotIn(vs ...int64) predicate.Planet {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Planet(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldNumColonizationArk), v...))
+	})
+}
+
+// NumColonizationArkGT applies the GT predicate on the "num_colonization_ark" field.
+func NumColonizationArkGT(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldNumColonizationArk), v))
+	})
+}
+
+// NumColonizationArkGTE applies the GTE predicate on the "num_colonization_ark" field.
+func NumColonizationArkGTE(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldNumColonizationArk), v))
+	})
+}
+
+// NumColonizationArkLT applies the LT predicate on the "num_colonization_ark" field.
+func NumColonizationArkLT(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldNumColonizationArk), v))
+	})
+}
+
+// NumColonizationArkLTE applies the LTE predicate on the "num_colonization_ark" field.
+func NumColonizationArkLTE(v int64) predicate.Planet {
+	return predicate.Planet(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldNumColonizationArk), v))
 	})
 }
 

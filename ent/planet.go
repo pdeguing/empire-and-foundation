@@ -61,6 +61,22 @@ type Planet struct {
 	SuborbitCode int `json:"suborbit_code,omitempty"`
 	// PositionCode holds the value of the "position_code" field.
 	PositionCode int `json:"position_code,omitempty"`
+	// NumCaravel holds the value of the "num_caravel" field.
+	NumCaravel int64 `json:"num_caravel,omitempty"`
+	// NumLightFighter holds the value of the "num_light_fighter" field.
+	NumLightFighter int64 `json:"num_light_fighter,omitempty"`
+	// NumCorvette holds the value of the "num_corvette" field.
+	NumCorvette int64 `json:"num_corvette,omitempty"`
+	// NumFrigate holds the value of the "num_frigate" field.
+	NumFrigate int64 `json:"num_frigate,omitempty"`
+	// NumProbe holds the value of the "num_probe" field.
+	NumProbe int64 `json:"num_probe,omitempty"`
+	// NumSmallCargo holds the value of the "num_small_cargo" field.
+	NumSmallCargo int64 `json:"num_small_cargo,omitempty"`
+	// NumMediumCargo holds the value of the "num_medium_cargo" field.
+	NumMediumCargo int64 `json:"num_medium_cargo,omitempty"`
+	// NumColonizationArk holds the value of the "num_colonization_ark" field.
+	NumColonizationArk int64 `json:"num_colonization_ark,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// PlanetType holds the value of the "planet_type" field.
@@ -135,6 +151,14 @@ func (*Planet) scanValues() []interface{} {
 		&sql.NullInt64{},  // orbit_code
 		&sql.NullInt64{},  // suborbit_code
 		&sql.NullInt64{},  // position_code
+		&sql.NullInt64{},  // num_caravel
+		&sql.NullInt64{},  // num_light_fighter
+		&sql.NullInt64{},  // num_corvette
+		&sql.NullInt64{},  // num_frigate
+		&sql.NullInt64{},  // num_probe
+		&sql.NullInt64{},  // num_small_cargo
+		&sql.NullInt64{},  // num_medium_cargo
+		&sql.NullInt64{},  // num_colonization_ark
 		&sql.NullString{}, // name
 		&sql.NullString{}, // planet_type
 		&sql.NullString{}, // planet_skin
@@ -271,27 +295,67 @@ func (pl *Planet) assignValues(values ...interface{}) error {
 	} else if value.Valid {
 		pl.PositionCode = int(value.Int64)
 	}
-	if value, ok := values[22].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field name", values[22])
+	if value, ok := values[22].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field num_caravel", values[22])
+	} else if value.Valid {
+		pl.NumCaravel = value.Int64
+	}
+	if value, ok := values[23].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field num_light_fighter", values[23])
+	} else if value.Valid {
+		pl.NumLightFighter = value.Int64
+	}
+	if value, ok := values[24].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field num_corvette", values[24])
+	} else if value.Valid {
+		pl.NumCorvette = value.Int64
+	}
+	if value, ok := values[25].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field num_frigate", values[25])
+	} else if value.Valid {
+		pl.NumFrigate = value.Int64
+	}
+	if value, ok := values[26].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field num_probe", values[26])
+	} else if value.Valid {
+		pl.NumProbe = value.Int64
+	}
+	if value, ok := values[27].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field num_small_cargo", values[27])
+	} else if value.Valid {
+		pl.NumSmallCargo = value.Int64
+	}
+	if value, ok := values[28].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field num_medium_cargo", values[28])
+	} else if value.Valid {
+		pl.NumMediumCargo = value.Int64
+	}
+	if value, ok := values[29].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field num_colonization_ark", values[29])
+	} else if value.Valid {
+		pl.NumColonizationArk = value.Int64
+	}
+	if value, ok := values[30].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field name", values[30])
 	} else if value.Valid {
 		pl.Name = value.String
 	}
-	if value, ok := values[23].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field planet_type", values[23])
+	if value, ok := values[31].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field planet_type", values[31])
 	} else if value.Valid {
 		pl.PlanetType = planet.PlanetType(value.String)
 	}
-	if value, ok := values[24].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field planet_skin", values[24])
+	if value, ok := values[32].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field planet_skin", values[32])
 	} else if value.Valid {
 		pl.PlanetSkin = value.String
 	}
-	if value, ok := values[25].(*sql.NullTime); !ok {
-		return fmt.Errorf("unexpected type %T for field last_resource_update", values[25])
+	if value, ok := values[33].(*sql.NullTime); !ok {
+		return fmt.Errorf("unexpected type %T for field last_resource_update", values[33])
 	} else if value.Valid {
 		pl.LastResourceUpdate = value.Time
 	}
-	values = values[26:]
+	values = values[34:]
 	if len(values) == len(planet.ForeignKeys) {
 		if value, ok := values[0].(*sql.NullInt64); !ok {
 			return fmt.Errorf("unexpected type %T for edge-field user_planets", value)
@@ -380,6 +444,22 @@ func (pl *Planet) String() string {
 	builder.WriteString(fmt.Sprintf("%v", pl.SuborbitCode))
 	builder.WriteString(", position_code=")
 	builder.WriteString(fmt.Sprintf("%v", pl.PositionCode))
+	builder.WriteString(", num_caravel=")
+	builder.WriteString(fmt.Sprintf("%v", pl.NumCaravel))
+	builder.WriteString(", num_light_fighter=")
+	builder.WriteString(fmt.Sprintf("%v", pl.NumLightFighter))
+	builder.WriteString(", num_corvette=")
+	builder.WriteString(fmt.Sprintf("%v", pl.NumCorvette))
+	builder.WriteString(", num_frigate=")
+	builder.WriteString(fmt.Sprintf("%v", pl.NumFrigate))
+	builder.WriteString(", num_probe=")
+	builder.WriteString(fmt.Sprintf("%v", pl.NumProbe))
+	builder.WriteString(", num_small_cargo=")
+	builder.WriteString(fmt.Sprintf("%v", pl.NumSmallCargo))
+	builder.WriteString(", num_medium_cargo=")
+	builder.WriteString(fmt.Sprintf("%v", pl.NumMediumCargo))
+	builder.WriteString(", num_colonization_ark=")
+	builder.WriteString(fmt.Sprintf("%v", pl.NumColonizationArk))
 	builder.WriteString(", name=")
 	builder.WriteString(pl.Name)
 	builder.WriteString(", planet_type=")

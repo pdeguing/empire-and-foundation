@@ -78,6 +78,22 @@ type PlanetMutation struct {
 	addsuborbit_code            *int
 	position_code               *int
 	addposition_code            *int
+	num_caravel                 *int64
+	addnum_caravel              *int64
+	num_light_fighter           *int64
+	addnum_light_fighter        *int64
+	num_corvette                *int64
+	addnum_corvette             *int64
+	num_frigate                 *int64
+	addnum_frigate              *int64
+	num_probe                   *int64
+	addnum_probe                *int64
+	num_small_cargo             *int64
+	addnum_small_cargo          *int64
+	num_medium_cargo            *int64
+	addnum_medium_cargo         *int64
+	num_colonization_ark        *int64
+	addnum_colonization_ark     *int64
 	name                        *string
 	planet_type                 *planet.PlanetType
 	planet_skin                 *string
@@ -947,6 +963,318 @@ func (m *PlanetMutation) ResetPositionCode() {
 	m.addposition_code = nil
 }
 
+// SetNumCaravel sets the num_caravel field.
+func (m *PlanetMutation) SetNumCaravel(i int64) {
+	m.num_caravel = &i
+	m.addnum_caravel = nil
+}
+
+// NumCaravel returns the num_caravel value in the mutation.
+func (m *PlanetMutation) NumCaravel() (r int64, exists bool) {
+	v := m.num_caravel
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// AddNumCaravel adds i to num_caravel.
+func (m *PlanetMutation) AddNumCaravel(i int64) {
+	if m.addnum_caravel != nil {
+		*m.addnum_caravel += i
+	} else {
+		m.addnum_caravel = &i
+	}
+}
+
+// AddedNumCaravel returns the value that was added to the num_caravel field in this mutation.
+func (m *PlanetMutation) AddedNumCaravel() (r int64, exists bool) {
+	v := m.addnum_caravel
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetNumCaravel reset all changes of the num_caravel field.
+func (m *PlanetMutation) ResetNumCaravel() {
+	m.num_caravel = nil
+	m.addnum_caravel = nil
+}
+
+// SetNumLightFighter sets the num_light_fighter field.
+func (m *PlanetMutation) SetNumLightFighter(i int64) {
+	m.num_light_fighter = &i
+	m.addnum_light_fighter = nil
+}
+
+// NumLightFighter returns the num_light_fighter value in the mutation.
+func (m *PlanetMutation) NumLightFighter() (r int64, exists bool) {
+	v := m.num_light_fighter
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// AddNumLightFighter adds i to num_light_fighter.
+func (m *PlanetMutation) AddNumLightFighter(i int64) {
+	if m.addnum_light_fighter != nil {
+		*m.addnum_light_fighter += i
+	} else {
+		m.addnum_light_fighter = &i
+	}
+}
+
+// AddedNumLightFighter returns the value that was added to the num_light_fighter field in this mutation.
+func (m *PlanetMutation) AddedNumLightFighter() (r int64, exists bool) {
+	v := m.addnum_light_fighter
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetNumLightFighter reset all changes of the num_light_fighter field.
+func (m *PlanetMutation) ResetNumLightFighter() {
+	m.num_light_fighter = nil
+	m.addnum_light_fighter = nil
+}
+
+// SetNumCorvette sets the num_corvette field.
+func (m *PlanetMutation) SetNumCorvette(i int64) {
+	m.num_corvette = &i
+	m.addnum_corvette = nil
+}
+
+// NumCorvette returns the num_corvette value in the mutation.
+func (m *PlanetMutation) NumCorvette() (r int64, exists bool) {
+	v := m.num_corvette
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// AddNumCorvette adds i to num_corvette.
+func (m *PlanetMutation) AddNumCorvette(i int64) {
+	if m.addnum_corvette != nil {
+		*m.addnum_corvette += i
+	} else {
+		m.addnum_corvette = &i
+	}
+}
+
+// AddedNumCorvette returns the value that was added to the num_corvette field in this mutation.
+func (m *PlanetMutation) AddedNumCorvette() (r int64, exists bool) {
+	v := m.addnum_corvette
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetNumCorvette reset all changes of the num_corvette field.
+func (m *PlanetMutation) ResetNumCorvette() {
+	m.num_corvette = nil
+	m.addnum_corvette = nil
+}
+
+// SetNumFrigate sets the num_frigate field.
+func (m *PlanetMutation) SetNumFrigate(i int64) {
+	m.num_frigate = &i
+	m.addnum_frigate = nil
+}
+
+// NumFrigate returns the num_frigate value in the mutation.
+func (m *PlanetMutation) NumFrigate() (r int64, exists bool) {
+	v := m.num_frigate
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// AddNumFrigate adds i to num_frigate.
+func (m *PlanetMutation) AddNumFrigate(i int64) {
+	if m.addnum_frigate != nil {
+		*m.addnum_frigate += i
+	} else {
+		m.addnum_frigate = &i
+	}
+}
+
+// AddedNumFrigate returns the value that was added to the num_frigate field in this mutation.
+func (m *PlanetMutation) AddedNumFrigate() (r int64, exists bool) {
+	v := m.addnum_frigate
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetNumFrigate reset all changes of the num_frigate field.
+func (m *PlanetMutation) ResetNumFrigate() {
+	m.num_frigate = nil
+	m.addnum_frigate = nil
+}
+
+// SetNumProbe sets the num_probe field.
+func (m *PlanetMutation) SetNumProbe(i int64) {
+	m.num_probe = &i
+	m.addnum_probe = nil
+}
+
+// NumProbe returns the num_probe value in the mutation.
+func (m *PlanetMutation) NumProbe() (r int64, exists bool) {
+	v := m.num_probe
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// AddNumProbe adds i to num_probe.
+func (m *PlanetMutation) AddNumProbe(i int64) {
+	if m.addnum_probe != nil {
+		*m.addnum_probe += i
+	} else {
+		m.addnum_probe = &i
+	}
+}
+
+// AddedNumProbe returns the value that was added to the num_probe field in this mutation.
+func (m *PlanetMutation) AddedNumProbe() (r int64, exists bool) {
+	v := m.addnum_probe
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetNumProbe reset all changes of the num_probe field.
+func (m *PlanetMutation) ResetNumProbe() {
+	m.num_probe = nil
+	m.addnum_probe = nil
+}
+
+// SetNumSmallCargo sets the num_small_cargo field.
+func (m *PlanetMutation) SetNumSmallCargo(i int64) {
+	m.num_small_cargo = &i
+	m.addnum_small_cargo = nil
+}
+
+// NumSmallCargo returns the num_small_cargo value in the mutation.
+func (m *PlanetMutation) NumSmallCargo() (r int64, exists bool) {
+	v := m.num_small_cargo
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// AddNumSmallCargo adds i to num_small_cargo.
+func (m *PlanetMutation) AddNumSmallCargo(i int64) {
+	if m.addnum_small_cargo != nil {
+		*m.addnum_small_cargo += i
+	} else {
+		m.addnum_small_cargo = &i
+	}
+}
+
+// AddedNumSmallCargo returns the value that was added to the num_small_cargo field in this mutation.
+func (m *PlanetMutation) AddedNumSmallCargo() (r int64, exists bool) {
+	v := m.addnum_small_cargo
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetNumSmallCargo reset all changes of the num_small_cargo field.
+func (m *PlanetMutation) ResetNumSmallCargo() {
+	m.num_small_cargo = nil
+	m.addnum_small_cargo = nil
+}
+
+// SetNumMediumCargo sets the num_medium_cargo field.
+func (m *PlanetMutation) SetNumMediumCargo(i int64) {
+	m.num_medium_cargo = &i
+	m.addnum_medium_cargo = nil
+}
+
+// NumMediumCargo returns the num_medium_cargo value in the mutation.
+func (m *PlanetMutation) NumMediumCargo() (r int64, exists bool) {
+	v := m.num_medium_cargo
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// AddNumMediumCargo adds i to num_medium_cargo.
+func (m *PlanetMutation) AddNumMediumCargo(i int64) {
+	if m.addnum_medium_cargo != nil {
+		*m.addnum_medium_cargo += i
+	} else {
+		m.addnum_medium_cargo = &i
+	}
+}
+
+// AddedNumMediumCargo returns the value that was added to the num_medium_cargo field in this mutation.
+func (m *PlanetMutation) AddedNumMediumCargo() (r int64, exists bool) {
+	v := m.addnum_medium_cargo
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetNumMediumCargo reset all changes of the num_medium_cargo field.
+func (m *PlanetMutation) ResetNumMediumCargo() {
+	m.num_medium_cargo = nil
+	m.addnum_medium_cargo = nil
+}
+
+// SetNumColonizationArk sets the num_colonization_ark field.
+func (m *PlanetMutation) SetNumColonizationArk(i int64) {
+	m.num_colonization_ark = &i
+	m.addnum_colonization_ark = nil
+}
+
+// NumColonizationArk returns the num_colonization_ark value in the mutation.
+func (m *PlanetMutation) NumColonizationArk() (r int64, exists bool) {
+	v := m.num_colonization_ark
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// AddNumColonizationArk adds i to num_colonization_ark.
+func (m *PlanetMutation) AddNumColonizationArk(i int64) {
+	if m.addnum_colonization_ark != nil {
+		*m.addnum_colonization_ark += i
+	} else {
+		m.addnum_colonization_ark = &i
+	}
+}
+
+// AddedNumColonizationArk returns the value that was added to the num_colonization_ark field in this mutation.
+func (m *PlanetMutation) AddedNumColonizationArk() (r int64, exists bool) {
+	v := m.addnum_colonization_ark
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetNumColonizationArk reset all changes of the num_colonization_ark field.
+func (m *PlanetMutation) ResetNumColonizationArk() {
+	m.num_colonization_ark = nil
+	m.addnum_colonization_ark = nil
+}
+
 // SetName sets the name field.
 func (m *PlanetMutation) SetName(s string) {
 	m.name = &s
@@ -1118,7 +1446,7 @@ func (m *PlanetMutation) Type() string {
 // this mutation. Note that, in order to get all numeric
 // fields that were in/decremented, call AddedFields().
 func (m *PlanetMutation) Fields() []string {
-	fields := make([]string, 0, 26)
+	fields := make([]string, 0, 34)
 	if m.created_at != nil {
 		fields = append(fields, planet.FieldCreatedAt)
 	}
@@ -1185,6 +1513,30 @@ func (m *PlanetMutation) Fields() []string {
 	if m.position_code != nil {
 		fields = append(fields, planet.FieldPositionCode)
 	}
+	if m.num_caravel != nil {
+		fields = append(fields, planet.FieldNumCaravel)
+	}
+	if m.num_light_fighter != nil {
+		fields = append(fields, planet.FieldNumLightFighter)
+	}
+	if m.num_corvette != nil {
+		fields = append(fields, planet.FieldNumCorvette)
+	}
+	if m.num_frigate != nil {
+		fields = append(fields, planet.FieldNumFrigate)
+	}
+	if m.num_probe != nil {
+		fields = append(fields, planet.FieldNumProbe)
+	}
+	if m.num_small_cargo != nil {
+		fields = append(fields, planet.FieldNumSmallCargo)
+	}
+	if m.num_medium_cargo != nil {
+		fields = append(fields, planet.FieldNumMediumCargo)
+	}
+	if m.num_colonization_ark != nil {
+		fields = append(fields, planet.FieldNumColonizationArk)
+	}
 	if m.name != nil {
 		fields = append(fields, planet.FieldName)
 	}
@@ -1249,6 +1601,22 @@ func (m *PlanetMutation) Field(name string) (ent.Value, bool) {
 		return m.SuborbitCode()
 	case planet.FieldPositionCode:
 		return m.PositionCode()
+	case planet.FieldNumCaravel:
+		return m.NumCaravel()
+	case planet.FieldNumLightFighter:
+		return m.NumLightFighter()
+	case planet.FieldNumCorvette:
+		return m.NumCorvette()
+	case planet.FieldNumFrigate:
+		return m.NumFrigate()
+	case planet.FieldNumProbe:
+		return m.NumProbe()
+	case planet.FieldNumSmallCargo:
+		return m.NumSmallCargo()
+	case planet.FieldNumMediumCargo:
+		return m.NumMediumCargo()
+	case planet.FieldNumColonizationArk:
+		return m.NumColonizationArk()
 	case planet.FieldName:
 		return m.Name()
 	case planet.FieldPlanetType:
@@ -1420,6 +1788,62 @@ func (m *PlanetMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetPositionCode(v)
 		return nil
+	case planet.FieldNumCaravel:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetNumCaravel(v)
+		return nil
+	case planet.FieldNumLightFighter:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetNumLightFighter(v)
+		return nil
+	case planet.FieldNumCorvette:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetNumCorvette(v)
+		return nil
+	case planet.FieldNumFrigate:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetNumFrigate(v)
+		return nil
+	case planet.FieldNumProbe:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetNumProbe(v)
+		return nil
+	case planet.FieldNumSmallCargo:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetNumSmallCargo(v)
+		return nil
+	case planet.FieldNumMediumCargo:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetNumMediumCargo(v)
+		return nil
+	case planet.FieldNumColonizationArk:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetNumColonizationArk(v)
+		return nil
 	case planet.FieldName:
 		v, ok := value.(string)
 		if !ok {
@@ -1516,6 +1940,30 @@ func (m *PlanetMutation) AddedFields() []string {
 	if m.addposition_code != nil {
 		fields = append(fields, planet.FieldPositionCode)
 	}
+	if m.addnum_caravel != nil {
+		fields = append(fields, planet.FieldNumCaravel)
+	}
+	if m.addnum_light_fighter != nil {
+		fields = append(fields, planet.FieldNumLightFighter)
+	}
+	if m.addnum_corvette != nil {
+		fields = append(fields, planet.FieldNumCorvette)
+	}
+	if m.addnum_frigate != nil {
+		fields = append(fields, planet.FieldNumFrigate)
+	}
+	if m.addnum_probe != nil {
+		fields = append(fields, planet.FieldNumProbe)
+	}
+	if m.addnum_small_cargo != nil {
+		fields = append(fields, planet.FieldNumSmallCargo)
+	}
+	if m.addnum_medium_cargo != nil {
+		fields = append(fields, planet.FieldNumMediumCargo)
+	}
+	if m.addnum_colonization_ark != nil {
+		fields = append(fields, planet.FieldNumColonizationArk)
+	}
 	return fields
 }
 
@@ -1564,6 +2012,22 @@ func (m *PlanetMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedSuborbitCode()
 	case planet.FieldPositionCode:
 		return m.AddedPositionCode()
+	case planet.FieldNumCaravel:
+		return m.AddedNumCaravel()
+	case planet.FieldNumLightFighter:
+		return m.AddedNumLightFighter()
+	case planet.FieldNumCorvette:
+		return m.AddedNumCorvette()
+	case planet.FieldNumFrigate:
+		return m.AddedNumFrigate()
+	case planet.FieldNumProbe:
+		return m.AddedNumProbe()
+	case planet.FieldNumSmallCargo:
+		return m.AddedNumSmallCargo()
+	case planet.FieldNumMediumCargo:
+		return m.AddedNumMediumCargo()
+	case planet.FieldNumColonizationArk:
+		return m.AddedNumColonizationArk()
 	}
 	return nil, false
 }
@@ -1713,6 +2177,62 @@ func (m *PlanetMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddPositionCode(v)
 		return nil
+	case planet.FieldNumCaravel:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddNumCaravel(v)
+		return nil
+	case planet.FieldNumLightFighter:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddNumLightFighter(v)
+		return nil
+	case planet.FieldNumCorvette:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddNumCorvette(v)
+		return nil
+	case planet.FieldNumFrigate:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddNumFrigate(v)
+		return nil
+	case planet.FieldNumProbe:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddNumProbe(v)
+		return nil
+	case planet.FieldNumSmallCargo:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddNumSmallCargo(v)
+		return nil
+	case planet.FieldNumMediumCargo:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddNumMediumCargo(v)
+		return nil
+	case planet.FieldNumColonizationArk:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddNumColonizationArk(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Planet numeric field %s", name)
 }
@@ -1806,6 +2326,30 @@ func (m *PlanetMutation) ResetField(name string) error {
 		return nil
 	case planet.FieldPositionCode:
 		m.ResetPositionCode()
+		return nil
+	case planet.FieldNumCaravel:
+		m.ResetNumCaravel()
+		return nil
+	case planet.FieldNumLightFighter:
+		m.ResetNumLightFighter()
+		return nil
+	case planet.FieldNumCorvette:
+		m.ResetNumCorvette()
+		return nil
+	case planet.FieldNumFrigate:
+		m.ResetNumFrigate()
+		return nil
+	case planet.FieldNumProbe:
+		m.ResetNumProbe()
+		return nil
+	case planet.FieldNumSmallCargo:
+		m.ResetNumSmallCargo()
+		return nil
+	case planet.FieldNumMediumCargo:
+		m.ResetNumMediumCargo()
+		return nil
+	case planet.FieldNumColonizationArk:
+		m.ResetNumColonizationArk()
 		return nil
 	case planet.FieldName:
 		m.ResetName()

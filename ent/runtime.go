@@ -27,6 +27,7 @@ func init() {
 		planetMixin[6].Fields(),
 		planetMixin[7].Fields(),
 		planetMixin[8].Fields(),
+		planetMixin[9].Fields(),
 	}
 	planetFields := schema.Planet{}.Fields()
 	_ = planetFields
@@ -150,6 +151,54 @@ func init() {
 	planetDescPositionCode := planetMixinFields[8][4].Descriptor()
 	// planet.PositionCodeValidator is a validator for the "position_code" field. It is called by the builders before save.
 	planet.PositionCodeValidator = planetDescPositionCode.Validators[0].(func(int) error)
+	// planetDescNumCaravel is the schema descriptor for num_caravel field.
+	planetDescNumCaravel := planetMixinFields[9][0].Descriptor()
+	// planet.DefaultNumCaravel holds the default value on creation for the num_caravel field.
+	planet.DefaultNumCaravel = planetDescNumCaravel.Default.(int64)
+	// planet.NumCaravelValidator is a validator for the "num_caravel" field. It is called by the builders before save.
+	planet.NumCaravelValidator = planetDescNumCaravel.Validators[0].(func(int64) error)
+	// planetDescNumLightFighter is the schema descriptor for num_light_fighter field.
+	planetDescNumLightFighter := planetMixinFields[9][1].Descriptor()
+	// planet.DefaultNumLightFighter holds the default value on creation for the num_light_fighter field.
+	planet.DefaultNumLightFighter = planetDescNumLightFighter.Default.(int64)
+	// planet.NumLightFighterValidator is a validator for the "num_light_fighter" field. It is called by the builders before save.
+	planet.NumLightFighterValidator = planetDescNumLightFighter.Validators[0].(func(int64) error)
+	// planetDescNumCorvette is the schema descriptor for num_corvette field.
+	planetDescNumCorvette := planetMixinFields[9][2].Descriptor()
+	// planet.DefaultNumCorvette holds the default value on creation for the num_corvette field.
+	planet.DefaultNumCorvette = planetDescNumCorvette.Default.(int64)
+	// planet.NumCorvetteValidator is a validator for the "num_corvette" field. It is called by the builders before save.
+	planet.NumCorvetteValidator = planetDescNumCorvette.Validators[0].(func(int64) error)
+	// planetDescNumFrigate is the schema descriptor for num_frigate field.
+	planetDescNumFrigate := planetMixinFields[9][3].Descriptor()
+	// planet.DefaultNumFrigate holds the default value on creation for the num_frigate field.
+	planet.DefaultNumFrigate = planetDescNumFrigate.Default.(int64)
+	// planet.NumFrigateValidator is a validator for the "num_frigate" field. It is called by the builders before save.
+	planet.NumFrigateValidator = planetDescNumFrigate.Validators[0].(func(int64) error)
+	// planetDescNumProbe is the schema descriptor for num_probe field.
+	planetDescNumProbe := planetMixinFields[9][4].Descriptor()
+	// planet.DefaultNumProbe holds the default value on creation for the num_probe field.
+	planet.DefaultNumProbe = planetDescNumProbe.Default.(int64)
+	// planet.NumProbeValidator is a validator for the "num_probe" field. It is called by the builders before save.
+	planet.NumProbeValidator = planetDescNumProbe.Validators[0].(func(int64) error)
+	// planetDescNumSmallCargo is the schema descriptor for num_small_cargo field.
+	planetDescNumSmallCargo := planetMixinFields[9][5].Descriptor()
+	// planet.DefaultNumSmallCargo holds the default value on creation for the num_small_cargo field.
+	planet.DefaultNumSmallCargo = planetDescNumSmallCargo.Default.(int64)
+	// planet.NumSmallCargoValidator is a validator for the "num_small_cargo" field. It is called by the builders before save.
+	planet.NumSmallCargoValidator = planetDescNumSmallCargo.Validators[0].(func(int64) error)
+	// planetDescNumMediumCargo is the schema descriptor for num_medium_cargo field.
+	planetDescNumMediumCargo := planetMixinFields[9][6].Descriptor()
+	// planet.DefaultNumMediumCargo holds the default value on creation for the num_medium_cargo field.
+	planet.DefaultNumMediumCargo = planetDescNumMediumCargo.Default.(int64)
+	// planet.NumMediumCargoValidator is a validator for the "num_medium_cargo" field. It is called by the builders before save.
+	planet.NumMediumCargoValidator = planetDescNumMediumCargo.Validators[0].(func(int64) error)
+	// planetDescNumColonizationArk is the schema descriptor for num_colonization_ark field.
+	planetDescNumColonizationArk := planetMixinFields[9][7].Descriptor()
+	// planet.DefaultNumColonizationArk holds the default value on creation for the num_colonization_ark field.
+	planet.DefaultNumColonizationArk = planetDescNumColonizationArk.Default.(int64)
+	// planet.NumColonizationArkValidator is a validator for the "num_colonization_ark" field. It is called by the builders before save.
+	planet.NumColonizationArkValidator = planetDescNumColonizationArk.Validators[0].(func(int64) error)
 	// planetDescName is the schema descriptor for name field.
 	planetDescName := planetFields[0].Descriptor()
 	// planet.DefaultName holds the default value on creation for the name field.

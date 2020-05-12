@@ -33,6 +33,14 @@ var (
 		{Name: "orbit_code", Type: field.TypeInt},
 		{Name: "suborbit_code", Type: field.TypeInt},
 		{Name: "position_code", Type: field.TypeInt, Unique: true},
+		{Name: "num_caravel", Type: field.TypeInt64},
+		{Name: "num_light_fighter", Type: field.TypeInt64},
+		{Name: "num_corvette", Type: field.TypeInt64},
+		{Name: "num_frigate", Type: field.TypeInt64},
+		{Name: "num_probe", Type: field.TypeInt64},
+		{Name: "num_small_cargo", Type: field.TypeInt64},
+		{Name: "num_medium_cargo", Type: field.TypeInt64},
+		{Name: "num_colonization_ark", Type: field.TypeInt64},
 		{Name: "name", Type: field.TypeString, Default: "Unnamed"},
 		{Name: "planet_type", Type: field.TypeEnum, Enums: []string{"habitable", "mineral", "gas_giant", "ice_giant"}},
 		{Name: "planet_skin", Type: field.TypeString},
@@ -47,7 +55,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:  "planets_users_planets",
-				Columns: []*schema.Column{PlanetsColumns[27]},
+				Columns: []*schema.Column{PlanetsColumns[35]},
 
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,
