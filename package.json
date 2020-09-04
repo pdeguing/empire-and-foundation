@@ -26,7 +26,7 @@
   "homepage": "https://github.com/pdeguing/empire-and-foundation#readme",
   "devDependencies": {
     "bulma": "^0.8.0",
-    "node-sass": "^4.13.0",
+    "node-sass": "^4.13.1",
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-es2015-ie": "^6.7.0",
